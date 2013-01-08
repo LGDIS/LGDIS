@@ -1,0 +1,18 @@
+<%= stylesheet_link_tag params[:controller], :plugin => 'lgdis' %>
+<% html_title l(:label_shelter_new) -%>
+
+<%= form_for @shelter, :url => {:action => :create, :project_id => @project} do |f| %>
+  <h2>
+    <%= l(:label_shelter_new) %>
+    <span style="float: right;">
+      <%= f.submit l(:button_save) %>
+      <input type="button" value="<%= l(:button_back) %>" onclick="history.back()">
+    </span>
+  </h2>
+
+  <div class="box tabular">
+    <div id="all_attributes">
+      <%= render :partial => 'form', :locals => {:f => f} %>
+    </div>
+  </div>
+<% end %>

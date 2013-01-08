@@ -1,0 +1,27 @@
+<%= stylesheet_link_tag params[:controller], :plugin => 'lgdis' %>
+<% html_title l(:label_shelter_plural) -%>
+
+<h2><%= l(:label_shelter_plural) %></h2>
+
+<%= form_tag :action => 'index', :project_id => @project do %>
+<fieldset class="collapsible" >
+  <legend onclick="toggleFieldset(this);"><%= l(:label_search_condition_plural) %></legend>
+  <div class="search_condition tabular">
+    <%= render :partial => 'search_conditions', :locals => {} %>
+  </div>
+</fieldset>
+<%= submit_tag l(:label_search) %>
+<input type="button" value=<%= l(:button_clear) %> onclick="window.location='<%= url_for :action => 'index' %>'; return false;">
+  <% if authorize_for(:shelters, :new) # 権限判定 %>
+    <input type="button" value=<%= l(:button_new) %> onclick="window.location='<%= url_for :action => 'new' %>'; return false;">
+  <% end %>
+<% end %>
+
+<p style="text-align: right;">（1～30/999)
+  <a style="display: none;">&lt;&lt; 前</a>
+  <a>&gt;&gt; 次</a>
+</p>
+
+<div class="autoscroll">
+<%= render :partial => 'list', :locals => {} %>
+</div>

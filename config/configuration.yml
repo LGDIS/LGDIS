@@ -1,0 +1,20 @@
+# specific configuration options for production environment
+# that overrides the default ones
+production:
+  email_delivery:
+    delivery_method: :smtp
+    smtp_settings:
+      address: localhost
+      port: 25
+      domain: localhost.localdomain
+
+# specific configuration options for development environment
+# that overrides the default ones
+development:
+  email_delivery:
+    delivery_method: :smtp
+    smtp_settings:
+      address: localhost
+      port: 25
+      domain: localhost.localdomain
+

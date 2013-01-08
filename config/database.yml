@@ -1,0 +1,16 @@
+production:
+  adapter: postgresql
+  database: redmine_pg_dev
+  host: 127.0.0.1
+  username: dev
+  password: devdev
+  encoding: utf8
+
+development:
+  adapter: postgresql
+  database: redmine_pg_dev
+  host: 127.0.0.1
+  username: dev
+  password: devdev
+  encoding: utf8
+

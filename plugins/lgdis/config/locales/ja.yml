@@ -1,0 +1,89 @@
+ja:
+  ####
+  # 共通
+  #
+  label_search_condition_plural: 検索条件
+  button_new: 新規登録
+  
+  activerecord:
+    errors:
+      messages:
+        not_an_integer: は整数で入力してください
+  
+  ####
+  # 避難所開設機能
+  #
+  project_module_shelters: 避難所開設機能
+  permission_view_shelters: 避難所開設情報の閲覧
+  permission_manage_shelters: 避難所開設情報の管理
+  
+  label_shelter: 避難所開設
+  label_shelter_plural: 避難所一覧
+  label_shelter_new: 避難所登録・更新
+  
+  notice_shelter_successful_create: 避難所 %{id} が作成されました。
+  text_shelter_destroy_confirmation: '本当に削除しますか？'
+  
+  ####
+  # 課題管理機能
+  #
+  field_xml_field: XMLデータ
+
+  # 項目名
+  shelters:
+    field_disaster_code: 災害コード
+    field_name: 避難所名
+    field_name_kana: 避難所名カナ
+    field_address: 住所
+    field_phone: 電話番号
+    field_fax: FAX番号
+    field_e_mail: メールアドレス
+    field_person_responsible: 担当者名
+    field_shelter_type: 避難所種別
+    field_shelter_type_detail: 避難所種別の補足情報
+    field_shelter_sort: 避難所区分
+    field_opened_at: 開設日時
+    field_closed_at: 閉鎖日時
+    field_capacity: 最大の収容人数
+    field_status: 避難所状況
+    field_head_count: 人数（自主避難を含む）
+    field_head_count_voluntary: 自主避難人数
+    field_households: 世帯数（自主避難を含む）
+    field_households_voluntary: 自主避難世帯数
+    field_checked_at: 避難所状況確認日時
+    field_shelter_code: 避難所識別番号
+    field_manager_code: 管理者（職員番号）
+    field_manager_name: 管理者（名称）
+    field_manager_another_name: 管理者（別名）
+    field_reported_at: 報告日時
+    field_building_damage_info: 建物被害状況
+    field_electric_infra_damage_info: 電力被害状況
+    field_communication_infra_damage_info: 通信手段被害状況
+    field_other_damage_info: その他の被害
+    field_usable_flag: 使用可否
+    field_openable_flag: 開設の可否
+    field_injury_count: 負傷者数
+    field_upper_care_level_three_count: 要介護度3以上
+    field_elderly_alone_count: 一人暮らし高齢者 65歳以上
+    field_elderly_couple_count: 高齢者世帯 夫婦共に65歳以上
+    field_bedridden_elderly_count: 寝たきり高齢者
+    field_elderly_dementia_count: 認知症高齢者
+    field_rehabilitation_certificate_count: 療育手帳A/A1/A2所持者
+    field_physical_disability_certificate_count: 身体障がい者手帳1/2級所持者
+    field_note: 備考
+    
+    field_opened_date: 開設日時（年月日）
+    field_opened_hm: 開設日時（時分）
+    field_closed_date: 閉鎖日時（年月日）
+    field_closed_hm: 閉鎖日時（時分）
+    field_checked_date: 避難所状況確認日時（年月日）
+    field_checked_hm: 避難所状況確認日時（時分）
+    field_reported_date: 報告日時（年月日）
+    field_reported_hm: 報告日時（時分）
+    
+    field_address_area: 地区名
+    field_address_postal_code: 郵便番号
+    field_address_state: 都道府県
+    field_address_city: 市区町村
+    field_address_street: 町名
+    field_address_number: 番地

@@ -1,0 +1,12 @@
+gem 'pg_comment'  # DBのコメント付与
+
+# 課題管理機能
+gem 'acts_as_paranoid'  # 論理削除
+
+# 外部出力機能
+gem 'oauth'
+gem 'twitter'
+gem 'koala'
+
+# xml 表示
+gem 'nokogiri'
