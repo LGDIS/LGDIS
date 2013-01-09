@@ -22,4 +22,9 @@ Redmine::Plugin.register :lgdis do
 
   # API キー設定ファイルロード
   API_KEY = YAML.load_file("#{Rails.root}/plugins/lgdis/config/api_key.yml")
+
+  # 非同期処理
+  ActiveSupport::Dependencies.autoload_paths += %W(#{Rails.root}/plugins/lgdis/config/initializers)
+  ActiveSupport::Dependencies.autoload_paths += %W(#{Rails.root}/plugins/lgdis/lib/tasks)
+  ActiveSupport::Dependencies.autoload_paths += %W(#{Rails.root}/plugins/lgdis/app/workers)
 end

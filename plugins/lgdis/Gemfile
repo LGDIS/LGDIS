@@ -10,3 +10,6 @@ gem 'koala'
 
 # xml 表示
 gem 'nokogiri'
+
+# 非同期処理
+gem 'resque', require: 'resque/server'
