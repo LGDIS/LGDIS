@@ -7,9 +7,9 @@ require_dependency 'lgdis/ext_out/twitter'
 require_dependency 'lgdis/ext_out/facebook'
 
 Redmine::Plugin.register :lgdis do
-  name 'Local Gavament Disaster Infomation System (Lgdis) plugin'
+  name 'LGDIS (Local Government Disaster Information System) plugin'
   author '作成者XXX'
-  description '災害発生時における地方公共団体向けの包括的メッセージング:Local Gavament Disaster Infomation System (Lgdis) をRedmineに追加するプラグインです。'
+  description '災害発生時における地方公共団体向けの包括的メッセージング:LGDIS (Local Government Disaster Information System) をRedmineに追加するプラグインです。'
   version '0.0.1'
 
   project_module :shelters do
