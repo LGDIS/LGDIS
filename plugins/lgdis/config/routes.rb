@@ -5,4 +5,5 @@ RedmineApp::Application.routes.draw do
     match '/shelters/:id/delete'       => 'shelters#destroy',    :via => :get
     resources :shelters, :except => [:show]
   end
+  post "deliver_issues/deliver_request"
 end

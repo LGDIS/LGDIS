@@ -1,26 +1,20 @@
-<% i_a = issue
-   if i_a %>
-<%= stylesheet_link_tag 'issue_addition', :plugin => 'lgdis' %>
+<fieldset class="collapsible">
+  <legend onclick="toggleFieldset(this);"><%= l(:ext_out_field) %></legend>
+  <div>
+    <div class="splitcontentleft">
+      <p><strong><label><%= l(:delivery_place) %>:</label></strong></p>
+      <%= form_tag("/deliver_issues/deliver_request") do %>
+         <nobr>
+           <%= hidden_field_tag :issue_id, @issue.id %>
+           <%= hidden_field_tag :current_user, User.current %>
+           <%= check_box_tag "ext_out_target[]",'1' %><label><%= l(:commons) %></label>
+           <%= check_box_tag "ext_out_target[]",'2' %><label><%= l(:machicomi) %></label>
+           <%= check_box_tag "ext_out_target[]",'3' %><label><%= l(:twitter) %></label>
+           <%= check_box_tag "ext_out_target[]",'4' %><label><%= l(:facebook) %></label>
+           <%= submit_tag "配信要求"%>
+        </nobr>
+      <% end %>
+    </div>
+  </div>
+</fieldset>
 <hr />
-<%= yield :scripts %>
-
-  <% xml = i_a.try(:xml_body)
-     if xml %>
-<hr />
-<table class="attributes">
-<tr>
-  <th class="xml_field"><%= l(:field_xml_field) %>:</th>
-</tr>
-</table>
-<input type="checkbox" id="xml_view_sampling" checked><label for="xml_view_sampling">石巻市関連情報のみ</label>
-<%== print_xml_field(xml) %>
-<script>
-$(function(){
-  $("#xml_view_sampling").change(function(){
-    $("#xml_field_all").toggle(!this.checked);
-    $("#xml_field_sampling").toggle(this.checked);
-  }).change();
-});
-</script>
-  <% end %>
-<% end %>

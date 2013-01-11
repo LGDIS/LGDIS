@@ -101,3 +101,16 @@ ja:
 
       multi_page: "Displaying %{model} %{from} - %{to} of %{count} in total"
       multi_page_html: "(%{from}～%{to}/%{count})"
+
+  ####
+  # 配信管理機能
+  #
+  ext_out_field: 外部出力
+  delivery_place: 配信先
+  commons: 公共情報コモンズ
+  machicomi: まちcomi
+  twitter: Twitter
+  facebook: Facebook
+
+  notice_delivery_request_successful: 配信要求を行いました。
+  notice_delivery_request_failed: 配信要求に失敗しました。
