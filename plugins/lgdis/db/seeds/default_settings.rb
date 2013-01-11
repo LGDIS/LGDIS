@@ -13,7 +13,7 @@ Setting.user_format = "lastname_firstname"
 
 # 設定/認証
 # 認証が必要：true
-Setting.login_required = "ja"
+Setting.login_required = 1
 # ユーザーによるアカウント登録：無効
 Setting.self_registration = 0
 # ユーザーによるアカウント削除を許可：false
