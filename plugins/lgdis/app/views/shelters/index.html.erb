@@ -3,11 +3,11 @@
 
 <h2><%= l(:label_shelter_plural) %></h2>
 
-<%= form_tag :action => 'index', :project_id => @project do %>
+<%= form_for @search, :url => project_shelters_path, :html => {:method => :get} do |f| %>
 <fieldset class="collapsible" >
   <legend onclick="toggleFieldset(this);"><%= l(:label_search_condition_plural) %></legend>
   <div class="search_condition tabular">
-    <%= render :partial => 'search_conditions', :locals => {} %>
+    <%= render :partial => 'search_conditions', :locals => {:f => f, :project => @project} %>
   </div>
 </fieldset>
 <%= submit_tag l(:label_search) %>
@@ -17,11 +17,24 @@
   <% end %>
 <% end %>
 
-<p style="text-align: right;">（1～30/999)
-  <a style="display: none;">&lt;&lt; 前</a>
-  <a>&gt;&gt; 次</a>
+<p style="text-align: right;">
+  <%= will_paginate @shelters, :previous_label => "前 &lt;&lt; ",
+    :next_label => " &gt;&gt; 次", :page_links => false,
+    :link_separator => "#{page_entries_info @shelters}",
+    :container => false %>
 </p>
 
 <div class="autoscroll">
-<%= render :partial => 'list', :locals => {} %>
+  <%= render :partial => 'list', :locals => {:project => @project, :shelters => @shelters} %>
 </div>
+
+<%= javascript_tag do %>
+  // 避難所一覧行リンククリック処理
+  $(function($) {
+    $('tr[data-href]').addClass('clickable').click(function(e) {
+      if (!$(e.target).is('a')) {
+        window.location = $(e.target).closest('tr').data('href');
+      };
+    });
+  });
+<% end %>
