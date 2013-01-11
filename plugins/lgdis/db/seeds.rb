@@ -9,6 +9,7 @@ load("#{seeds_dir_path}/constants.rb")
 
 # カスタムフィールド
 load("#{seeds_dir_path}/custom_fields.rb")
+load("#{seeds_dir_path}/custom_field_list_items.rb")
 
 # トラッカー
 load("#{seeds_dir_path}/trackers.rb")
