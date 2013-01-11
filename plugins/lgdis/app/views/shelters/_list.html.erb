@@ -14,30 +14,20 @@
     </tr>
   </thead>
   <tbody>
-    <tr class="odd">
-      <td style="text-align: center;">0420299999</td>
-      <td style="text-align: center;">XXXXXXXXXXXXXXXXX</td>
-      <td style="text-align: center;">臨時</td>
-      <td style="text-align: center;">XXXXXXX</td>
-      <td style="text-align: center;">9999-99-9999</td>
-      <td style="text-align: center;">XXXXXXX</td>
-      <td style="text-align: right;">9999999</td>
-      <td style="text-align: center;">開設</td>
-      <td style="text-align: center;">XXXXXXX</td>
-      <td style="text-align: center;">YY/MM/DD</td>
-    </tr>
-    <tr class="even">
-      <td style="text-align: center;">0420299999</td>
-      <td style="text-align: center;">YYYYYYYYYYYYYYYYY</td>
-      <td style="text-align: center;">広域避難場所</td>
-      <td style="text-align: center;">XXXXXXX</td>
-      <td style="text-align: center;">9999-99-9999</td>
-      <td style="text-align: center;">XXXXXXX</td>
-      <td style="text-align: right;">9999999</td>
-      <td style="text-align: center;">常設</td>
-      <td style="text-align: center;">XXXXXXX</td>
-      <td style="text-align: center;">YY/MM/DD</td>
-    </tr>
+    <% shelters.each do |shelter| %>
+      <tr class="<%= cycle("even", "odd") -%>" data-href="<%= edit_project_shelter_path(project, shelter) %>">
+        <td style="text-align: center;"><%= shelter.shelter_code %></td>
+        <td style="text-align: center;"><%= shelter.name %></td>
+        <td style="text-align: center;"><%= @shelter_const["shelter_type"][shelter.shelter_type] %></td>
+        <td style="text-align: center;">地区名</td>
+        <td style="text-align: center;"><%= shelter.phone %></td>
+        <td style="text-align: center;"><%= shelter.manager_name %></td>
+        <td style="text-align: right;"><%= shelter.capacity %></td>
+        <td style="text-align: center;"><%= @shelter_const["shelter_sort"][shelter.shelter_sort] %></td>
+        <td style="text-align: center;">登録者</td>
+        <td style="text-align: center;"><%= shelter.created_at.strftime("%y/%m/%d") %></td>
+      </tr>
+    <% end if shelters.present? %>
   </tbody>
 </table>
 

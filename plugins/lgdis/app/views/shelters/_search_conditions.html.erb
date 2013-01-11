@@ -1,8 +1,9 @@
+<%= f.hidden_field :project_id_eq, :value => project.id %>
 <div class="splitcontent">
   <div class="splitcontentleft">
     <%= field_for :shelter_type do |key, label| %>
       <%= label_tag{label} %>
-      <%= select_tag(key, options_for_select(@shelter_const[key.to_s].invert),:include_blank => true) %>
+      <%= f.select("#{key}_eq", options_for_select(@shelter_const[key.to_s].invert),:include_blank => true) %>
     <% end %>
     
     <%= field_for :location_area, :label => "地区名" do |key, label| %>
@@ -12,14 +13,14 @@
     
     <%= field_for :usable_flag do |key, label| %>
       <%= label_tag{label} %>
-      <%= select_tag(key, options_for_select(@shelter_const[key.to_s].invert),:include_blank => true) %>
+      <%= f.select("#{key}_eq", options_for_select(@shelter_const[key.to_s].invert),:include_blank => true) %>
     <% end %>
     
-    <%= field_for :opened_date do |key, label| %>
+    <%= field_for :opened_at do |key, label| %>
       <%= label_tag{label} %>
-      <%= text_field_tag "#{key}_from",'',:size=>'10' %><%= calendar_for("#{key}_from") %>
+      <%= f.text_field "#{key}_gte", :size=>'10' %><%= calendar_for("search_#{key}_gte") %>
       ～
-      <%= text_field_tag "#{key}_to",'',:size=>'10' %><%= calendar_for("#{key}_to") %>
+      <%= f.text_field "#{key}_lte", :size=>'10' %><%= calendar_for("search_#{key}_lte") %>
     <% end %>
   </div>
   
@@ -31,18 +32,18 @@
     
     <%= field_for :openable_flag do |key, label| %>
       <%= label_tag{label} %>
-      <%= select_tag(key, options_for_select(@shelter_const[key.to_s].invert),:include_blank => true) %>
+      <%= f.select("#{key}_eq", options_for_select(@shelter_const[key.to_s].invert),:include_blank => true) %>
     <% end %>
     
-    <%= field_for :closed_date do |key, label| %>
+    <%= field_for :closed_at do |key, label| %>
       <%= label_tag{label} %>
-      <%= text_field_tag "#{key}_from",'',:size=>'10' %><%= calendar_for("#{key}_from") %>
+      <%= f.text_field "#{key}_gte", :size=>'10' %><%= calendar_for("search_#{key}_gte") %>
       ～
-      <%= text_field_tag "#{key}_to",'',:size=>'10' %><%= calendar_for("#{key}_to") %>
+      <%= f.text_field "#{key}_lte", :size=>'10' %><%= calendar_for("search_#{key}_lte") %>
     <% end %>
     <%= field_for :status do |key, label| %>
       <%= label_tag{label} %>
-      <%= select_tag(key, options_for_select(@shelter_const[key.to_s].invert),:include_blank => true) %>
+      <%= f.select("#{key}_eq", options_for_select(@shelter_const[key.to_s].invert),:include_blank => true) %>
     <% end %>
   </div>
 </div>
@@ -52,25 +53,25 @@
     <%= field_for :households do |key, label| %>
       <%= label_tag{label} %>
       ＞
-      <%= text_field_tag key,'',:size=>'10' %>
+      <%= f.text_field "#{key}_gte", :size=>'10' %>
     <% end %>
     
     <%= field_for :upper_care_level_three_count do |key, label| %>
       <%= label_tag{label} %>
       ＞
-      <%= text_field_tag key,'',:size=>'10' %>
+      <%= f.text_field "#{key}_gte", :size=>'10' %>
     <% end %>
     
     <%= field_for :bedridden_elderly_count do |key, label| %>
       <%= label_tag{label} %>
       ＞
-      <%= text_field_tag key,'',:size=>'10' %>
+      <%= f.text_field "#{key}_gte", :size=>'10' %>
     <% end %>
     
     <%= field_for :physical_disability_certificate_count do |key, label| %>
       <%= label_tag{label} %>
       ＞
-      <%= text_field_tag key,'',:size=>'10' %>
+      <%= f.text_field "#{key}_gte", :size=>'10' %>
     <% end %>
   </div>
   
@@ -78,19 +79,19 @@
     <%= field_for :head_count do |key, label| %>
       <%= label_tag{label} %>
       ＞
-      <%= text_field_tag key,'',:size=>'10' %>
+      <%= f.text_field "#{key}_gte", :size=>'10' %>
     <% end %>
     
     <%= field_for :elderly_alone_count do |key, label| %>
       <%= label_tag{label} %>
       ＞
-      <%= text_field_tag key,'',:size=>'10' %>
+      <%= f.text_field "#{key}_gte", :size=>'10' %>
     <% end %>
     
     <%= field_for :elderly_dementia_count do |key, label| %>
       <%= label_tag{label} %>
       ＞
-      <%= text_field_tag key,'',:size=>'10' %>
+      <%= f.text_field "#{key}_gte", :size=>'10' %>
     <% end %>
   </div>
   
@@ -98,19 +99,19 @@
     <%= field_for :injury_count do |key, label| %>
       <%= label_tag{label} %>
       ＞
-      <%= text_field_tag key,'',:size=>'10' %>
+      <%= f.text_field "#{key}_gte", :size=>'10' %>
     <% end %>
     
     <%= field_for :elderly_couple_count do |key, label| %>
       <%= label_tag{label} %>
       ＞
-      <%= text_field_tag key,'',:size=>'10' %>
+      <%= f.text_field "#{key}_gte", :size=>'10' %>
     <% end %>
     
     <%= field_for :rehabilitation_certificate_count do |key, label| %>
       <%= label_tag{label} %>
       ＞
-      <%= text_field_tag key,'',:size=>'10' %>
+      <%= f.text_field "#{key}_gte", :size=>'10' %>
     <% end %>
   </div>
 </div>
@@ -118,7 +119,7 @@
 <div class="nonsplitcontent">
   <%= field_for :note do |key, label| %>
     <%= label_tag{label} %>
-    <%= text_field_tag key,'',:size=>'50' %>
+    <%= f.text_field "#{key}_like", :size=>'50' %>
   <% end %>
 </div>
 

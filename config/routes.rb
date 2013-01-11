@@ -17,7 +17,7 @@
 
 RedmineApp::Application.routes.draw do
   root :to => 'welcome#index', :as => 'home'
-
+  mount Resque::Server, at: "/resque" #k-takami dev
   match 'login', :to => 'account#login', :as => 'signin'
   match 'logout', :to => 'account#logout', :as => 'signout'
   match 'account/register', :to => 'account#register', :via => [:get, :post], :as => 'register'

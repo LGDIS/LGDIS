@@ -10,6 +10,9 @@ class SheltersController < ApplicationController
   end
   
   def index
+    @search   = Shelter.search(params[:search])
+    @shelters = @search.paginate(:page => params[:page], :per_page => 30).order("shelter_code ASC")
+    render :action => :index
   end
   
   def new

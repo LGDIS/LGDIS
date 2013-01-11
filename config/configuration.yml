@@ -10,11 +10,25 @@ production:
 
 # specific configuration options for development environment
 # that overrides the default ones
+#k-takami   外部へのSMTPポート閉塞につき､localhost環境でMTAを動かすばあいの設定｡
 development:
   email_delivery:
     delivery_method: :smtp
     smtp_settings:
-      address: localhost
+      address: "localhost"
       port: 25
-      domain: localhost.localdomain
+      domain: 'localhost.localdomain'
+      authentication: :none
+
+#k-takami   GmailをSMTPのMTAとしてつかうばあい.smtp.gmail.comへのFWポート開放を前提とする｡
+#   email_delivery:
+#     delivery_method: :smtp
+#     smtp_settings:
+#       enable_starttls_auto: true
+#       address: "smtp.gmail.com"
+#       port: 587
+#       domain: "smtp.gmail.com"
+#       authentication: :plain
+#       user_name: "unistandard@gmail.com"
+#       password: "JBC03142"
 

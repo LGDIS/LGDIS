@@ -13,3 +13,7 @@ gem 'nokogiri'
 
 # 非同期処理
 gem 'resque', require: 'resque/server'
+
+gem 'meta_search'
+
+gem 'will_paginate'
