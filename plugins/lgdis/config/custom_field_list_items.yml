@@ -1,17 +1,25 @@
 load_dir: ./plugins/lgdis/files/custom_field_list_items # 読込ファイルの配置ディレクトリ
 load_settings:  # 読込設定詳細
   # カスタムフィールドID: 読込ファイル名
-  1:    consumer_role.txt               # 受信媒体
-  3:    areas.txt                       # 事象の起こった場所
-  14:   disaster_information_type.txt   # 情報識別区分
-  15:   category.txt                    # 大分類
-  16:   sub_category.txt                # 小分類
-  26:   damage_type.txt                 # 被害種別（建物）
-  31:   house_damage_type.txt           # 被害区分（住家被害区分）
-  34:   damage_object.txt               # 被害対象
-  35:   building_damage_type.txt        # 被害区分（非住家被害区分）
-  #38:   shelter.txt                     # 避難所・倉庫名
-  39:   requirement_category.txt        # 要望カテゴリ
-  40:   supply_category.txt             # 物資カテゴリ
-  115:  headquarters_type.txt           # 本部種別
-  116:  establish_status.txt            # 設置状況
+  1:    ConsumerRole.csv                # 受信媒体
+  3:    Areas.csv                       # 事象の起こった場所
+  14:   DisasterInformationType.csv     # 情報識別区分
+  16:   OtherSubCategory.csv           # 小分類（生活情報・広報・その他）
+  132:  RoadSubCategory.csv             # 小分類（交通）
+  #133:  ???.csv             # 市町村_消防本部名
+  134:  MessageStatus.csv               # メッセージ状態
+  135:  MessageType.csv                 # メッセージ種別
+  136:  DeliveryArea.csv                # 配信先
+  137:  Accuracy.csv                    # 確実度
+  138:  SupportStatus.csv               # 対応
+  139:  DamageType.csv                  # 被害種別
+  31:   HouseDamageType.csv             # 被害区分（住家被害区分）
+  34:   BuildingDamageObject.csv        # 被害対象（非住家被害区分）
+  35:   BuildingDamageType.csv          # 被害区分（非住家被害区分）
+  140:  OtherDamageObject.csv           # 被害対象（その他被害区分）
+  141:  BuildingDamageType.csv          # 被害区分（その他被害区分）
+  #38:   ???.csv                     # 避難所・倉庫名
+  39:   RequirementCategory.csv         # 要望カテゴリ
+  40:   SupplyCategory.csv              # 物資カテゴリ
+  115:  HeadquartersType.csv            # 本部種別
+  116:  EstablishStatus.csv             # 設置状況
