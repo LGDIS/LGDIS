@@ -235,7 +235,7 @@ class Shelter < ActiveRecord::Base
     code1 = "04" # JISコード/都道府県コード(2桁) 宮城県
     code2 = "202" # JISコード/市区町村コード(3桁) 石巻市
     code3 = "I" # 固定(1桁) I
-    code4 = "12345" # TODO:管理番号(5～8桁以上)
+    code4 = "12345" # TODO:管理番号(5～14桁)
     
     self.shelter_code = code1 + code2 + code3 + code4
   end

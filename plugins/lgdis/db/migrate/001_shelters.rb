@@ -23,7 +23,7 @@ class Shelters < ActiveRecord::Migration
       t.integer    :households
       t.integer    :households_voluntary
       t.datetime   :checked_at
-      t.string     :shelter_code, :limit => 14, :null => false
+      t.string     :shelter_code, :limit => 20, :null => false
       t.string     :manager_code, :limit => 10
       t.string     :manager_name, :limit => 100
       t.string     :manager_another_name, :limit => 100
