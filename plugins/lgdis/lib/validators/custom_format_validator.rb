@@ -1,11 +1,11 @@
 # encoding: utf-8
 class CustomFormatValidator < ActiveModel::EachValidator
   # カスタム文字列バリデーション
-  # options[:type]でタイプを指定
-  #   mail_address: メールアドレス
-  #   phone_number: 電話番号
-  #   time: 時刻
-  #   date: 日付
+  # optionsの:typeでタイプを指定
+  # mail_address :: メールアドレス
+  # phone_number :: 電話番号
+  # time :: 時刻
+  # date :: 日付
   # ==== Args
   # _record_ :: record
   # _attribute_ :: attribute

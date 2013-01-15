@@ -21,11 +21,13 @@ class Shelter < ActiveRecord::Base
                   :physical_disability_certificate_count,
                   :as => :count
   
+  # 正の整数チェック用オプションハッシュ値
   POSITIVE_INTEGER = {:only_integer => true,
                       :greater_than_or_equal_to => 0,
                       :less_than_or_equal_to => 2147483647,
                       :allow_blank => true}.freeze
   
+  # コンスタント存在チェック用
   CONST = Constant::hash_for_table(self.table_name).freeze
   
   validates :project, :presence => true
@@ -139,7 +141,7 @@ class Shelter < ActiveRecord::Base
   # モデル名の複数系をスコープに設定してローカライズできない場合は、スコープ無しのローカライズ結果を返却します。
   # ==== Args
   # _attr_ :: 属性名
-  # _*args_ :: *args
+  # _args_ :: args
   # ==== Return
   # 項目名
   # ==== Raise
@@ -158,7 +160,7 @@ class Shelter < ActiveRecord::Base
   # 日時フィールドに対して、日付、時刻フィールドに分割したアクセサを定義します。
   # 例) create_at ⇒ create_date, create_hm
   # ==== Args
-  # _*attrs_ :: *attrs
+  # _attrs_ :: attrs
   # ==== Return
   # ==== Raise
   def self.attr_accessor_separate_datetime(*attrs)

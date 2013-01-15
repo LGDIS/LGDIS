@@ -16,7 +16,6 @@ class SheltersController < ApplicationController
   # 避難所一覧検索画面
   # 初期表示処理
   # ==== Args
-  # _params[:search]_ :: 画面入力された検索条件
   # ==== Return
   # ==== Raise
   def index
@@ -37,7 +36,6 @@ class SheltersController < ApplicationController
   # 避難所登録・更新画面
   # 初期表示処理（編集）
   # ==== Args
-  # _params[:id]_ :: 避難所ID
   # ==== Return
   # ==== Raise
   def edit
@@ -47,7 +45,6 @@ class SheltersController < ApplicationController
   # 避難所登録・更新画面
   # 登録処理
   # ==== Args
-  # _params[:shelter]_ :: 画面入力値
   # ==== Return
   # ==== Raise
   def create
@@ -66,8 +63,6 @@ class SheltersController < ApplicationController
   # 避難所登録・更新画面
   # 更新処理
   # ==== Args
-  # _params[:id]_ :: 避難所ID
-  # _params[:shelter]_ :: 画面入力値
   # ==== Return
   # ==== Raise
   def update
@@ -84,7 +79,6 @@ class SheltersController < ApplicationController
   # 避難所登録・更新画面
   # 削除処理
   # ==== Args
-  # _params[:id]_ :: 避難所ID
   # ==== Return
   # ==== Raise
   def destroy
@@ -99,7 +93,6 @@ class SheltersController < ApplicationController
   
   # プロジェクト情報取得
   # ==== Args
-  # _params[:project_id]_ :: プロジェクトID
   # ==== Return
   # ==== Raise
   def find_project
