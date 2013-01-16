@@ -1,20 +1,60 @@
-<fieldset class="collapsible">
+<fieldset class="collapsible collapsed">
+  <%= stylesheet_link_tag 'issue_addition', :plugin => 'lgdis' %>
   <legend onclick="toggleFieldset(this);"><%= l(:ext_out_field) %></legend>
   <div>
-    <div class="splitcontentleft">
-      <p><strong><label><%= l(:delivery_place) %>:</label></strong></p>
-      <%= form_tag("/deliver_issues/deliver_request") do %>
-         <nobr>
-           <%= hidden_field_tag :issue_id, @issue.id %>
-           <%= hidden_field_tag :current_user, User.current %>
-           <%= check_box_tag "ext_out_target[]",'1' %><label><%= l(:commons) %></label>
-           <%= check_box_tag "ext_out_target[]",'2' %><label><%= l(:machicomi) %></label>
-           <%= check_box_tag "ext_out_target[]",'3' %><label><%= l(:twitter) %></label>
-           <%= check_box_tag "ext_out_target[]",'4' %><label><%= l(:facebook) %></label>
-           <%= submit_tag "配信要求"%>
-        </nobr>
-      <% end %>
-    </div>
+      <nobr>
+        <p><strong><label><%= l(:delivery_place) %>:</label></strong></p>
+        <%= form_tag("/deliver_issues/request_delivery") do %>
+          <%= hidden_field_tag :issue_id, @issue.id %>
+          <%= hidden_field_tag :current_user, User.current %>
+          <%= check_box_tag "ext_out_target[]",'1' %><label><%= l(:commons) %></label>
+          <%= check_box_tag "ext_out_target[]",'2' %><label><%= l(:machicomi) %></label>
+          <%= check_box_tag "ext_out_target[]",'3' %><label><%= l(:twitter) %></label>
+          <%= check_box_tag "ext_out_target[]",'4' %><label><%= l(:facebook) %></label>
+          <%= submit_tag "配信要求"%>
+        <% end %>
+
+        <p><strong><label><%= l(:delivery_status) %>:</label></strong></p>
+        <% if check_permissions(@issue) %>
+          <% unless @status.blank? %>
+            <% @status.each do | st | %>
+              <%= form_tag("/deliver_issues/allow_delivery") do %>
+                <p class="table_border">
+                <%= tm_fmt(st.process_date) %>
+                <%= st.delivery_place %>
+                <%= conv_st(st.status) %>
+                <%= hidden_field_tag 'ext_out_id', st.id %>
+                <%= hidden_field_tag 'issue_id', @issue.id %>
+                <% if st.status == 'request' %>
+                  <%= submit_tag "許可", :name=>'allow' %>
+                  <%= submit_tag "却下", :name=>'reject' %>
+                <% end %>
+                </p>
+              <% end %>
+            <% end %>
+          <% end %>
+        <% else %>
+          <% unless @status.blank? %>
+            <% @status.each do | st | %>
+              <p class="table_border">
+                <%= tm_fmt(st.process_date) %>
+                <%= st.delivery_place %>
+                <%= conv_st(st.status) %>
+              </p>
+            <% end %>
+          <% end %>
+        <% end %>
+<%
+=begin
+         render :partial => 'issues/request_delivery_form',
+                  :locals => {:issue => @issue}
+         if check_permissions(@issue)
+         render :partial => 'issues/allow_delivery_form',
+                    :locals => {:status => @status}
+         end
+=end
+%>
+      </nobr>
   </div>
 </fieldset>
 <hr />

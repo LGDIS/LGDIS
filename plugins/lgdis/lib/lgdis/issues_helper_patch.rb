@@ -5,6 +5,10 @@ module Lgdis
   module IssuesHelperPatch
     # XML_
     XML_VIEW_SAMPLING_XPATH = %{//xmlns:Item[.//text()[contains(.,"石巻")]]}.freeze
+    STATUS = {'request' => '配信要求中',
+              'done'    => '配信完了',
+              'reject'  => '配信却下',
+             }.freeze
 
     def self.included(base)
       base.extend(ClassMethods)
@@ -19,6 +23,23 @@ module Lgdis
     end
 
     module InstanceMethods
+      def check_permissions(issue)
+        flag = false
+        User.current.roles_for_project(issue.project).each do |r|
+          r.permissions.each do |st|
+             flag = true if st.equal?(:manage_issue_relations)
+          end
+        end
+      end
+
+      def tm_fmt(time)
+        time.strftime("%Y年%m月%d日 %H時%M分%S秒")
+      end
+
+      def conv_st(status)
+        STATUS[status]
+      end
+
       def print_xml_field(xml)
         return "" if xml.blank?
 
