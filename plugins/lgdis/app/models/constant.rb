@@ -2,6 +2,12 @@
 class Constant < ActiveRecord::Base
   attr_accessible :kind1, :kind2, :kind3, :text, :value, :_order
   
+  # コンスタントテーブル取得処理
+  # ==== Args
+  # _table_name_ :: テーブル名
+  # ==== Return
+  # コンスタントオブジェクト
+  # ==== Raise
   def self.hash_for_table(table_name)
     constant_list = {}
     constant = Constant.find(:all,

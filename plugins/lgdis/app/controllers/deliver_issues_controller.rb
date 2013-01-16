@@ -51,7 +51,7 @@ class DeliverIssuesController < ApplicationController
       status     = params[:allow].blank? ? 'reject' : 'done'
       delivery_history = DeliveryHistory.find_by_id(ext_out_id)
 
-      return rais if delivery_history.blank?
+      return if delivery_history.blank?
 
       # TODO
       # 配信内容を変更する必要があります

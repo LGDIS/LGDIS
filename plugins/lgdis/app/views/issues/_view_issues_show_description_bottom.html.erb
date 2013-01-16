@@ -1,8 +1,6 @@
 <% i_a = issue
    if i_a %>
 <%= stylesheet_link_tag 'issue_addition', :plugin => 'lgdis' %>
-<hr />
-<%= yield :scripts %>
 
   <% xml = i_a.try(:xml_body)
      if xml %>

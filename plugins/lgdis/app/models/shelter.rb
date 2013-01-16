@@ -21,11 +21,13 @@ class Shelter < ActiveRecord::Base
                   :physical_disability_certificate_count,
                   :as => :count
   
+  # 正の整数チェック用オプションハッシュ値
   POSITIVE_INTEGER = {:only_integer => true,
                       :greater_than_or_equal_to => 0,
                       :less_than_or_equal_to => 2147483647,
                       :allow_blank => true}.freeze
   
+  # コンスタント存在チェック用
   CONST = Constant::hash_for_table(self.table_name).freeze
   
   validates :project, :presence => true
@@ -133,6 +135,16 @@ class Shelter < ActiveRecord::Base
   
   before_create :number_shelter_code
   
+  # 属性のローカライズ名取得
+  # validateエラー時のメッセージに使用されます。
+  # "field_" + 属性名 でローカライズします。
+  # モデル名の複数系をスコープに設定してローカライズできない場合は、スコープ無しのローカライズ結果を返却します。
+  # ==== Args
+  # _attr_ :: 属性名
+  # _args_ :: args
+  # ==== Return
+  # 項目名
+  # ==== Raise
   def self.human_attribute_name(attr, *args)
     begin
       localized = l("field_#{name.underscore.gsub('/', '_')}_#{attr}",
@@ -145,6 +157,12 @@ class Shelter < ActiveRecord::Base
                     :default => ["field_#{attr}".to_sym, attr])
   end
   
+  # 日時フィールドに対して、日付、時刻フィールドに分割したアクセサを定義します。
+  # 例) create_at ⇒ create_date, create_hm
+  # ==== Args
+  # _attrs_ :: attrs
+  # ==== Return
+  # ==== Raise
   def self.attr_accessor_separate_datetime(*attrs)
     attrs.each do |attr|
       prefix = attr.to_s.gsub("_at","")
@@ -185,6 +203,14 @@ class Shelter < ActiveRecord::Base
   attr_accessor_separate_datetime :opened_at,:closed_at,:checked_at,:reported_at
   
   private
+  # 日付、時刻から、attrを設定します。
+  # 不正な引数の場合は、nilを設定します。
+  # ==== Args
+  # _attr_ :: attr
+  # _date_ :: 日付（Dateもしくは文字列）
+  # _hm_ :: 時刻（文字列）
+  # ==== Return
+  # ==== Raise
   def set_date_time_attr(attr, date, hm)
     p date,hm
     begin
@@ -202,12 +228,16 @@ class Shelter < ActiveRecord::Base
     write_attribute(attr, Time.local(year, month, day, hour, min))
   end
   
+  # 避難所識別番号を設定します。
+  # ==== Args
+  # ==== Return
+  # ==== Raise
   def number_shelter_code
     # JISコード
     code1 = "04" # JISコード/都道府県コード(2桁) 宮城県
     code2 = "202" # JISコード/市区町村コード(3桁) 石巻市
     code3 = "I" # 固定(1桁) I
-    code4 = "12345" # TODO:管理番号(5～8桁以上)
+    code4 = "12345" # TODO:管理番号(5～14桁)
     
     self.shelter_code = code1 + code2 + code3 + code4
   end
