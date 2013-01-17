@@ -1,25 +1,118 @@
-<% i_a = issue
-   if i_a %>
-<%= stylesheet_link_tag 'issue_addition', :plugin => 'lgdis' %>
+<% if issue %>
+<%= stylesheet_link_tag 'issue', :plugin => 'lgdis' %>
 
-  <% xml = i_a.try(:xml_body)
-     if xml %>
+<table class="attributes">
+<%= issue_fields_rows do |rows|
+  if issue.xml_control_status
+    rows.left l(:field_xml_control_status), h(issue.xml_control_status), :class => 'xml_control_status'
+  end
+  if issue.xml_control_editorialoffice
+    rows.right l(:field_xml_control_editorialoffice), h(issue.xml_control_editorialoffice), :class => 'xml_control_editorialoffice'
+  end
+  if issue.xml_control_publishingoffice
+    rows.left l(:field_xml_control_publishingoffice), h(issue.xml_control_publishingoffice), :class => 'xml_control_publishingoffice'
+  end
+  if issue.xml_control_cause
+    rows.right l(:field_xml_control_cause), h(issue.xml_control_cause), :class => 'xml_control_cause'
+  end
+  if issue.xml_control_apply
+    rows.left l(:field_xml_control_apply), h(issue.xml_control_apply), :class => 'xml_control_apply'
+  end
+  if issue.xml_head_title
+    rows.right l(:field_xml_head_title), h(issue.xml_head_title), :class => 'xml_head_title'
+  end
+  if issue.xml_head_reportdatetime
+    rows.left l(:field_xml_head_reportdatetime), format_time(issue.xml_head_reportdatetime), :class => 'xml_head_reportdatetime'
+  end
+  if issue.xml_head_targetdatetime
+    rows.right l(:field_xml_head_targetdatetime), format_time(issue.xml_head_targetdatetime), :class => 'xml_head_targetdatetime'
+  end
+  if issue.xml_head_targetdtdubious
+    rows.left l(:field_xml_head_targetdtdubious), h(issue.xml_head_targetdtdubious), :class => 'xml_head_targetdtdubious'
+  end
+  if issue.xml_head_targetduration
+    rows.right l(:field_xml_head_targetduration), h(issue.xml_head_targetduration), :class => 'xml_head_targetduration'
+  end
+  if issue.xml_head_validdatetime
+    rows.left l(:field_xml_head_validdatetime), format_time(issue.xml_head_validdatetime), :class => 'xml_head_validdatetime'
+  end
+  if issue.xml_head_eventid
+    rows.right l(:field_xml_head_eventid), h(issue.xml_head_eventid), :class => 'xml_head_eventid'
+  end
+  if issue.xml_head_infotype
+    rows.left l(:field_xml_head_infotype), h(issue.xml_head_infotype), :class => 'xml_head_infotype'
+  end
+  if issue.xml_head_serial
+    rows.right l(:field_xml_head_serial), h(issue.xml_head_serial), :class => 'xml_head_serial'
+  end
+  if issue.xml_head_infokind
+    rows.left l(:field_xml_head_infokind), h(issue.xml_head_infokind), :class => 'xml_head_infokind'
+  end
+  if issue.xml_head_infokindversion
+    rows.right l(:field_xml_head_infokindversion), h(issue.xml_head_infokindversion), :class => 'xml_head_infokindversion'
+  end
+  if issue.xml_head_text
+    rows.left l(:field_xml_head_text), h(issue.xml_head_text), :class => 'xml_head_text'
+  end
+end %>
+</table>
+
+<% if val = issue.xml_control %>
 <hr />
 <table class="attributes">
 <tr>
-  <th class="xml_field"><%= l(:field_xml_field) %>:</th>
+  <th class="xml_control"><%= l(:field_xml_control) %>:</th>
 </tr>
 </table>
-<input type="checkbox" id="xml_view_sampling" checked><label for="xml_view_sampling">石巻市関連情報のみ</label>
-<%== print_xml_field(xml) %>
+<input type="checkbox" id="xml_control_view_sampling" checked><label for="xml_control_view_sampling">石巻市関連情報のみ</label>
+<%== print_xml_field(val, "xml_control") %>
 <script>
 $(function(){
-  $("#xml_view_sampling").change(function(){
-    $("#xml_field_all").toggle(!this.checked);
-    $("#xml_field_sampling").toggle(this.checked);
+  $("#xml_control_view_sampling").change(function(){
+    $("#xml_control_all").toggle(!this.checked);
+    $("#xml_control_sampling").toggle(this.checked);
   }).change();
 });
 </script>
-  <% end %>
+<% end %>
+
+<% if val = issue.xml_head %>
+<hr />
+<table class="attributes">
+<tr>
+  <th class="xml_head"><%= l(:field_xml_head) %>:</th>
+</tr>
+</table>
+<input type="checkbox" id="xml_head_view_sampling" checked><label for="xml_head_view_sampling">石巻市関連情報のみ</label>
+<%== print_xml_field(val, "xml_head") %>
+<script>
+$(function(){
+  $("#xml_head_view_sampling").change(function(){
+    $("#xml_head_all").toggle(!this.checked);
+    $("#xml_head_sampling").toggle(this.checked);
+  }).change();
+});
+</script>
+<% end %>
+
+<% if val = issue.xml_body %>
+<hr />
+<table class="attributes">
+<tr>
+  <th class="xml_body"><%= l(:field_xml_body) %>:</th>
+</tr>
+</table>
+<input type="checkbox" id="xml_body_view_sampling" checked><label for="xml_body_view_sampling">石巻市関連情報のみ</label>
+<%== print_xml_field(val, "xml_body") %>
+<script>
+$(function(){
+  $("#xml_body_view_sampling").change(function(){
+    $("#xml_body_all").toggle(!this.checked);
+    $("#xml_body_sampling").toggle(this.checked);
+  }).change();
+});
+</script>
+<% end %>
+
 <% end %>
 
