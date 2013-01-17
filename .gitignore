@@ -1,6 +1,5 @@
 /.project
 /.loadpath
-/.settings
 /config/additional_environment.rb
 /config/configuration.yml
 /config/database.yml
