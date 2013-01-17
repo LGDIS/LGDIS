@@ -5,6 +5,10 @@ module Lgdis
   module IssuesHelperPatch
     # XMLデータ抽出文字列
     XML_VIEW_SAMPLING_XPATH = %{//xmlns:Item[.//text()[contains(.,"石巻")]]}.freeze
+    STATUS = {'request' => '配信要求中',
+              'done'    => '配信完了',
+              'reject'  => '配信却下',
+             }.freeze
 
     def self.included(base)
       base.extend(ClassMethods)
@@ -19,13 +23,32 @@ module Lgdis
     end
 
     module InstanceMethods
+      def check_permissions(issue)
+        flag = false
+        User.current.roles_for_project(issue.project).each do |r|
+          r.permissions.each do |st|
+             flag = true if st.equal?(:allow_delivery)
+          end
+        end
+        flag
+      end
+
+      def tm_fmt(time)
+        time.strftime("%Y年%m月%d日 %H時%M分%S秒")
+      end
+
+      def conv_st(status)
+        STATUS[status]
+      end
+
       # XML型フィールドの画面表示部生成
       # ==== Args
       # _xml_ :: XML型フィールド値
+      # _name_ :: 項目名
       # ==== Return
       # 画面表示部
       # ==== Raise
-      def print_xml_field(xml)
+      def print_xml_field(xml, name)
         return "" if xml.blank?
 
         xml_doc = Nokogiri::XML(xml)
@@ -33,10 +56,10 @@ module Lgdis
 
         out = ""
         # 抽出データ表示
-        out << "<div class='xml_field' id='xml_field_sampling'>#{print_xml(xml_doc.xpath(XML_VIEW_SAMPLING_XPATH))}</div>"
+        out << "<div class='xml_field #{name}' id='#{name}_sampling'>#{print_xml(xml_doc.xpath(XML_VIEW_SAMPLING_XPATH))}</div>"
 
         # 全データ表示
-        out << "<div class='xml_field' id='xml_field_all'>#{print_xml(xml_doc.children)}</div>"
+        out << "<div class='xml_field #{name}' id='#{name}_all'>#{print_xml(xml_doc.children)}</div>"
         out
       end
 
@@ -77,7 +100,6 @@ module Lgdis
           out
         end
       end
-
     end
   end
 end

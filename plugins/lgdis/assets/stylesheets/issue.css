@@ -1,0 +1,16 @@
+div.xml_field table{
+  border: solid 1px;
+}
+
+div.xml_field td {
+  padding: 0px;
+}
+
+p.table_border {
+  width: 500px;
+  border: thin solid black;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}

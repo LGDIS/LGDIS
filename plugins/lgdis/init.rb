@@ -1,6 +1,9 @@
 # encoding: utf-8
 require 'redmine'
-require_dependency 'lgdis/issues_helper_patch'
+
+require_dependency 'lgdis/issue_patch'
+require_dependency 'lgdis/issues_helper_patch' # issues_controller_patch より先にload する必要あり
+require_dependency 'lgdis/issues_controller_patch'
 require_dependency 'lgdis/view_hooks'
 #require_dependency 'lgdis/show_view_hooks' # Viewホックポイントの確認用
 require_dependency 'lgdis/ext_out/twitter'
@@ -24,6 +27,11 @@ Redmine::Plugin.register :lgdis do
     permission :manage_shelters, :shelters => [:new, :create, :update, :destroy]
   end
   menu :project_menu, :shelters, { :controller => 'shelters', :action => 'index' }, :caption => :label_shelter, :after => :new_issue, :param => :project_id
+
+  project_module :deliver_issues do
+    permission :request_delivery, :deliver_issues => [:request_delivery]
+    permission :allow_delivery, :deliver_issues => [:request_delivery, :allow_delivery]
+  end
 
   ActiveSupport::Dependencies.autoload_paths += %W(#{Rails.root}/plugins/lgdis/lib/validators)
 

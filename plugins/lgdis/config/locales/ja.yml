@@ -11,6 +11,31 @@ ja:
         not_an_integer: は整数で入力してください
   
   ####
+  # 課題管理機能
+  #
+  field_xml_body: XMLBody部
+  field_xml_control: XMLControl部
+  field_xml_control_status: 運用種別
+  field_xml_control_editorialoffice: 編集官署名
+  field_xml_control_publishingoffice: 発表官署名
+  field_xml_control_cause: 要因
+  field_xml_control_apply: 承認
+  field_xml_head: XMLHead部
+  field_xml_head_title: 標題
+  field_xml_head_reportdatetime: 発表時刻
+  field_xml_head_targetdatetime: 基点時刻
+  field_xml_head_targetdtdubious: 基点時刻のあいまいさ
+  field_xml_head_targetduration: 基点時刻からとりうる時間
+  field_xml_head_validdatetime: 失効時刻
+  field_xml_head_eventid: 識別情報
+  field_xml_head_infotype: 情報形態
+  field_xml_head_serial: 情報番号
+  field_xml_head_infokind: スキーマの運用種別情報
+  field_xml_head_infokindversion: 運用種別情報のバージョン番号
+  field_xml_head_text: 見出し文
+  field_xml_body: XMLBody部
+  
+  ####
   # 避難所開設機能
   #
   project_module_shelters: 避難所開設機能
@@ -24,11 +49,6 @@ ja:
   notice_shelter_successful_create: 避難所 %{id} が作成されました。
   text_shelter_destroy_confirmation: '本当に削除しますか？'
   
-  ####
-  # 課題管理機能
-  #
-  field_xml_field: XMLデータ
-
   # 項目名
   shelters:
     field_disaster_code: 災害コード
@@ -105,12 +125,21 @@ ja:
   ####
   # 配信管理機能
   #
+  project_module_deliver_issues: 配信管理機能
+  permission_request_delivery: 配信要求
+  permission_allow_delivery: 配信許可
+
   ext_out_field: 外部出力
   delivery_place: 配信先
+  delivery_status: 配信状況
   commons: 公共情報コモンズ
   machicomi: まちcomi
   twitter: Twitter
   facebook: Facebook
 
   notice_delivery_request_successful: 配信要求を行いました。
+  notice_delivery_request_reject: 配信要求を却下しました。
   notice_delivery_request_failed: 配信要求に失敗しました。
+  notice_delivery_successful: 配信を行いました。
+  notice_delivery_unselected: 配信先が選択されていません。
+  notice_delivery_failed: 配信に失敗しました。
