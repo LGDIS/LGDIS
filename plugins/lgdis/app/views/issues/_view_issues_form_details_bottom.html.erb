@@ -7,11 +7,12 @@
         <%= form_tag("/deliver_issues/request_delivery") do %>
           <%= hidden_field_tag :issue_id, @issue.id %>
           <%= hidden_field_tag :current_user, User.current %>
-          <%= check_box_tag "ext_out_target[]",'1' %><label><%= l(:commons) %></label>
-          <%= check_box_tag "ext_out_target[]",'2' %><label><%= l(:machicomi) %></label>
-          <%= check_box_tag "ext_out_target[]",'3' %><label><%= l(:twitter) %></label>
-          <%= check_box_tag "ext_out_target[]",'4' %><label><%= l(:facebook) %></label>
-          <%= submit_tag "配信要求"%>
+          <% unless @destination_list.blank? %>
+            <% @destination_list.each do |dest|%>
+                <%= check_box_tag "ext_out_target[]", dest['target_num'] %><label><%= dest['name'] %></label>
+            <% end %>
+            <%= submit_tag "配信要求"%>
+          <% end %>
         <% end %>
 
         <p><strong><label><%= l(:delivery_status) %>:</label></strong></p>

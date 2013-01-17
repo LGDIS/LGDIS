@@ -27,9 +27,10 @@ module Lgdis
         flag = false
         User.current.roles_for_project(issue.project).each do |r|
           r.permissions.each do |st|
-             flag = true if st.equal?(:manage_issue_relations)
+             flag = true if st.equal?(:allow_delivery)
           end
         end
+        flag
       end
 
       def tm_fmt(time)

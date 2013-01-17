@@ -125,6 +125,10 @@ ja:
   ####
   # 配信管理機能
   #
+  project_module_deliver_issues: 配信管理機能
+  permission_request_delivery: 配信要求
+  permission_allow_delivery: 配信許可
+
   ext_out_field: 外部出力
   delivery_place: 配信先
   delivery_status: 配信状況
