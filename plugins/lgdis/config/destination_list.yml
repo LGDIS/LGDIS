@@ -1,0 +1,46 @@
+# 記載例
+# destination:
+#   role_id:
+#     tracker_id:
+#       - 配信先1
+#       - 配信先2
+#       - 配信先3
+#       - 配信先4
+
+destination:
+  1: # Non member
+    4: # 避難勧告・解除
+  2: # Anonymous
+    4: # 避難勧告・解除
+      - {target_num: 1, name: 公共情報コモンズ}
+      - {target_num: 2, name: まちcomi}
+      - {target_num: 3, name: Twitter}
+      - {target_num: 4, name: Facebook}
+  6: # モデレータ
+    4: # 避難勧告・解除
+      - {target_num: 1, name: 公共情報コモンズ}
+      - {target_num: 2, name: まちcomi}
+      - {target_num: 3, name: Twitter}
+      - {target_num: 4, name: Facebook}
+  7: # エリアマネージャ
+    4: # 避難勧告・解除
+      - {target_num: 1, name: 公共情報コモンズ}
+      - {target_num: 2, name: まちcomi}
+      - {target_num: 3, name: Twitter}
+      - {target_num: 4, name: Facebook}
+  8: # 市役所内一般入力者
+    4: # 避難勧告・解除
+      - {target_num: 1, name: 公共情報コモンズ}
+      - {target_num: 2, name: まちcomi}
+      - {target_num: 3, name: Twitter}
+      - {target_num: 4, name: Facebook}
+  9: # 外部入力者
+    4: # 避難勧告・解除
+      - {target_num: 1, name: 公共情報コモンズ}
+      - {target_num: 2, name: まちcomi}
+      - {target_num: 3, name: Twitter}
+      - {target_num: 4, name: Facebook}
+  10: # 閲覧者
+    4: # 避難勧告・解除
+      - {target_num: 3, name: Twitter}
+      - {target_num: 4, name: Facebook}

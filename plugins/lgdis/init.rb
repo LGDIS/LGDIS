@@ -36,7 +36,8 @@ Redmine::Plugin.register :lgdis do
   ActiveSupport::Dependencies.autoload_paths += %W(#{Rails.root}/plugins/lgdis/lib/validators)
 
   # API キー設定ファイルロード
-  API_KEY = YAML.load_file("#{Rails.root}/plugins/lgdis/config/api_key.yml")
+  API_KEY  = YAML.load_file("#{Rails.root}/plugins/lgdis/config/api_key.yml")
+  DST_LIST = YAML.load_file("#{Rails.root}/plugins/lgdis/config/destination_list.yml")
 
   # 非同期処理
   ActiveSupport::Dependencies.autoload_paths += %W(#{Rails.root}/plugins/lgdis/config/initializers)
