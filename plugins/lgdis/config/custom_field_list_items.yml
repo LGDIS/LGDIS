@@ -4,8 +4,10 @@ load_settings:  # 読込設定詳細
   1:    ConsumerRole.csv                # 受信媒体
   3:    Areas.csv                       # 事象の起こった場所
   14:   DisasterInformationType.csv     # 情報識別区分
-  16:   OtherSubCategory.csv           # 小分類（生活情報・広報・その他）
+  16:   OtherSubCategory.csv            # 小分類（生活情報・広報・その他）
   132:  RoadSubCategory.csv             # 小分類（交通）
+  347:  WaterSubCategory.csv            # 小分類（水道・給水）
+  413:  SubCategory.csv                 # 小分類
   #133:  ???.csv             # 市町村_消防本部名
   134:  MessageStatus.csv               # メッセージ状態
   135:  MessageType.csv                 # メッセージ種別
