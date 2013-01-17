@@ -27,6 +27,11 @@ Redmine::Plugin.register :lgdis do
   end
   menu :project_menu, :shelters, { :controller => 'shelters', :action => 'index' }, :caption => :label_shelter, :after => :new_issue, :param => :project_id
 
+  project_module :deliver_issues do
+    permission :request_delivery, :deliver_issues => [:request_delivery]
+    permission :allow_delivery, :deliver_issues => [:request_delivery, :allow_delivery]
+  end
+
   ActiveSupport::Dependencies.autoload_paths += %W(#{Rails.root}/plugins/lgdis/lib/validators)
 
   # API キー設定ファイルロード
