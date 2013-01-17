@@ -1,6 +1,7 @@
 # encoding: utf-8
 require 'redmine'
 
+require_dependency 'lgdis/issue_patch'
 require_dependency 'lgdis/issues_helper_patch' # issues_controller_patch より先にload する必要あり
 require_dependency 'lgdis/issues_controller_patch'
 require_dependency 'lgdis/view_hooks'
