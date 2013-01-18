@@ -38,6 +38,7 @@ Redmine::Plugin.register :lgdis do
   # API キー設定ファイルロード
   API_KEY  = YAML.load_file("#{Rails.root}/plugins/lgdis/config/api_key.yml")
   DST_LIST = YAML.load_file("#{Rails.root}/plugins/lgdis/config/destination_list.yml")
+  CF_DEFAULT_VALUES = YAML.load_file("#{Rails.root}/plugins/lgdis/config/custom_field_default_multiple_values.yml")
 
   # 非同期処理
   ActiveSupport::Dependencies.autoload_paths += %W(#{Rails.root}/plugins/lgdis/config/initializers)

@@ -1,0 +1,11 @@
+<% if issue.new_record? %>
+<%= javascript_tag do %>
+  $(function(){
+    <% CF_DEFAULT_VALUES.each do |cf_id, vals| %>
+    <% if vals = "ALL" %>
+    $("#issue_custom_field_values_<%= cf_id %> option").prop("selected",true);
+    <% end %>
+    <% end -%>
+  });
+<% end %>
+<% end %>
