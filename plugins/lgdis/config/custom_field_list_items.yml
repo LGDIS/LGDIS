@@ -8,7 +8,6 @@ load_settings:  # 読込設定詳細
   132:  RoadSubCategory.csv             # 小分類（交通）
   347:  WaterSubCategory.csv            # 小分類（水道・給水）
   413:  SubCategory.csv                 # 小分類
-  #133:  ???.csv             # 市町村_消防本部名
   134:  MessageStatus.csv               # メッセージ状態
   135:  MessageType.csv                 # メッセージ種別
   136:  DeliveryArea.csv                # 配信先
@@ -20,7 +19,7 @@ load_settings:  # 読込設定詳細
   35:   BuildingDamageType.csv          # 被害区分（非住家被害区分）
   140:  OtherDamageObject.csv           # 被害対象（その他被害区分）
   141:  BuildingDamageType.csv          # 被害区分（その他被害区分）
-  #38:   ???.csv                     # 避難所・倉庫名
+  38:   ShelterWarehouse.csv            # 避難所・倉庫名
   39:   RequirementCategory.csv         # 要望カテゴリ
   40:   SupplyCategory.csv              # 物資カテゴリ
   115:  HeadquartersType.csv            # 本部種別
