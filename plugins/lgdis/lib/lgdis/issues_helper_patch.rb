@@ -25,6 +25,7 @@ module Lgdis
     module InstanceMethods
       def check_permissions(issue)
         flag = false
+        return false if issue.blank?
         User.current.roles_for_project(issue.project).each do |r|
           r.permissions.each do |st|
              flag = true if st.equal?(:allow_delivery)

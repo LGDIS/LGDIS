@@ -9,38 +9,38 @@
 
 destination:
   1: # Non member
-    4: # 避難勧告・解除
+    4: # JMA（警報・注意報）
   2: # Anonymous
-    4: # 避難勧告・解除
+    4: # JMA（警報・注意報）
       - {target_num: 1, name: 公共情報コモンズ}
       - {target_num: 2, name: まちcomi}
       - {target_num: 3, name: Twitter}
       - {target_num: 4, name: Facebook}
   6: # モデレータ
-    4: # 避難勧告・解除
+    4: # JMA（警報・注意報）
       - {target_num: 1, name: 公共情報コモンズ}
       - {target_num: 2, name: まちcomi}
       - {target_num: 3, name: Twitter}
       - {target_num: 4, name: Facebook}
   7: # エリアマネージャ
-    4: # 避難勧告・解除
+    4: # JMA（警報・注意報）
       - {target_num: 1, name: 公共情報コモンズ}
       - {target_num: 2, name: まちcomi}
       - {target_num: 3, name: Twitter}
       - {target_num: 4, name: Facebook}
   8: # 市役所内一般入力者
-    4: # 避難勧告・解除
+    4: # JMA（警報・注意報）
       - {target_num: 1, name: 公共情報コモンズ}
       - {target_num: 2, name: まちcomi}
       - {target_num: 3, name: Twitter}
       - {target_num: 4, name: Facebook}
   9: # 外部入力者
-    4: # 避難勧告・解除
+    4: # JMA（警報・注意報）
       - {target_num: 1, name: 公共情報コモンズ}
       - {target_num: 2, name: まちcomi}
       - {target_num: 3, name: Twitter}
       - {target_num: 4, name: Facebook}
   10: # 閲覧者
-    4: # 避難勧告・解除
+    4: # JMA（警報・注意報）
       - {target_num: 3, name: Twitter}
       - {target_num: 4, name: Facebook}

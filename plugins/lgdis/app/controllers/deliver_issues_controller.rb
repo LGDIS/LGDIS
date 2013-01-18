@@ -54,8 +54,8 @@ class DeliverIssuesController < ApplicationController
       return if delivery_history.blank?
 
       # TODO
-      # 配信内容を変更する必要があります
-      # Resque.enqueue の第3引数
+      # 配信内容,通信試験モードフラグを変更する必要があります
+      # Resque.enqueue の第2, 3引数
       if status != 'reject'
         case EXT_OUT_MAP_JP[delivery_history.delivery_place]
         when EXT_OUT_MAP['commons']

@@ -10,7 +10,7 @@
             <% @destination_list.each do |dest|%>
                 <%= check_box_tag "ext_out_target[]", dest['target_num'] %><label><%= dest['name'] %></label>
             <% end %>
-            <%= submit_tag "配信要求"%>
+            <%= submit_tag l(:permission_request_delivery) %>
           <% end %>
         <% end %>
 
@@ -26,8 +26,8 @@
                 <%= hidden_field_tag 'ext_out_id', st.id %>
                 <%= hidden_field_tag 'issue_id', @issue.id %>
                 <% if st.status == 'request' %>
-                  <%= submit_tag "許可", :name=>'allow' %>
-                  <%= submit_tag "却下", :name=>'reject' %>
+                  <%= submit_tag l(:allow),  :name=>'allow' %>
+                  <%= submit_tag l(:reject), :name=>'reject' %>
                 <% end %>
                 </p>
               <% end %>
