@@ -10,7 +10,7 @@ module Lgdis
       base.class_eval do
         unloadable
         before_filter :get_delivery_histories,
-                      :only => [:index,:show]
+                      :only => [:show]
         before_filter :get_destination_list,
                       :only => [:show]
       end
@@ -23,7 +23,10 @@ module Lgdis
       private
 
       def get_delivery_histories
-        @status = DeliveryHistory.all
+        @status = DeliveryHistory.find_by_sql(
+                                  ["select * from delivery_histories
+                                    where issue_id = :issue_id",
+                                    {:issue_id=>@issue.id}])
       end
 
       def get_destination_list
