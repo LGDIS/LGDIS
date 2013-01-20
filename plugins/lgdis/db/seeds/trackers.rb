@@ -16,6 +16,7 @@ ActiveRecord::Base.connection.execute(%{INSERT INTO trackers (position, id, name
 ActiveRecord::Base.connection.execute(%{INSERT INTO trackers (position, id, name, is_in_chlog, is_in_roadmap, fields_bits) VALUES (8, 6, '河川情報（警報・注意報）', false, true, 0)})
 
 ActiveRecord::Base.connection.execute(%{INSERT INTO trackers (position, id, name, is_in_chlog, is_in_roadmap, fields_bits) VALUES (9, 32, '被害状況_詳細情報(APPLIC配信用）', false, true, 0)})
+
 ActiveRecord::Base.connection.execute(%{INSERT INTO trackers (position, id, name, is_in_chlog, is_in_roadmap, fields_bits) VALUES (10, 7, '人的被害報告', false, true, 0)})
 ActiveRecord::Base.connection.execute(%{INSERT INTO trackers (position, id, name, is_in_chlog, is_in_roadmap, fields_bits) VALUES (11, 8, '住家建物被害報告', false, true, 0)})
 ActiveRecord::Base.connection.execute(%{INSERT INTO trackers (position, id, name, is_in_chlog, is_in_roadmap, fields_bits) VALUES (12, 33, '非住家建物被害報告', false, true, 0)})
