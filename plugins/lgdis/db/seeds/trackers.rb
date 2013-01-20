@@ -17,8 +17,8 @@ ActiveRecord::Base.connection.execute(%{INSERT INTO trackers (position, id, name
 
 ActiveRecord::Base.connection.execute(%{INSERT INTO trackers (position, id, name, is_in_chlog, is_in_roadmap, fields_bits) VALUES (9, 32, '被害状況_詳細情報(APPLIC配信用）', false, true, 0)})
 ActiveRecord::Base.connection.execute(%{INSERT INTO trackers (position, id, name, is_in_chlog, is_in_roadmap, fields_bits) VALUES (10, 7, '人的被害報告', false, true, 0)})
-ActiveRecord::Base.connection.execute(%{INSERT INTO trackers (position, id, name, is_in_chlog, is_in_roadmap, fields_bits) VALUES (11, 8, '建物被害報告（住家）', false, true, 0)})
-ActiveRecord::Base.connection.execute(%{INSERT INTO trackers (position, id, name, is_in_chlog, is_in_roadmap, fields_bits) VALUES (12, 33, '建物被害報告（非住家）', false, true, 0)})
+ActiveRecord::Base.connection.execute(%{INSERT INTO trackers (position, id, name, is_in_chlog, is_in_roadmap, fields_bits) VALUES (11, 8, '住家建物被害報告', false, true, 0)})
+ActiveRecord::Base.connection.execute(%{INSERT INTO trackers (position, id, name, is_in_chlog, is_in_roadmap, fields_bits) VALUES (12, 33, '非住家建物被害報告', false, true, 0)})
 ActiveRecord::Base.connection.execute(%{INSERT INTO trackers (position, id, name, is_in_chlog, is_in_roadmap, fields_bits) VALUES (13, 9, '道路被害報告', false, true, 0)})
 ActiveRecord::Base.connection.execute(%{INSERT INTO trackers (position, id, name, is_in_chlog, is_in_roadmap, fields_bits) VALUES (14, 10, '橋梁被害報告', false, true, 0)})
 ActiveRecord::Base.connection.execute(%{INSERT INTO trackers (position, id, name, is_in_chlog, is_in_roadmap, fields_bits) VALUES (15, 11, '上水道被害報告', false, true, 0)})
