@@ -15,13 +15,89 @@ class SheltersController < ApplicationController
   
   # 避難所一覧検索画面
   # 初期表示処理
+  # 押下されたボタンにより処理を分岐
+  # ==== Args
+  # _params[:search]_ :: 検索条件
+  # _params[:commit_kind]_ :: ボタン種別
+  # ==== Return
+  # 検索ボタンが押下された場合、検索条件を元に検索を行い結果を表示する
+  # クリアボタンが押下された場合、検索条件が未指定の状態で検索を行い結果を表示する
+  # 新規登録ボタンが押下された場合、避難所登録画面に遷移する
+  # 更新ボタンが押下された場合、避難所情報の一括更新を行う
+  # チケット登録ボタンが押下された場合、全ての避難所情報をXML化しチケットに登録する
+  # 集計ボタンが押下された場合、LGDPMから避難者集計情報を取得し避難所情報に登録する
+  # ==== Raise
+  def index
+    case params["commit_kind"]
+    when "search"
+      @search   = Shelter.search(params[:search])
+      @shelters = @search.paginate(:page => params[:page], :per_page => 30).order("shelter_code ASC")
+      render :action => :index
+    when "new"
+      redirect_to :action => :new
+    when "clear"
+      @search   = Shelter.search
+      @shelters = @search.paginate(:page => params[:page], :per_page => 30).order("shelter_code ASC")
+      render :action => :index
+    when "bulk_update"
+      bulk_update
+    when "ticket"
+      ticket
+    when "summary"
+      summary
+    else
+      @search   = Shelter.search(params[:search])
+      @shelters = @search.paginate(:page => params[:page], :per_page => 30).order("shelter_code ASC")
+      render :action => :index
+    end
+  end
+  
+  # 避難所一覧検索画面
+  # ステータス更新処理
+  # ==== Args
+  # _params[:shelters]_ :: 避難所更新情報配列
+  # ==== Return
+  # ==== Raise
+  def bulk_update
+    if params[:shelters].present?
+      shelter_id = params[:shelters].keys
+      @search    = Shelter.search(:id_in => shelter_id)
+      @shelters  = @search.paginate(:page => params[:page], :per_page => 30).order("shelter_code ASC")
+      ActiveRecord::Base.transaction do
+        @shelters.each do |shelter|
+          shelter.shelter_sort = params[:shelters]["#{shelter.id}"]["shelter_sort"]
+          shelter.opened_date  = params[:shelters]["#{shelter.id}"]["opened_date"]
+          shelter.opened_hm    = params[:shelters]["#{shelter.id}"]["opened_hm"]
+          shelter.closed_date  = params[:shelters]["#{shelter.id}"]["closed_date"]
+          shelter.closed_hm    = params[:shelters]["#{shelter.id}"]["closed_hm"]
+          shelter.status       = params[:shelters]["#{shelter.id}"]["status"]
+          shelter.save
+        end
+      end
+    else
+      @search   = Shelter.search(params[:search])
+      @shelters = @search.paginate(:page => params[:page], :per_page => 30).order("shelter_code ASC")
+    end
+    
+    render :action => :index
+  end
+  
+  # 避難所一覧検索画面
+  # チケット登録処理
   # ==== Args
   # ==== Return
   # ==== Raise
-  def index
-    @search   = Shelter.search(params[:search])
-    @shelters = @search.paginate(:page => params[:page], :per_page => 30).order("shelter_code ASC")
-    render :action => :index
+  def ticket
+    redirect_to :action => :index
+  end
+  
+  # 避難所一覧検索画面
+  # 避難者情報サマリー処理
+  # ==== Args
+  # ==== Return
+  # ==== Raise
+  def summary
+    redirect_to :action => :index
   end
   
   # 避難所登録・更新画面

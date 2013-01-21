@@ -3,32 +3,63 @@
 
 <h2><%= l(:label_shelter_plural) %></h2>
 
-<%= form_for @search, :url => project_shelters_path, :html => {:method => :get} do |f| %>
-<fieldset class="collapsible" >
-  <legend onclick="toggleFieldset(this);"><%= l(:label_search_condition_plural) %></legend>
-  <div class="search_condition tabular">
-    <%= render :partial => 'search_conditions', :locals => {:f => f, :project => @project} %>
+<%= error_messages_for_shelters(@shelters) %>
+
+<%= form_for @search, :url => project_shelters_search_path, :html => {:method => :post} do |f| %>
+  <%= hidden_field_tag "commit_kind" %>
+  
+  <fieldset class="collapsible">
+    <legend onclick="toggleFieldset(this);">
+      <%= l(:label_search_condition_plural) %>
+    </legend>
+    <div class="search_condition tabular">
+      <%= render :partial => 'search_conditions', :locals => {:f => f, :project => @project} %>
+    </div>
+  </fieldset>
+  
+  <div class="splitcontent">
+    <div class="splitcontentleft">
+      <%= submit_tag l(:label_search), :kind => "search" %>
+      <%= submit_tag l(:button_clear), :kind => "clear" %>
+      <% if authorize_for(:shelters, :new) # 権限判定 %>
+        <%= submit_tag l(:button_new), :kind => "new" %>
+      <% end %>
+    </div>
+    
+    <div class="splitcontentright">
+      <p style="text-align: right;">
+        <% if authorize_for(:shelters, :bulk_update) # 権限判定 %>
+          <%= submit_tag l(:button_bulk_update), :kind => "bulk_update" %>
+        <% end %>
+        <% if authorize_for(:shelters, :ticket) # 権限判定 %>
+         <%= submit_tag l(:button_ticket), :kind => "ticket" %>
+        <% end %>
+        <% if authorize_for(:shelters, :summary) # 権限判定 %>
+          <%= submit_tag l(:button_summary), :kind => "summary" %>
+        <% end %>
+      </p>
+      <p style="text-align: right;">
+        <%= will_paginate @shelters, :previous_label => "前 &lt;&lt; ",
+          :next_label => " &gt;&gt; 次", :page_links => false,
+          :link_separator => "#{page_entries_info @shelters}",
+          :container => false, :params => {:search => params[:search]} %>
+      </p>
+    </div>
   </div>
-</fieldset>
-<%= submit_tag l(:label_search) %>
-<input type="button" value=<%= l(:button_clear) %> onclick="window.location='<%= url_for :action => 'index' %>'; return false;">
-  <% if authorize_for(:shelters, :new) # 権限判定 %>
-    <input type="button" value=<%= l(:button_new) %> onclick="window.location='<%= url_for :action => 'new' %>'; return false;">
-  <% end %>
+  
+  <div class="autoscroll">
+    <%= render :partial => 'list', :locals => {:project => @project, :shelters => @shelters} %>
+  </div>
 <% end %>
 
-<p style="text-align: right;">
-  <%= will_paginate @shelters, :previous_label => "前 &lt;&lt; ",
-    :next_label => " &gt;&gt; 次", :page_links => false,
-    :link_separator => "#{page_entries_info @shelters}",
-    :container => false %>
-</p>
-
-<div class="autoscroll">
-  <%= render :partial => 'list', :locals => {:project => @project, :shelters => @shelters} %>
-</div>
-
 <%= javascript_tag do %>
+  // Submitボタン切り替え
+  $(document).ready(function() {
+    $(":submit").bind("click", function() {
+      $("#commit_kind").val($(this).attr("kind"));
+    });
+  });
+  
   // 避難所一覧行リンククリック処理
   $(function($) {
     $('tr[data-href]').addClass('clickable').click(function(e) {
