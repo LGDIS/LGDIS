@@ -39,4 +39,30 @@ module SheltersHelper
       yield key, label.html_safe
     end
   end
+  
+  # 避難所一覧画面一括更新用エラーメッセージ作成処理
+  # ==== Args
+  # _objects_ :: 避難所情報配列
+  # ==== Return
+  # エラーメッセージ
+  # ==== Raise
+  def error_messages_for_shelters(*objects)
+    html   = ""
+    errors = nil
+    objects.each do |object|
+      errors = object.map do |o|
+        o.errors.full_messages.map do |m|
+          "#{l('shelters.field_shelter_code')}\"#{o.shelter_code}\"の#{m}"
+        end
+      end.flatten
+    end
+    if errors.any?
+      html << "<div id='errorExplanation'><ul>\n"
+      errors.each do |error|
+        html << "<li>#{h error}</li>\n"
+      end
+      html << "</ul></div>\n"
+    end
+    html.html_safe
+  end  
 end

@@ -7,23 +7,51 @@
       <th style="text-align: center;">地区名</th>
       <th style="text-align: center;">TEL</th>
       <th style="text-align: center;">管理者</th>
+      <th style="text-align: center;">避難所区分</th>
+      <th style="text-align: center;">開設日時</th>
+      <th style="text-align: center;">閉鎖日時</th>
       <th style="text-align: center;">収容人数</th>
-      <th style="text-align: center;">開設状況</th>
+      <th style="text-align: center;">避難所状況</th>
       <th style="text-align: center;">登録者名</th>
       <th style="text-align: center;">登録日</th>
     </tr>
   </thead>
   <tbody>
     <% shelters.each do |shelter| %>
-      <tr class="<%= cycle("even", "odd") -%>" data-href="<%= edit_project_shelter_path(project, shelter) %>">
-        <td style="text-align: center;"><%= shelter.shelter_code %></td>
-        <td style="text-align: center;"><%= shelter.name %></td>
+      <tr class="<%= cycle("even", "odd") -%>">
+        <td style="text-align: center;">
+          <a href=<%= edit_project_shelter_path(@project, shelter) %> >
+            <%= shelter.shelter_code %>
+          </a>
+        </td>
+        <td style="text-align: center;">
+          <a href=<%= edit_project_shelter_path(@project, shelter) %> >
+            <%= shelter.name %>
+          </a>
+        </td>
         <td style="text-align: center;"><%= @shelter_const["shelter_type"][shelter.shelter_type] %></td>
         <td style="text-align: center;">地区名</td>
         <td style="text-align: center;"><%= shelter.phone %></td>
         <td style="text-align: center;"><%= shelter.manager_name %></td>
+        <td style="text-align: center;">
+          <%= select_tag "shelters[#{shelter.id}][shelter_sort]", options_for_select(@shelter_const["shelter_sort"].invert,
+            shelter.shelter_sort), {:include_blank => true, :disabled => @disabled} %>
+        </td>
+        <td style="text-align: center;" nowrap>
+          <%= text_field_tag "shelters[#{shelter.id}][opened_date]", shelter.opened_date, :size => "10", :disabled => @disabled %>
+          <%= calendar_for("shelters_#{shelter.id}_opened_date") %>
+          <%= text_field_tag "shelters[#{shelter.id}][opened_hm]", shelter.opened_hm, :size => "5", :disabled => @disabled %>
+        </td>
+        <td style="text-align: center;" nowrap>
+          <%= text_field_tag "shelters[#{shelter.id}][closed_date]", shelter.closed_date, :size => "10", :disabled => @disabled %>
+          <%= calendar_for("shelters_#{shelter.id}_closed_date") %>
+          <%= text_field_tag "shelters[#{shelter.id}][closed_hm]", shelter.closed_hm, :size => "5", :disabled => @disabled %>
+        </td>
         <td style="text-align: right;"><%= shelter.capacity %></td>
-        <td style="text-align: center;"><%= @shelter_const["shelter_sort"][shelter.shelter_sort] %></td>
+        <td style="text-align: center;">
+          <%= select_tag "shelters[#{shelter.id}][status]", options_for_select(@shelter_const["status"].invert,
+            shelter.status), {:include_blank => true, :disabled => @disabled} %>
+        </td>
         <td style="text-align: center;">登録者</td>
         <td style="text-align: center;"><%= shelter.created_at.strftime("%y/%m/%d") %></td>
       </tr>
