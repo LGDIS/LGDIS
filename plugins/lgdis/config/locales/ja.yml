@@ -46,6 +46,10 @@ ja:
   label_shelter_plural: 避難所一覧
   label_shelter_new: 避難所登録・更新
   
+  button_bulk_update: 更新
+  button_ticket: チケット登録
+  button_summary: 集計
+  
   notice_shelter_successful_create: 避難所 %{id} が作成されました。
   text_shelter_destroy_confirmation: '本当に削除しますか？'
   
