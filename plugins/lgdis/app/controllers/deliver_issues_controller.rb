@@ -2,16 +2,6 @@
 class DeliverIssuesController < ApplicationController
   unloadable
 
-  EXT_OUT_MAP = {'commons'   => 1,
-                 'machicomi' => 2,
-                 'twitter'   => 3,
-                 'facebook'  => 4}.freeze
-
-  EXT_OUT_MAP_JP = {'公共情報コモンズ' => 1,
-                    'まちcomi'         => 2,
-                    'Twitter'          => 3,
-                    'Facebook'         => 4}.freeze
-
   def request_delivery
     issue_id    = params[:issue_id]
     user_name   = params[:current_user]
@@ -20,11 +10,11 @@ class DeliverIssuesController < ApplicationController
     unless ext_out_ary.blank?
       ext_out_ary.each do |e|
         histry_obj = DeliveryHistory.new(
-                       :issue_id       => issue_id,
-                       :delivery_place => EXT_OUT_MAP_JP.key(e.to_i),
-                       :request_user   => user_name,
-                       :status         => 'request',
-                       :process_date   => Time.now)
+                       :issue_id          => issue_id,
+                       :delivery_place_id => e.to_i,
+                       :request_user      => user_name,
+                       :status            => 'request',
+                       :process_date      => Time.now)
         if histry_obj.save
           flash[:notice] = l(:notice_delivery_request_successful)
         else
@@ -49,22 +39,23 @@ class DeliverIssuesController < ApplicationController
       ext_out_id = params[:ext_out_id]
       issue_id   = params[:issue_id]
       status     = params[:allow].blank? ? 'reject' : 'done'
-      delivery_history = DeliveryHistory.find_by_id(ext_out_id)
+      delivery_history =
+        DeliveryHistory.find_by_id_and_status(ext_out_id, 'request')
+      issue = Issue.find_by_id(issue_id)
 
-      return if delivery_history.blank?
+      return if delivery_history.blank? || issue.blank?
 
       # TODO
       # 配信内容,通信試験モードフラグを変更する必要があります
       # Resque.enqueue の第2, 3引数
+      com_test_flag = true
+
       if status != 'reject'
-        case EXT_OUT_MAP_JP[delivery_history.delivery_place]
-        when EXT_OUT_MAP['commons']
-        when EXT_OUT_MAP['machicomi']
-        when EXT_OUT_MAP['twitter']
-          Resque.enqueue(TwitterRequestJob, "tw_test", false)
-        when EXT_OUT_MAP['facebook']
-          Resque.enqueue(FacebookRequestJob, "fc_test", false)
-        end
+        status='done_test' if com_test_flag
+        Resque.enqueue(DST_LIST['delivery_job_map'][ext_out_id],
+                       issue.description,
+                       true)
+
         flash[:notice] = l(:notice_delivery_successful)
       else
         flash[:notice] = l(:notice_delivery_request_reject)

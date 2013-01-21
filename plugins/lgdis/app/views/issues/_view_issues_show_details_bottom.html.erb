@@ -16,14 +16,14 @@
 
         <p><strong><label><%= l(:delivery_status) %>:</label></strong></p>
         <% if check_permissions(@issue) %>
-          <% unless @status.blank? %>
-            <% @status.each do | st | %>
+          <% unless @delivery_history.blank? %>
+            <% @delivery_history.each do | d_h | %>
               <%= form_tag("/deliver_issues/allow_delivery") do %>
                 <p class="table_border">
-                <%= tm_fmt(st.process_date) %>
-                <%= st.delivery_place %>
-                <%= conv_st(st.status) %>
-                <%= hidden_field_tag 'ext_out_id', st.id %>
+                <%= tm_fmt(d_h.process_date) %>
+                <%= DST_LIST['destination_name'][d_h.delivery_place_id] %>
+                <%= conv_st(d_h.status) %>
+                <%= hidden_field_tag 'ext_out_id', d_h.delivery_place_id %>
                 <%= hidden_field_tag 'issue_id', @issue.id %>
                 <% if st.status == 'request' %>
                   <%= submit_tag l(:allow),  :name=>'allow' %>
@@ -34,12 +34,12 @@
             <% end %>
           <% end %>
         <% else %>
-          <% unless @status.blank? %>
-            <% @status.each do | st | %>
+          <% unless @delivery_history.blank? %>
+            <% @delivery_history.each do | d_h | %>
               <p class="table_border">
-                <%= tm_fmt(st.process_date) %>
-                <%= st.delivery_place %>
-                <%= conv_st(st.status) %>
+                <%= tm_fmt(d_h.process_date) %>
+                <%= DST_LIST['destination_name'][d_h.delivery_place_id] %>
+                <%= conv_st(d_h.status) %>
               </p>
             <% end %>
           <% end %>

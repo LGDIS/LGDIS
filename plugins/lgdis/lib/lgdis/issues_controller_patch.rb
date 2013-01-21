@@ -23,7 +23,7 @@ module Lgdis
       private
 
       def get_delivery_histories
-        @status = DeliveryHistory.find_by_sql(
+        @delivery_history = DeliveryHistory.find_by_sql(
                                   ["select * from delivery_histories
                                     where issue_id = :issue_id",
                                     {:issue_id=>@issue.id}])

@@ -1,11 +1,6 @@
 # encoding: utf-8
 module Lgdis
   class ControllerHooks < Redmine::Hook::ViewListener
-    DELIVERY_JOB_MAP = {# 1 => ::CommonsRequestJob,
-                        # 2 => ::MachicomiRequestJob,
-                         3 => ::TwitterRequestJob,
-                         4 => ::FacebookRequestJob
-                       }.freeze
 
     # controller_issues_new_after_saveホック処理
     # ==== Args
@@ -30,10 +25,10 @@ module Lgdis
         # TODO
         # 配信先に紐付く、配信内容が決まっていない
         # issue のどの項目(連結して?)を配信するか
-        # 
+        # redis が起動されている必要がある
         unless destination_ids.blank?
           destination_ids.each do |id|
-            Resque.enqueue(DELIVERY_JOB_MAP[id], "test_comment", test_flag)
+            Resque.enqueue(DST_LIST['delivery_job_map'][id], "test_comment", test_flag)
           end
         end
       end

@@ -7,40 +7,78 @@
 #       - 配信先3
 #       - 配信先4
 
+commons: &commons
+  target_num: 1
+  name: 公共情報コモンズ
+smtp: &smtp
+  target_num: 2
+  name: 自治体職員向けメール
+smtp_auth: &smtp_auth
+  target_num: 3
+  name: まちcomi向けメール
+twitter: &twitter
+  target_num: 4
+  name: Twitter
+facebook: &facebook
+  target_num: 5
+  name: Facebook
+
+
 destination:
   1: # Non member
     4: # JMA（警報・注意報）
+      - <<: *smtp
   2: # Anonymous
     4: # JMA（警報・注意報）
-      - {target_num: 1, name: 公共情報コモンズ}
-      - {target_num: 2, name: まちcomi}
-      - {target_num: 3, name: Twitter}
-      - {target_num: 4, name: Facebook}
+      - <<: *commons
+      - <<: *smtp
+      - <<: *smtp_auth
+      - <<: *twitter
+      - <<: *facebook
+# - {target_num: 1, name: I18n.l(load_dir['commons'])}
   6: # モデレータ
     4: # JMA（警報・注意報）
-      - {target_num: 1, name: 公共情報コモンズ}
-      - {target_num: 2, name: まちcomi}
-      - {target_num: 3, name: Twitter}
-      - {target_num: 4, name: Facebook}
+      - <<: *commons
+      - <<: *smtp
+      - <<: *smtp_auth
+      - <<: *twitter
+      - <<: *facebook
   7: # エリアマネージャ
     4: # JMA（警報・注意報）
-      - {target_num: 1, name: 公共情報コモンズ}
-      - {target_num: 2, name: まちcomi}
-      - {target_num: 3, name: Twitter}
-      - {target_num: 4, name: Facebook}
+      - <<: *commons
+      - <<: *smtp
+      - <<: *smtp_auth
+      - <<: *twitter
+      - <<: *facebook
   8: # 市役所内一般入力者
     4: # JMA（警報・注意報）
-      - {target_num: 1, name: 公共情報コモンズ}
-      - {target_num: 2, name: まちcomi}
-      - {target_num: 3, name: Twitter}
-      - {target_num: 4, name: Facebook}
+      - <<: *commons
+      - <<: *smtp
+      - <<: *smtp_auth
+      - <<: *twitter
+      - <<: *facebook
   9: # 外部入力者
     4: # JMA（警報・注意報）
-      - {target_num: 1, name: 公共情報コモンズ}
-      - {target_num: 2, name: まちcomi}
-      - {target_num: 3, name: Twitter}
-      - {target_num: 4, name: Facebook}
+      - <<: *commons
+      - <<: *smtp
+      - <<: *smtp_auth
+      - <<: *twitter
+      - <<: *facebook
   10: # 閲覧者
     4: # JMA（警報・注意報）
-      - {target_num: 3, name: Twitter}
-      - {target_num: 4, name: Facebook}
+      - <<: *commons
+      - <<: *smtp
+      - <<: *smtp_auth
+      - <<: *twitter
+      - <<: *facebook
+
+delivery_job_map:
+  4: !ruby/class:TwitterRequestJob
+  5: !ruby/class:FacebookRequestJob
+
+destination_name:
+  1: 公共情報コモンズ
+  2: 自治体職員向けメール
+  3: まちcomi向けメール
+  4: Twitter
+  5: FacebookRequestJob

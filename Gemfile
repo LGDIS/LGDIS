@@ -1,20 +1,21 @@
 source 'http://rubygems.org'
 
 gem 'rails', '3.2.11'
-gem "jquery-rails", "~> 2.0.2"
-gem "i18n", "~> 0.6.0"
-gem "coderay", "~> 1.0.6"
-gem "fastercsv", "~> 1.5.0", :platforms => [:mri_18, :mingw_18, :jruby]
+gem "jquery-rails", "2.2.0"
+gem "i18n", "0.6.1"
+gem "coderay", "1.0.8"
+# 1.9 or later system, you do not need to be installed
+# gem "fastercsv", "~> 1.5.0", :platforms => [:mri_18, :mingw_18, :jruby]
 gem "builder", "3.0.0"
 
 # Optional gem for LDAP authentication
 group :ldap do
-  gem "net-ldap", "~> 0.3.1"
+  gem "net-ldap", "0.3.1"
 end
 
 # Optional gem for OpenID authentication
 group :openid do
-  gem "ruby-openid", "~> 2.1.4", :require => "openid"
+  gem "ruby-openid", "2.2.2", :require => "openid"
   gem "rack-openid"
 end
 
@@ -24,62 +25,62 @@ platforms :mri, :mingw do
     # RMagick 2 supports ruby 1.9
     # RMagick 1 would be fine for ruby 1.8 but Bundler does not support
     # different requirements for the same gem on different platforms
-    gem "rmagick", ">= 2.0.0"
+    gem "rmagick", "2.13.1"
   end
 end
 
 # Database gems
 platforms :mri, :mingw do
   group :postgresql do
-    gem "pg", ">= 0.11.0"
+    gem "pg", "0.14.1"
   end
 
   group :sqlite do
-    gem "sqlite3"
+    gem "sqlite3", "1.3.7"
   end
 end
 
 platforms :mri_18, :mingw_18 do
   group :mysql do
-    gem "mysql", "~> 2.8.1"
+    gem "mysql", "2.9.0"
   end
 end
 
 platforms :mri_19, :mingw_19 do
   group :mysql do
-    gem "mysql2", "~> 0.3.11"
+    gem "mysql2", "0.3.11"
   end
 end
 
 platforms :jruby do
-  gem "jruby-openssl"
+  gem "jruby-openssl", "0.8.2"
 
   group :mysql do
-    gem "activerecord-jdbcmysql-adapter"
+    gem "activerecord-jdbcmysql-adapter", "1.2.5"
   end
 
   group :postgresql do
-    gem "activerecord-jdbcpostgresql-adapter"
+    gem "activerecord-jdbcpostgresql-adapter", "1.2.5"
   end
 
   group :sqlite do
-    gem "activerecord-jdbcsqlite3-adapter"
+    gem "activerecord-jdbcsqlite3-adapter", "1.2.5"
   end
 end
 
 group :development do
-  gem "rdoc", ">= 2.4.2"
-  gem "yard"
+  gem "rdoc", "3.12"
+  gem "yard", "0.8.3"
 end
 
 group :test do
-  gem "shoulda", "~> 2.11"
+  gem "shoulda", "2.11.3"
   # Shoulda does not work nice on Ruby 1.9.3 and JRuby 1.7.
   # It seems to need test-unit explicitely.
   platforms = [:mri_19]
   platforms << :jruby if defined?(JRUBY_VERSION) && JRUBY_VERSION >= "1.7"
-  gem "test-unit", :platforms => platforms
-  gem "mocha", "0.12.3"
+  gem "test-unit", "2.5.3", :platforms => platforms
+  gem "mocha", "0.13.1"
 end
 
 local_gemfile = File.join(File.dirname(__FILE__), "Gemfile.local")
