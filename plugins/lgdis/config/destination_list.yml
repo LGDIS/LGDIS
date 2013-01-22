@@ -73,6 +73,7 @@ destination:
       - <<: *facebook
 
 delivery_job_map:
+  2: !ruby/class:SMTP_JichiShokuinRequestJob
   4: !ruby/class:TwitterRequestJob
   5: !ruby/class:FacebookRequestJob
 
@@ -82,3 +83,15 @@ destination_name:
   3: まちcomi向けメール
   4: Twitter
   5: FacebookRequestJob
+
+mailing_list:
+  local_government_officer_mail: root@localhost.localdomain
+  machicomi_mail: apl@localhost.localdomain
+
+mail_server:
+  local_government_server: 127.0.0.1
+  machicomi_server: 127.0.0.1
+
+smtp_auth_server_conf:
+  account: apl
+  password: JPC03142

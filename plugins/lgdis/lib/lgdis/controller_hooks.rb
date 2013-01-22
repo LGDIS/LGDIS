@@ -18,8 +18,10 @@ module Lgdis
       # TODO
       # 仮実装
       #auto_flag = true
-      test_flag = true
-      destination_ids = [3,4]
+      test_flag = false
+      destination_ids = [2]
+      content_delivery =
+        {'mailing_list_name' => DST_LIST['mailing_list']['local_government_officer_mail'], 'title' => context[:params][:issue][:subject], 'message' => context[:params][:issue][:description]}
 
       if auto_flag
         # TODO
@@ -28,7 +30,7 @@ module Lgdis
         # redis が起動されている必要がある
         unless destination_ids.blank?
           destination_ids.each do |id|
-            Resque.enqueue(DST_LIST['delivery_job_map'][id], "test_comment", test_flag)
+            Resque.enqueue(DST_LIST['delivery_job_map'][id], content_delivery, test_flag)
           end
         end
       end
