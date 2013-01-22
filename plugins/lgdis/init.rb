@@ -17,12 +17,13 @@ require_dependency 'lgdis/controller_hooks'
 require_dependency 'lgdis/ext_out/twitter'
 require_dependency 'lgdis/ext_out/facebook'
 
-require_dependency 'lgdis/ext_out/SMTP_JichiShokuin'  #k-takami
-require_dependency 'lgdis/ext_out/SMTP_auth.rb'       #k-takami
-require_dependency 'lgdis/ext_out/ATOM_DigiSignage.rb'#k-takami
-require_dependency 'lgdis/ext_out/SOAP_KJcommons.rb'  #k-takami
+require_dependency 'lgdis/ext_out/smtp_jichi_shokuin'  #k-takami
+require_dependency 'lgdis/ext_out/smtp_auth.rb'       #k-takami
+require_dependency 'lgdis/ext_out/atom_digi_signage.rb'#k-takami
+require_dependency 'lgdis/ext_out/soap_kj_commons.rb'  #k-takami
 require_dependency 'lgdis/ext_out/if_common.rb'       #k-takami
 require_dependency 'lgdis/ext_out/mailer.rb'          #k-takami
+
 
 Redmine::Plugin.register :lgdis do
   name 'LGDIS (Local Government Disaster Information System) plugin'
