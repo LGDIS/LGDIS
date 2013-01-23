@@ -75,8 +75,8 @@ destination:
 delivery_job_map:
   2: SMTP_JichiShokuinRequestJob
   3: SMTP_AuthRequestJob
-  4: !ruby/class:TwitterRequestJob
-  5: !ruby/class:FacebookRequestJob
+  4: TwitterRequestJob
+  5: FacebookRequestJob
 
 destination_name:
   1: 公共情報コモンズ
@@ -84,6 +84,13 @@ destination_name:
   3: まちcomi向けメール
   4: Twitter
   5: FacebookRequestJob
+
+create_msg_msd:
+  1: create_commons_msg
+  2: create_smtp_msg
+  3: create_smtp_msg
+  4: create_sns_msg
+  5: create_sns_msg
 
 mailing_list:
 #   local_government_officer_mail: root@localhost.localdomain

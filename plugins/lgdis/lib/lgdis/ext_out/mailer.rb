@@ -43,7 +43,7 @@ class Lgdis::ExtOut::Mailer < ActionMailer::Base
 
 #       ActionMailer::Base.smtp_settings = 
 #       { :address        => 'smtp.gmail.com',
-#          :enable_starttls_auto => true,
+#         :enable_starttls_auto => true,
 #         :port           => 587,
 #         :domain         => 'gmail.com',
 #         :authentication => :login ,

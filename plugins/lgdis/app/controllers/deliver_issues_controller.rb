@@ -52,7 +52,7 @@ class DeliverIssuesController < ApplicationController
 
       if status != 'reject'
         status='done_test' if com_test_flag
-        Resque.enqueue(DST_LIST['delivery_job_map'][ext_out_id],
+        Resque.enqueue(eval(DST_LIST['delivery_job_map'][ext_out_id]),
                        issue.description,
                        true)
 

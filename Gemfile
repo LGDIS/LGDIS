@@ -16,7 +16,7 @@ end
 # Optional gem for OpenID authentication
 group :openid do
   gem "ruby-openid", "2.2.2", :require => "openid"
-  gem "rack-openid"
+  gem "rack-openid", "1.3.1"
 end
 
 # Optional gem for exporting the gantt to a PNG file, not supported with jruby
