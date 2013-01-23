@@ -73,7 +73,8 @@ destination:
       - <<: *facebook
 
 delivery_job_map:
-  2: !ruby/class:SMTP_JichiShokuinRequestJob
+  2: SMTP_JichiShokuinRequestJob
+  3: SMTP_AuthRequestJob
   4: !ruby/class:TwitterRequestJob
   5: !ruby/class:FacebookRequestJob
 
@@ -85,9 +86,11 @@ destination_name:
   5: FacebookRequestJob
 
 mailing_list:
-  local_government_officer_mail: root@localhost.localdomain
-  machicomi_mail: apl@localhost.localdomain
-
+#   local_government_officer_mail: root@localhost.localdomain
+#  machicomi_mail: apl@localhost.localdomain
+  local_government_officer_mail: ktakami@di-system.co.jp
+  machicomi_mail: ktakami@di-system.co.jp
+# mamoru@carrot.co.jp,
 mail_server:
   local_government_server: 127.0.0.1
   machicomi_server: 127.0.0.1

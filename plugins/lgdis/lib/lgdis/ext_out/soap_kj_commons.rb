@@ -19,7 +19,7 @@ class Lgdis::ExtOut::SOAP_KJcommons  < ActiveRecord::Base
       # ② 自治体職員向け SMTP I/F を呼び出す。
       Rails.logger.info("#{o.create_log_time(msg_hash,modulename)}")
       #k-takami アーカイブログ出力例:　
-      o.leave_log(msg)
+      o.leave_log(msg_hash)
     rescue => e
       Rails.logger.error("#{e.backtrace.join("\n")}" + "\n" + \
                          "#{o.create_log_time(msg_hash,modulename)}")

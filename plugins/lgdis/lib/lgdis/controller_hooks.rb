@@ -11,7 +11,8 @@ module Lgdis
       # TODO
       # parser 部に依頼
       create_project(context) if context[:params][:automatic_create_project_flag]
-      auto_flag = context[:params][:automatic_delivery_flag]
+#       auto_flag = context[:params][:automatic_delivery_flag]
+      auto_flag = true #k-takami test non-auth
       # test_flag = context[:params][:com_test_flag]
       # destination_ids = context[:params][:issue][:destination_id]
 
@@ -19,7 +20,9 @@ module Lgdis
       # 仮実装
       #auto_flag = true
       test_flag = false
-      destination_ids = [2]
+      destination_ids = [3] #k-takami test uth
+      #destination_ids = [2] #k-takami test non-auth
+      #TODO: Rails.logger.info( "//////////////MLLIST=  #{DST_LIST['mailing_list']['local_government_officer_mail']}" )
       content_delivery =
         {'mailing_list_name' => DST_LIST['mailing_list']['local_government_officer_mail'], 'title' => context[:params][:issue][:subject], 'message' => context[:params][:issue][:description]}
 
@@ -30,7 +33,8 @@ module Lgdis
         # redis が起動されている必要がある
         unless destination_ids.blank?
           destination_ids.each do |id|
-            Resque.enqueue(DST_LIST['delivery_job_map'][id], content_delivery, test_flag)
+            #TODO:Rails.logger.info( "//////////////DST_LIST=  #{DST_LIST['delivery_job_map'][id]}" )
+            Resque.enqueue(eval(DST_LIST['delivery_job_map'][id]), content_delivery, test_flag)
           end
         end
       end
