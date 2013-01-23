@@ -93,9 +93,11 @@ create_msg_msd:
   5: create_sns_msg
 
 mailing_list:
-  local_government_officer_mail: root@localhost.localdomain
-  machicomi_mail: apl@localhost.localdomain
-
+#   local_government_officer_mail: root@localhost.localdomain
+#  machicomi_mail: apl@localhost.localdomain
+  local_government_officer_mail: ktakami@di-system.co.jp
+  machicomi_mail: ktakami@di-system.co.jp
+# mamoru@carrot.co.jp,
 mail_server:
   local_government_server: 127.0.0.1
   machicomi_server: 127.0.0.1

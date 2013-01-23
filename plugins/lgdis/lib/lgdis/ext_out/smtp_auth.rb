@@ -8,6 +8,8 @@ class Lgdis::ExtOut::SMTP_Auth  < ActiveRecord::Base
     mailing_list_name = msg_hash["mailing_list_name"]
     title = msg_hash["title"]
     message = msg_hash["message"]
+    str= "////////////////////SMTPAUTH: ML/T/MSG=" + mailing_list_name + " " + title + " " + message #k-takami SMTP-AUTH
+    Rails.logger.info("{#{str}");print("#{str}")
 
     begin
       if test_flg.blank?

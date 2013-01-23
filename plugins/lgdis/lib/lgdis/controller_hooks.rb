@@ -11,7 +11,6 @@ module Lgdis
       # TODO
       # parser 部に依頼
       create_project(context) if context[:params][:automatic_create_project_flag]
-
 #      deliver_issue(context) if context[:params][:automatic_delivery_flag]
       deliver_issue(context) if true
     end
