@@ -9,10 +9,11 @@ class Lgdis::ExtOut::Mailer < ActionMailer::Base
 
 
   def setup(mailing_list_name, title, message, charset, from)
-    puts "■SMTP-PLAIN: ML/T/MSG=" + mailing_list_name + " " + title + " " + message  
+    puts "■SMTP-PLAIN: ML/T/MSG=" + mailing_list_name + " " + title + " " + message
 
     mail(
-      :to       => mailing_list_name , 
+      :to       => mailing_list_name ,
+      :from     => from,
       :subject  => title ,
       :body     => message ,
       :charset  => charset
@@ -20,21 +21,24 @@ class Lgdis::ExtOut::Mailer < ActionMailer::Base
   end
 
   def setup_auth(mailing_list_name, title, message, charset, from, smtp_username, smtp_password)
-    puts "■SMTP-AUTH:  ML/T/MSG=" + mailing_list_name + " " + title + " " + message  
-    debugger
-    ActionMailer::Base.smtp_settings = 
-    { :address        => 'localhost.localdomain',
-      :port           => 25,
-      :domain         => 'localdomain',
-      :authentication => :login ,
-      :user_name      => smtp_username ,
-      :password       => smtp_password
+    puts "■SMTP-AUTH:  ML/T/MSG=" + mailing_list_name + " " + title + " " + message
+#    debugger
+    ActionMailer::Base.smtp_settings =
+    {
+      :enable_starttls_auto => true,
+      :address        => 'smtp.gmail.com',
+      :port           => 587,
+      :domain         => 'smtp.gmail.com',
+      :authentication => :plain ,
+      :user_name      => '' ,
+      :password       => ''
     }
     mail(
-      :to       => mailing_list_name , 
+      :to       => mailing_list_name ,
+      :from     => from,
       :subject  => title ,
       :body     => message ,
-      :charset  => charset 
+      :charset  => charset
     )
   end
 #   print mail.body
