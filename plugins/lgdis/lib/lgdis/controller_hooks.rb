@@ -1,4 +1,4 @@
-# encoding: utf-8
+# -*- coding:utf-8 -*-
 module Lgdis
   class ControllerHooks < Redmine::Hook::ViewListener
 
@@ -9,10 +9,12 @@ module Lgdis
     # ==== Raise
     def controller_issues_new_after_save(context={})
       # TODO
-      # parser 部に依頼
-      create_project(context) if context[:params][:automatic_create_project_flag]
-#      deliver_issue(context) if context[:params][:automatic_delivery_flag]
-      deliver_issue(context) if true
+      # params に関してはparse と調整済
+      create_project(context) if context[:params][:issue][:auto_launch]
+
+      # TODO
+      # params に関してはparse と調整済
+      deliver_issue(context) if context[:params][:issue][:auto_send]
     end
 
     private
@@ -46,8 +48,9 @@ module Lgdis
     def deliver_issue(context)
       # TODO
       # 仮実装
-      # test_flag = context[:params][:com_test_flag]
-      # disaster_training_flag = context[:params][:disaster_training_flag]
+      # params に関してはparse と調整済
+      # test_flag = context[:params][:test]
+      # disaster_training_flag = context[:params][:training]
       # destination_ids = context[:params][:issue][:destination_id]
       test_flag = false
       disaster_training_flag = true

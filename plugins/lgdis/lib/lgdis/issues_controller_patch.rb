@@ -30,24 +30,30 @@ module Lgdis
       end
 
       def get_destination_list
-        role_ids = []
-        User.current.roles_for_project(@issue.project).each do |r|
-          role_ids.push r.id
-        end
-
-        # 複数のロールを保持していることを考慮
-        @destination_list = nil
-        role_ids.each do |role_id|
-          list = DST_LIST['destination'][role_id][@issue.tracker_id]
-          unless @destination_list.blank?
-            list.each do |map|
-              if @destination_list.index(map).blank?
-                @destination_list.push map
-              end
-            end
-          else
-            @destination_list = list
+        begin
+          role_ids = []
+          User.current.roles_for_project(@issue.project).each do |r|
+            role_ids.push r.id
           end
+
+          # 複数のロールを保持していることを考慮
+          @destination_list = nil
+          role_ids.each do |role_id|
+            list = DST_LIST['destination'][role_id][@issue.tracker_id]
+            unless @destination_list.blank?
+              list.each do |map|
+                if @destination_list.index(map).blank?
+                  @destination_list.push map
+                end
+              end
+            else
+              @destination_list = list
+            end
+          end
+        rescue => e
+          # TODO
+          # error 処理
+          p $!
         end
       end
     end
