@@ -1,0 +1,33 @@
+<div class=?"autoscroll" >
+  <table class="list issues">
+    <thead>
+      <tr>
+        <th style="text-align: center;">チケット番号</th>
+        <th style="text-align: center;">ステータス</th>
+        <th style="text-align: center;">要求日時</th>
+        <th style="text-align: center;">要求者</th>
+        <th style="text-align: center;">題名</th>
+        <th style="text-align: center;">処理日</th>
+        <th style="text-align: center;">処理者</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% unless @delivery_histories.blank? %>
+        <% @delivery_histories.each do |d_h| -%>
+          <tr class="hascontextmenu <%= cycle('odd', 'even') %>">
+            <td>
+               <%#= link_to d_h.issue_id, issue_path() %>
+               <%= d_h.issue_id %>
+            </td>
+            <td><%= d_h.status %></td>
+            <td><%= d_h.created_at %></td>
+            <td><%= d_h.request_user %></td>
+            <td></td>
+            <td><%= d_h.process_date %></td>
+            <td><%= d_h.respond_user %></td>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+</div>

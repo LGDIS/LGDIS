@@ -1,13 +1,11 @@
-# encoding: utf-8
+# -*- coding:utf-8 -*-
 require 'redmine'
-require_dependency 'lgdis/issues_helper_patch'
-require_dependency 'lgdis/view_hooks'
 
-#require_dependency 'lgdis/show_view_hooks' # Viewホックポイントの確認用
 # 非同期処理
 ActiveSupport::Dependencies.autoload_paths += %W(#{Rails.root}/plugins/lgdis/config/initializers)
 ActiveSupport::Dependencies.autoload_paths += %W(#{Rails.root}/plugins/lgdis/lib/tasks)
 ActiveSupport::Dependencies.autoload_paths += %W(#{Rails.root}/plugins/lgdis/app/workers)
+ActiveSupport::Dependencies.autoload_paths += %W(#{Rails.root}/plugins/lgdis/lib/validators)
 
 # API キー設定ファイルロード
 API_KEY  = YAML.load_file("#{Rails.root}/plugins/lgdis/config/api_key.yml")
@@ -42,11 +40,10 @@ Redmine::Plugin.register :lgdis do
   menu :project_menu, :shelters, { :controller => 'shelters', :action => 'index' }, :caption => :label_shelter, :after => :new_issue, :param => :project_id
 
   project_module :deliver_issues do
-    permission :request_delivery, :deliver_issues => [:request_delivery]
-    permission :allow_delivery, :deliver_issues => [:request_delivery, :allow_delivery]
+    # モジュール表示の為パーミッション定義を
+    # project_module で囲む
+    permission :request_delivery, :deliver_issues => [:index]
   end
 
-#  menu :project_menu, :deliver_issues, { :controller => 'deliver_issues', :action => 'index' }, :caption => :label_shelter, :after => :new_issue, :param => :project_id
-
-  ActiveSupport::Dependencies.autoload_paths += %W(#{Rails.root}/plugins/lgdis/lib/validators)
+  menu :project_menu, :deliver_issues, { :controller => 'deliver_issues', :action => 'index' }, :caption => :project_module_deliver, :after => :shelters, :param => :project_id
 end

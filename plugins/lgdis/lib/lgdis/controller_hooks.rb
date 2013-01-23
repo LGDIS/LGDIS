@@ -2,19 +2,22 @@
 module Lgdis
   class ControllerHooks < Redmine::Hook::ViewListener
 
+    AUTO_FLAG = {1 => true}.freeze
+
     # controller_issues_new_after_saveホック処理
     # ==== Args
     # _context_ :: コンテキスト
     # ==== Return
     # ==== Raise
     def controller_issues_new_after_save(context={})
+      param_issue = context[:params][:issue]
       # TODO
       # params に関してはparse と調整済
-      create_project(context) if context[:params][:issue][:auto_launch]
+      create_project(context) if AUTO_FLAG[param_issue[:auto_launch]]
 
       # TODO
       # params に関してはparse と調整済
-      deliver_issue(context) if context[:params][:issue][:auto_send]
+      deliver_issue(context) if AUTO_FLAG[param_issue[:auto_send]]
     end
 
     private
@@ -48,15 +51,18 @@ module Lgdis
     def deliver_issue(context)
       # TODO
       # 仮実装
-      # params に関してはparse と調整済
+      # 
+      # TODO
+      # 通信試験モード、災害訓練モードに関しては
+      # プロジェクトのID を参照
+      # 定義はyaml ファイルに記載のこと
       # test_flag = context[:params][:test]
       # disaster_training_flag = context[:params][:training]
       # destination_ids = context[:params][:issue][:destination_id]
       test_flag = false
       disaster_training_flag = true
-      destination_ids = [2]
-      issue = context[:params][:issue]
-
+      destination_ids = [4]
+      issue = context[:issue]
       # TODO
       # 配信先に紐付く、配信内容未決
       # TODO
@@ -64,7 +70,7 @@ module Lgdis
       unless destination_ids.blank?
         destination_ids.each do |id|
           str = DST_LIST['create_msg_msd'][id] + \
-                "(" + "#{issue}" + "," +  "#{disaster_training_flag}" + ")"
+                "(issue,  disaster_training_flag)"
           content_delivery = eval(str)
 
           Resque.enqueue(eval(DST_LIST['delivery_job_map'][id]),
@@ -97,7 +103,7 @@ module Lgdis
       # 配信内容未決
       content_delivery =
         {'mailing_list_name' => DST_LIST['mailing_list']['local_government_officer_mail'],
-         'title'   => issue['subject'],
+         'title'   => issue.subject,
          'message' => create_disaster_training_str(issue, disaster_training_flag)}
     end
 
@@ -125,7 +131,7 @@ module Lgdis
       # TODO
       # 配信内容未決
       str = flg.blank? ? '' : '【災害訓練】'
-      str + issue['description']
+      str + issue.description
     end
   end
 end
