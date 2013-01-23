@@ -37,7 +37,7 @@ Redmine::Plugin.register :lgdis do
 
   project_module :shelters do
     permission :view_shelters, :shelters => [:index, :edit]
-    permission :manage_shelters, :shelters => [:new, :create, :update, :destroy]
+    permission :manage_shelters, :shelters => [:new, :create, :update, :destroy, :bulk_update, :ticket, :summary]
   end
   menu :project_menu, :shelters, { :controller => 'shelters', :action => 'index' }, :caption => :label_shelter, :after => :new_issue, :param => :project_id
 
