@@ -38,9 +38,6 @@ module Lgdis
           #tracker_ids: {},
           #homepage: "",
           )
-
-      # 作成したプロジェクトにチケットをコピー
-      issue.move_to_project(new_project, nil, copy: true)
     end
 
     # 自動配信処理
