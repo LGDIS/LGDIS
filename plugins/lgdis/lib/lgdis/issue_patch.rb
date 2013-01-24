@@ -14,6 +14,7 @@ module Lgdis
         validates :xml_control_publishingoffice, :length => {:maximum => 100}
         validates :xml_control_cause, :length => {:maximum => 1}
         validates :xml_control_apply, :length => {:maximum => 1}
+        validates :xml_head_title, :length => {:maximum => 100}
         validates :xml_head_targetdtdubious, :length => {:maximum => 8}
         validates :xml_head_targetduration, :length => {:maximum => 30}
         validates :xml_head_eventid, :length => {:maximum => 64}
