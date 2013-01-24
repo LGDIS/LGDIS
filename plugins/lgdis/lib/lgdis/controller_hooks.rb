@@ -2,7 +2,7 @@
 module Lgdis
   class ControllerHooks < Redmine::Hook::ViewListener
 
-    AUTO_FLAG = {1 => true}.freeze
+    AUTO_FLAG = {"1" => true}.freeze
 
     # controller_issues_new_after_saveホック処理
     # ==== Args
