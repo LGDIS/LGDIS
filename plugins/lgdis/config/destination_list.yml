@@ -104,4 +104,4 @@ mail_server:
 
 smtp_auth_server_conf:
   account: apl
-  password: JPC03142
+  password: JBC03142

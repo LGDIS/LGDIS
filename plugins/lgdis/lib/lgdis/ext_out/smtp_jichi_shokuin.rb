@@ -10,6 +10,7 @@ class Lgdis::ExtOut::SMTP_JichiShokuin  < ActiveRecord::Base
 
     begin
       if test_flg.blank?
+          #TODO: p "////////ML-TITLE-MSG//////////////////" + mailing_list_name + " " + title + " " + message #k-takami SMTP-AUTH
           @mail=Lgdis::ExtOut::Mailer.setup(mailing_list_name, title, message, "utf-8", "root@localhost.localdomain") 
           @mail.deliver
       end
@@ -33,5 +34,7 @@ end
 #p ls -alt  /root/Maildir/new/*
 #  @mail=Lgdis::ExtOut::Mailer.setup("root@localhost.localdomain", "引数0例 共通出力", "引数1例 本文に漢字", "utf-8", "root@localhost.localdomain").deliver
 #  @mail=Lgdis::ExtOut::SMTP_JichiShokuin.send_message({"mailing_list_name" =>"root@localhost.localdomain", "title" => "TEST-title漢字", "message" =>"sss漢字"}, false)
+#  Lgdis::ExtOut::Mailer.setup("ktakami@di-system.co.jp", "引数0例 共通", "//////////////", "utf-8", "ktakami@di-system.co.jp").deliver
+#  @mail= Lgdis::ExtOut::SMTP_JichiShokuin.send_message({"mailing_list_name" =>"ktakami@di-system.co.jp", "title" => "title漢字", "message" =>"sss漢字-------------"}, false)
 #targetUser = User.find_by_mail("root@localhost.localdomain")
 

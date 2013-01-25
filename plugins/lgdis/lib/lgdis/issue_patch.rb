@@ -9,6 +9,9 @@ module Lgdis
       
       base.class_eval do
         unloadable
+        has_many :issues_additional_data, :class_name => 'IssuesAddtionDatum'
+
+
         validates :xml_control_status, :length => {:maximum => 12}
         validates :xml_control_editorialoffice, :length => {:maximum => 50}
         validates :xml_control_publishingoffice, :length => {:maximum => 100}

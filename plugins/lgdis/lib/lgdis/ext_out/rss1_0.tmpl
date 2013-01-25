@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="#{@encoding}"?>
+<feed xmlns="http://www.w3.org/2005/Atom" 
+	xmlns:georss="http://www.georss.org/georss">
+	<title>%{@title}</title>
+	<subtitle>%{@subtitle}</subtitle>
+	<link href=%{@site_url}/>
+	<updated>%{@updated}</updated>
+	<author>
+		<name>%{@author}</name>
+		<email>%{@authormail}</email>
+	</author>
+	<id>urn:uuid:%{@uuid}</id>
+	!{@items.each do |item|}
+		<entry>
+			<title>%{item[:title]}</title>
+			<link href="#{item[:url]}"/>
+			<id>urn:uuid:#{item[:uuid]}</id>
+			<updated>#{item[:date]}</updated>
+			<summary>%{item[:description]}</summary>
+			<georss:point>#{item[:point]}</georss:point>
+			<georss:line>#{item[:line]}</georss:line>
+			<georss:polygon>#{item[:polygon]}</georss:polygon>
+		</entry>
+	!{end}
+</feed>
