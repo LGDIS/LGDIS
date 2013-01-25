@@ -111,8 +111,50 @@ $(function(){
     $("#xml_body_sampling").toggle(this.checked);
   }).change();
 });
+
+  //<![CDATA[
+  // 地図表示
+  google.maps.event.addDomListener(window, 'load', function() {
+    var mapdiv = document.getElementById('map_canvas');
+    var myOptions = {
+        zoom: 12,
+        // TODO
+        // issues_addition_datum データ(緯度・経度)を代入
+        center: new google.maps.LatLng(38.434463491669746, 141.30293369293213),
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        scaleControl: true,
+    };
+    var map = new google.maps.Map(mapdiv, myOptions);
+    // マーカ
+    var marker = new google.maps.Marker({
+      // TODO
+      // issues_addition_datum データ)(緯度・経度)を代入
+      position: new google.maps.LatLng(38.434463491669746, 141.30293369293213),
+      map: map
+    });
+
+    // ポップアップ
+    var infowindow = new google.maps.InfoWindow({
+      // TODO
+      // issues_addition_datum データ(住所)を代入
+      content: 'test',
+    });
+    google.maps.event.addListener(marker, 'click', function() {
+      infowindow.open(map,marker);
+    });
+  });
+  //]]>
 </script>
 <% end %>
 
 <% end %>
 
+
+<fieldset class="collapsible collapsed">
+<legend onclick="toggleFieldset(this);"><%= l(:map) %></legend>
+    <div id="map_canvas" style="width: 700px; height: 500px"></div>
+  </legend>
+</fieldset>
+
+<script type="text/javascript">
+</script>
