@@ -26,7 +26,7 @@ require_dependency 'lgdis/ext_out/atom_digi_signage.rb'#k-takami
 require_dependency 'lgdis/ext_out/soap_kj_commons.rb'  #k-takami
 require_dependency 'lgdis/ext_out/if_common.rb'       #k-takami
 require_dependency 'lgdis/ext_out/mailer.rb'   #k-takami
-require_dependency 'lgdis/ext_out/feeder.rb'          #k-takami
+#require_dependency 'lgdis/ext_out/feeder.rb'          #k-takami
 
 
 Redmine::Plugin.register :lgdis do
