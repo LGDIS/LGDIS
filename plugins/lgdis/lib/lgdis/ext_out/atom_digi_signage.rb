@@ -9,6 +9,7 @@ class Lgdis::ExtOut::ATOM_DigiSignage  < ActiveRecord::Base
         #配信管理画面で生成されたATOM型式geoRSSファイル又はそのオブジェクトを､
         #仕様確定後､なんらかの方法で災害情報ポータル デジタルサイネージサーバーに渡す｡
         #ATOM生成URL例:     http://192.168.18.130:3000/projects.atom?key=6724553250c556a08a5ff4a76724d8b5ed1c3a45
+  #      SetupXML.arrange_and_put(msg)
       end
 
       # TODO
