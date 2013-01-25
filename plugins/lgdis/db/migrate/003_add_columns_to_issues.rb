@@ -8,7 +8,7 @@ class AddColumnsToIssues < ActiveRecord::Migration
     add_column :issues, :xml_control_cause, :string, :limit => 1
     add_column :issues, :xml_control_apply, :string, :limit => 1
     add_column :issues, :xml_head, :xml
-    add_column :issues, :xml_head_title, :string, :limit => 500
+    add_column :issues, :xml_head_title, :string, :limit => 100
     add_column :issues, :xml_head_reportdatetime, :datetime
     add_column :issues, :xml_head_targetdatetime, :datetime
     add_column :issues, :xml_head_targetdtdubious, :string, :limit => 8

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	・このXML文書は、総務省「平成21年度地域情報プラットフォーム委託事業」の推進事業成果報告書に基づき作成されたものです。
+	・このXML文書の著作権は、一般財団法人マルチメディア振興センター（以下「財団」といいます）に帰属します。
+	・このXML文書は、作成例として提示するものであり、完全な動作を保証しているものではありません。
+	・このXML文書に不備があった場合も、財団はその修正およびサポートの義務を負いません。
+	・このXML文書は、使用者の責任において使用（複製、改変を含む）することができます。
+	・このXML文書の使用により損害が生じた場合も、財団はその損害について一切の責を負いません。
+	・このXML文書は、予告無く内容が変更されることがあります。
+	・このXML文書に関する問い合わせは財団にて受け付けます。
+	・『公共情報コモンズ』は財団の登録商標です。（登録第５３４８９６９号）
+-->
+<edxlde:EDXLDistribution xmlns:pcx_sh="http://xml.publiccommons.ne.jp/pcxml1/body/shelter3"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:edxlde="urn:oasis:names:tc:emergency:EDXL:DE:1.0"
+	xmlns:commons="http://xml.publiccommons.ne.jp/xml/edxl/"
+	xmlns:pcxml="http://xml.publiccommons.ne.jp/pcxml1/3"
+	xmlns:pcx_eb="http://xml.publiccommons.ne.jp/pcxml1/elementBasis3/"
+	xmlns:pcx_ib="http://xml.publiccommons.ne.jp/pcxml1/informationBasis3/">
+	<commons:contentObject>
+		<edxlde:xmlContent>
+			<edxlde:embeddedXMLContent>
+				<Report xmlns="http://xml.publiccommons.ne.jp/pcxml1/3"
+					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+					xmlns:edxlde="urn:oasis:names:tc:emergency:EDXL:DE:1.0"
+					xmlns:commons="http://xml.publiccommons.ne.jp/xml/edxl/"
+					xmlns:pcx_eb="http://xml.publiccommons.ne.jp/pcxml1/elementBasis3/">
+					<pcx_sh:Shelter
+						xmlns:pcx_sh="http://xml.publiccommons.ne.jp/pcxml1/body/shelter3">
+					</pcx_sh:Shelter>
+				</Report>
+			</edxlde:embeddedXMLContent>
+		</edxlde:xmlContent>
+	</commons:contentObject>
+</edxlde:EDXLDistribution>

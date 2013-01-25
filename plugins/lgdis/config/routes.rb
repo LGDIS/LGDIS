@@ -10,6 +10,9 @@ RedmineApp::Application.routes.draw do
     match '/shelters/summary'     => 'shelters#summary',     :via => :post
     resources :shelters, :except => [:show, :index]
   end
+  resources :deliver_issues do
+    get "deliver_issues/index"
+  end
   post "deliver_issues/request_delivery"
   post "deliver_issues/allow_delivery"
 end

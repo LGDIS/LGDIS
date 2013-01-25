@@ -58,7 +58,11 @@ module Lgdis
 
         out = ""
         # 抽出データ表示
-        out << "<div class='xml_field #{name}' id='#{name}_sampling'>#{print_xml(xml_doc.xpath(XML_VIEW_SAMPLING_XPATH))}</div>"
+        begin
+          out << "<div class='xml_field #{name}' id='#{name}_sampling'>#{print_xml(xml_doc.xpath(XML_VIEW_SAMPLING_XPATH))}</div>"
+        rescue
+          out << ""
+        end
 
         # 全データ表示
         out << "<div class='xml_field #{name}' id='#{name}_all'>#{print_xml(xml_doc.children)}</div>"

@@ -2,6 +2,12 @@
 class DeliverIssuesController < ApplicationController
   unloadable
 
+  before_filter :find_project, :authorize
+
+  def index
+    @delivery_histories = DeliveryHistory.find(:all)
+  end
+
   def request_delivery
     issue_id    = params[:issue_id]
     user_name   = params[:current_user]
@@ -75,5 +81,15 @@ class DeliverIssuesController < ApplicationController
         end
       end
     end
+  end
+
+  private
+
+  # プロジェクト情報取得
+  # ==== Args
+  # ==== Return
+  # ==== Raise
+  def find_project
+    @project = Project.find(params[:project_id])
   end
 end
