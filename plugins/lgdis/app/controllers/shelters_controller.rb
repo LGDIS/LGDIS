@@ -88,6 +88,18 @@ class SheltersController < ApplicationController
   # ==== Return
   # ==== Raise
   def ticket
+    # 避難所情報が存在しない場合、処理しない
+    if Shelter.where(:project_id => @project.id).present?
+      ActiveRecord::Base.transaction do
+        ### Applic用チケット登録
+        Shelter.create_applic_issue(@project)
+        ### 公共コモンズ用チケット登録
+        Shelter.create_commons_issue(@project)
+      end
+      flash[:notice] = "チケットを登録しました。"
+    else
+      flash[:error] = "避難所情報が存在しません。"
+    end
     redirect_to :action => :index
   end
   

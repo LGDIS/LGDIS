@@ -10,8 +10,12 @@ class Lgdis::ExtOut::Mailer < ActionMailer::Base
 
   def setup(mailing_list_name, title, message, charset, from)
     begin
-      #TODO: str= "■SMTP-PLAIN: ML/T/MSG=" + mailing_list_name + " " + title + " " + message #k-takami SMTP-plain
-      #Rails.logger.info("{#{str}");print("#{str}")
+      #TODO: 
+      str= "■SMTP-PLAIN: ML/T/MSG=" + mailing_list_name + " " + title + " " + message #k-takami SMTP-plain
+      Rails.logger.info("{#{str}");print("#{str}")
+
+      debugger
+
 
       mail(
         :from     => from , 
@@ -31,7 +35,7 @@ class Lgdis::ExtOut::Mailer < ActionMailer::Base
       #TODO: 
       str= "■SMTPAUTH: ML/T/MSG=" + mailing_list_name + " " + title + " " + message #k-takami SMTP-AUTH
       Rails.logger.info("{#{str}");print("#{str}")
-
+      debugger
       ActionMailer::Base.smtp_settings = 
       { :address        => 'localhost.localdomain',
         :port           => 25,

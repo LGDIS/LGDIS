@@ -25,7 +25,7 @@
                 <%= conv_st(d_h.status) %>
                 <%= hidden_field_tag 'ext_out_id', d_h.delivery_place_id %>
                 <%= hidden_field_tag 'issue_id', @issue.id %>
-                <% if st.status == 'request' %>
+                <% if d_h.status == 'request' %>
                   <%= submit_tag l(:allow),  :name=>'allow' %>
                   <%= submit_tag l(:reject), :name=>'reject' %>
                 <% end %>
