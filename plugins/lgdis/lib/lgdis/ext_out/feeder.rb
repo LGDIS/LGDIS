@@ -145,7 +145,6 @@ class SetupXML
              :polygon   => str_xy3.to_s 
             }
         ]
-        Issue.first.description 
         outfile = "#{Rails.root.to_s}/public/atom/#{time}-Sent.log"
       end
 

@@ -92,17 +92,9 @@ class SheltersController < ApplicationController
     if Shelter.where(:project_id => @project.id).present?
       ActiveRecord::Base.transaction do
         ### Applic用チケット登録
-        @issue_applic = Issue.new
-        @issue_applic.exec_insert_applic(@project)
-        @issue_applic.save!
-        # カスタムフィールドの値を格納するカスタムバリューの作成
-        @issue_applic.create_custom_value
+        Shelter.create_applic_issue(@project)
         ### 公共コモンズ用チケット登録
-        @issue_commons = Issue.new
-        @issue_commons.exec_insert_commons(@project)
-        @issue_commons.save!
-        # カスタムフィールドの値を格納するカスタムバリューの作成
-        @issue_commons.create_custom_value
+        Shelter.create_commons_issue(@project)
       end
       flash[:notice] = "チケットを登録しました。"
     else
