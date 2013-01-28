@@ -1,4 +1,5 @@
 # encoding: utf-8
+require 'csv'
 class Shelter < ActiveRecord::Base
   unloadable
   
@@ -133,7 +134,7 @@ class Shelter < ActiveRecord::Base
   validates :note,
                 :length => {:maximum => 4000}
   
-  before_create :number_shelter_code
+  before_create :number_shelter_code, :if => Proc.new { |shelter| shelter.shelter_code.nil? }
   
   # 属性のローカライズ名取得
   # validateエラー時のメッセージに使用されます。
@@ -419,6 +420,61 @@ class Shelter < ActiveRecord::Base
     return issue
   end
   
+  # 避難所情報初期登録処理
+  # ==== Args
+  # _project_ :: Projectオブジェクト
+  # ==== Return
+  # ==== Raise
+  def self.import_initial_data(project)
+    return if PRJ_INIT_IMP.blank? || PRJ_INIT_IMP[self.class_name].blank?
+    CSV.foreach(PRJ_INIT_IMP[self.class_name], encoding: "UTF-8") do |row|
+      next if row.count < 1 # 空行はスキップ
+      shelter = self.new
+      # プロジェクト
+      shelter.project = project
+      # 災害コード
+      shelter.disaster_code = project.disaster_code
+      # 避難所識別番号
+      shelter.shelter_code = row[0]
+      # 避難所名
+      shelter.name = row[1]
+      # 避難所名カナ
+      shelter.name_kana = row[2]
+      # 避難所の住所
+      shelter.address = row[3]
+      # 避難所の電話番号
+      shelter.phone = row[4]
+      # 避難所のFAX番号
+      shelter.fax = row[5]
+      # 避難所のメールアドレス
+      shelter.e_mail = row[6]
+      # 避難所の担当者名
+      shelter.person_responsible = row[7]
+      # 最大の収容人数
+      shelter.capacity = row[8]
+      # 避難所種別
+      shelter.shelter_type = CONST[:shelter_type.to_s].invert[row[9]]
+      # 避難所区分
+      shelter_sort = nil
+      case shelter.shelter_type
+        when "1"  # 1：避難所
+          shelter_sort = "1"  # 1:未開設
+        when "3","4"  # 3：広域避難所：開設措置なし, 4：一次避難所：開設措置なし
+          shelter_sort = "5" # 5：常設
+        end
+      shelter.shelter_sort = shelter_sort
+      
+      begin
+        shelter.save!
+      rescue => e
+        # ActiveRecord::RecordInvalid(save!でのValidationエラー)の場合、
+        # Rollbackはされるが、画面やログ等に何も残らない
+        # マスタデータのエラーのため、RuntimeErrorに詰め替える
+        raise e.to_s
+      end
+    end
+  end
+  
   private
   # 日付、時刻から、attrを設定します。
   # 不正な引数の場合は、nilを設定します。
@@ -450,12 +506,7 @@ class Shelter < ActiveRecord::Base
   # ==== Return
   # ==== Raise
   def number_shelter_code
-    # JISコード
-    code1 = "04" # JISコード/都道府県コード(2桁) 宮城県
-    code2 = "202" # JISコード/市区町村コード(3桁) 石巻市
-    code3 = "I" # 固定(1桁) I
-    code4 = "12345" # TODO:管理番号(5～14桁)
-    
-    self.shelter_code = code1 + code2 + code3 + code4
+    seq =  connection.select_value("select nextval('shelter_code_seq')")
+    self.shelter_code = "04202I#{format("%014d", seq)}"
   end
 end

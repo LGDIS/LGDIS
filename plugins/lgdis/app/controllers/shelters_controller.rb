@@ -30,13 +30,13 @@ class SheltersController < ApplicationController
   def index
     case params["commit_kind"]
     when "search"
-      @search   = Shelter.search(params[:search])
+      @search   = Shelter.where(:project_id => @project.id).search(params[:search])
       @shelters = @search.paginate(:page => params[:page], :per_page => 30).order("shelter_code ASC")
       render :action => :index
     when "new"
       redirect_to :action => :new
     when "clear"
-      @search   = Shelter.search
+      @search   = Shelter.where(:project_id => @project.id).search
       @shelters = @search.paginate(:page => params[:page], :per_page => 30).order("shelter_code ASC")
       render :action => :index
     when "bulk_update"
@@ -46,7 +46,7 @@ class SheltersController < ApplicationController
     when "summary"
       summary
     else
-      @search   = Shelter.search(params[:search])
+      @search   = Shelter.where(:project_id => @project.id).search(params[:search])
       @shelters = @search.paginate(:page => params[:page], :per_page => 30).order("shelter_code ASC")
       render :action => :index
     end
@@ -75,7 +75,7 @@ class SheltersController < ApplicationController
         end
       end
     else
-      @search   = Shelter.search(params[:search])
+      @search   = Shelter.where(:project_id => @project.id).search(params[:search])
       @shelters = @search.paginate(:page => params[:page], :per_page => 30).order("shelter_code ASC")
     end
     
@@ -189,7 +189,7 @@ class SheltersController < ApplicationController
     @shelter = Shelter.new()
     @shelter.assign_attributes(params[:shelter], :as => :shelter)
     @shelter.project_id = @project.id
-    @shelter.disaster_code = @project.identifier
+    @shelter.disaster_code = @project.disaster_code
     if @shelter.save
       flash[:notice] = l(:notice_shelter_successful_create, :id => "##{@shelter.id} #{@shelter.name}")
       redirect_to :action  => :edit, :id => @shelter.id
