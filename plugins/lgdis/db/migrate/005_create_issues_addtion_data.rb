@@ -9,7 +9,7 @@ class CreateIssuesAddtionData < ActiveRecord::Migration
       t.decimal :longitude, :precision => 13, :scale => 8
       t.string  :address
       t.string  :remarks
-      t.string  
+      t.timestamps
 #       t.decimal :point
 #       t.decimal :line
 #       t.decimal :polygon
