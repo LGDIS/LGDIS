@@ -3,7 +3,7 @@ require_dependency 'project'
 
 module Lgdis
   module ProjectPatch
-    IDENTIFER_PREFIX = "ishinomaki"
+    IDENTIFER_PREFIX = "I"
     
     def self.included(base)
       base.extend(ClassMethods)
