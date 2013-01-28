@@ -12,6 +12,7 @@ API_KEY  = YAML.load_file("#{Rails.root}/plugins/lgdis/config/api_key.yml")
 DST_LIST = YAML.load_file("#{Rails.root}/plugins/lgdis/config/destination_list.yml")
 CF_DEFAULT_VALUES = YAML.load_file("#{Rails.root}/plugins/lgdis/config/custom_field_default_multiple_values.yml")
 
+require_dependency 'lgdis/project_patch'
 require_dependency 'lgdis/issue_patch'
 require_dependency 'lgdis/issues_helper_patch' # issues_controller_patch より先にload する必要あり
 require_dependency 'lgdis/issues_controller_patch'

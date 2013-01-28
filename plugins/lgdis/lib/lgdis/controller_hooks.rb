@@ -28,16 +28,29 @@ module Lgdis
     # ==== Return
     # ==== Raise
     def create_project(context={})
-      # プロジェクトを作成
       issue = context[:issue]
-      created_on_str = issue.created_on.strftime("%Y%m%d%H%M%S")
-      # TODO:作成情報が未決
-      new_project = Project.create!(name: "#{created_on_str} #{issue.subject}",
-          identifier: "prj-#{created_on_str}",
-          description: "#{issue.description}",
-          #tracker_ids: {},
-          #homepage: "",
-          )
+      new_project = Project.new
+      # プロジェクト名
+      new_project.name = new_project_name(issue)
+      # プロジェクト識別子は、自動採番
+      new_project.save!
+    end
+
+    # プロジェクト名を生成
+    # ==== Args
+    # _issue_ :: チケット情報
+    # ==== Return
+    # 生成したプロジェクト名
+    # ==== Raise
+    def new_project_name(issue)
+      prj_name = ""
+      # 標題 + 発表時刻
+      prj_name += issue.xml_head_title.to_s
+      prj_name += " " if prj_name.present?
+      prj_name += format_time(issue.xml_head_reportdatetime) if issue.xml_head_reportdatetime
+      # ブランクの場合は、チケット作成日時を暫定的に設定
+      prj_name = format_time(issue.created_on) if prj_name.blank?
+      return prj_name
     end
 
     # 自動配信処理
