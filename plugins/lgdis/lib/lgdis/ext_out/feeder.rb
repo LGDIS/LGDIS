@@ -102,7 +102,7 @@ class SetupXML
              :polygon   => "45.256 -110.45 46.46 -109.48 43.84 -109.86 45.256 -110.45"
             }
         ]
-        outfile = "/opt/redmine/public/atom/#{time}-geoatom.rdf"
+        outfile = "/opt/LGDIS/public/atom/#{time}-geoatom.rdf"
       else
         #case when options != nil  : ref:/#{Rails.root}/app/views/journals/index.builder
         issue           = Issue.first
@@ -154,6 +154,7 @@ class SetupXML
         xml.show
       end
       $stdout.flush;$stdout.reopen stdout_old 
+
       xml.show #if options.nil?
 
     end
