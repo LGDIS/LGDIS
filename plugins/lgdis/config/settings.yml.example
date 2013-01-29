@@ -1,0 +1,27 @@
+development:
+  # LGDPM REST I/F settings
+  lgdpm:
+    url: "http://localhost:3000"
+    login: "login_id"
+    password: "password"
+    basic_auth:
+      user:
+      password:
+test:
+  # LGDPM REST I/F settings
+  lgdpm:
+    url: 
+    login: 
+    password: 
+    basic_auth:
+      user:
+      password:
+production:
+  # LGDPM REST I/F settings
+  lgdpm:
+    url: "http://localhost:3000/lgdpm"
+    login: "login_id"
+    password: "password"
+    basic_auth:
+      user: "login_id"
+      password: "password"

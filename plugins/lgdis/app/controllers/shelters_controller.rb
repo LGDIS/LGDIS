@@ -112,11 +112,14 @@ class SheltersController < ApplicationController
     # LGDPMから避難者集計情報を取得する
     result = nil
     cookie = {}
-    url    = URI.parse('http://192.168.62.128:3000') # LGDPMのIP
+    url    = URI.parse(SETTINGS["lgdpm"]["url"]) # LGDPMのIP
     Net::HTTP.start(url.host, url.port){|http|
-      # ユーザ認証
+      # ユーザ認証画面
       req1 = Net::HTTP::Post.new('/users/sign_in.json')
-      req1.set_form_data({'user[login]'=>'admin', 'user[password]'=>'admin'}, ';')
+      # Basic認証の設定
+      req1.basic_auth(SETTINGS["lgdpm"]["basic_auth"]["user"], SETTINGS["lgdpm"]["basic_auth"]["password"])
+      # ユーザ認証の設定
+      req1.set_form_data({'user[login]'=>SETTINGS["lgdpm"]["login"], 'user[password]'=>SETTINGS["lgdpm"]["password"]}, ';')
       res1 = http.request(req1)
       # 認証情報をCookieから取得
       res1.get_fields('Set-Cookie').each{|str| k,v = str[0...str.index(';')].split('='); cookie[k] = v}
