@@ -30,7 +30,7 @@ class SheltersController < ApplicationController
   def index
     case params["commit_kind"]
     when "search"
-      @search   = Shelter.where(:project_id => @project.id).search(params[:search])
+      @search   = Shelter.search(params[:search])
       @shelters = @search.paginate(:page => params[:page], :per_page => 30).order("shelter_code ASC")
       render :action => :index
     when "new"
@@ -46,7 +46,7 @@ class SheltersController < ApplicationController
     when "summary"
       summary
     else
-      @search   = Shelter.where(:project_id => @project.id).search(params[:search])
+      @search   = Shelter.search(params[:search])
       @shelters = @search.paginate(:page => params[:page], :per_page => 30).order("shelter_code ASC")
       render :action => :index
     end
@@ -75,7 +75,7 @@ class SheltersController < ApplicationController
         end
       end
     else
-      @search   = Shelter.where(:project_id => @project.id).search(params[:search])
+      @search   = Shelter.search(params[:search])
       @shelters = @search.paginate(:page => params[:page], :per_page => 30).order("shelter_code ASC")
     end
     
