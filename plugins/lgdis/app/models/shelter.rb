@@ -426,8 +426,8 @@ class Shelter < ActiveRecord::Base
   # ==== Return
   # ==== Raise
   def self.import_initial_data(project)
-    return if PRJ_INIT_IMP.blank? || PRJ_INIT_IMP[self.class_name].blank?
-    CSV.foreach(PRJ_INIT_IMP[self.class_name], encoding: "UTF-8") do |row|
+    return if PRJ_INIT_IMP.blank? || PRJ_INIT_IMP[self.name].blank?
+    CSV.foreach(PRJ_INIT_IMP[self.name], encoding: "UTF-8") do |row|
       next if row.count < 1 # 空行はスキップ
       shelter = self.new
       # プロジェクト
