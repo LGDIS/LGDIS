@@ -35,6 +35,13 @@ destination:
       - <<: *smtp_auth
       - <<: *twitter
       - <<: *facebook
+  3: # 管理者(プロトタイプ環境 admin)
+    4: # 気象情報（警報・注意報）
+      - <<: *commons
+      - <<: *smtp
+      - <<: *smtp_auth
+      - <<: *twitter
+      - <<: *facebook
 # - {target_num: 1, name: I18n.l(load_dir['commons'])}
   6: # モデレータ
     4: # JMA（警報・注意報）
@@ -83,7 +90,7 @@ destination_name:
   2: 自治体職員向けメール
   3: まちcomi向けメール
   4: Twitter
-  5: FacebookRequestJob
+  5: Facebook
 
 create_msg_msd:
   1: create_commons_msg
@@ -91,6 +98,13 @@ create_msg_msd:
   3: create_smtp_msg
   4: create_sns_msg
   5: create_sns_msg
+
+status:
+  request: 配信要求中
+  done: 配信完了
+  done_test: 配信完了(通信試験モード)
+  done_training: 配信完了(災害訓練モード)
+  reject: 配信却下
 
 mailing_list:
 #   local_government_officer_mail: root@localhost.localdomain
