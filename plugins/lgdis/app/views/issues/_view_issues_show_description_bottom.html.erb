@@ -123,9 +123,19 @@ $(function(){
   // 地図表示
   google.maps.event.addDomListener(window, 'load', function() {
     var mapdiv = document.getElementById('map_canvas');
-    var lat  = <%= issue.issues_additional_data.first.try(:latitude) %>
-    var lon  = <%= issue.issues_additional_data.first.try(:longitude) %>
-    var addr = <%== "'#{issue.issues_additional_data.first.try(:address)}'" %>
+    <% issue_ad = issue.issues_additional_data
+       lat  = MAP_VALUES['ishi_lat']
+       lon  = MAP_VALUES['ishi_lon']
+       addr = MAP_VALUES['ishi_addr']
+       unless issue_ad.blank?
+         lat = issue_ad.first.latitude.blank? ? MAP_VALUES['ishi_lat'] : issue_ad.first.latitude
+         lon = issue_ad.first.longitude.blank? ? MAP_VALUES['ishi_lon'] : issue_ad.first.longitude
+         addr = issue_ad.first.address.blank? ? MAP_VALUES['ishi_addr'] : issue_ad.first.addr
+       end
+    %>
+    var lat  = <%= lat %>;
+    var lon  = <%= lon %>;
+    var addr = <%== "'#{addr}'" %>;
 
     var myOptions = {
         zoom: 13,
