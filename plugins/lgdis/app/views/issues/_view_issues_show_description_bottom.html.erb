@@ -85,11 +85,12 @@ end %>
 </tr>
 </table>
 <%= print_xml_field(val, "xml_body") %>
+<% end %>
 
 <fieldset class="collapsible collapsed">
 <legend onclick="toggleFieldset(this);"><%= l(:map) %></legend>
-    <div  style="display: none;" id="map_canvas" class="map_field"></div>
-  </legend>
+    <div style="display: none;" id="map_canvas" class="map_field"></div>
+</legend>
 </fieldset>
 
 <script>
@@ -140,6 +141,5 @@ end %>
   });
   //]]>
 </script>
-<% end %>
 <% end %>
 
