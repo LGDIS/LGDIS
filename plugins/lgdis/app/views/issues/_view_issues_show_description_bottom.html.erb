@@ -64,16 +64,7 @@ end %>
   <th class="xml_control"><%= l(:field_xml_control) %>:</th>
 </tr>
 </table>
-<input type="checkbox" id="xml_control_view_sampling" checked><label for="xml_control_view_sampling">石巻市関連情報のみ</label>
-<%== print_xml_field(val, "xml_control") %>
-<script>
-$(function(){
-  $("#xml_control_view_sampling").change(function(){
-    $("#xml_control_all").toggle(!this.checked);
-    $("#xml_control_sampling").toggle(this.checked);
-  }).change();
-});
-</script>
+<%= print_xml_field(val, "xml_control") %>
 <% end %>
 
 <% if val = issue.xml_head %>
@@ -83,16 +74,7 @@ $(function(){
   <th class="xml_head"><%= l(:field_xml_head) %>:</th>
 </tr>
 </table>
-<input type="checkbox" id="xml_head_view_sampling" checked><label for="xml_head_view_sampling">石巻市関連情報のみ</label>
-<%== print_xml_field(val, "xml_head") %>
-<script>
-$(function(){
-  $("#xml_head_view_sampling").change(function(){
-    $("#xml_head_all").toggle(!this.checked);
-    $("#xml_head_sampling").toggle(this.checked);
-  }).change();
-});
-</script>
+<%= print_xml_field(val, "xml_head") %>
 <% end %>
 
 <% if val = issue.xml_body %>
@@ -102,8 +84,7 @@ $(function(){
   <th class="xml_body"><%= l(:field_xml_body) %>:</th>
 </tr>
 </table>
-<input type="checkbox" id="xml_body_view_sampling" checked><label for="xml_body_view_sampling">石巻市関連情報のみ</label>
-<%== print_xml_field(val, "xml_body") %>
+<%= print_xml_field(val, "xml_body") %>
 
 <fieldset class="collapsible collapsed">
 <legend onclick="toggleFieldset(this);"><%= l(:map) %></legend>
@@ -112,13 +93,6 @@ $(function(){
 </fieldset>
 
 <script>
-$(function(){
-  $("#xml_body_view_sampling").change(function(){
-    $("#xml_body_all").toggle(!this.checked);
-    $("#xml_body_sampling").toggle(this.checked);
-  }).change();
-});
-
   //<![CDATA[
   // 地図表示
   google.maps.event.addDomListener(window, 'load', function() {
