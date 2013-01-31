@@ -6,10 +6,10 @@ module Lgdis
     def self.included(base)
       base.extend(ClassMethods)
       base.send(:include, InstanceMethods)
-      
+
       base.class_eval do
         unloadable
-        has_many :issues_additional_data, :class_name => 'IssuesAdditionDatum'
+        has_many :geographies
 
 
         validates :xml_control_status, :length => {:maximum => 12}
