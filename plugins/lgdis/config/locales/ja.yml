@@ -36,6 +36,7 @@ ja:
   field_xml_head_infokindversion: 運用種別情報のバージョン番号
   field_xml_head_text: 見出し文
   field_xml_body: XMLBody部
+  button_xml_view_sampling: 石巻市関連情報のみ
   
   ####
   # 避難所開設機能

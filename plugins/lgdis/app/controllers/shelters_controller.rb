@@ -115,7 +115,7 @@ class SheltersController < ApplicationController
     url    = URI.parse(SETTINGS["lgdpm"]["url"]) # LGDPMのIP
     Net::HTTP.start(url.host, url.port){|http|
       # ユーザ認証画面
-      req1 = Net::HTTP::Post.new('/users/sign_in.json')
+      req1 = Net::HTTP::Post.new(SETTINGS["lgdpm"]["login_path"])
       # Basic認証の設定
       req1.basic_auth(SETTINGS["lgdpm"]["basic_auth"]["user"], SETTINGS["lgdpm"]["basic_auth"]["password"])
       # ユーザ認証の設定
@@ -124,7 +124,7 @@ class SheltersController < ApplicationController
       # 認証情報をCookieから取得
       res1.get_fields('Set-Cookie').each{|str| k,v = str[0...str.index(';')].split('='); cookie[k] = v}
       # 避難者情報取得
-      req2 = Net::HTTP::Get.new('/evacuees/index.json', {'Cookie'=>cookie.map{|k,v| "#{k}=#{v}"}.join(';')})
+      req2 = Net::HTTP::Get.new(SETTINGS["lgdpm"]["index_path"], {'Cookie'=>cookie.map{|k,v| "#{k}=#{v}"}.join(';')})
       res2 = http.request(req2)
       # 取得した結果をパース
       result = JSON.parse(res2.body)
