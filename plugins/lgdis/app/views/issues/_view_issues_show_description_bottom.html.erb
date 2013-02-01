@@ -102,7 +102,7 @@ end %>
   // 地図表示
   google.maps.event.addDomListener(window, 'load', function() {
     var mapdiv = document.getElementById('map_canvas');
-    <% issue_ad = issue.issues_additional_data
+    <% issue_ad = issue.issue_geographies
        lat  = MAP_VALUES['ishi_lat']
        lon  = MAP_VALUES['ishi_lon']
        addr = MAP_VALUES['ishi_addr']

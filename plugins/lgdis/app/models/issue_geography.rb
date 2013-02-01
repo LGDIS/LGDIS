@@ -1,4 +1,4 @@
-class Geography < ActiveRecord::Base
+class IssueGeography < ActiveRecord::Base
   unloadable
 
   belongs_to :issue

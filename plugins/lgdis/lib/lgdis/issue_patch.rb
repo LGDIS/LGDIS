@@ -9,7 +9,7 @@ module Lgdis
 
       base.class_eval do
         unloadable
-        has_many :geographies
+        has_many :issue_geographies
 
 
         validates :xml_control_status, :length => {:maximum => 12}
