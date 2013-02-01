@@ -9,6 +9,7 @@ module Lgdis
 
       base.class_eval do
         unloadable
+        before_filter :build_new_issue_geography_from_params, :only => [:create]
         before_filter :get_delivery_histories,
                       :only => [:show]
         before_filter :get_destination_list,
@@ -21,6 +22,17 @@ module Lgdis
 
     module InstanceMethods
       private
+
+      # リクエストパラメータから、登録用のチケット地理データを構築します
+      # ==== Args
+      # ==== Return
+      # ==== Raise
+      def build_new_issue_geography_from_params
+        return true if !params[:issue] || !params[:issue][:issue_geographies]
+        params[:issue][:issue_geographies].each do |issue_geography|
+          @issue.issue_geographies.build(issue_geography)
+        end
+      end
 
       def get_delivery_histories
         @delivery_history = DeliveryHistory.find_by_sql(
