@@ -56,7 +56,17 @@ module Lgdis
         xml_doc = Nokogiri::XML(xml)
         return "" if xml_doc.blank?
 
-        out = ""
+        # Sentence 以降の弟をnode を削除
+        nodes = xml_doc.xpath('//Sentence/following-sibling::node()')
+        unless nodes.blank?
+          nodes.each do |node|
+            (xml_doc/"#{node.name}").remove
+          end
+        end
+
+        out = "<input type='checkbox' id='#{name}_view_sampling' checked>" +
+              "<label for='#{name}_view_sampling'>#{l(:button_xml_view_sampling)}</label>"
+
         # 抽出データ表示
         begin
           out << "<div class='xml_field #{name}' id='#{name}_sampling'>#{print_xml(xml_doc.xpath(XML_VIEW_SAMPLING_XPATH))}</div>"
@@ -66,7 +76,17 @@ module Lgdis
 
         # 全データ表示
         out << "<div class='xml_field #{name}' id='#{name}_all'>#{print_xml(xml_doc.children)}</div>"
-        out
+
+        out << javascript_tag(<<-EOF)
+          $(function(){
+            $("##{name}_view_sampling").change(function(){
+              $("##{name}_all").toggle(!this.checked);
+              $("##{name}_sampling").toggle(this.checked);
+            }).change();
+          });
+        EOF
+
+        out.html_safe
       end
 
       private

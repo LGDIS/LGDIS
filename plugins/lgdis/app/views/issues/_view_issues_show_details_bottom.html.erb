@@ -6,6 +6,8 @@
         <%= form_tag("/deliver_issues/request_delivery") do %>
           <%= hidden_field_tag :issue_id, @issue.id %>
           <%= hidden_field_tag :current_user, User.current %>
+          <%= hidden_field_tag :project_id, @project.identifier %>
+
           <% unless @destination_list.blank? %>
             <% @destination_list.each do |dest|%>
                 <%= check_box_tag "ext_out_target[]", dest['target_num'] %><label><%= dest['name'] %></label>
@@ -20,12 +22,14 @@
             <% @delivery_history.each do | d_h | %>
               <%= form_tag("/deliver_issues/allow_delivery") do %>
                 <p class="table_border">
-                <%= tm_fmt(d_h.process_date) %>
-                <%= DST_LIST['destination_name'][d_h.delivery_place_id] %>
-                <%= conv_st(d_h.status) %>
-                <%= hidden_field_tag 'ext_out_id', d_h.delivery_place_id %>
-                <%= hidden_field_tag 'issue_id', @issue.id %>
+                <label><%= tm_fmt(d_h.process_date) %></label>
+                <label><%= DST_LIST['destination_name'][d_h.delivery_place_id] %></label>
+                <label><%= DST_LIST['status'][d_h.status] %></label>
+                <label><%= hidden_field_tag 'ext_out_id', d_h.delivery_place_id %></label>
+                <label><%= hidden_field_tag 'issue_id', @issue.id %></label>
                 <% if d_h.status == 'request' %>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<label style="text-align: right"><%#= link_to "配信確認", {:controller => "test", :action => "index", :project_id=>@project, :issue => @issue, :dest_list=>@destination_list} %></label>
                   <%= submit_tag l(:allow),  :name=>'allow' %>
                   <%= submit_tag l(:reject), :name=>'reject' %>
                 <% end %>
@@ -39,7 +43,7 @@
               <p class="table_border">
                 <%= tm_fmt(d_h.process_date) %>
                 <%= DST_LIST['destination_name'][d_h.delivery_place_id] %>
-                <%= conv_st(d_h.status) %>
+                <%= DST_LIST['status'][d_h.status] %>
               </p>
             <% end %>
           <% end %>

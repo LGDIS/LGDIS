@@ -36,7 +36,7 @@ class SheltersController < ApplicationController
     when "new"
       redirect_to :action => :new
     when "clear"
-      @search   = Shelter.search
+      @search   = Shelter.where(:project_id => @project.id).search
       @shelters = @search.paginate(:page => params[:page], :per_page => 30).order("shelter_code ASC")
       render :action => :index
     when "bulk_update"
@@ -109,6 +109,59 @@ class SheltersController < ApplicationController
   # ==== Return
   # ==== Raise
   def summary
+    # LGDPMから避難者集計情報を取得する
+    result = nil
+    cookie = {}
+    url    = URI.parse(SETTINGS["lgdpm"]["url"]) # LGDPMのIP
+    Net::HTTP.start(url.host, url.port){|http|
+      # ユーザ認証画面
+      req1 = Net::HTTP::Post.new(SETTINGS["lgdpm"]["login_path"])
+      # Basic認証の設定
+      req1.basic_auth(SETTINGS["lgdpm"]["basic_auth"]["user"], SETTINGS["lgdpm"]["basic_auth"]["password"])
+      # ユーザ認証の設定
+      req1.set_form_data({'user[login]'=>SETTINGS["lgdpm"]["login"], 'user[password]'=>SETTINGS["lgdpm"]["password"]}, ';')
+      res1 = http.request(req1)
+      # 認証情報をCookieから取得
+      res1.get_fields('Set-Cookie').each{|str| k,v = str[0...str.index(';')].split('='); cookie[k] = v}
+      # 避難者情報取得
+      req2 = Net::HTTP::Get.new(SETTINGS["lgdpm"]["index_path"], {'Cookie'=>cookie.map{|k,v| "#{k}=#{v}"}.join(';')})
+      res2 = http.request(req2)
+      # 取得した結果をパース
+      result = JSON.parse(res2.body)
+    }
+    
+    # 避難所更新処理
+    ActiveRecord::Base.transaction do
+      result.each do |r|
+        # 避難所識別番号を元に避難所情報を取得
+        shelter = Shelter.find_by_shelter_code(r["shelter_name"])
+        # 該当する避難所がなければ処理しない
+        next if shelter.blank?
+        # 人数（自主避難人数を含む）
+        shelter.head_count = r["head_count"]
+        # 世帯数（自主避難世帯数を含む）
+        # shelter.households = r["households_count"]
+        # 負傷_計
+        shelter.injury_count = r["injury_flag_count"]
+        # 要介護度3以上_計
+        shelter.upper_care_level_three_count = r["upper_care_level_three_count"]
+        # 一人暮らし高齢者（65歳以上）_計
+        shelter.elderly_alone_count = r["elderly_alone_count"]
+        # 高齢者世帯（夫婦共に65歳以上）_計
+        shelter.elderly_couple_count = r["elderly_couple_count"]
+        # 寝たきり高齢者_計
+        shelter.bedridden_elderly_count = r["bedridden_elderly_count"]
+        # 認知症高齢者_計
+        shelter.elderly_dementia_count = r["elderly_dementia_count"]
+        # 療育手帳所持者_計
+        shelter.rehabilitation_certificate_count = r["rehabilitation_certificate_count"]
+        # 身体障害者手帳所持者_計
+        shelter.physical_disability_certificate_count = r["physical_disability_certificate_count"]
+        
+        shelter.save!
+      end if result.present?
+    end
+    
     redirect_to :action => :index
   end
   
@@ -139,7 +192,7 @@ class SheltersController < ApplicationController
     @shelter = Shelter.new()
     @shelter.assign_attributes(params[:shelter], :as => :shelter)
     @shelter.project_id = @project.id
-    @shelter.disaster_code = @project.identifier
+    @shelter.disaster_code = @project.disaster_code
     if @shelter.save
       flash[:notice] = l(:notice_shelter_successful_create, :id => "##{@shelter.id} #{@shelter.name}")
       redirect_to :action  => :edit, :id => @shelter.id

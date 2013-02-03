@@ -11,7 +11,8 @@ class Lgdis::ExtOut::SMTP_JichiShokuin  < ActiveRecord::Base
     begin
       if test_flg.blank?
           #TODO: p "////////ML-TITLE-MSG//////////////////" + mailing_list_name + " " + title + " " + message #k-takami SMTP-AUTH
-          @mail=Lgdis::ExtOut::Mailer.setup(mailing_list_name, title, message, "utf-8", "root@localhost.localdomain") 
+          #@mail=Lgdis::ExtOut::Mailer.setup(mailing_list_name, title, message, "utf-8", "root@localhost.localdomain") 
+          @mail=Lgdis::ExtOut::Mailer.setup(mailing_list_name, title, message, "ISO2022-JP", "root@localhost.localdomain") 
           @mail.deliver
       end
       # TODO

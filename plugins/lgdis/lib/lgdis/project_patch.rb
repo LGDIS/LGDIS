@@ -3,6 +3,8 @@ require_dependency 'project'
 
 module Lgdis
   module ProjectPatch
+    IDENTIFER_PREFIX = "I"
+    
     def self.included(base)
       base.extend(ClassMethods)
       base.send(:include, InstanceMethods)
@@ -11,8 +13,9 @@ module Lgdis
         unloadable
         validate :skip_identifer_validation, :on => :create
         before_create :set_identifer
-        alias_method_chain :identifier_frozen?, :always_frozen
-        alias_method_chain :initialize, :customize
+        after_create :import_initial_data
+        alias_method_chain :identifier_frozen?, :always_freeze
+        alias_method_chain :initialize, :identifier_customize
       end
     end
     
@@ -38,7 +41,7 @@ module Lgdis
         @identifier_defrosted = true
         # プロジェクト識別子を設定
         seq =  connection.select_value("select nextval('project_identifier_seq')")
-        self.identifier = "ishinomaki04202#{format("%015d", seq)}"
+        self.identifier = "#{IDENTIFER_PREFIX}04202#{format("%015d", seq)}"
       end
       
       # 識別子の凍結状態
@@ -47,9 +50,9 @@ module Lgdis
       # ==== Args
       # ==== Return
       # ==== Raise
-      def identifier_frozen_with_always_frozen?
+      def identifier_frozen_with_always_freeze?
         return true if (new_record? && !@identifier_defrosted)
-        return identifier_frozen_without_always_frozen?
+        return identifier_frozen_without_always_freeze?
       end
       
       # プロジェクト初期化処理のカスタマイズ
@@ -57,11 +60,28 @@ module Lgdis
       # ==== Args
       # ==== Return
       # ==== Raise
-      def initialize_with_customize(attributes=nil, *args)
-        initialize_without_customize  # 既存処理
+      def initialize_with_identifier_customize(attributes=nil, *args)
+        initialize_without_identifier_customize  # 既存処理
         @identifier_defrosted = true  # 一時的に変更可
         self.identifier = l(:description_project_identifier_on_create)
         @identifier_defrosted = false  # 再度、凍結
+      end
+      
+      # 災害コードを取得
+      # ==== Args
+      # ==== Return
+      # 災害コード
+      # ==== Raise
+      def disaster_code
+        self.identifier.delete(IDENTIFER_PREFIX)
+      end
+      
+      # 各種情報初期登録処理
+      # ==== Args
+      # ==== Return
+      # ==== Raise
+      def import_initial_data
+        Shelter.import_initial_data(self) #避難所
       end
     end
   end

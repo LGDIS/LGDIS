@@ -6,11 +6,10 @@ module Lgdis
     def self.included(base)
       base.extend(ClassMethods)
       base.send(:include, InstanceMethods)
-      
+
       base.class_eval do
         unloadable
-        has_many :issues_additional_data, :class_name => 'IssuesAddtionDatum'
-
+        has_many :issue_geographies, :dependent => :destroy
 
         validates :xml_control_status, :length => {:maximum => 12}
         validates :xml_control_editorialoffice, :length => {:maximum => 50}
@@ -49,6 +48,8 @@ module Lgdis
           'xml_head_text',
           'xml_body',
           :if => lambda {|issue, user| issue.new_record? || user.allowed_to?(:edit_issues, issue.project) }
+        
+        alias_method_chain :copy_from, :geographies
       end
     end
     
@@ -56,7 +57,21 @@ module Lgdis
     end
     
     module InstanceMethods
+      # チケット情報のコピー
+      # チケット位置情報もコピーするように処理追加
+      # ==== Args
+      # ==== Return
+      # ==== Raise
+      def copy_from_with_geographies(arg, options={})
+        copy_from_without_geographies(arg, options)
+        return self if !@copied_from || !@copied_from.issue_geographies
+        @copied_from.issue_geographies.each do |copied_from_g|
+          self.issue_geographies.build(copied_from_g.attributes.dup.except(:id, :issue_id, :created_at, :updated_at))
+        end
+        self
+      end
     end
+    
   end
 end
 

@@ -13,7 +13,8 @@ class Lgdis::ExtOut::SMTP_Auth  < ActiveRecord::Base
 
     begin
       if test_flg.blank?
-         @mail=Lgdis::ExtOut::Mailer.setup_auth(mailing_list_name, title, message, "utf-8", "root@localhost.localdomain", "apl", "JBC03142")  
+         #@mail=Lgdis::ExtOut::Mailer.setup_auth(mailing_list_name, title, message, "utf-8", "root@localhost.localdomain", "apl", "JBC03142")  
+         @mail=Lgdis::ExtOut::Mailer.setup_auth(mailing_list_name, title, message, "ISO2022-JP", "root@localhost.localdomain", "apl", "JBC03142")  
          @mail.deliver
       end
       # TODO

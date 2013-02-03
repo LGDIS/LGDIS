@@ -44,7 +44,7 @@ class Lgdis::ExtOut::Mailer < ActionMailer::Base
         :user_name      => smtp_username ,
         :password       => smtp_password
       }
-
+#ISOISO2022-JP
 #       ActionMailer::Base.smtp_settings = 
 #       { :address        => 'smtp.gmail.com',
 #         :enable_starttls_auto => true,

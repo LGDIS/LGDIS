@@ -44,10 +44,10 @@ module Lgdis
     # ==== Raise
     def new_project_name(issue)
       prj_name = ""
-      # 標題 + 発表時刻
-      prj_name += issue.xml_head_title.to_s
-      prj_name += " " if prj_name.present?
+      # 発表時刻 + 標題
       prj_name += format_time(issue.xml_head_reportdatetime) if issue.xml_head_reportdatetime
+      prj_name += " " if prj_name.present?
+      prj_name += issue.xml_head_title.to_s
       # ブランクの場合は、チケット作成日時を暫定的に設定
       prj_name = format_time(issue.created_on) if prj_name.blank?
       return prj_name

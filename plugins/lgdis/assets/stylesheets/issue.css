@@ -9,8 +9,14 @@ div.xml_field td {
 p.table_border {
   width: 500px;
   border: thin solid black;
-  margin-top: 0px;
+  margin-top: -1px;
   margin-bottom: 0px;
-  padding-top: 0px;
-  padding-bottom: 0px;
+  font-size: 1.0em;
+}
+
+div.map_field {
+  width: auto;
+  margin-left: auto;
+  margin-right: 10px;
+  height: 500px;
 }
