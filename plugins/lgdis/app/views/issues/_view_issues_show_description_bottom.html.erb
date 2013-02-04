@@ -106,28 +106,15 @@ end %>
   // ------------------------------------------------
   // ポイントデータ作成
   // DBにポイントデータが複数存在する可能性があるため配列で全てのポイントデータを保持
-  var global_points =
-  [
-    {"point": [38, 137], "remarks": "あそこ"},
-    {"point": [37, 138], "remarks": "ここ"},
-    {"point": [36, 139], "remarks": "そこ"}
-  ]
+  var global_points = <%== @points.to_json %>
 
   // ラインデータ作成
   // DBにラインデータが複数存在する可能性があるため配列で全てのラインデータを保持
-  var global_lines =
-  [
-    {"points": [[39, 137], [40, 138], [37, 139]], "remarks": "ここからあそこ"},
-    {"points": [[37, 136], [39, 137], [41, 140]], "remarks": "あそこからここ"}
-  ]
+  var global_lines = <%== @lines.to_json %>
 
   // ポリゴンデータ作成
   // DBにポリゴンデータが複数存在する可能性があるため配列で全てのポリゴンデータを作成
-  var global_polygons =
-    [
-      {"points": [[38, 140], [40, 138], [41, 139], [38, 140]], "remarks": "あのあたり"},
-      {"points": [[39, 141], [41, 139], [42, 140], [39, 141]], "remarks": "このあたり"}
-    ];
+  var global_polygons = <%== @polygons.to_json %>
 
   // ------------------------------------------------
   // グローバル変数
@@ -138,9 +125,10 @@ end %>
   // 初期化。bodyのonloadでinit()を指定することで呼び出してます
   function init() {
     // Google Mapで利用する初期設定用の変数
-    var latlng = new google.maps.LatLng(39, 138);
+    var latlng = new google.maps.LatLng(<%= MAP_VALUES['ishi_lat'] %>,
+                                        <%= MAP_VALUES['ishi_lon'] %>);
     var opts = {
-      zoom: 7,
+      zoom: 12,
       mapTypeId: google.maps.MapTypeId.ROADMAP,
       center: latlng
     };
@@ -149,20 +137,21 @@ end %>
     map = new google.maps.Map(document.getElementById("map"), opts);
 
     // ポイントマーカー作成
-    createPoints(global_points, map);
+      createPoints(global_points, map);
 
     // ポリライン作成
-    createPolyline(global_lines, map);
+      createPolyline(global_lines, map);
 
     // ポリゴン作成
-    createPolygon(global_polygons, map);
+      createPolygon(global_polygons, map);
+
   }
   /**
    * マーカー作成メソッド
    */
   function createPoints(points, map) {
     for (var i = 0; i < points.length; i++) {
-      var point = points[i].point;
+      var point = points[i].points;
       var remarks = points[i].remarks;
       var marker = new google.maps.Marker({
           position: new google.maps.LatLng(point[0], point[1]),
@@ -179,7 +168,7 @@ end %>
         google.maps.event.addListener(marker, 'click', function(e){
           var infowindow = new google.maps.InfoWindow({
                                content: this.get('remarks'), // thisはpolylineオブジェクト自体を指す
-                                position: e.latLng
+                               position: e.latLng
                                 });
           // infoWindow表示
           infowindow.open(map);
