@@ -1,9 +1,11 @@
 <% if issue.new_record? %>
 <%= javascript_tag do %>
   $(function(){
-    <% CF_DEFAULT_VALUES.each do |cf_id, vals| %>
+    <% CF_DEFAULT_VALUES.each do |cf_id, vals|
+        next unless issue.editable_custom_field_values.index{|ecf| ecf.custom_field_id == cf_id}
+        cf_field_id = "issue_custom_field_values_#{cf_id}" %>
     <% if vals = "ALL" %>
-    $("#issue_custom_field_values_<%= cf_id %> option").prop("selected",true);
+    $("#<%= cf_field_id %> option").prop("selected",true);
     <% end %>
     <% end -%>
   });
