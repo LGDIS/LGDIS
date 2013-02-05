@@ -87,9 +87,9 @@ end %>
 <%= print_xml_field(val, "xml_body") %>
 <% end %>
 
-<fieldset class="collapsible collapsed">
-<legend onclick="toggleFieldset(this);"><%= l(:map) %></legend>
-    <div style="display: none;" id="map_canvas" class="map_field"></div>
+<fieldset class="collapsible collapsed" >
+<legend onclick="toggleFieldset(this); init();"><%= l(:map) %></legend>
+    <div style="display: none;" id="map" class="map_field"></div>
 </legend>
 </fieldset>
 
@@ -100,67 +100,167 @@ end %>
 <script>
   //<![CDATA[
   // 地図表示
-  function initialize(){
-    <% issue_ad = issue.issue_geographies
-       lat  = MAP_VALUES['ishi_lat']
-       lon  = MAP_VALUES['ishi_lon']
-       addr = MAP_VALUES['ishi_addr']
-=begin
-       unless issue_ad.blank?
-         lat = issue_ad.first.latitude.blank? ? MAP_VALUES['ishi_lat'] : issue_ad.first.latitude
-         lon = issue_ad.first.longitude.blank? ? MAP_VALUES['ishi_lon'] : issue_ad.first.longitude
-         addr = issue_ad.first.address.blank? ? MAP_VALUES['ishi_addr'] : issue_ad.first.addr
-       end
-=end
-    %>
-    var lat  = <%= lat %>;
-    var lon  = <%= lon %>;
-    var addr = <%== "'#{addr}'" %>;
+  // ------------------------------------------------
+  // 地図表示用データ
+  // DBから取得したデータを下記のような形式で記載してく
+  // ------------------------------------------------
+  // ポイントデータ作成
+  // DBにポイントデータが複数存在する可能性があるため配列で全てのポイントデータを保持
+  var global_points = <%== @points.to_json %>
 
-    var initPos = new google.maps.LatLng(lat, lon);
-    var myOptions = {
-        center: initPos,
-        zoom: 13,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-       // scaleControl: true
-       // noClear: true
+  // ラインデータ作成
+  // DBにラインデータが複数存在する可能性があるため配列で全てのラインデータを保持
+  var global_lines = <%== @lines.to_json %>
+
+  // ポリゴンデータ作成
+  // DBにポリゴンデータが複数存在する可能性があるため配列で全てのポリゴンデータを作成
+  var global_polygons = <%== @polygons.to_json %>
+
+  // ------------------------------------------------
+  // グローバル変数
+  var map;
+  // ------------------------------------------------
+  // 各種メソッド
+
+  // 初期化。bodyのonloadでinit()を指定することで呼び出してます
+  function init() {
+    // Google Mapで利用する初期設定用の変数
+    var latlng = new google.maps.LatLng(<%= MAP_VALUES['ishi_lat'] %>,
+                                        <%= MAP_VALUES['ishi_lon'] %>);
+    var opts = {
+      zoom: 12,
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      center: latlng
     };
-    var mapdiv = document.getElementById('map_canvas');
-    var map = new google.maps.Map(mapdiv, myOptions);
 
-    // マーカ
-    var marker = new google.maps.Marker({
-      // TODO
-      position: new google.maps.LatLng(lat, lon),
-      map: map
-    });
-    // ポップアップ
-    var infowindow = new google.maps.InfoWindow({
-      // TODO
-      content: addr
-    });
+    // getElementById("map")の"map"は、body内の<div id="map">より
+    map = new google.maps.Map(document.getElementById("map"), opts);
 
-    // TODO
-    // issue_geographies テーブルより取得
-    var points = [
-      new google.maps.LatLng(35.003355,135.742607),
-      new google.maps.LatLng(35.009014,135.770159),
-      new google.maps.LatLng(34.98604,135.779815),
-      new google.maps.LatLng(34.963834,135.755997),
-      new google.maps.LatLng(35.003355,135.742607)
-    ];
-    var polygonOptions = {
-      paths: points,
-      strokeWeight: 5,
-      strokeColor: "#0000ff",
-      strokeOpacity: 1.5,
-      fillColor: "#008000",
-      fillOpacity: 1.5,
-      map : map
-    };
-    var poly = new google.maps.Polygon(polygonOptions);
+    // ポイントマーカー作成
+      createPoints(global_points, map);
+
+    // ポリライン作成
+      createPolyline(global_lines, map);
+
+    // ポリゴン作成
+      createPolygon(global_polygons, map);
+
   }
-  google.maps.event.addDomListener(window, 'load', initialize);
+  /**
+   * マーカー作成メソッド
+   */
+  function createPoints(points, map) {
+    for (var i = 0; i < points.length; i++) {
+      var point = points[i].points;
+      var remarks = points[i].remarks;
+      var marker = new google.maps.Marker({
+          position: new google.maps.LatLng(point[0], point[1]),
+          map: map
+
+      });
+
+      if (remarks) {
+        // polylineオブジェクトに備考文字を設定
+        // クリックイベント中にオブジェクトから文字列を取得する必要があるため
+        marker.set('remarks', remarks);
+
+        // クリックイベント時の処理
+        google.maps.event.addListener(marker, 'click', function(e){
+          var infowindow = new google.maps.InfoWindow({
+                               content: this.get('remarks'), // thisはpolylineオブジェクト自体を指す
+                               position: e.latLng
+                                });
+          // infoWindow表示
+          infowindow.open(map);
+        });
+      }
+    }
+  }
+
+  /**
+   * ポリライン作成メソッド
+   */
+  function createPolyline(lines, map) {
+    // 引数の配列数分ループ
+    for (var i = 0; i < lines.length; i++) {
+      var points = lines[i].points;
+      var remarks = lines[i].remarks;
+
+      // ポリラインオプション作成
+      var pathArray = createPathArray(points) // points変数からpathの配列を作成
+      var polylineOpts = {
+          map: map,
+          path: pathArray
+      };
+
+      // PolylineOptionsを利用してPolylineを作成
+      var polyline = new google.maps.Polyline(polylineOpts);
+
+      if (remarks) {
+        // polylineオブジェクトに備考文字を設定
+        // クリックイベント中にオブジェクトから文字列を取得する必要があるため
+        polyline.set('remarks', remarks);
+        // クリックイベント時の処理
+        google.maps.event.addListener(polyline, 'click', function(e){
+          var infowindow = new google.maps.InfoWindow({
+                               content: this.get('remarks'), // thisはpolylineオブジェクト自体を指す
+                               position: e.latLng
+                                });
+          // infoWindow表示
+          infowindow.open(map);
+        });
+      }
+    }
+  }
+
+  /**
+   * ポリゴン作成メソッド
+   */
+  function createPolygon(polygons, map) {
+    // 引数の配列数分ループ
+    for (var i = 0; i < polygons.length; i++) {
+      var points = polygons[i].points;
+      var remarks = polygons[i].remarks;
+      // ポリラインオプション作成
+      var pathArray = createPathArray(points) // points変数からpathの配列を作成
+      var polygonOpts = {
+          map: map,
+          paths: pathArray
+      };
+
+      // polygonOptionsを利用してPolygonを作成
+      var polygon = new google.maps.Polygon(polygonOpts);
+
+      // remarks(備考)の値がある場合
+      if (remarks) {
+        // polygonオブジェクトに備考文字を設定
+        // クリックイベント中にオブジェクトから文字列を取得する必要があるため
+        polygon.set('remarks', remarks);
+
+        // クリックイベント時の処理
+        google.maps.event.addListener(polygon, 'click', function(e){
+          var infowindow = new google.maps.InfoWindow({
+                               content: this.get('remarks'), // thisはpolygonオブジェクト自体を指す
+                               position: e.latLng
+                           });
+          // infoWindow表示
+          infowindow.open(map);
+        });
+      }
+    }
+  }
+
+  /**
+   * point([緯度,軽度])の配列からLatLng型の配列を作成します
+   */
+  function createPathArray(points) {
+    var pathArray = new Array();
+    for (var i = 0; i < points.length; i++) {
+      var aPoint = points[i];
+      pathArray[i] = new google.maps.LatLng(aPoint[0], aPoint[1]);
+    }
+    return pathArray;
+  }
   //]]>
 </script>
 <% end %>
