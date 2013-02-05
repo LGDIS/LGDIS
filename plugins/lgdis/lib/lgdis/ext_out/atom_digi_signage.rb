@@ -10,21 +10,17 @@ class Lgdis::ExtOut::ATOM_DigiSignage  < ActiveRecord::Base
         #ATOM生成URL例: http://192.168.18.130:3000/projects.atom?key=6724553250c556a08a5ff4a76724d8b5ed1c3a45
         SetupXML.arrange_and_put(msg)
       end
-
-      # TODO
-      # アーカイブ出力に関して、課題検討中? 現在はlogger で対応
-      # ① rake タスクとして、配信要求キューを取得するワーカーを起動する。
-      # ② 自治体職員向け SMTP I/F を呼び出す。
+      #TODO: アーカイブ出力に関して、課題検討中? 現在はlogger で対応
       Rails.logger.info("#{o.create_log_time(msg,modulename)}")
-      #k-takami アーカイブログ出力例:　
-      o.leave_log(msg)
-
+      status = true
     rescue => e
       Rails.logger.error("#{e.backtrace.join("\n")}" + "\n" + \
                          "#{o.create_log_time(msg,modulename)}")
+      status = false
     ensure
-      # TODO
-      # 配信管理側に処理完了ステータスを通知する必要あり
+      #アーカイブログ出力　
+      o.leave_log(msg_hash)
+      return status 
     end
   end
 

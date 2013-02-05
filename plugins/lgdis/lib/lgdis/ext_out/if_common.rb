@@ -1,5 +1,6 @@
 class IfCommon
   def leave_log(msg)
+    modulename="if_common"
     begin
       # アーカイブログ出力例:　
       #TODO:　 mkdir #{ClassName} ; chown apl:apl #{iClassName}/　
@@ -8,13 +9,14 @@ class IfCommon
       methodParentName="LGDIS"   
       outfile="#{Rails.root.to_s}/log/#{methodParentName}/#{time}-Sent.log" 
       File.open(outfile, "w+b", 0644){|f| f.write(msg) } 
-#       Rails.logger.info("IFCOMMON: #{(msg)}")
-
+      #Rails.logger.info("IFCOMMON: #{(msg)}")
+      status = true
     rescue => e
       Rails.logger.error("#{e.backtrace.join("\n")}" + "\n" + \
                          "#{create_log_time(msg, modulename)}")
+      status = false
     ensure
-
+      return status 
     end
   end
 
