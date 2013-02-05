@@ -1,0 +1,22 @@
+div.search_condition label{
+  font-weight: normal;
+}
+
+.split3contentleft {
+  float: left;
+  width: 32%;
+}
+
+.split3contentcenter {
+  float: left;
+  width: 32%;
+}
+
+.split3contentright {
+  float: left;
+  width: 32%;
+}
+
+.nonsplitcontent {
+  clear: both;
+}

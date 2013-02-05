@@ -45,6 +45,13 @@ Redmine::Plugin.register :lgdis do
   end
   menu :project_menu, :shelters, { :controller => 'shelters', :action => 'index' }, :caption => :label_shelter, :after => :new_issue, :param => :project_id
 
+  #避難勧告指示:(注:モデル名を'evacuation'に短縮する可能性あり)
+  project_module :evacuation_advisories do
+    permission :view_evacuation_advisories, :evacuation_advisories => [:index, :edit]
+    permission :manage_evacuation_advisories, :evacuation_advisories => [:new, :create, :update, :destroy, :bulk_update, :ticket, :summary]
+  end
+  menu :project_menu, :evacuation_advisories, { :controller => 'evacuation_advisories', :action => 'index' }, :caption => :label_evacuation_advisory, :after => :new_issue, :param => :project_id
+
   project_module :deliver_issues do
     # モジュール表示の為パーミッション定義を
     # project_module で囲む
