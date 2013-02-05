@@ -3,7 +3,6 @@
 
 <h2><%= l(:label_evacuation_advisory_plural) %></h2>
 
-<%#<%debugger+|%>
 <%= error_messages_for_evacuation_advisories(@evacuation_advisories) %>
 
 <%= form_for @search, :url => project_evacuation_advisories_search_path, :html => {:method => :post} do |f| %>

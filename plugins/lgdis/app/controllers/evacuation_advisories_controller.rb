@@ -61,7 +61,6 @@ class EvacuationAdvisoriesController < ApplicationController
   # ==== Return
   # ==== Raise
   def bulk_update
-    debugger
     if params[:evacuation_advisories].present?
       evacuation_advisory_id = params[:evacuation_advisories].keys
       @search    = EvacuationAdvisory.search(:id_in => evacuation_advisory_id)
@@ -91,7 +90,6 @@ class EvacuationAdvisoriesController < ApplicationController
   # ==== Return
   # ==== Raise
   def ticket
-    debugger
     # 避難所情報が存在しない場合、処理しない
     if EvacuationAdvisory.where(:project_id => @project.id).present?
       ActiveRecord::Base.transaction do
