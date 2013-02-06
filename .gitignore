@@ -26,6 +26,7 @@
 /tmp/thumbnails/*
 /vendor/cache
 /vendor/rails
+/plugins/lgdis/config/settings.yml
 *.rbc
 
 /.bundle
