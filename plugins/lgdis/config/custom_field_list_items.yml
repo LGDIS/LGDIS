@@ -1,26 +1,26 @@
 load_dir: ./plugins/lgdis/files/custom_field_list_items # 読込ファイルの配置ディレクトリ
 load_settings:  # 読込設定詳細
-  # カスタムフィールドID: 読込ファイル名
-  1:    ConsumerRole.csv                # 受信媒体
-  3:    Areas.csv                       # 事象の起こった場所
-  14:   DisasterInformationType.csv     # 情報識別区分
-  16:   OtherSubCategory.csv            # 小分類（生活情報・広報・その他）
-  132:  RoadSubCategory.csv             # 小分類（交通）
-  347:  WaterSubCategory.csv            # 小分類（水道・給水）
-  413:  SubCategory.csv                 # 小分類
-  134:  MessageStatus.csv               # メッセージ状態
-  135:  MessageType.csv                 # メッセージ種別
-  136:  DeliveryArea.csv                # 配信先
-  137:  Accuracy.csv                    # 確実度
-  138:  SupportStatus.csv               # 対応
-  139:  DamageType.csv                  # 被害種別
-  31:   HouseDamageType.csv             # 被害区分（住家被害区分）
-  34:   BuildingDamageObject.csv        # 被害対象（非住家被害区分）
-  35:   BuildingDamageType.csv          # 被害区分（非住家被害区分）
-  140:  OtherDamageObject.csv           # 被害対象（その他被害区分）
-  141:  BuildingDamageType.csv          # 被害区分（その他被害区分）
-  38:   ShelterWarehouse.csv            # 避難所・倉庫名
-  39:   RequirementCategory.csv         # 要望カテゴリ
-  40:   SupplyCategory.csv              # 物資カテゴリ
-  115:  HeadquartersType.csv            # 本部種別
-  116:  EstablishStatus.csv             # 設置状況
+  # カスタムフィールドID: [読込ファイル名, 読込列番号(0始まり)]
+  1:    [ConsumerRole.csv, 1]               # 受信媒体
+  3:    [Areas.csv, 1]                      # 事象の起こった場所
+  14:   [DisasterInformationType.csv, 1]    # 情報識別区分
+  16:   [OtherSubCategory.csv, 1]           # 小分類（生活情報・広報・その他）
+  132:  [RoadSubCategory.csv, 1]            # 小分類（交通）
+  347:  [WaterSubCategory.csv, 1]           # 小分類（水道・給水）
+  413:  [SubCategory.csv, 1]                # 小分類
+  134:  [MessageStatus.csv, 1]              # メッセージ状態
+  135:  [MessageType.csv, 1]                # メッセージ種別
+  136:  [DeliveryArea.csv, 1]               # 配信先
+  137:  [Accuracy.csv, 1]                   # 確実度
+  138:  [SupportStatus.csv, 1]              # 対応
+  139:  [DamageType.csv, 1]                 # 被害種別
+  31:   [HouseDamageType.csv, 1]            # 被害区分（住家被害区分）
+  34:   [BuildingDamageObject.csv, 1]       # 被害対象（非住家被害区分）
+  35:   [BuildingDamageType.csv, 1]         # 被害区分（非住家被害区分）
+  140:  [OtherDamageObject.csv, 1]          # 被害対象（その他被害区分）
+  141:  [BuildingDamageType.csv, 1]         # 被害区分（その他被害区分）
+  38:   [ShelterWarehouse.csv, 1]           # 避難所・倉庫名
+  39:   [RequirementCategory.csv, 1]        # 要望カテゴリ
+  40:   [SupplyCategory.csv, 1]             # 物資カテゴリ
+  115:  [HeadquartersType.csv, 1]           # 本部種別
+  116:  [EstablishStatus.csv, 1]            # 設置状況

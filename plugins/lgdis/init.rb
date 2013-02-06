@@ -24,13 +24,14 @@ require_dependency 'lgdis/controller_hooks'
 #require_dependency 'lgdis/show_view_hooks' # Viewホックポイントの確認用
 require_dependency 'lgdis/ext_out/twitter'
 require_dependency 'lgdis/ext_out/facebook'
-require_dependency 'lgdis/ext_out/smtp_jichi_shokuin'  #k-takami
-require_dependency 'lgdis/ext_out/smtp_auth.rb'       #k-takami
-require_dependency 'lgdis/ext_out/atom_digi_signage.rb'#k-takami
-require_dependency 'lgdis/ext_out/soap_kj_commons.rb'  #k-takami
-require_dependency 'lgdis/ext_out/if_common.rb'       #k-takami
-require_dependency 'lgdis/ext_out/mailer.rb'          #k-takami
-require_dependency 'lgdis/ext_out/feeder.rb'          #k-takami
+require_dependency 'lgdis/ext_out/smtp_jichi_shokuin'  
+require_dependency 'lgdis/ext_out/smtp_auth.rb'        
+require_dependency 'lgdis/ext_out/atom_digi_signage.rb'
+require_dependency 'lgdis/ext_out/soap_kj_commons.rb'  
+require_dependency 'lgdis/ext_out/if_common.rb'      
+require_dependency 'lgdis/ext_out/mailer.rb'        
+require_dependency 'lgdis/ext_out/feeder.rb'       
+require_dependency 'lgdis/ext_out/datum_conv.rb'  
 
 Redmine::Plugin.register :lgdis do
   name 'LGDIS (Local Government Disaster Information System) plugin'
@@ -43,6 +44,13 @@ Redmine::Plugin.register :lgdis do
     permission :manage_shelters, :shelters => [:new, :create, :update, :destroy, :bulk_update, :ticket, :summary]
   end
   menu :project_menu, :shelters, { :controller => 'shelters', :action => 'index' }, :caption => :label_shelter, :after => :new_issue, :param => :project_id
+
+  #避難勧告指示:(注:モデル名を'evacuation'に短縮する可能性あり)
+  project_module :evacuation_advisories do
+    permission :view_evacuation_advisories, :evacuation_advisories => [:index, :edit]
+    permission :manage_evacuation_advisories, :evacuation_advisories => [:new, :create, :update, :destroy, :bulk_update, :ticket, :summary]
+  end
+  menu :project_menu, :evacuation_advisories, { :controller => 'evacuation_advisories', :action => 'index' }, :caption => :label_evacuation_advisory, :after => :new_issue, :param => :project_id
 
   project_module :deliver_issues do
     # モジュール表示の為パーミッション定義を

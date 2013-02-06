@@ -7,6 +7,9 @@ gem 'acts_as_paranoid'  # 論理削除
 gem 'oauth'
 gem 'twitter'
 gem 'koala'
+# gem 'jpmobile', '3.0.6'
+
+
 
 # xml 表示
 gem 'nokogiri'

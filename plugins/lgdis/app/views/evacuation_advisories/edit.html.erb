@@ -1,0 +1,24 @@
+<%= stylesheet_link_tag params[:controller], :plugin => 'lgdis' %>
+<% html_title l(:label_evacuation_advisory_new) -%>
+
+<%= form_for @evacuation_advisory, :url => {:action => :update, :project_id => @project} do |f| %>
+  <h2>
+    <%= l(:label_evacuation_advisory_new) %>
+    <span style="float: right;">
+      <% if authorize_for(:evacuation_advisories, :update) # 権限判定 %>
+        <%= f.submit l(:button_save) %>
+      <% end %>
+      <% if authorize_for(:evacuation_advisories, :destroy) # 権限判定 %>
+        <input type="button" value="<%= l(:button_delete) %>" onclick="if (window.confirm('<%= l(:text_evacuation_advisory_destroy_confirmation) %>')) window.location='<%= url_for :action => :destroy, :id => @evacuation_advisory, :project_id => @project %>'; return false;">
+      <% end %>
+      <input type="button" value="<%= l(:button_back) %>" onclick="history.back()">
+    </span>
+  </h2>
+
+  <div class="box tabular">
+    <div id="all_attributes">
+      <% @disabled = true unless authorize_for(:evacuation_advisories, :update) # 権限判定 %>
+      <%= render :partial => 'form', :locals => {:f => f} %>
+    </div>
+  </div>
+<% end %>
