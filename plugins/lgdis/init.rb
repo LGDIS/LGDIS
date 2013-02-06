@@ -11,7 +11,6 @@ ActiveSupport::Dependencies.autoload_paths += %W(#{Rails.root}/plugins/lgdis/lib
 API_KEY  = YAML.load_file("#{Rails.root}/plugins/lgdis/config/api_key.yml")
 DST_LIST = YAML.load_file("#{Rails.root}/plugins/lgdis/config/destination_list.yml")
 MAP_VALUES = YAML.load_file("#{Rails.root}/plugins/lgdis/config/issue_map_default_values.yml")
-CF_DEFAULT_VALUES = YAML.load_file("#{Rails.root}/plugins/lgdis/config/custom_field_default_multiple_values.yml")
 PRJ_INIT_IMP = YAML.load_file("#{Rails.root}/plugins/lgdis/config/project_initial_import.yml")
 SETTINGS = YAML.load_file("#{Rails.root}/plugins/lgdis/config/settings.yml")["#{Rails.env}"]
 

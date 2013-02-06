@@ -12,6 +12,8 @@ ja:
       messages:
         not_an_integer: は整数で入力してください
   
+  field_is_default_all_selected: デフォルト全選択
+  
   ####
   # 課題管理機能
   #
