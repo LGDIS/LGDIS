@@ -75,6 +75,7 @@ class DeliverIssuesController < ApplicationController
       if status != 'reject'
         Resque.enqueue(eval(DST_LIST['delivery_job_map'][delivery_history.delivery_place_id]), summary, test_flag)
 
+        # TODO
         # アーカイブの為、チケットに登録
 
         flash[:notice] = l(:notice_delivery_successful)
@@ -119,7 +120,7 @@ class DeliverIssuesController < ApplicationController
   # ==== Raise
   def create_summary(issue, delivery_history)
     exit_out_id = delivery_history.delivery_place_id
-    str = DST_LIST['create_msg_msd'][exit_out_id] + "(issue)"
+    str = "issue." + DST_LIST['create_msg_msd'][exit_out_id]
 
     # TODO
     # Atom, 公共情報コモンズのデータ作成方法未決
@@ -127,64 +128,13 @@ class DeliverIssuesController < ApplicationController
     # 配信先に合わせ配信内容作成処理
     summary = eval(str)
 
-    # Twitter, Facebook, SMTP の本文へ適宜URL, 災害訓練モード設定
-    check_ary = [DST_LIST['smtp']['target_num'],
-                 DST_LIST['smtp_auth']['target_num'],
-                 DST_LIST['twitter']['target_num'],
+    # Twitter, Facebook, の本文へ適宜URL, 災害訓練モード設定
+    check_ary = [DST_LIST['twitter']['target_num'],
                  DST_LIST['facebook']['target_num']]
     if check_ary.include?(exit_out_id)
-      summary = add_url_and_training(issue, summary, exit_out_id)
+      summary = issue.add_url_and_training(summary, exit_out_id)
     end
 
-    return summary
-  end
-
-  # 災害訓練,URL 追加処理
-  # ==== Args
-  # _issue_ :: チケット情報
-  # ==== Return
-  # _summary_ :: 配信内容
-  # ==== Raise
-  def add_url_and_training(issue, summary, exit_out_id)
-    url = exit_out_id==DST_LIST['smtp']['target_num'] ? \
-            DST_LIST['lgdsf_url'] : DST_LIST['disaster_portal_url']
-    # 災害訓練モード判定
-    DST_LIST['training_prj'][issue.project_id] ? \
-      '【災害訓練】' + "\n" + url + "\n" + summary : url + "\n" + summary
-  end
-
-  # 公共情報コモンズ用 配信メッセージ作成処理
-  # ==== Args
-  # _issue_ :: チケット情報
-  # ==== Return
-  # _summary_ :: 配信内容
-  # ==== Raise
-  def create_commons_msg(issue)
-    # TODO
-    # 配信内容未作成
-  end
-
-  # 自治体職員用 配信メッセージ作成処理
-  # ==== Args
-  # _issue_ :: チケット情報
-  # ==== Return
-  # _summary_ :: 配信内容
-  # ==== Raise
-  def create_smtp_msg(issue)
-    # TODO
-    # 仕様詳細未決
-  end
-
-  # SNS(Twitter, Facebook)用 配信メッセージ作成処理
-  # ==== Args
-  # _issue_ :: チケット情報
-  # ==== Return
-  # _summary_ :: 配信内容
-  # ==== Raise
-  def create_sns_msg(issue)
-    unless issue.blank?
-      summary = issue.custom_field_value_by_id(DST_LIST['content_delivery']['summary'])
-    end
     return summary
   end
 end

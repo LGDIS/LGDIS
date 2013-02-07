@@ -86,6 +86,68 @@ module Lgdis
         end
         return value
       end
+
+      # 公共情報コモンズ用 配信メッセージ作成処理
+      # ==== Args
+      # ==== Return
+      # _summary_ :: 配信内容
+      # ==== Raise
+      def create_commons_msg
+        # TODO
+        # 配信内容未作成
+      end
+
+      # Twitter 用配信メッセージ作成処理
+      # ==== Args
+      # ==== Return
+      # _summary_ :: 配信内容
+      # ==== Raise
+      def create_twitter_msg
+        summary = self.custom_field_value_by_id(DST_LIST['content_delivery']['summary'])
+        return summary
+      end
+
+      # Facebook 用配信メッセージ作成処理
+      # ==== Args
+      # ==== Return
+      # _summary_ :: 配信内容
+      # ==== Raise
+      def create_facebook_msg
+        summary = self.description
+        return summary
+      end
+
+      # メール用 配信メッセージ作成処理
+      # ==== Args
+      # ==== Return
+      # _summary_ :: 配信内容
+      # ==== Raise
+      def create_smtp_msg
+        summary = Hash.new
+        str = self.add_url_and_training(self.description, DST_LIST['smtp']['target_num'])
+
+        # TODO
+        # mailing_list の選択基準未決(手動 & 自動)
+        summary.store('mailing_list_name', DST_LIST['mailing_list']['local_government_officer_mail'])
+        summary.store('title', self.subject)
+        summary.store('message', str)
+        return summary
+      end
+
+      # 災害訓練,URL 追加処理
+      # ==== Args
+      # _issue_ :: チケット情報
+      # ==== Return
+      # _summary_ :: 配信内容
+      # ==== Raise
+      def add_url_and_training(contents, exit_out_id)
+        url = exit_out_id==DST_LIST['smtp']['target_num'] ? \
+                DST_LIST['lgdsf_url'] : DST_LIST['disaster_portal_url']
+
+        # 災害訓練モード判定
+        DST_LIST['training_prj'][self.project_id] ? \
+          '【災害訓練】' + "\n" + url + "\n" + contents : url + "\n" + contents
+      end
     end
   end
 end

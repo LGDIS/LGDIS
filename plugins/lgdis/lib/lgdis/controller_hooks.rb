@@ -59,89 +59,36 @@ module Lgdis
     # ==== Return
     # ==== Raise
     def deliver_issue(context)
-      # TODO
-      # 仮実装
-      # 
-      # TODO
-      # 通信試験モード、災害訓練モードに関しては
-      # プロジェクトのID を参照
-      # 定義はyaml ファイルに記載のこと
-      # test_flag = context[:params][:test]
-      # disaster_training_flag = context[:params][:training]
-      # destination_ids = context[:params][:issue][:destination_id]
-      test_flag = false
-      disaster_training_flag = true
-      destination_ids = [4]
       issue = context[:issue]
+
       # TODO
-      # 配信先に紐付く、配信内容未決
+      # parser より外部配信先の配列を取得予定
+      # destination_ids = issue['destination_ids']
+      # 現在は仮でTwitter を設定
+      destination_ids = [4]
+      # 通信試験モード判定
+      test_flag = DST_LIST['test_prj'][issue.project_id]
+
       # TODO
       # redis が起動されている必要がある
       unless destination_ids.blank?
         destination_ids.each do |id|
-          str = DST_LIST['create_msg_msd'][id] + \
-                "(issue,  disaster_training_flag)"
-          content_delivery = eval(str)
+          str = "issue." + DST_LIST['create_msg_msd'][id]
+          # 配信先に合わせ配信内容作成処理
+          summary = eval(str)
+
+          # Twitter, Facebook, の本文へ適宜URL, 災害訓練モード設定
+          check_ary = [DST_LIST['twitter']['target_num'],
+                       DST_LIST['facebook']['target_num']]
+          if check_ary.include?(id)
+            summary = issue.add_url_and_training(summary, id)
+          end
 
           Resque.enqueue(eval(DST_LIST['delivery_job_map'][id]),
-                         content_delivery,
+                         summary,
                          test_flag)
         end
       end
-    end
-
-    # 公共情報コモンズ用 配信メッセージ作成処理
-    # ==== Args
-    # _issue_ :: チケット情報
-    # _disaster_training_flag_ :: 災害訓練フラグ
-    # ==== Return
-    # ==== Raise
-    def create_commons_msg(issue, disaster_training_flag)
-      # TODO
-      # 配信内容未決
-    end
-
-    # 自治体職員用 配信メッセージ作成処理
-    # ==== Args
-    # _issue_ :: チケット情報
-    # _disaster_training_flag_ :: 災害訓練フラグ
-    # ==== Return
-    # チケットのデータを成形した、メーリングリスト、標題、本文 のHash データ
-    # ==== Raise
-    def create_smtp_msg(issue, disaster_training_flag)
-      # TODO
-      # 配信内容未決
-      content_delivery =
-        {'mailing_list_name' => DST_LIST['mailing_list']['local_government_officer_mail'],
-         'title'   => issue.subject,
-         'message' => create_disaster_training_str(issue, disaster_training_flag)}
-    end
-
-    # SNS(Twitter, Facebook)用 配信メッセージ作成処理
-    # ==== Args
-    # _issue_ :: チケット情報
-    # _disaster_training_flag_ :: 災害訓練フラグ
-    # ==== Return
-    # チケットの説明 部分の文字列
-    # ==== Raise
-    def create_sns_msg(issue, disaster_training_flag)
-      # TODO
-      # 配信内容未決
-      create_disaster_training_str(issue, disaster_training_flag)
-    end
-
-    # 共通配信メッセージ作成処理
-    # ==== Args
-    # _issue_ :: チケット情報
-    # _disaster_training_flag_ :: 災害訓練フラグ
-    # ==== Return
-    # チケットの説明 部分の文字列（災害訓練付加）
-    # ==== Raise
-    def create_disaster_training_str(issue, flg)
-      # TODO
-      # 配信内容未決
-      str = flg.blank? ? '' : '【災害訓練】'
-      str + issue.description
     end
   end
 end
