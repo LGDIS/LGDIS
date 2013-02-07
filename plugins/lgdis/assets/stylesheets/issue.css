@@ -20,3 +20,8 @@ div.map_field {
   margin-right: 10px;
   height: 500px;
 }
+
+.input_map {
+  width: 100%;
+  height: 280px;
+}
