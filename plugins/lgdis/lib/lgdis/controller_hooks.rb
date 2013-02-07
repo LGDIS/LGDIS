@@ -84,9 +84,14 @@ module Lgdis
             summary = issue.add_url_and_training(summary, id)
           end
 
-          Resque.enqueue(eval(DST_LIST['delivery_job_map'][id]),
-                         summary,
-                         test_flag)
+          Resque.enqueue(eval(DST_LIST['delivery_job_map'][id]), summary, test_flag)
+          # アーカイブの為、チケットに登録
+          journal = issue.init_journal(User.current, summary)
+          unless issue.save
+            # TODO
+            # log 出力内容
+            # Rails.logger.error
+          end
         end
       end
     end
