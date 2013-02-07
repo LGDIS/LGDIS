@@ -131,6 +131,8 @@ class Shelter < ActiveRecord::Base
                 :length => {:maximum => 4000}
   
   before_create :number_shelter_code, :if => Proc.new { |shelter| shelter.shelter_code.nil? }
+  after_save :execute_release_all_data
+  after_destroy :execute_release_all_data
   
   # 属性のローカライズ名取得
   # validateエラー時のメッセージに使用されます。
@@ -426,6 +428,52 @@ class Shelter < ActiveRecord::Base
     issue.save!
     
     return issue
+  end
+  
+  # 全データ公開処理を行います。
+  # cacheデータと、JSONファイルを上書きします。
+  # ==== Args
+  # ==== Return
+  # ==== Raise
+  def self.release_all_data
+    write_cache
+    create_json_file
+  end
+  
+  # cacheデータを上書きします。
+  # ==== Args
+  # _shelters_ :: Shelterオブジェクト配列
+  # ==== Return
+  # ==== Raise
+  def self.write_cache
+    h = {}
+    Shelter.all.each do |s|
+      h[s.shelter_code] = {"name" => s.name, "area" => s.area}
+    end
+    Rails.cache.write("shelter", h)
+  end
+  
+  # JSONファイルを上書きします。
+  # ==== Args
+  # _shelters_ :: Shelterオブジェクト配列
+  # ==== Return
+  # ==== Raise
+  def self.create_json_file
+    h = {}
+    Shelter.all.each do |s|
+      h[s.shelter_code] = s.name
+    end
+    File.open(File.join(Rails.root,"public","shelter.json"), "w:utf-8") do |f|
+      f.write(JSON.generate(h))
+    end
+  end
+  
+  # 全データ公開処理を呼び出します。（コールバック向け）
+  # ==== Args
+  # ==== Return
+  # ==== Raise
+  def execute_release_all_data
+    self.class.release_all_data
   end
   
   private

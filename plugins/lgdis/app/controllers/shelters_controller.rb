@@ -64,16 +64,22 @@ class SheltersController < ApplicationController
       shelter_id = params[:shelters].keys
       @search    = Shelter.search(:id_in => shelter_id)
       @shelters  = @search.paginate(:page => params[:page], :per_page => 30).order("shelter_code ASC")
-      ActiveRecord::Base.transaction do
-        @shelters.each do |shelter|
-          shelter.shelter_sort = params[:shelters]["#{shelter.id}"]["shelter_sort"]
-          shelter.opened_date  = params[:shelters]["#{shelter.id}"]["opened_date"]
-          shelter.opened_hm    = params[:shelters]["#{shelter.id}"]["opened_hm"]
-          shelter.closed_date  = params[:shelters]["#{shelter.id}"]["closed_date"]
-          shelter.closed_hm    = params[:shelters]["#{shelter.id}"]["closed_hm"]
-          shelter.status       = params[:shelters]["#{shelter.id}"]["status"]
-          shelter.save
+      begin
+        Shelter.skip_callback(:save, :after, :execute_release_all_data)
+        ActiveRecord::Base.transaction do
+          @shelters.each do |shelter|
+            shelter.shelter_sort = params[:shelters]["#{shelter.id}"]["shelter_sort"]
+            shelter.opened_date  = params[:shelters]["#{shelter.id}"]["opened_date"]
+            shelter.opened_hm    = params[:shelters]["#{shelter.id}"]["opened_hm"]
+            shelter.closed_date  = params[:shelters]["#{shelter.id}"]["closed_date"]
+            shelter.closed_hm    = params[:shelters]["#{shelter.id}"]["closed_hm"]
+            shelter.status       = params[:shelters]["#{shelter.id}"]["status"]
+            shelter.save
+          end
+          Shelter.release_all_data
         end
+      ensure
+        Shelter.set_callback(:save, :after, :execute_release_all_data)
       end
     else
       @search   = Shelter.search(params[:search])
@@ -135,35 +141,41 @@ class SheltersController < ApplicationController
     }
     
     # 避難所更新処理
-    ActiveRecord::Base.transaction do
-      result.each do |r|
-        # 避難所識別番号を元に避難所情報を取得
-        shelter = Shelter.find_by_shelter_code(r["shelter_name"])
-        # 該当する避難所がなければ処理しない
-        next if shelter.blank?
-        # 人数（自主避難人数を含む）
-        shelter.head_count = r["head_count"]
-        # 世帯数（自主避難世帯数を含む）
-        # shelter.households = r["households_count"]
-        # 負傷_計
-        shelter.injury_count = r["injury_flag_count"]
-        # 要介護度3以上_計
-        shelter.upper_care_level_three_count = r["upper_care_level_three_count"]
-        # 一人暮らし高齢者（65歳以上）_計
-        shelter.elderly_alone_count = r["elderly_alone_count"]
-        # 高齢者世帯（夫婦共に65歳以上）_計
-        shelter.elderly_couple_count = r["elderly_couple_count"]
-        # 寝たきり高齢者_計
-        shelter.bedridden_elderly_count = r["bedridden_elderly_count"]
-        # 認知症高齢者_計
-        shelter.elderly_dementia_count = r["elderly_dementia_count"]
-        # 療育手帳所持者_計
-        shelter.rehabilitation_certificate_count = r["rehabilitation_certificate_count"]
-        # 身体障害者手帳所持者_計
-        shelter.physical_disability_certificate_count = r["physical_disability_certificate_count"]
-        
-        shelter.save!
-      end if result.present?
+      begin
+        Shelter.skip_callback(:save, :after, :execute_release_all_data)
+        ActiveRecord::Base.transaction do
+          result.each do |r|
+            # 避難所識別番号を元に避難所情報を取得
+            shelter = Shelter.find_by_shelter_code(r["shelter_name"])
+            # 該当する避難所がなければ処理しない
+            next if shelter.blank?
+            # 人数（自主避難人数を含む）
+            shelter.head_count = r["head_count"]
+            # 世帯数（自主避難世帯数を含む）
+            # shelter.households = r["households_count"]
+            # 負傷_計
+            shelter.injury_count = r["injury_flag_count"]
+            # 要介護度3以上_計
+            shelter.upper_care_level_three_count = r["upper_care_level_three_count"]
+            # 一人暮らし高齢者（65歳以上）_計
+            shelter.elderly_alone_count = r["elderly_alone_count"]
+            # 高齢者世帯（夫婦共に65歳以上）_計
+            shelter.elderly_couple_count = r["elderly_couple_count"]
+            # 寝たきり高齢者_計
+            shelter.bedridden_elderly_count = r["bedridden_elderly_count"]
+            # 認知症高齢者_計
+            shelter.elderly_dementia_count = r["elderly_dementia_count"]
+            # 療育手帳所持者_計
+            shelter.rehabilitation_certificate_count = r["rehabilitation_certificate_count"]
+            # 身体障害者手帳所持者_計
+            shelter.physical_disability_certificate_count = r["physical_disability_certificate_count"]
+            
+            shelter.save!
+          end if result.present?
+          Shelter.release_all_data
+        end
+    ensure
+      Shelter.set_callback(:save, :after, :execute_release_all_data)
     end
     
     redirect_to :action => :index
