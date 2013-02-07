@@ -37,6 +37,7 @@ destination:
       - <<: *smtp_auth
       - <<: *twitter
       - <<: *facebook
+      - <<: *atom
   3: # 管理者(プロトタイプ環境 admin)
     4: # 気象情報（警報・注意報）
       - <<: *commons
@@ -44,6 +45,7 @@ destination:
       - <<: *smtp_auth
       - <<: *twitter
       - <<: *facebook
+      - <<: *atom
 # - {target_num: 1, name: I18n.l(load_dir['commons'])}
   6: # モデレータ
     4: # JMA（警報・注意報）
@@ -52,6 +54,7 @@ destination:
       - <<: *smtp_auth
       - <<: *twitter
       - <<: *facebook
+      - <<: *atom
   7: # エリアマネージャ
     4: # JMA（警報・注意報）
       - <<: *commons
@@ -59,6 +62,7 @@ destination:
       - <<: *smtp_auth
       - <<: *twitter
       - <<: *facebook
+      - <<: *atom
   8: # 市役所内一般入力者
     4: # JMA（警報・注意報）
       - <<: *commons
@@ -66,6 +70,7 @@ destination:
       - <<: *smtp_auth
       - <<: *twitter
       - <<: *facebook
+      - <<: *atom
   9: # 外部入力者
     4: # JMA（警報・注意報）
       - <<: *commons
@@ -73,6 +78,7 @@ destination:
       - <<: *smtp_auth
       - <<: *twitter
       - <<: *facebook
+      - <<: *atom
   10: # 閲覧者
     4: # JMA（警報・注意報）
       - <<: *commons
@@ -80,12 +86,14 @@ destination:
       - <<: *smtp_auth
       - <<: *twitter
       - <<: *facebook
+      - <<: *atom
 
 delivery_job_map:
   2: SMTP_JichiShokuinRequestJob
   3: SMTP_AuthRequestJob
   4: TwitterRequestJob
-  5: FacebookRequestJob
+  5: FacEBOOKrEQUEstJob
+  6: Atom_DigiSignageRequestJob
 
 destination_name:
   1: 公共情報コモンズ
@@ -93,6 +101,7 @@ destination_name:
   3: まちcomi向けメール
   4: Twitter
   5: Facebook
+  6: 災害情報ポータル
 
 create_msg_msd:
   1: create_commons_msg
@@ -128,8 +137,8 @@ lgdsf_url: http://203.138.187.88/lgdsf/staffs/send/
 mailing_list:
 #   local_government_officer_mail: root@localhost.localdomain
 #  machicomi_mail: apl@localhost.localdomain
-  local_government_officer_mail: ktakami@di-system.co.jp
-  machicomi_mail: ktakami@di-system.co.jp
+  local_government_officer_mail: unistandard@gmail.com
+  machicomi_mail: unistandard@gmail.com
 # mamoru@carrot.co.jp,
 mail_server:
   local_government_server: 127.0.0.1

@@ -10,7 +10,15 @@
 # %{ }でHTMLエスケープして出力
 # !{ }内はRubyのコードとして実行する
 # データはインスタンス変数としてセットされるので@で使える
+# ref:/#{Rails.root}/app/views/journals/index.builder
 
+#JMA-XML tags examples:  ref:vimgrep /\(ol.gon\|ine\|oint\)/ **/*xml
+  #line    tag =  # <westBoundLongitude>140.250000</westBoundLongitude> 
+                  # <eastBoundLongitude>141.750000</eastBoundLongitude> 
+                  # <southBoundLatitude>37.750000</southBoundLatitude>
+                  # <northBoundLatitude>39.083333</northBoundLatitude>
+  #point   tag = <gml:Point gml:id="PT_02367"><gml:pos>38.75053389 141.26430417</gml:pos></gml:Point>
+          #poligon tag = <gml:posList>
 
 require "cgi"
 
@@ -68,29 +76,22 @@ end
 class SetupXML
   require "date"
     def self.arrange_and_put(options = nil, template_path = nil)
-      xml = SetupXML.get('/opt/LGDIS/plugins/lgdis/lib/lgdis/ext_out/rss1_0.tmpl', :mime_type => "application/rss+xml")
+      if options.nil?
+        xml = SetupXML.get("#{Dir.pwd}/georss1_0.tmpl", :mime_type => "application/rss+xml")
+      else
+        xml = SetupXML.get("#{Rails.root.to_s}/plugins/lgdis/lib/lgdis/ext_out/georss1_0.tmpl", :mime_type => "application/rss+xml")
+      end
       base_url          = xml.site_url
         xml.site_url    += "/r/feed/"
-        #注:UUIDはversion 1 [時刻とノードをベースにした一意値]を生成,centOS uuidgenコマンド依存
+        #TODO 注:UUIDはversion 1 [時刻とノードをベースにした一意値]を生成,centOS uuidgenコマンド依存
         xml.uuid        = `uuidgen`.chomp
 
       if options.nil?
-        #case when options == nil
         xml.title       = "Simple-geoRSS1.0(ATOM)のテスト"
         xml.subtitle    = "ref: http://georss.org/simple"
         xml.author      = "Dr. Thaddeus Remor"
         xml.authormail  = "tremor@quakelab.edu"
         time            = Time.now.strftime("%Y-%m-%dT%H:%M:%SZ")
-#予備コード
-#             {:url      => base_url + "/page2",
-#              :title    => "ページ1",
-#              :description => "2つ目のページ",
-#              #日付はDateTimeオブジェクトで渡す
-#              :date     => time,
-#              :point    => "45.256 -71.92",
-#              :line     => "45.256 -110.45 46.46 -109.48 43.84 -109.86",
-#              :polygon  => "45.256 -110.45 46.46 -109.48 43.84 -109.86 45.256 -110.45"
-#             },
         xml.items = [
             {:url       => base_url + "/page1",
              :title     => "ページ1",
@@ -102,53 +103,59 @@ class SetupXML
              :polygon   => "45.256 -110.45 46.46 -109.48 43.84 -109.86 45.256 -110.45"
             }
         ]
+        # RSS1出力にに複数entryをもたせたいときの予備コード
+        #             {:url      => base_url + "/page2",
+        #              :title    => "ページ1",
+        #              :description => "2つ目のページ",
+        #              #日付はDateTimeオブジェクトで渡す
+        #             },
         outfile = "/opt/LGDIS/public/atom/#{time}-geoatom.rdf"
       else
-        #case when options != nil  : ref:/#{Rails.root}/app/views/journals/index.builder
-        issue           = Issue.first
+
+        issue           = options
         xml.title       = "#{issue.project.name}"
         xml.subtitle    = "ref: http://georss.org/simple"
         xml.author      = issue.author.name
         xml.authormail  = issue.author.mail
         time            = Time.now.strftime("%Y-%m-%dT%H:%M:%SZ")
 
-        cnt_point = issue.issues_additional_data.size
-        #switch xy.size
-        if cnt_point > 0 then
-          latitude1     = issue.issues_additional_data[0].latitude.to_s
-          longitude1    = issue.issues_additional_data[0].longitude.to_s
-          str_xy1       = latitude1 + " " + longitude1 
-        end
-        if cnt_point >= 2 then
-          #case of non-geo-point
-          latitude2     = issue.issues_additional_data[1].latitude.to_s
-          longitude2    = issue.issues_additional_data[1].longitude.to_s
-          str_xy2       = str_xy1 + " " + latitude2 + " " + longitude2
-          if cnt_point  > 2 then
-            #case of polygon
-            str_xy3=""
-            issue.issues_additional_data.each {|i|
-              str_xy3   += i.latitude.to_s + " " + i.longitude.to_s + " "
-            }
-          end
-        end
+        #世界測地系出力フラグ
+        geodetic_system_name ="wgs" 
+        #地理情報関連の変数初期化
+        indents="\t\t\t" ;  strbuf="";  cnt_geo=1
+        # point  列の内容を  <georss:pointタグ対象に
+        # line   列の内容を   <georss:lineタグ対象に
+        # polygon列の内容を<georss:polygonタグ対象に
+        # gem Jpmobile::DatumConvで測地系に一律変換してから変数に追記する
+        issue.issue_geographies.each{|i| 
+          strbuf += indents + "<!---------- 本件についての地理情報 No." + cnt_geo.to_s + " ---------->\n"
+          tgt=i.point.to_s
+          strbuf += indents + "<georss:point>" + fix_geo_str(tgt,geodetic_system_name,"line").chop + "</georss:point>\n" 
+          tgt=i.line.to_s
+          strbuf += indents + "<georss:line>" + fix_geo_str(tgt,geodetic_system_name,"line").chop + "</georss:line>\n"
+          tgt=i.polygon.to_s
+          strbuf += indents + "<georss:polygon>" + fix_geo_str(tgt,geodetic_system_name,"polygon").chop + "</georss:polygon>\n"
+          
+          strbuf += indents + "<georss:featureTypeTag>" + i.location.to_s + "</georss:featureTypeTag>\n"
 
-        #descriptionはtwitterにあわせて140文字制限を想定｡今は単純に説明文だけを出力している　#"1234567890"*14,
+          strbuf += indents + "<georss:relationshipTag>iconfile=" + rand(16).to_s + "-dot.png</georss:relationshipTag>\n"
+          cnt_geo += 1
+       }
+        #descriptionはtwitterにあわせて140文字制限｡今は単純に説明文だけを出力している
         xml.items = [
-            {:url       => href="/issues/#{issue.id}",
+            {
              :title     => "#{issue.tracker.name} ##{issue.id}: #{issue.subject}",
+						 :url       => "/issues/#{issue.id}",
              :uuid      => `uuidgen`.chomp,
-             :description => issue.description.to_s[0,140] ,
              :date      => time,
-             :point     => str_xy1.to_s ,
-             :line      => str_xy2.to_s  , 
-             :polygon   => str_xy3.to_s 
+             :description => issue.description.to_s[0,140] ,
+             :geoinfo   => strbuf
             }
         ]
-        outfile = "#{Rails.root.to_s}/public/atom/#{time}-Sent.log"
+        outfile = "#{Rails.root.to_s}/public/atom/#{time}-geoatom.rdf"
       end
 
-      #k-takami simple-geoRSS(ATOM)出力例:　
+      #simple-geoRSS(ATOM)ファイル出力　
       stdout_old = $stdout.dup 
       open(outfile, "w+b") do |f|
         $stdout.reopen(f)
@@ -156,8 +163,39 @@ class SetupXML
       end
       $stdout.flush;$stdout.reopen stdout_old 
 
+      #simple-geoRSS(ATOM) コンソール出力　
       xml.show #if options.nil?
 
+    end
+
+
+private
+    def self.fix_geo_str(str_geodetic, geodetic_system_name, mode ="")
+      strtmp=""
+      if mode =~/point/
+        ary_yx = str_geodetic.gsub(  /[\(\)\s]/,"").split(",").reverse
+        return fix_datum(ary_yx, geodetic_system_name) 
+      else
+        str_geodetic.gsub(/^\(+|\)+\s*$/,"").split(/^\(|\)$|\), *\(/).each{|j|
+          ary_pol= j.gsub(/^\(+|\)+\s*$/,"").split(/^\(|\)$|\), *\(/)
+          ary_pol.each{|k| 
+            ary_yx = k.split(/\s*,\s*/).reverse
+            strtmp += fix_datum(ary_yx, geodetic_system_name) + " "
+          }
+        }
+        return strtmp
+      end
+    end
+    
+    def self.fix_datum(ary_yx, geodetic_system_name )
+      if ary_yx.blank? then 
+        return ""
+      elsif geodetic_system_name =~/(wgs|sekaisokuikei)/ then
+        y,x = DatumConv.tky2jgd(ary_yx[0].to_f,ary_yx[1].to_f) 
+        return  y.to_s + " " + x.to_s
+      else
+        return  ary_yx.join(" ") 
+      end
     end
 
     def self.get(tmpl_path, options = {})
@@ -173,8 +211,9 @@ class SetupXML
         xml.encoding = encoding
         xml.site_url = "http://www.w3.org/2005/Atom" + cgi.server_name.to_s
         xml.updated  = Time.now.strftime("%Y-%m-%dT%H:%M:%SZ")
-#         xml.language = language
-#         xml.feed_url = xml.site_url + cgi.script_name if xml.methods.include?("feed_url")
+#予備項目
+#xml.language = language
+#xml.feed_url = xml.site_url + cgi.script_name if xml.methods.include?("feed_url")
         return xml
     end
 end
@@ -183,15 +222,9 @@ if __FILE__ == $0
   SetupXML.arrange_and_put
 end
 
-#JMA-XML tags examples:  ref:vimgrep /\(ol.gon\|ine\|oint\)/ **/*xml
-  #line    tag =  # <westBoundLongitude>140.250000</westBoundLongitude> 
-                  # <eastBoundLongitude>141.750000</eastBoundLongitude> 
-                  # <southBoundLatitude>37.750000</southBoundLatitude>
-                  # <northBoundLatitude>39.083333</northBoundLatitude>
-  #point   tag = <gml:Point gml:id="PT_02367"><gml:pos>38.75053389 141.26430417</gml:pos></gml:Point>
-          #poligon tag = <gml:posList>
+
 #debugcodes  
   #v.items[0][:title]
   #date format = 2005-08-17T07:02:32Z   
-  #debugger  SetupXML.get('/opt/redmine/plugins/lgdis/lib/lgdis/ext_out/rss1_0.tmpl', :mime_type => "application/rss+xml")
-
+  #SetupXML.get('/opt/redmine/plugins/lgdis/lib/lgdis/ext_out/rss1_0.tmpl', :mime_type => "application/rss+xml")
+	#ary_pol= "((-110.45 , 45.256), (-109.48,46.46),(-109.86,43.84),(-110.45,45.256))".gsub(/^\(+|\)+\s*$/,"").split(/^\(|\)$|\), *\(/)

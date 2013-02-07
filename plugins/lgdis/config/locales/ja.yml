@@ -12,6 +12,8 @@ ja:
       messages:
         not_an_integer: は整数で入力してください
   
+  field_is_default_all_selected: デフォルト全選択
+  
   ####
   # 課題管理機能
   #
@@ -153,3 +155,56 @@ ja:
   notice_delivery_successful: 配信を行いました。
   notice_delivery_unselected: 配信先が選択されていません。
   notice_delivery_failed: 配信に失敗しました。
+
+  ####
+  # 避難勧告･指示機能
+  #
+  project_module_evacuation_advisories: 避難勧告･指示機能
+  permission_view_evacuation_advisories: 避難勧告･指示情報の閲覧
+  permission_manage_evacuation_advisories: 避難勧告･指示情報の管理
+  
+  label_evacuation_advisory: 避難勧告･指示
+  label_evacuation_advisory_plural: 避難勧告･指示一覧
+  label_evacuation_advisory_new: 避難勧告･指示登録・更新
+  
+  notice_evacuation_advisory_successful_create: 避難勧告･指示 %{id} が作成されました。
+  text_evacuation_advisory_destroy_confirmation: '本当に削除しますか？'
+  
+  # 避難勧告･指示機能 項目名
+  evacuation_advisories:
+#   field_type: 勧告種別
+    field_advisory_type: 避難勧告･指示種別
+    field_disaster_code: 災害コード
+    field_sort_criteria: 発令区分
+    field_issue_or_lift: 発令・解除区分
+    field_area: 発令・解除地区名称
+    field_issued_at: 発令日時
+    field_changed_at: 移行日時
+    field_lifted_at: 解除日時
+    field_households: 対象世帯数
+    field_head_count: 対象人数
+    field_identifier:  避難勧告_指示識別情報
+    field_category: 災害区分
+    field_cause: 避難原因
+
+    field_staff_no: 発令権限者の職員番号
+    field_full_name: 発令権限者の氏名
+    field_alias: 発令権限者の別名称
+
+    field_headline: ヘッドライン
+    field_message: 避難情報文
+    field_emergency_hq_needed_prefecture: 都道府県緊急対処事態対策本部を設置すべき都道府県
+    field_emergency_hq_needed_city: 市町村緊急対処事態対策本部を設置すべき市町村
+    field_alert: 警報内容
+    field_alerting_area: 警報の通知伝達の対象となる地域の範囲
+    field_siren_area: サイレンを使用する地域
+
+    field_evacuation_order: 避難措置の指示内容
+    field_evacuate_from: 要避難地域
+    field_evacuate_to: 避難先地域
+    field_evacuation_steps_by_authorities: 住民の避難に関して関係機関が講ずべき措置の概要
+
+    field_remarks: 備考
+    field_created_at: 登録日時
+    field_updated_at: 更新日時
+

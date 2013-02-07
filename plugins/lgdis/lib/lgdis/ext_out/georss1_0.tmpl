@@ -17,9 +17,7 @@
 			<id>urn:uuid:#{item[:uuid]}</id>
 			<updated>#{item[:date]}</updated>
 			<summary>%{item[:description]}</summary>
-			<georss:point>#{item[:point]}</georss:point>
-			<georss:line>#{item[:line]}</georss:line>
-			<georss:polygon>#{item[:polygon]}</georss:polygon>
+#{item[:geoinfo]}
 		</entry>
 	!{end}
 </feed>
