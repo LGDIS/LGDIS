@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 FactoryGirl.define do
-  factory :shelter1, :class => Shelter do
+  factory :shelter1, :class => "Shelter" do
     project_id                           1
     disaster_code                        2
     name                                 '名前'

@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 FactoryGirl.define do
-  factory :project1, :class => Project do 
+  factory :project1, :class => "Project" do 
     name           'NAME'
     description    'DESCRIPTION'
     homepage       'HOMEPAGE'
