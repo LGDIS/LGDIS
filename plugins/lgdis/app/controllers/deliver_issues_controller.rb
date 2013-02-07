@@ -10,7 +10,8 @@ class DeliverIssuesController < ApplicationController
     @issue = Issue.find_by_id issue_id
     @delivery_history = DeliveryHistory.find_by_id delivery_history_id
     # 配信内容作成処理
-    @summary = create_summary(@issue, @delivery_history)
+    contents = create_summary(@issue, @delivery_history)
+    @summary = contents['message'].blank? ? contents : contents['message']
   end
 
   # 外部配信要求処理(手動配信)
@@ -62,12 +63,14 @@ class DeliverIssuesController < ApplicationController
       id       = params[:id].to_i
       status   = params[:allow].blank? ? 'reject' : 'done'
       issue_id = params[:issue_id].to_i
-      summary  = params[:summary]
 
       delivery_history = DeliveryHistory.find_by_id(id)
       issue = Issue.find_by_id(issue_id)
 
       return if delivery_history.blank? || issue.blank?
+
+      # 配信内容作成処理
+      summary = create_summary(issue, delivery_history)
 
       # 通信試験モード判定
       test_flag = DST_LIST['test_prj'][issue.project_id]
@@ -76,7 +79,8 @@ class DeliverIssuesController < ApplicationController
         Resque.enqueue(eval(DST_LIST['delivery_job_map'][delivery_history.delivery_place_id]), summary, test_flag)
 
         # アーカイブの為、チケットに登録
-        journal = issue.init_journal(User.current, summary)
+        msg = summary['message'].blank? ? summary : summary['message']
+        journal = issue.init_journal(User.current, msg)
         unless issue.save
          # TODO
          # log 出力内容

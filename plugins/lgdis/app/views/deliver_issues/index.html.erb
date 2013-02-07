@@ -1,6 +1,5 @@
 <%= form_tag("/deliver_issues/allow_delivery") do %>
 <%= hidden_field_tag 'id',        @delivery_history.id %>
-<%= hidden_field_tag :summary,    @summary %>
 <%= hidden_field_tag :issue_id,   @issue.id %>
 <%= hidden_field_tag :project_id, @issue.project.identifier %>
 <table class="dellist">
@@ -18,7 +17,7 @@
     <tr>
       <th style="text-align: left">配信内容</th>
       <th style="text-align: left">
-      <%= @summary %>
+        <%= @summary %>
       </th>
     </tr>
     <tr>

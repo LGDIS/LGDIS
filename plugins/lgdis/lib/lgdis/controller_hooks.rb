@@ -86,7 +86,8 @@ module Lgdis
 
           Resque.enqueue(eval(DST_LIST['delivery_job_map'][id]), summary, test_flag)
           # アーカイブの為、チケットに登録
-          journal = issue.init_journal(User.current, summary)
+          msg = summary['message'].blank? ? summary : summary['message']
+          journal = issue.init_journal(User.current, msg)
           unless issue.save
             # TODO
             # log 出力内容
