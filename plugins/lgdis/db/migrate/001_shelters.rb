@@ -2,10 +2,9 @@
 class Shelters < ActiveRecord::Migration
   def change
     create_table :shelters do |t|
-      t.references :project, :null => false
-      t.string     :disaster_code, :limit => 20, :null => false
       t.string     :name, :limit => 30, :null => false
       t.string     :name_kana, :limit => 60
+      t.string     :area, :null => false
       t.string     :address, :limit => 200, :null => false
       t.string     :phone, :limit => 20
       t.string     :fax, :limit => 20
@@ -48,9 +47,9 @@ class Shelters < ActiveRecord::Migration
     end
     
     set_table_comment(:shelters, "避難所情報")
-    set_column_comment(:shelters, :disaster_code, "災害コード")
     set_column_comment(:shelters, :name, "避難所名")
     set_column_comment(:shelters, :name_kana, "避難所名カナ")
+    set_column_comment(:shelters, :area, "避難所の地区")
     set_column_comment(:shelters, :address, "避難所の住所")
     set_column_comment(:shelters, :phone, "避難所の電話番号")
     set_column_comment(:shelters, :fax, "避難所のFAX番号")

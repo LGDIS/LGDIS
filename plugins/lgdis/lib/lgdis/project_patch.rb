@@ -13,7 +13,6 @@ module Lgdis
         unloadable
         validate :skip_identifer_validation, :on => :create
         before_create :set_identifer
-        after_create :import_initial_data
         alias_method_chain :identifier_frozen?, :always_freeze
         alias_method_chain :initialize, :identifier_customize
       end
@@ -76,13 +75,6 @@ module Lgdis
         self.identifier.delete(IDENTIFER_PREFIX)
       end
       
-      # 各種情報初期登録処理
-      # ==== Args
-      # ==== Return
-      # ==== Raise
-      def import_initial_data
-        Shelter.import_initial_data(self) #避難所
-      end
     end
   end
 end
