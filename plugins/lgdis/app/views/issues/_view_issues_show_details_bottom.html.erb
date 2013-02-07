@@ -18,23 +18,24 @@
 
         <p><strong><label><%= l(:delivery_status) %>:</label></strong></p>
         <% if check_permissions(@issue) %>
-          <% unless @delivery_history.blank? %>
-            <% @delivery_history.each do | d_h | %>
-              <%= form_tag("/deliver_issues/allow_delivery") do %>
-                <p class="table_border">
+          <% unless @delivery_histories.blank? %>
+            <% @delivery_histories.each do | d_h | %>
+                <div class="table_border">
                 <label><%= tm_fmt(d_h.process_date) %></label>
-                <label><%= DST_LIST['destination_name'][d_h.delivery_place_id] %></label>
-                <label><%= DST_LIST['status'][d_h.status] %></label>
-                <label><%= hidden_field_tag 'ext_out_id', d_h.delivery_place_id %></label>
-                <label><%= hidden_field_tag 'issue_id', @issue.id %></label>
-                <% if d_h.status == 'request' %>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<label style="text-align: right"><%#= link_to "配信確認", {:controller => "test", :action => "index", :project_id=>@project, :issue => @issue, :dest_list=>@destination_list} %></label>
-                  <%= submit_tag l(:allow),  :name=>'allow' %>
-                  <%= submit_tag l(:reject), :name=>'reject' %>
+                <label style="position:absolute; left:240px;">
+                  <%= DST_LIST['destination_name'][d_h.delivery_place_id] %>
+                </label>
+                <label style="position:absolute; left:450px;"><%= DST_LIST['status'][d_h.status] %></label>
+                <% if d_h.status == 'request' || d_h.status == 'failed' %>
+                <label style="position:absolute; left:580px;">
+                  <%= link_to "配信確認", {:controller => "deliver_issues",
+                                           :action => "index",
+                                           :project_id => @project,
+                                           :issue => @issue,
+                                           :delivery_history_id=>d_h.id} %>
+                </label>
                 <% end %>
-                </p>
-              <% end %>
+                </div>
             <% end %>
           <% end %>
         <% else %>

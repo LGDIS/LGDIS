@@ -44,11 +44,11 @@ Redmine::Plugin.register :lgdis do
   end
   menu :project_menu, :shelters, { :controller => 'shelters', :action => 'index' }, :caption => :label_shelter, :after => :new_issue, :param => :project_id
 
-  project_module :deliver_issues do
+  project_module :delivery_histories do
     # モジュール表示の為パーミッション定義を
     # project_module で囲む
-    permission :request_delivery, :deliver_issues => [:index]
+    permission :request_delivery, :delivery_histories => [:index]
   end
 
-  menu :project_menu, :deliver_issues, { :controller => 'deliver_issues', :action => 'index' }, :caption => :project_module_deliver, :after => :shelters, :param => :project_id
+  menu :project_menu, :delivery_histories, { :controller => 'delivery_histories', :action => 'index' }, :caption => :project_module_deliver, :after => :shelters, :param => :project_id
 end

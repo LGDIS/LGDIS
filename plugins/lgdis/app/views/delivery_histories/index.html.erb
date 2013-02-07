@@ -1,0 +1,35 @@
+<div class=?"autoscroll" >
+  <table class="list issues">
+    <thead>
+      <tr>
+        <th style="text-align: center;">チケット番号</th>
+        <th style="text-align: center;">配信先</th>
+        <th style="text-align: center;">ステータス</th>
+        <th style="text-align: center;">要求日時</th>
+        <th style="text-align: center;">要求者</th>
+        <th style="text-align: center;">題名</th>
+        <th style="text-align: center;">処理日</th>
+        <th style="text-align: center;">処理者</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% unless @delivery_histories.blank? %>
+        <% @delivery_histories.each do |d_h| -%>
+          <tr class="hascontextmenu <%= cycle('odd', 'even') %>">
+            <td style="text-align: center;">
+               <%= link_to d_h.issue_id, issue_path(d_h.issue) %>
+            </td>
+            <td style="text-align: center;"><%= DST_LIST['destination_name'][d_h.delivery_place_id] %></td>
+            <td style="text-align: center;"><%= DST_LIST['status'][d_h.status] %></td>
+            <td style="text-align: center;"><%= d_h.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+            <td style="text-align: center;"><%= d_h.request_user %></td>
+            <td style="text-align: center;">避難勧告指示(第一報)</td>
+            <td style="text-align: center;"><%= d_h.process_date.strftime("%Y-%m-%d %H:%M:%S") %></td>
+            <td style="text-align: center;"><%= d_h.respond_user %></td>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+

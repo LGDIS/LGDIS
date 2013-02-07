@@ -132,7 +132,7 @@ ja:
   ####
   # 配信管理機能
   #
-  project_module_deliver_issues: 配信管理機能
+  project_module_delivery_histories: 配信管理機能
   permission_request_delivery: 配信要求
   permission_allow_delivery: 配信許可
   project_module_deliver: 配信管理

@@ -22,7 +22,9 @@ twitter: &twitter
 facebook: &facebook
   target_num: 5
   name: Facebook
-
+atom: &atom
+  target_num: 6
+  name: 災害情報ポータル
 
 destination:
   1: # Non member
@@ -98,13 +100,30 @@ create_msg_msd:
   3: create_smtp_msg
   4: create_sns_msg
   5: create_sns_msg
+  6: create_atom_msg
 
 status:
   request: 配信要求中
   done: 配信完了
-  done_test: 配信完了(通信試験モード)
-  done_training: 配信完了(災害訓練モード)
   reject: 配信却下
+  failed: 配信失敗
+
+# 配信内容にあたるカスタムフィールドID
+content_delivery:
+  summary: 4 # 見出し文(要約)
+
+# 災害訓練モードプロジェクトID
+training_prj:
+  6: true
+# 通信試験モードプロジェクトID
+test_prj:
+  2: true
+
+# 災害情報ポータルURL
+disaster_portal_url: http://www.jice.or.jp/sinsai/sinsai_result.php
+
+# LGDSF URL
+lgdsf_url: http://203.138.187.88/lgdsf/staffs/send/
 
 mailing_list:
 #   local_government_officer_mail: root@localhost.localdomain

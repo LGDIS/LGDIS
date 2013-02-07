@@ -1,33 +1,39 @@
-<div class=?"autoscroll" >
-  <table class="list issues">
-    <thead>
-      <tr>
-        <th style="text-align: center;">チケット番号</th>
-        <th style="text-align: center;">ステータス</th>
-        <th style="text-align: center;">要求日時</th>
-        <th style="text-align: center;">要求者</th>
-        <th style="text-align: center;">題名</th>
-        <th style="text-align: center;">処理日</th>
-        <th style="text-align: center;">処理者</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% unless @delivery_histories.blank? %>
-        <% @delivery_histories.each do |d_h| -%>
-          <tr class="hascontextmenu <%= cycle('odd', 'even') %>">
-            <td>
-               <%#= link_to d_h.issue_id, issue_path() %>
-               <%= d_h.issue_id %>
-            </td>
-            <td><%= d_h.status %></td>
-            <td><%= d_h.created_at %></td>
-            <td><%= d_h.request_user %></td>
-            <td></td>
-            <td><%= d_h.process_date %></td>
-            <td><%= d_h.respond_user %></td>
-          </tr>
-        <% end %>
-      <% end %>
-    </tbody>
-  </table>
-</div>
+<%= form_tag("/deliver_issues/allow_delivery") do %>
+<%= hidden_field_tag :issue_id, @issue.id %>
+<%= hidden_field_tag 'id', @delivery_history.id %>
+<%= hidden_field_tag :project_id, @issue.project.identifier %>
+<table class="dellist">
+  <thead>
+    <tr>
+      <th style="text-align: left">チケット番号 :</th>
+      <th style="text-align: left"><%= @issue.id %></th>
+    </tr>
+    <tr>
+      <th style="text-align: left">配信先 :</th>
+      <th style="text-align: left">
+        <%= DST_LIST['destination_name'][@delivery_history.delivery_place_id] %>
+      </th>
+    </tr>
+    <tr>
+      <th style="text-align: left">配信内容 1 :</th>
+      <th style="text-align: left">
+      <%= @issue.description %>
+      </th>
+    </tr>
+    <tr>
+      <th style="text-align: left">配信内容 2 :</th>
+      <th style="text-align: left">
+      <%= @issue.custom_field_value_by_id(DST_LIST['content_delivery']['summary']) %>
+      </th>
+    </tr>
+    <tr>
+      <th style="text-align: left">チケット作成日 :</th>
+      <th style="text-align: left">
+        <%= @issue.created_on.strftime("%Y-%m-%d %H:%M:%S") %>
+      </th>
+    </tr>
+  <thead>
+</table>
+  <%= submit_tag l(:allow),  :name=>'allow' %>
+  <%= submit_tag l(:reject), :name=>'reject' %>
+<% end %>

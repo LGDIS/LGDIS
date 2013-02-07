@@ -6,12 +6,12 @@ div.xml_field td {
   padding: 0px;
 }
 
-p.table_border {
-  width: 500px;
+div.table_border {
+  width: 650px;
   border: thin solid black;
   margin-top: -1px;
   margin-bottom: 0px;
-  font-size: 1.0em;
+  font-size: 1.1em;
 }
 
 div.map_field {

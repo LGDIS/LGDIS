@@ -10,6 +10,7 @@ module Lgdis
       base.class_eval do
         unloadable
         has_many :issue_geographies, :dependent => :destroy
+        has_many :delivery_histories
 
         validates :xml_control_status, :length => {:maximum => 12}
         validates :xml_control_editorialoffice, :length => {:maximum => 50}
@@ -70,8 +71,22 @@ module Lgdis
         end
         self
       end
+
+      # カスタムフィールドIDより
+      # チケットに紐付くカスタムフィールドのvalue を返却する
+      # ==== Args
+      # ==== Return
+      # ==== Raise
+      def custom_field_value_by_id(custom_field_id)
+        value = nil
+        self.custom_values.each do |custom_value|
+          if custom_value.custom_field_id == custom_field_id
+            value = custom_value.value
+          end
+        end
+        return value
+      end
     end
-    
   end
 end
 
