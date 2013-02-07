@@ -1,9 +1,7 @@
 # encoding: utf-8
-class Shelters < ActiveRecord::Migration
+class CreateShelters < ActiveRecord::Migration
   def change
     create_table :shelters do |t|
-      t.references :project, :null => false
-      t.string     :disaster_code, :limit => 20, :null => false
       t.string     :name, :limit => 30, :null => false
       t.string     :name_kana, :limit => 60
       t.string     :address, :limit => 200, :null => false
@@ -48,7 +46,6 @@ class Shelters < ActiveRecord::Migration
     end
     
     set_table_comment(:shelters, "避難所情報")
-    set_column_comment(:shelters, :disaster_code, "災害コード")
     set_column_comment(:shelters, :name, "避難所名")
     set_column_comment(:shelters, :name_kana, "避難所名カナ")
     set_column_comment(:shelters, :address, "避難所の住所")

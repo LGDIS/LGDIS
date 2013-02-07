@@ -5,8 +5,6 @@ class Shelter < ActiveRecord::Base
   
   acts_as_paranoid
   
-  belongs_to :project
-  
   attr_accessible :name,:name_kana,:address,:phone,:fax,:e_mail,:person_responsible,
                   :shelter_type,:shelter_type_detail,:shelter_sort,:opened_date,:opened_hm,
                   :closed_date, :closed_hm,:capacity,:status,:head_count_voluntary,
@@ -31,9 +29,6 @@ class Shelter < ActiveRecord::Base
   # コンスタント存在チェック用
   CONST = Constant::hash_for_table(self.table_name).freeze
   
-  validates :project, :presence => true
-  validates :disaster_code, :presence => true, 
-                :length => {:maximum => 20}
   validates :name, :presence => true, 
                 :length => {:maximum => 30}
   validates :name_kana,
@@ -203,6 +198,21 @@ class Shelter < ActiveRecord::Base
   
   attr_accessor_separate_datetime :opened_at,:closed_at,:checked_at,:reported_at
   
+  # チケット登録処理
+  # ==== Args
+  # _project_ :: Projectオブジェクト
+  # ==== Return
+  # Issueオブジェクト配列
+  # ==== Raise
+  def self.create_issues(project)
+    issues = []
+    ### 公共コモンズ用チケット登録
+    issues << self.create_commons_issue(project)
+    ### Applic用チケット登録
+    issues << self.create_applic_issue(project)
+    return issues
+  end
+  
   # Applic用チケット登録処理
   # ==== Args
   # _project_ :: Projectオブジェクト
@@ -214,14 +224,12 @@ class Shelter < ActiveRecord::Base
     doc << REXML::XMLDecl.new('1.0', 'UTF-8')
     doc.add_element("_避難所") # Root
     
-    # Projectに紐付く避難所を取得しXMLを生成する
-    shelters = Shelter.where(:project_id => project.id)
-    
-    shelters.each do |shelter|
+    # 避難所を取得しXMLを生成する
+    shelters = Shelter.all.each do |shelter|
       node_shelter = doc.root.add_element("_避難所情報")
       
-      node_shelter.add_element("災害識別情報").add_text("#{shelter.disaster_code}")
-      node_shelter.add_element("災害名").add_text("#{shelter.project.name}")
+      node_shelter.add_element("災害識別情報").add_text("#{project.disaster_code}")
+      node_shelter.add_element("災害名").add_text("#{project.name}")
       node_shelter.add_element("都道府県").add_text("")
       node_shelter.add_element("市町村_消防本部名").add_text("")
       node_shelter.add_element("避難所識別情報").add_text("#{shelter.shelter_code}")
@@ -315,10 +323,8 @@ class Shelter < ActiveRecord::Base
     # Xmlドキュメントの生成
     doc  = REXML::Document.new(file)
     
-    # Projectに紐付く避難所を取得しXMLを生成する
-    shelters = Shelter.where(:project_id => project.id)
     # 避難人数、避難世帯数の集計値および避難所件数の取得
-    summary  = shelters.select("SUM(head_count) AS head_count_sum, SUM(head_count_voluntary) AS head_count_voluntary_sum,
+    summary  = Shelter.select("SUM(head_count) AS head_count_sum, SUM(head_count_voluntary) AS head_count_voluntary_sum,
       SUM(households) AS households_sum, SUM(households_voluntary) AS households_voluntary_sum, COUNT(*) AS count").first
     
     # Shelter要素の取得
@@ -344,7 +350,8 @@ class Shelter < ActiveRecord::Base
     # ループ構造の親要素追加
     node_informations = node_shelter.add_element("pcx_sh:Informations")
     
-    shelters.each do |shelter|
+    # 避難所を取得しXMLを生成する
+    Shelter.all.each do |shelter|
       node_information = node_informations.add_element("pcx_sh:Information")
       
       # 子要素がすべてブランクの場合、親要素を生成しない
@@ -420,61 +427,6 @@ class Shelter < ActiveRecord::Base
     return issue
   end
   
-  # 避難所情報初期登録処理
-  # ==== Args
-  # _project_ :: Projectオブジェクト
-  # ==== Return
-  # ==== Raise
-  def self.import_initial_data(project)
-    return if PRJ_INIT_IMP.blank? || PRJ_INIT_IMP[self.name].blank?
-    CSV.foreach(PRJ_INIT_IMP[self.name], encoding: "UTF-8") do |row|
-      next if row.count < 1 # 空行はスキップ
-      shelter = self.new
-      # プロジェクト
-      shelter.project = project
-      # 災害コード
-      shelter.disaster_code = project.disaster_code
-      # 避難所識別番号
-      shelter.shelter_code = row[0]
-      # 避難所名
-      shelter.name = row[1]
-      # 避難所名カナ
-      shelter.name_kana = row[2]
-      # 避難所の住所
-      shelter.address = row[3]
-      # 避難所の電話番号
-      shelter.phone = row[4]
-      # 避難所のFAX番号
-      shelter.fax = row[5]
-      # 避難所のメールアドレス
-      shelter.e_mail = row[6]
-      # 避難所の担当者名
-      shelter.person_responsible = row[7]
-      # 最大の収容人数
-      shelter.capacity = row[8]
-      # 避難所種別
-      shelter.shelter_type = CONST[:shelter_type.to_s].invert[row[9]]
-      # 避難所区分
-      shelter_sort = nil
-      case shelter.shelter_type
-        when "1"  # 1：避難所
-          shelter_sort = "1"  # 1:未開設
-        when "3","4"  # 3：広域避難所：開設措置なし, 4：一次避難所：開設措置なし
-          shelter_sort = "5" # 5：常設
-        end
-      shelter.shelter_sort = shelter_sort
-      
-      begin
-        shelter.save!
-      rescue => e
-        # ActiveRecord::RecordInvalid(save!でのValidationエラー)の場合、
-        # Rollbackはされるが、画面やログ等に何も残らない
-        # マスタデータのエラーのため、RuntimeErrorに詰め替える
-        raise e.to_s
-      end
-    end
-  end
-  
   private
   # 日付、時刻から、attrを設定します。
   # 不正な引数の場合は、nilを設定します。
@@ -485,7 +437,6 @@ class Shelter < ActiveRecord::Base
   # ==== Return
   # ==== Raise
   def set_date_time_attr(attr, date, hm)
-    p date,hm
     begin
       date = Date.strptime(date.to_s, "%Y-%m-%d") unless date.is_a?(Date)
     rescue

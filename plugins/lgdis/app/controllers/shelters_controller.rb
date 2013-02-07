@@ -36,7 +36,7 @@ class SheltersController < ApplicationController
     when "new"
       redirect_to :action => :new
     when "clear"
-      @search   = Shelter.where(:project_id => @project.id).search
+      @search   = Shelter.search
       @shelters = @search.paginate(:page => params[:page], :per_page => 30).order("shelter_code ASC")
       render :action => :index
     when "bulk_update"
@@ -89,16 +89,19 @@ class SheltersController < ApplicationController
   # ==== Raise
   def ticket
     # 避難所情報が存在しない場合、処理しない
-    if Shelter.where(:project_id => @project.id).present?
-      ActiveRecord::Base.transaction do
-        ### Applic用チケット登録
-        Shelter.create_applic_issue(@project)
-        ### 公共コモンズ用チケット登録
-        Shelter.create_commons_issue(@project)
+    if Shelter.all.present?
+      begin
+        issues = Shelter.create_issues(@project)
+        links = []
+        issues.each do |issue|
+          links << view_context.link_to("##{issue.id}", issue_path(issue), :title => issue.subject)
+        end
+        flash[:notice] = l(:notice_issue_successful_create, :id => links.join(","))
+      rescue ActiveRecord::RecordInvalid => e
+        flash[:error] = e.message
       end
-      flash[:notice] = "チケットを登録しました。"
     else
-      flash[:error] = "避難所情報が存在しません。"
+      flash[:error] = l(:error_not_exists_shelters)
     end
     redirect_to :action => :index
   end
@@ -191,8 +194,6 @@ class SheltersController < ApplicationController
   def create
     @shelter = Shelter.new()
     @shelter.assign_attributes(params[:shelter], :as => :shelter)
-    @shelter.project_id = @project.id
-    @shelter.disaster_code = @project.disaster_code
     if @shelter.save
       flash[:notice] = l(:notice_shelter_successful_create, :id => "##{@shelter.id} #{@shelter.name}")
       redirect_to :action  => :edit, :id => @shelter.id
