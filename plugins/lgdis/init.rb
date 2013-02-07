@@ -16,6 +16,7 @@ SETTINGS = YAML.load_file("#{Rails.root}/plugins/lgdis/config/settings.yml")["#{
 require_dependency 'lgdis/project_patch'
 require_dependency 'lgdis/issue_patch'
 require_dependency 'lgdis/issues_helper_patch' # issues_controller_patch より先にload する必要あり
+require_dependency 'lgdis/application_controller_patch'
 require_dependency 'lgdis/issues_controller_patch'
 require_dependency 'lgdis/view_hooks'
 require_dependency 'lgdis/controller_hooks'

@@ -5,7 +5,7 @@ class Shelter < ActiveRecord::Base
   
   acts_as_paranoid
   
-  attr_accessible :name,:name_kana,:address,:phone,:fax,:e_mail,:person_responsible,
+  attr_accessible :name,:name_kana,:area,:address,:phone,:fax,:e_mail,:person_responsible,
                   :shelter_type,:shelter_type_detail,:shelter_sort,:opened_date,:opened_hm,
                   :closed_date, :closed_hm,:capacity,:status,:head_count_voluntary,
                   :households_voluntary,:checked_date, :checked_hm,:manager_code,:manager_name,
@@ -33,6 +33,7 @@ class Shelter < ActiveRecord::Base
                 :length => {:maximum => 30}
   validates :name_kana,
                 :length => {:maximum => 60}
+  validates :area, :presence => true
   validates :address, :presence => true, 
                 :length => {:maximum => 200}
   validates :phone,

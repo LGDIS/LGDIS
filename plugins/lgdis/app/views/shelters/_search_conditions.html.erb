@@ -5,9 +5,9 @@
       <%= f.select("#{key}_eq", options_for_select(@shelter_const[key.to_s].invert, @search.shelter_type_eq),:include_blank => true) %>
     <% end %>
     
-    <%= field_for :location_area, :label => "地区名" do |key, label| %>
+    <%= field_for :area do |key, label| %>
       <%= label_tag{label} %>
-      <%= select_tag key,'' %>
+      <%= f.select("#{key}_eq", options_for_select(@area.invert, @search.area_eq),:include_blank => true) %>
     <% end %>
     
     <%= field_for :usable_flag do |key, label| %>
