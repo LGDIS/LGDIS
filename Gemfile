@@ -84,6 +84,12 @@ group :test do
   gem "mocha", "0.13.1"
 end
 
+group :development, :test do
+  gem 'rspec', '2.12.0'
+  gem 'rspec-rails', '2.12.2'
+  gem 'factory_girl_rails', '4.2.0'
+end
+
 local_gemfile = File.join(File.dirname(__FILE__), "Gemfile.local")
 if File.exists?(local_gemfile)
   puts "Loading Gemfile.local ..." if $DEBUG # `ruby -d` or `bundle -v`

@@ -12,11 +12,13 @@
 <% end %>
 
 <% content_for :header_tags do %>
+  <%= javascript_include_tag "http://www.google.com/jsapi" %>
   <%= javascript_include_tag "http://maps.googleapis.com/maps/api/js?sensor=false" %>
   <%= javascript_include_tag "gmap", :plugin => "lgdis" %>
   <%= stylesheet_link_tag 'issue', :plugin => 'lgdis' %>
 <% end %>
 <%= javascript_tag do %>
+  // GoogleMaps
   $(function(){
     <% cf_values = issue.editable_custom_field_values.select{|cf| cf.custom_field.field_format=='address'} %>
     <% cf_values.each do |cf_value|
@@ -24,14 +26,110 @@
     $("#<%= cf_field_id %>2").after("\
       <span id='<%= cf_field_id %>_map_show_link'>\
         <a href='#' onclick=\"toggleClickableMap('<%= cf_field_id %>_map','<%= cf_field_id %>0'); return false;\">\
-          <img class=\"ui-datepicker-trigger\" src=\"/images/changeset.png\" alt=\"<%= l(:button_map_show) %>\"></a>\
+          <img class=\"ui-datepicker-trigger\" src=\"/plugin_assets/lgdis/images/gmap.png\" alt=\"<%= l(:button_map_show) %>\">\
+        </a>\
       </span>\
       <span id='<%= cf_field_id %>_map_hide_link' style='display: none'>\
         <a href='#' onclick=\"clearMap('<%= cf_field_id %>_map'); return false;\">\
-          <img class=\"ui-datepicker-trigger\" src=\"/images/cancel.png\" alt=\"<%= l(:button_map_hide) %>\"></a>\
+          <img class=\"ui-datepicker-trigger\" src=\"/images/cancel.png\" alt=\"<%= l(:button_map_hide) %>\">\
+        </a>\
       </span>\
       <div id='<%= cf_field_id %>_map' class='input_map' style='display: none'></div>\
     ");
     <% end -%>
   });
+
+	// Google Fusion Tablesデータ取得＆画面セット
+	// dai_id, tyu_id, syo_id: 各プルダウンのエレメントID ※必須
+	// dai: 大分類, tyu: 中分類 ※任意
+	function get_gft(dai_id, tyu_id, syo_id, dai, tyu) {
+		var sel = 'area_dai';
+		var whe = '';
+		if (dai) {
+			sel += ',area_tyu';
+			whe += "WHERE area_dai='" + dai + "'";
+			if (tyu) {
+				sel += ',area_syo';
+				whe += " AND area_tyu='" + tyu + "'";
+			}
+		}
+		var query_string = 'SELECT '+sel+' FROM '+GOOGLE_FT_KEY+' '+whe+' GROUP BY '+sel+'';
+		var uri_string = 'http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent(query_string);
+		var query = new google.visualization.Query(uri_string);
+		query.send(function(response) {
+			if (!response.isError()) {
+				var result_count = response.getDataTable().getNumberOfRows();
+				for (var i = 0; i < result_count; i++) {
+					select = $(dai ? (tyu ? syo_id : tyu_id) : dai_id);
+					var value = response.getDataTable().getValue(i, dai ? (tyu ? 2 : 1) : 0);//0=area_dai,1=area_tyu,2=area_tyu
+					select.append($("<option>").html(value).attr({value: value}));
+				}
+			} else {
+				console.log("ERROR:");
+				console.log(response.getMessage());
+				console.log(" "+response.getDetailedMessage());
+				for (var j = 0; j < response.getReasons().length; j++) {
+					console.log(" "+response.getReasons()[j]);
+				}
+				console.log("-----");
+			}
+		});
+	}
+
+	// connection
+	google.load('visualization', '1');
+	<% CF_CONNECT.each do |connections| %>
+    <% area1, area2, area3 = connections %>
+	function get_connection_data() {
+		var select;
+		var dai_id = "#issue_custom_field_values_<%= area1 %>"
+		var tyu_id = "#issue_custom_field_values_<%= area2 %>"
+		var syo_id = "#issue_custom_field_values_<%= area3 %>"
+		// ---dai
+		select = $(dai_id);
+		select.empty();
+		select.append($("<option>").html('-----').attr({value: ''}));
+		get_gft(dai_id, tyu_id, syo_id);
+		select.val('');
+		select.change(reselect2);
+		// ---tyu
+		select = $(tyu_id);
+		select.empty();
+		select.append($("<option>").html('-----').attr({value: ''}));
+		// ---syo
+		select = $(syo_id);
+		select.empty();
+		select.append($("<option>").html('-----').attr({value: ''}));
+	}
+	function reselect2() {
+		var select;
+		var dai_id = "#issue_custom_field_values_<%= area1 %>"
+		var tyu_id = "#issue_custom_field_values_<%= area2 %>"
+		var syo_id = "#issue_custom_field_values_<%= area3 %>"
+		// ---tyu
+		select = $(tyu_id);
+		select.empty();
+		select.append($("<option>").html('-----').attr({value: ''}));
+		get_gft(dai_id, tyu_id, syo_id, $(dai_id).val());
+		select.val('');
+		select.change(reselect3);
+		// ---syo
+		select = $(syo_id);
+		select.empty();
+		select.append($("<option>").html('-----').attr({value: ''}));
+	}
+	function reselect3() {
+		var select;
+		var dai_id = "#issue_custom_field_values_<%= area1 %>"
+		var tyu_id = "#issue_custom_field_values_<%= area2 %>"
+		var syo_id = "#issue_custom_field_values_<%= area3 %>"
+		// ---syo
+		select = $(syo_id);
+		select.empty();
+		select.append($("<option>").html('-----').attr({value: ''}));
+		get_gft(dai_id, tyu_id, syo_id, $(dai_id).val(), $(tyu_id).val());
+		select.val('');
+	}
+	<% end # end of CF_CONNECT.each %>
+	google.setOnLoadCallback(get_connection_data);
 <% end %>
