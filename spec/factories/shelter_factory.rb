@@ -1,10 +1,9 @@
 # -*- coding:utf-8 -*-
 FactoryGirl.define do
   factory :shelter1, :class => "Shelter" do
-    project_id                           1
-    disaster_code                        2
     name                                 '名前'
     name_kana                            'カナ'
+    area                                 '避難所の地区'
     address                              '住所'
     phone                                '0312345678'
     fax                                  '0312345679'

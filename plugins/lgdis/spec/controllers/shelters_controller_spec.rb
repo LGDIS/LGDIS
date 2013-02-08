@@ -8,6 +8,8 @@ describe SheltersController do
     login_required.value = 0
     login_required.save!
     
+    ApplicationController.any_instance.stub(:get_cache) {{"area1" =>"地区名1"}}
+    
     @project = FactoryGirl.build(:project1, :id => 5)
     @project.save!
   end
@@ -22,6 +24,11 @@ describe SheltersController do
       get :index, { "commit_kind"=>"new",  "project_id"=>project_id}
       assigns[:shelter_const].should == Constant::hash_for_table(Shelter.table_name)
     end
+    it "get area" do
+      controller.should_receive(:get_cache).with("area").and_return({"area1" =>"地区名1"})
+      get :index, { "commit_kind"=>"new",  "project_id"=>project_id}
+      assigns[:area].should == {"area1" =>"地区名1"}
+    end
   end
 
 
@@ -29,20 +36,19 @@ describe SheltersController do
     before do
      @shelter_search_ary =[]
       1.upto(35) do |num|
-        shelter = FactoryGirl.build(:shelter1, :shelter_code => format("%4d", num), :project_id => project_id)
+        shelter = FactoryGirl.build(:shelter1, :shelter_code => format("%4d", num))
         shelter.save!
       end
 
       36.upto(70) do |num|
-        shelter = FactoryGirl.build(:shelter1, :shelter_code => format("%4d", num), :project_id => project_id, :shelter_type => "2")
+        shelter = FactoryGirl.build(:shelter1, :shelter_code => format("%4d", num), :shelter_type => "2")
         shelter.save!
         @shelter_search_ary << shelter if @shelter_search_ary.size < 30
       end
 
       get :index, {"utf8"=>"?",
                    "commit_kind"=>"search", 
-                   "search"=>{"project_id_eq"=>"", 
-                              "shelter_type_eq"=>"2", 
+                   "search"=>{"shelter_type_eq"=>"2", 
                               "usable_flag_eq"=>"", 
                               "opened_at_gte"=>"", 
                               "opened_at_lte"=>"", 
@@ -91,7 +97,7 @@ describe SheltersController do
       Shelter.delete_all # Projectデータ作成の際に、Shelterのデータも作成されるので一旦削除する
       @shelter_clear_ary =[]
       1.upto(35) do |num|
-        shelter = FactoryGirl.build(:shelter1, :shelter_code => format("%4d", num), :project_id=>project_id)
+        shelter = FactoryGirl.build(:shelter1, :shelter_code => format("%4d", num))
         shelter.save!
         @shelter_clear_ary << shelter if @shelter_clear_ary.size < 30
       end
@@ -152,7 +158,7 @@ describe SheltersController do
       Shelter.delete_all
       @shelter_clear_ary =[]
       1.upto(35) do |num|
-        shelter = FactoryGirl.build(:shelter1, :shelter_code => format("%4d", num), :project_id=>project_id)
+        shelter = FactoryGirl.build(:shelter1, :shelter_code => format("%4d", num))
         shelter.save!
         @shelter_clear_ary << shelter if @shelter_clear_ary.size < 30
       end
@@ -177,7 +183,7 @@ describe SheltersController do
         @shelter_update_ary=[]
         @param_shelters_hash={}
         1.upto(35) do |num|
-          shelter = FactoryGirl.build(:shelter1, :shelter_code => format("%4d", num), :project_id=>project_id)
+          shelter = FactoryGirl.build(:shelter1, :shelter_code => format("%4d", num))
           shelter.save!
           @shelter_update_ary << shelter if @shelter_update_ary.size < 30
           
@@ -206,20 +212,19 @@ describe SheltersController do
       before do
         @shelter_not_update_ary=[]
         1.upto(35) do |num|
-          shelter = FactoryGirl.build(:shelter1, :shelter_code => format("%4d", num), :project_id=>project_id)
+          shelter = FactoryGirl.build(:shelter1, :shelter_code => format("%4d", num))
           shelter.save!
         end
 
         36.upto(70) do |num|
-          shelter = FactoryGirl.build(:shelter1, :shelter_code =>format("%4d", num), :project_id=>project_id, :shelter_type => "2")
+          shelter = FactoryGirl.build(:shelter1, :shelter_code =>format("%4d", num), :shelter_type => "2")
           shelter.save!
           @shelter_not_update_ary << shelter if @shelter_not_update_ary.size < 30
         end
           
         post :bulk_update, {"utf8"=>"?",
                             "commit_kind"=>"bulk_update", 
-                            "search"=>{"project_id_eq"=>"", 
-                                       "shelter_type_eq"=>"2", 
+                            "search"=>{"shelter_type_eq"=>"2", 
                                        "usable_flag_eq"=>"", 
                                        "opened_at_gte"=>"", 
                                        "opened_at_lte"=>"", 
@@ -255,20 +260,19 @@ describe SheltersController do
     end
     describe "if shelter present" do
       before do
-        shelter = FactoryGirl.build(:shelter1, :shelter_code => "1", :project_id=>project_id)
+        shelter = FactoryGirl.build(:shelter1, :shelter_code => "1")
         shelter.save!
+        @issue = mock_model(Issue)
+        @issue.stub(:subject) {"避難所情報 YYYY/MM/DD hh:mm:ss"}
       end
-      it "create applic issue " do
-        Shelter.should_receive(:create_applic_issue).once
-        post :ticket, { "commit_kind"=>"ticket",  "project_id"=>project_id}
-      end
-      it "create common issue " do
-        Shelter.should_receive(:create_commons_issue).once
+      it "Shelter.create_issues " do
+        Shelter.should_receive(:create_issues).with(@project).and_return([@issue])
         post :ticket, { "commit_kind"=>"ticket",  "project_id"=>project_id}
       end
       it "set flash " do
+        Shelter.should_receive(:create_issues).with(@project).and_return([@issue])
         post :ticket, { "commit_kind"=>"ticket",  "project_id"=>project_id}
-        flash[:notice].should == "チケットを登録しました。"
+        flash[:notice].should == "チケット <a href=\"/issues/#{@issue.id}\" title=\"#{@issue.subject}\">##{@issue.id}</a> が作成されました。"
       end
     end
     describe "if shelter not present" do
@@ -305,7 +309,7 @@ describe SheltersController do
 
   describe "#edit " do
     before do
-      @shelter = FactoryGirl.build(:shelter1, :shelter_code => format("%4d", 1), :project_id=>project_id)
+      @shelter = FactoryGirl.build(:shelter1, :shelter_code => format("%4d", 1))
       @shelter.save!
       
       get :edit, {:project_id=>project_id, :id=>@shelter.id}
@@ -320,8 +324,7 @@ describe SheltersController do
     before do
       Shelter.delete_all
       @shelter_param = {
-        :project_id   => project_id,
-        :disaster_code=> 2,
+        :area         => '地区名',
         :name         => '名前',
         :name_kana    => 'カナ',
         :address      => '住所',
@@ -360,12 +363,9 @@ describe SheltersController do
   describe "#update " do
     before do
       @shelter = FactoryGirl.build(:shelter1, :shelter_code => format("%4d", 1))
-      @shelter.project_id = project_id
       @shelter.save!
       
       @shelter_param = {
-        :project_id   => project_id,
-        :disaster_code=> 2,
         :name         => '名前',
         :name_kana    => 'カナ',
         :address      => '住所',
@@ -402,7 +402,6 @@ describe SheltersController do
   describe "#destroy " do
     before do
       @shelter = FactoryGirl.build(:shelter1, :shelter_code => format("%4d", 1))
-      @shelter.project_id = project_id
       @shelter.save!
       
     end
