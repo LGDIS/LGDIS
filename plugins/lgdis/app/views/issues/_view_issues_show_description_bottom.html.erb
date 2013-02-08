@@ -13,10 +13,10 @@
     rows.left l(:field_xml_control_publishingoffice), h(issue.xml_control_publishingoffice), :class => 'xml_control_publishingoffice'
   end
   if issue.xml_control_cause
-    rows.right l(:field_xml_control_cause), h(issue.xml_control_cause), :class => 'xml_control_cause'
+    rows.right l(:field_xml_control_cause), h(@waring_const_cause[issue.xml_control_cause]), :class => 'xml_control_cause'
   end
   if issue.xml_control_apply
-    rows.left l(:field_xml_control_apply), h(issue.xml_control_apply), :class => 'xml_control_apply'
+    rows.left l(:field_xml_control_apply), h(@waring_const_apply[issue.xml_control_apply]), :class => 'xml_control_apply'
   end
   if issue.xml_head_title
     rows.right l(:field_xml_head_title), h(issue.xml_head_title), :class => 'xml_head_title'
