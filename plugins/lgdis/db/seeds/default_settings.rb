@@ -27,4 +27,4 @@ Setting.rest_api_enabled = 1
 # デフォルトで新しいプロジェクトは公開にする：false
 Setting.default_projects_public = 0
 # 新規プロジェクトにおいてデフォルトで有効になるモジュール：チケットトラッキング,避難所開設機能
-Setting.default_projects_modules = ["issue_tracking", "shelters"]
+Setting.default_projects_modules = ["issue_tracking", "shelters", "delivery_histories"]

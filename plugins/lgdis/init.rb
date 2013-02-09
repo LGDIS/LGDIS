@@ -11,13 +11,12 @@ ActiveSupport::Dependencies.autoload_paths += %W(#{Rails.root}/plugins/lgdis/lib
 API_KEY  = YAML.load_file("#{Rails.root}/plugins/lgdis/config/api_key.yml")
 DST_LIST = YAML.load_file("#{Rails.root}/plugins/lgdis/config/destination_list.yml")
 MAP_VALUES = YAML.load_file("#{Rails.root}/plugins/lgdis/config/issue_map_default_values.yml")
-CF_DEFAULT_VALUES = YAML.load_file("#{Rails.root}/plugins/lgdis/config/custom_field_default_multiple_values.yml")
-PRJ_INIT_IMP = YAML.load_file("#{Rails.root}/plugins/lgdis/config/project_initial_import.yml")
 SETTINGS = YAML.load_file("#{Rails.root}/plugins/lgdis/config/settings.yml")["#{Rails.env}"]
 
 require_dependency 'lgdis/project_patch'
 require_dependency 'lgdis/issue_patch'
 require_dependency 'lgdis/issues_helper_patch' # issues_controller_patch より先にload する必要あり
+require_dependency 'lgdis/application_controller_patch'
 require_dependency 'lgdis/issues_controller_patch'
 require_dependency 'lgdis/view_hooks'
 require_dependency 'lgdis/controller_hooks'
@@ -52,11 +51,11 @@ Redmine::Plugin.register :lgdis do
   end
   menu :project_menu, :evacuation_advisories, { :controller => 'evacuation_advisories', :action => 'index' }, :caption => :label_evacuation_advisory, :after => :new_issue, :param => :project_id
 
-  project_module :deliver_issues do
+  project_module :delivery_histories do
     # モジュール表示の為パーミッション定義を
     # project_module で囲む
-    permission :request_delivery, :deliver_issues => [:index]
+    permission :request_delivery, :delivery_histories => [:index]
   end
 
-  menu :project_menu, :deliver_issues, { :controller => 'deliver_issues', :action => 'index' }, :caption => :project_module_deliver, :after => :shelters, :param => :project_id
+  menu :project_menu, :delivery_histories, { :controller => 'delivery_histories', :action => 'index' }, :caption => :project_module_deliver, :after => :shelters, :param => :project_id
 end

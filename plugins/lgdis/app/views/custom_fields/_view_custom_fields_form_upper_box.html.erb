@@ -1,0 +1,25 @@
+<% if (custom_field.format_in? 'list') && (custom_field.class.name == "IssueCustomField") %>
+<p><%= form.check_box :is_default_all_selected %></p>
+<%= javascript_tag do %>
+  $(function(){
+    $("#custom_field_multiple").change(function(){
+      var $custom_field_is_default_all_selected = $("#custom_field_is_default_all_selected");
+      if($(this).is(":checked") == true){
+        $custom_field_is_default_all_selected.removeAttr("disabled");
+      } else {
+        $custom_field_is_default_all_selected.attr("checked", false);
+        $custom_field_is_default_all_selected.attr("disabled","disabled");
+      }
+    }).change();
+    
+    $("#custom_field_is_default_all_selected").change(function(){
+      var $custom_field_default_value = $("#custom_field_default_value");
+      if($(this).is(":checked") == true){
+        $custom_field_default_value.attr("disabled","disabled");
+      } else {
+        $custom_field_default_value.removeAttr("disabled");
+      }
+    }).change();
+  });
+<% end %>
+<% end %>

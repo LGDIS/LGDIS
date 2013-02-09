@@ -13,6 +13,7 @@ module Lgdis
         before_filter :get_delivery_histories, :only => [:show]
         before_filter :get_destination_list, :only => [:show]
         before_filter :set_issue_geography_data, :only => [:show]
+        before_filter :get_constant_data, :only => [:show]
       end
     end
 
@@ -34,7 +35,7 @@ module Lgdis
       end
 
       def get_delivery_histories
-        @delivery_history = DeliveryHistory.find_by_sql(
+        @delivery_histories = DeliveryHistory.find_by_sql(
                                   ["select * from delivery_histories
                                     where issue_id = :issue_id",
                                     {:issue_id=>@issue.id}])
@@ -81,7 +82,7 @@ module Lgdis
         else
           points = set_points(issue_geographies)
           lines  = set_lines(issue_geographies)
-          polygons  = set_polygons(issue_geographies)
+          polygons = set_polygons(issue_geographies)
         end
         @points   = points
         @lines    = lines.blank? ? [] : lines
@@ -96,11 +97,8 @@ module Lgdis
         points=[]
         issue_geographies.each do |geo|
           unless geo.point.blank?
-            point_remark = Hash.new
-            point_ary = geo.point.gsub(/[()]/,"").split(',').map(&:to_f).reverse
-            point_remark.store('points',point_ary)
-            point_remark.store('remarks',geo.remarks)
-            points.push point_remark
+            ary = geo.point.gsub(/[()]/,"").split(',').map(&:to_f).reverse
+            points.push set_geo(geo, ary, true)
           end
         end
         return points
@@ -114,18 +112,8 @@ module Lgdis
         lines=[]
         issue_geographies.each do |geo|
           unless geo.line.blank?
-            line_remark = Hash.new
-            line_ary = Array.new
             ary = geo.line.gsub(/[()]/,"").split(',').map(&:to_f).reverse
-            num = 0
-            ary.length.to_i.times do
-              break if ary[num].blank?
-              line_ary.push [ary[num], ary[num+1]]
-              num += 2
-            end
-            line_remark.store('points',line_ary)
-            line_remark.store('remarks',geo.remarks)
-            lines.push line_remark
+            lines.push set_geo(geo, ary)
           end
         end
         return lines
@@ -139,21 +127,47 @@ module Lgdis
         polygons=[]
         issue_geographies.each do |geo|
           unless geo.polygon.blank?
-            polygon_remark = Hash.new
-            polygon_ary = Array.new
             ary = geo.polygon.gsub(/[()]/,"").split(',').map(&:to_f).reverse
-            num=0
-            ary.length.to_i.times do
-              break if ary[num].blank?
-              polygon_ary.push [ary[num], ary[num+1]]
-              num+=2
-            end
-            polygon_remark.store('points',polygon_ary)
-            polygon_remark.store('remarks',geo.remarks)
-            polygons.push polygon_remark
+            polygons.push set_geo(geo, ary)
           end
         end
         return polygons
+      end
+
+      # google map 表示用のチケット地理データを返却します
+      # 共通処理
+      # ==== Args
+      # ==== Return
+      # ==== Raise
+      def set_geo(geo, geo_ary, point_flag=nil)
+        ary = Array.new
+        map = Hash.new
+
+        # polyline, polygon 共通処理
+        if point_flag.blank?
+          num=0
+          geo_ary.length.to_i.times do
+            break if geo_ary[num].blank?
+            ary.push [geo_ary[num], geo_ary[num+1]]
+            num+=2
+          end
+        else
+          # point 表示処理
+          ary=geo_ary
+        end
+        map.store('points',ary)
+        map.store('remarks',geo.remarks)
+
+        return map
+      end
+      
+      # 各種コンスタントデータを取得します
+      # ==== Args
+      # ==== Return
+      # ==== Raise
+      def get_constant_data
+        @waring_const_cause = get_cache("River【XMLSchema_C】.WaringConstCause")
+        @waring_const_apply = get_cache("River【XMLSchema_C】.WaringConstApply")
       end
     end
   end

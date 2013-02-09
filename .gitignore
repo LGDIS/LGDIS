@@ -17,6 +17,7 @@
 /log/mongrel_debug
 /public/dispatch.*
 /public/plugin_assets
+/public/*.json
 /tmp/*
 /tmp/cache/*
 /tmp/pdf/*
@@ -26,6 +27,7 @@
 /tmp/thumbnails/*
 /vendor/cache
 /vendor/rails
+/plugins/lgdis/config/settings.yml
 *.rbc
 
 /.bundle

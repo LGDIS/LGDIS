@@ -1,13 +1,37 @@
 <% if issue.new_record? %>
 <%= javascript_tag do %>
   $(function(){
-    <% CF_DEFAULT_VALUES.each do |cf_id, vals|
-        next unless issue.editable_custom_field_values.index{|ecf| ecf.custom_field_id == cf_id}
-        cf_field_id = "issue_custom_field_values_#{cf_id}" %>
-    <% if vals = "ALL" %>
-    $("#<%= cf_field_id %> option").prop("selected",true);
-    <% end %>
+    <% issue.editable_custom_field_values.each do |cfv|
+        cf = cfv.custom_field
+        next unless cf.is_default_all_selected == true
+        next unless cfv.value[0].nil? %>
+    $("#<%= "issue_custom_field_values_#{cf.id}" %> option").prop("selected",true);
     <% end -%>
   });
 <% end %>
+<% end %>
+
+<% content_for :header_tags do %>
+  <%= javascript_include_tag "http://maps.googleapis.com/maps/api/js?sensor=false" %>
+  <%= javascript_include_tag "gmap", :plugin => "lgdis" %>
+  <%= stylesheet_link_tag 'issue', :plugin => 'lgdis' %>
+<% end %>
+<%= javascript_tag do %>
+  $(function(){
+    <% cf_values = issue.editable_custom_field_values.select{|cf| cf.custom_field.field_format=='address'} %>
+    <% cf_values.each do |cf_value|
+        cf_field_id = "issue_custom_field_values_#{cf_value.custom_field.id}" %>
+    $("#<%= cf_field_id %>2").after("\
+      <span id='<%= cf_field_id %>_map_show_link'>\
+        <a href='#' onclick=\"toggleClickableMap('<%= cf_field_id %>_map','<%= cf_field_id %>0'); return false;\">\
+          <img class=\"ui-datepicker-trigger\" src=\"/images/changeset.png\" alt=\"<%= l(:button_map_show) %>\"></a>\
+      </span>\
+      <span id='<%= cf_field_id %>_map_hide_link' style='display: none'>\
+        <a href='#' onclick=\"clearMap('<%= cf_field_id %>_map'); return false;\">\
+          <img class=\"ui-datepicker-trigger\" src=\"/images/cancel.png\" alt=\"<%= l(:button_map_hide) %>\"></a>\
+      </span>\
+      <div id='<%= cf_field_id %>_map' class='input_map' style='display: none'></div>\
+    ");
+    <% end -%>
+  });
 <% end %>
