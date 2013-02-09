@@ -2,7 +2,7 @@
 class DeliverIssuesController < ApplicationController
   unloadable
 
-  before_filter :find_project
+  before_filter :find_project, :authorize
 
   def index
     @delivery_histories = DeliveryHistory.find(:all)
