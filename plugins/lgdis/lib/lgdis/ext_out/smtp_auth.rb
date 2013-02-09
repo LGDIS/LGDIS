@@ -8,24 +8,29 @@ class Lgdis::ExtOut::SMTP_Auth  < ActiveRecord::Base
     mailing_list_name = msg_hash["mailing_list_name"]
     title = msg_hash["title"]
     message = msg_hash["message"]
+    charset = msg_hash["charset"]
+# 予備コード
+#     from  = msg_hash["from"]
+#     smtp_username = msg_hash["smtp_username"]
+#     smtp_password = msg_hash["smtp_password"]
+#     gmailoption= msg_hash["gmailoption"].to_s if msg_hash["gmailoption"].present?  
+
     str= "////////////////////SMTPAUTH: ML/T/MSG=" + mailing_list_name + " " + title + " " + message 
     Rails.logger.info("{#{str}");print("#{str}")
 
     begin
       if test_flg.blank?
       # ② 自治体職員向け SMTP I/F を呼び出す。
-         #@mail=Lgdis::ExtOut::Mailer.setup_auth(mailing_list_name, title, message, "utf-8", "root@localhost.localdomain", "apl", "JBC03142")  
-         @mail=Lgdis::ExtOut::Mailer.setup_auth(mailing_list_name, title, message, "ISO2022-JP", "root@localhost.localdomain", "apl", "JBC03142")  
-         @mail.deliver
+         status=Lgdis::ExtOut::Mailer.setup_auth(mailing_list_name, title, message ).deliver
       end
       # TODO アーカイブ出力に関して、課題検討中? 現在はlogger で対応
       Rails.logger.info("#{o.create_log_time(msg_hash,modulename)}")
       o.leave_log(msg_hash)
-      status = true
     rescue => e
       Rails.logger.error("#{e.backtrace.join("\n")}" + "\n" + \
                          "#{o.create_log_time(msg_hash,modulename)}")
       status = false
+      return status 
     ensure
       #アーカイブログ出力　
       o.leave_log(msg_hash)

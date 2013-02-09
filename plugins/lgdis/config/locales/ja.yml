@@ -176,9 +176,8 @@ ja:
     field_sort_criteria: 発令区分
     field_issue_or_lift: 発令・解除区分
     field_area: 発令・解除地区名称
-    field_issued_at: 発令日時
-    field_changed_at: 移行日時
-    field_lifted_at: 解除日時
+    field_area_kana: 発令・解除地区名称かな
+    field_district: 地区（大分類）
     field_households: 対象世帯数
     field_head_count: 対象人数
     field_identifier:  避難勧告_指示識別情報
@@ -203,6 +202,17 @@ ja:
     field_evacuation_steps_by_authorities: 住民の避難に関して関係機関が講ずべき措置の概要
 
     field_remarks: 備考
-    field_created_at: 登録日時
-    field_updated_at: 更新日時
+#     field_created_at: 登録日時
+#     field_updated_at: 更新日時
+
+    field_issued_at: 発令日時
+    field_changed_at: 移行日時
+    field_lifted_at: 解除日時
+    field_issued_date: 発令日時（年月日）
+    field_issued_hm: 発令日時（時分）
+    field_changed_date: 移行日時（年月日）
+    field_changed_hm: 移行日時（時分）
+    field_lifted_date: 解除日時（年月日）
+    field_lifted_hm: 解除日時（時分）
+
 

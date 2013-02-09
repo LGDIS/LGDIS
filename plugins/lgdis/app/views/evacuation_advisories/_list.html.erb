@@ -5,67 +5,49 @@
       <th style="text-align: center;">発令・解除区分</th>
       <th style="text-align: center;">発令・解除地区名称</th>
       <th style="text-align: center;">発令日時</th>
-      <th style="text-align: center;">移行日時</th>
+<%#      <th style="text-align: center;">移行日時</th>%>
       <th style="text-align: center;">解除日時</th>
       <th style="text-align: center;">対象世帯数</th>
       <th style="text-align: center;">対象人数</th>
-      <th style="text-align: center;"></th>
-      <th style="text-align: center;"></th>
-      <th style="text-align: center;"></th>
-      <th style="text-align: center;"></th>
-      <th style="text-align: center;"></th>
+
+
+
+
+
     </tr>
   </thead>
   <tbody>
     <% evacuation_advisories.each do |evacuation_advisory| %>
       <tr class="<%= cycle("even", "odd") -%>">
         <td style="text-align: center;">
-<%#<%= select_tag "evacuation_advisories[#{evacuation_advisory.id}][sort_criteria]", options_for_select(@evacuation_advisory_const["sort_criteria"].invert, evacuation_advisory.sort_criteria), {:include_blank => true, :disabled => @disabled} +|%>
-<%#<%= select_tag :sort_criteria,'' +|%>
-          <%= @evacuation_advisory_const["sort_criteria"][evacuation_advisory.sort_criteria] %>
-        </td>
-        <td style="text-align: center;">
-          <a href=<%= edit_project_evacuation_advisory_path(@project, evacuation_advisory) %> >
-            <%= @evacuation_advisory_const["issue_or_lift"][evacuation_advisory.issue_or_lift] %></td>
-          </a>
-        </td>
-        <td style="text-align: center;">
           <a href=<%= edit_project_evacuation_advisory_path(@project, evacuation_advisory) %> >
             <%= evacuation_advisory.area %>
           </a>
         </td>
-        <td style="text-align: center;" nowrap>
-          <%= text_field_tag "evacuation_advisories[#{evacuation_advisory.id}][issued_at]", evacuation_advisory.issued_at, :size => "10", :disabled => @disabled %>
-          <%= calendar_for("evacuation_advisories_#{evacuation_advisory.id}_issued_at") %>
-<%#          <%= text_field_tag "evacuation_advisories[#{evacuation_advisory.id}][issued_hm]", evacuation_advisory.issued_hm, :size => "5", :disabled => @disabled +|%>
+        <td style="text-align: center;">
+          <%= select_tag "evacuation_advisories[#{evacuation_advisory.id}][sort_criteria]", options_for_select(@evacuation_advisory_const["sort_criteria"].invert, evacuation_advisory.sort_criteria), {:include_blank => true, :disabled => @disabled} %>
+        </td>
+        <td style="text-align: center;">
+          <%= select_tag "evacuation_advisories[#{evacuation_advisory.id}][issue_or_lift]", options_for_select(@evacuation_advisory_const["issue_or_lift"].invert, evacuation_advisory.issue_or_lift), {:include_blank => true, :disabled => @disabled} %>
         </td>
         <td style="text-align: center;" nowrap>
-          <%= text_field_tag "evacuation_advisories[#{evacuation_advisory.id}][changed_at]", evacuation_advisory.changed_at, :size => "10", :disabled => @disabled %>
-          <%= calendar_for("evacuation_advisories_#{evacuation_advisory.id}_changed_at") %>
+          <%= text_field_tag "evacuation_advisories[#{evacuation_advisory.id}][issued_date]", evacuation_advisory.issued_date, :size => "10", :disabled => @disabled %>
+          <%= calendar_for("evacuation_advisories_#{evacuation_advisory.id}_issued_date") %>
+          <%= text_field_tag "evacuation_advisories[#{evacuation_advisory.id}][issued_hm]", evacuation_advisory.issued_hm, :size => "5", :disabled => @disabled %>
         </td>
+<%#        移行日は非表示になりました%>
+<%#        <td style="text-align: center;" nowrap>%>
+<%#          <%= text_field_tag "evacuation_advisories[#{evacuation_advisory.id}][changed_date]", evacuation_advisory.changed_date, :size => "10", :disabled => @disabled +|%>
+<%#          <%= calendar_for("evacuation_advisories_#{evacuation_advisory.id}_changed_date") +|%>
+<%#          <%= text_field_tag "evacuation_advisories[#{evacuation_advisory.id}][changed_hm]", evacuation_advisory.lifted_hm, :size => "5", :disabled => @disabled +|%>
+<%#        </td>%>
         <td style="text-align: center;" nowrap>
-          <%= text_field_tag "evacuation_advisories[#{evacuation_advisory.id}][lifted_at]", evacuation_advisory.lifted_at, :size => "10", :disabled => @disabled %>
-          <%= calendar_for("evacuation_advisories_#{evacuation_advisory.id}_lifted_at") %>
-<%#          <%= text_field_tag "evacuation_advisories[#{evacuation_advisory.id}][lifted_hm]", evacuation_advisory.lifted_hm, :size => "5", :disabled => @disabled +|%>
+          <%= text_field_tag "evacuation_advisories[#{evacuation_advisory.id}][lifted_date]", evacuation_advisory.lifted_date, :size => "10", :disabled => @disabled %>
+          <%= calendar_for("evacuation_advisories_#{evacuation_advisory.id}_lifted_date") %>
+          <%= text_field_tag "evacuation_advisories[#{evacuation_advisory.id}][lifted_hm]", evacuation_advisory.lifted_hm, :size => "5", :disabled => @disabled %>
         </td>
         <td style="text-align: center;"><%= evacuation_advisory.households %></td>
         <td style="text-align: center;"><%= evacuation_advisory.head_count%></td>
-
-<%#        <td style="text-align: center;">%>
-<%#          <a href=<%= edit_project_evacuation_advisory_path(@project, evacuation_advisory) +| >%>
-<%#            <%= evacuation_advisory.name +|%>
-<%#          </a>%>
-<%#        </td>%>
-<%#        <td style="text-align: center;"><%= @evacuation_advisory_const["field_advisory_type"][evacuation_advisory.advisory_type] +|</td>%>
-<%#        <td style="text-align: center;">地区名</td>%>
-<%#        <td style="text-align: center;"><%= evacuation_advisory.phone +|</td>%>
-<%#        <td style="text-align: center;"><%= evacuation_advisory.full_name +|</td>%>
-<%#        <td style="text-align: right;"><%= evacuation_advisory.capacity +|</td>%>
-<%#        <td style="text-align: center;">%>
-<%#          <%= select_tag "evacuation_advisories[#{evacuation_advisory.id}][status]", options_for_select(@evacuation_advisory_const["status"].invert, evacuation_advisory.status), {:include_blank => true, :disabled => @disabled} +|%>
-<%#        </td>%>
-<%#        <td style="text-align: center;">登録者</td>%>
-<%#        <td style="text-align: center;"><%= evacuation_advisory.created_at.strftime("%y/%m/%d") +|</td>%>
       </tr>
     <% end if evacuation_advisories.present? %>
   </tbody>
