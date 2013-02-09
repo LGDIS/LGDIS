@@ -13,8 +13,10 @@ class CreateEvacuationAdvisories < ActiveRecord::Migration
       t.string     :disaster_code, :limit => 20, :null => false
       #COMMONS基準のデータ項目
       t.string     :sort_criteria, :limit => 10
-			t.string     :issue_or_lift, :limit => 100
+      t.string     :issue_or_lift, :limit => 100
       t.string     :area, :limit => 100
+      t.string     :area_kana,  :limit => 100
+      t.string     :district,  :limit => 10
       t.datetime   :issued_at
       t.datetime   :changed_at 
       t.datetime   :lifted_at
@@ -23,10 +25,10 @@ class CreateEvacuationAdvisories < ActiveRecord::Migration
       #APPLIC基準のデータ項目
       t.string     :identifier , :limit => 20, :null => false
       t.string     :category, :limit => 2
-      t.string     :cause, :limit => 4000, :null => false
+      t.string     :cause, :limit => 4000	   #, :null => false
       t.string     :advisory_type, :limit => 2, :null => false
        
-      t.string     :staff_no, :limit => 10 #
+      t.string     :staff_no, :limit => 10
       t.string     :full_name, :limit => 100
       t.string     :alias, :limit => 100
 
@@ -59,6 +61,8 @@ class CreateEvacuationAdvisories < ActiveRecord::Migration
     set_column_comment(:evacuation_advisories, :sort_criteria, "発令区分")
     set_column_comment(:evacuation_advisories, :issue_or_lift, "発令・解除区分")
     set_column_comment(:evacuation_advisories, :area, "発令・解除地区名称")
+    set_column_comment(:evacuation_advisories, :area_kana, "発令・解除地区名称かな")
+    set_column_comment(:evacuation_advisories, :district, "地区（大分類）")
     set_column_comment(:evacuation_advisories, :issued_at, "発令日時")
     set_column_comment(:evacuation_advisories, :changed_at, "移行日時")
     set_column_comment(:evacuation_advisories, :lifted_at, "解除日時")
