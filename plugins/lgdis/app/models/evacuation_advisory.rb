@@ -116,6 +116,9 @@ class EvacuationAdvisory < ActiveRecord::Base
                  :length => {:maximum => 4000}
 
   before_create :number_evacuation_advisory_code #, :if => Proc.new { |evacuation_advisory| evacuation_advisory.identifier.nil? }
+#debugger: cf with Hayashi
+#   after_save :execute_release_all_data
+#   after_destroy :execute_release_all_data
   
 
 
@@ -205,6 +208,21 @@ class EvacuationAdvisory < ActiveRecord::Base
   
   attr_accessor_separate_datetime :issued_at,:lifted_at,:changed_at
   
+  # チケット登録処理
+  # ==== Args
+  # _project_ :: Projectオブジェクト
+  # ==== Return
+  # Issueオブジェクト配列
+  # ==== Raise
+  def self.create_issues(project)
+    issues = []
+    ### 公共コモンズ用チケット登録
+    issues << self.create_commons_issue(project)
+    ### Applic用チケット登録
+    issues << self.create_applic_issue(project)
+    return issues
+  end
+  
   # 
   # Applic用チケット登録処理
   # ==== Args
@@ -217,52 +235,55 @@ class EvacuationAdvisory < ActiveRecord::Base
     doc << REXML::XMLDecl.new('1.0', 'UTF-8')
     doc.add_element("_避難勧告･指示") # Root
     
-    # Projectに紐付く避難勧告･指示を取得しXMLを生成する
-    evacuation_advisories = EvacuationAdvisory.where(:project_id => project.id)
+    # 避難所を取得しXMLを生成する
+    evacuation_advisories = EvacuationAdvisory.all
+    #Projectに紐付く避難勧告･指示を取得しXMLを生成する
+#debugger: cf with Hayashi
+#     evacuation_advisories = EvacuationAdvisory.where(:project_id => project.id)
     
-    evacuation_advisories.each do |evacuation_advisory|
-      node_evacuation_advisory = doc.root.add_element("_避難勧告･指示情報")
+    evacuation_advisories.each do |eva|
+      node_eva = doc.root.add_element("_避難勧告･指示情報")
       
-      node_evacuation_advisory.add_element("避難勧告_指示識別情報").add_text("#{evacuation_advisory.identifier}")
-      node_evacuation_advisory.add_element("災害名").add_text("#{evacuation_advisory.project.name}")
-      node_evacuation_advisory.add_element("都道府県").add_text("")
-      node_evacuation_advisory.add_element("市町村_消防本部名").add_text("")
+      node_eva.add_element("避難勧告_指示識別情報").add_text("#{eva.identifier}")
+      node_eva.add_element("災害名").add_text("#{eva.project.name}")
+      node_eva.add_element("都道府県").add_text("")
+      node_eva.add_element("市町村_消防本部名").add_text("")
       
-      node_manager = node_evacuation_advisory.add_element("管理者")
-      node_manager.add_element("職員番号").add_text("#{evacuation_advisory.staff_no}")
+      node_manager = node_eva.add_element("管理者")
+      node_manager.add_element("職員番号").add_text("#{eva.staff_no}")
       node_name = node_manager.add_element("氏名")
       node_name.add_element("外字氏名").add_text("")
       
-      node_issued = node_evacuation_advisory.add_element("発令日時")
+      node_issued = node_eva.add_element("発令日時")
       node_issued_date = node_issued.add_element("日付")
-      node_issued_date.add_element("年").add_text("#{evacuation_advisory.issued_at.try(:year)}")
-      node_issued_date.add_element("月").add_text("#{evacuation_advisory.issued_at.try(:month)}")
-      node_issued_date.add_element("日").add_text("#{evacuation_advisory.issued_at.try(:day)}")
-      node_issued.add_element("時").add_text("#{evacuation_advisory.issued_at.try(:hour)}")
-      node_issued.add_element("分").add_text("#{evacuation_advisory.issued_at.try(:min)}")
-      node_issued.add_element("秒").add_text("#{evacuation_advisory.issued_at.try(:sec)}")
+      node_issued_date.add_element("年").add_text("#{eva.issued_at.try(:year)}")
+      node_issued_date.add_element("月").add_text("#{eva.issued_at.try(:month)}")
+      node_issued_date.add_element("日").add_text("#{eva.issued_at.try(:day)}")
+      node_issued.add_element("時").add_text("#{eva.issued_at.try(:hour)}")
+      node_issued.add_element("分").add_text("#{eva.issued_at.try(:min)}")
+      node_issued.add_element("秒").add_text("#{eva.issued_at.try(:sec)}")
       
-      node_change = node_evacuation_advisory.add_element("移行日時")
+      node_change = node_eva.add_element("移行日時")
       node_change_date = node_change.add_element("日付")
-      node_change_date.add_element("年").add_text("#{evacuation_advisory.changed_at.try(:year)}")
-      node_change_date.add_element("月").add_text("#{evacuation_advisory.changed_at.try(:month)}")
-      node_change_date.add_element("日").add_text("#{evacuation_advisory.changed_at.try(:day)}")
-      node_change.add_element("時").add_text("#{evacuation_advisory.changed_at.try(:hour)}")
-      node_change.add_element("分").add_text("#{evacuation_advisory.changed_at.try(:min)}")
-      node_change.add_element("秒").add_text("#{evacuation_advisory.changed_at.try(:sec)}")
-      node_lifted = node_evacuation_advisory.add_element("解除日時")
+      node_change_date.add_element("年").add_text("#{eva.changed_at.try(:year)}")
+      node_change_date.add_element("月").add_text("#{eva.changed_at.try(:month)}")
+      node_change_date.add_element("日").add_text("#{eva.changed_at.try(:day)}")
+      node_change.add_element("時").add_text("#{eva.changed_at.try(:hour)}")
+      node_change.add_element("分").add_text("#{eva.changed_at.try(:min)}")
+      node_change.add_element("秒").add_text("#{eva.changed_at.try(:sec)}")
+      node_lifted = node_eva.add_element("解除日時")
       node_lifted_date = node_lifted.add_element("日付")
-      node_lifted_date.add_element("年").add_text("#{evacuation_advisory.lifted_at.try(:year)}")
-      node_lifted_date.add_element("月").add_text("#{evacuation_advisory.lifted_at.try(:month)}")
-      node_lifted_date.add_element("日").add_text("#{evacuation_advisory.lifted_at.try(:day)}")
-      node_lifted.add_element("時").add_text("#{evacuation_advisory.lifted_at.try(:hour)}")
-      node_lifted.add_element("分").add_text("#{evacuation_advisory.lifted_at.try(:min)}")
-      node_lifted.add_element("秒").add_text("#{evacuation_advisory.lifted_at.try(:sec)}")
+      node_lifted_date.add_element("年").add_text("#{eva.lifted_at.try(:year)}")
+      node_lifted_date.add_element("月").add_text("#{eva.lifted_at.try(:month)}")
+      node_lifted_date.add_element("日").add_text("#{eva.lifted_at.try(:day)}")
+      node_lifted.add_element("時").add_text("#{eva.lifted_at.try(:hour)}")
+      node_lifted.add_element("分").add_text("#{eva.lifted_at.try(:min)}")
+      node_lifted.add_element("秒").add_text("#{eva.lifted_at.try(:sec)}")
       
-      node_evacuation_advisory.add_element("対象人数").add_text("#{evacuation_advisory.head_count}")
-      node_evacuation_advisory.add_element("対象世帯数").add_text("#{evacuation_advisory.households}")
+      node_eva.add_element("対象人数").add_text("#{eva.head_count}")
+      node_eva.add_element("対象世帯数").add_text("#{eva.households}")
       
-      node_evacuation_advisory.add_element("備考").add_text("#{evacuation_advisory.remarks}")
+      node_eva.add_element("備考").add_text("#{eva.remarks}")
     end
     
                           
@@ -303,6 +324,8 @@ class EvacuationAdvisory < ActiveRecord::Base
 
 
 
+
+
   # 公共コモンズ用チケット登録処理
   # ==== Args
   # _project_ :: Projectオブジェクト
@@ -316,15 +339,14 @@ class EvacuationAdvisory < ActiveRecord::Base
     doc  = REXML::Document.new(file)
     
     # Projectに紐付く避難勧告･指示を取得しXMLを生成する
+    #林版にあわせて以下の行をコメントアウトすべきか
     evas = EvacuationAdvisory.where(:project_id => project.id)
+
     # 避難人数、避難世帯数の集計値および避難勧告･指示件数の取得
-    summary  = evas.select("SUM(head_count) AS head_count_sum, 
-      SUM(households) AS households_sum, COUNT(*) AS count").first
-    
+     summary  = evas.select("SUM(head_count) AS head_count_sum, SUM(households) AS households_sum, COUNT(*) AS count").first
     # EvacuationAdvisory要素の取得
     node_evas = doc.elements["edxlde:EDXLDistribution/commons:contentObject/edxlde:xmlContent/edxlde:embeddedXMLContent/Report/pcx_ev:EvacuationOrder"]
     
-
     node_header = node_evas.add_element("pcx_eb:Disaster")
       node_header.add_element("pcx_eb:DisasterName").add_text("#{project.name}") if project.name.present?  #.add_text("#{summary.}") if summary..present?
     node_evas.add_element("pcx_ev:ComplementaryInfo").add_text("避難勧告･指示一覧") if evas[0].present? 
@@ -337,7 +359,8 @@ class EvacuationAdvisory < ActiveRecord::Base
         node_total_number.add_element("pcx_ev:HeadCount").add_text("#{summary.head_count_sum}") if summary.head_count_sum.present?
     end
     
-    evas.each do |eva|
+    EvacuationAdvisory.all.each do |eva|
+#     evas.each do |eva|
       node_detail = node_evas.add_element("pcx_ev:Detail")
         # 発令区分
         node_detail.add_element("pcx_ev:Sort").add_text(CONST["sort_criteria"]["#{eva.sort_criteria}"]) if eva.sort_criteria.present?
@@ -406,74 +429,57 @@ class EvacuationAdvisory < ActiveRecord::Base
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   # 避難勧告･指示情報初期登録処理→ShelterモデルをProject配下から独立する仕様にもとづき
   # メソッドはありません｡
   #   def self.import_initial_data(project)
   #   end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  # 全データ公開処理を行います。
+  # cacheデータと、JSONファイルを上書きします。
+  # ==== Args
+  # ==== Return
+  # ==== Raise
+  def self.release_all_data
+    write_cache
+    create_json_file
+  end
   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  # cacheデータを上書きします。
+  # ==== Args
+  # _shelters_ :: Shelterオブジェクト配列
+  # ==== Return
+  # ==== Raise
+#debugger: 避難所モデルをここで読み書きする必要があるか､要確認 evacuation はmemcached上にない｡
+  def self.write_cache
+    h = {}
+    Shelter.all.each do |s|
+      h[s.shelter_code] = {"name" => s.name, "area" => s.area}
+    end
+    Rails.cache.write("shelter", h)
+  end
+  
+  # JSONファイルを上書きします。
+  # ==== Args
+  # _shelters_ :: Shelterオブジェクト配列
+  # ==== Return
+  # ==== Raise
+  def self.create_json_file
+    h = {}
+    Shelter.all.each do |s|
+      h[s.shelter_code] = s.name
+    end
+    File.open(File.join(Rails.root,"public","shelter.json"), "w:utf-8") do |f|
+      f.write(JSON.generate(h))
+    end
+  end
+  
+  # 全データ公開処理を呼び出します。（コールバック向け）
+  # ==== Args
+  # ==== Return
+  # ==== Raise
+  def execute_release_all_data
+    self.class.release_all_data
+  end
 
   private
   # 日付、時刻から、attrを設定します。

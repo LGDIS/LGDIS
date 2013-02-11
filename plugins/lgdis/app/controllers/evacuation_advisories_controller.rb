@@ -60,19 +60,25 @@ class EvacuationAdvisoriesController < ApplicationController
   # ==== Raise
   def bulk_update
     if params[:evacuation_advisories].present?
-      evacuation_advisory_id = params[:evacuation_advisories].keys
-      @search    = EvacuationAdvisory.search(:id_in => evacuation_advisory_id)
+      eva_id = params[:evacuation_advisories].keys
+      @search    = EvacuationAdvisory.search(:id_in => eva_id)
       @evacuation_advisories  = @search.paginate(:page => params[:page], :per_page => 30).order("identifier ASC")
-      ActiveRecord::Base.transaction do
-        @evacuation_advisories.each do |evacuation_advisory|
-          evacuation_advisory.sort_criteria = params[:evacuation_advisories]["#{evacuation_advisory.id}"]["sort_criteria"]
-          evacuation_advisory.issue_or_lift = params[:evacuation_advisories]["#{evacuation_advisory.id}"]["issue_or_lift"]
-          evacuation_advisory.issued_date   = params[:evacuation_advisories]["#{evacuation_advisory.id}"]["issued_date"]
-          evacuation_advisory.issued_hm     = params[:evacuation_advisories]["#{evacuation_advisory.id}"]["issued_hm"]
-          evacuation_advisory.lifted_date   = params[:evacuation_advisories]["#{evacuation_advisory.id}"]["lifted_date"]
-          evacuation_advisory.lifted_hm     = params[:evacuation_advisories]["#{evacuation_advisory.id}"]["lifted_hm"]
-          evacuation_advisory.save
+      begin
+        EvacuationAdvisory.skip_callback(:save, :after, :execute_release_all_data)
+        ActiveRecord::Base.transaction do
+          @evacuation_advisories.each do |eva|
+            eva.sort_criteria = params[:evacuation_advisories]["#{eva.id}"]["sort_criteria"]
+            eva.issue_or_lift = params[:evacuation_advisories]["#{eva.id}"]["issue_or_lift"]
+            eva.issued_date   = params[:evacuation_advisories]["#{eva.id}"]["issued_date"]
+            eva.issued_hm     = params[:evacuation_advisories]["#{eva.id}"]["issued_hm"]
+            eva.lifted_date   = params[:evacuation_advisories]["#{eva.id}"]["lifted_date"]
+            eva.lifted_hm     = params[:evacuation_advisories]["#{eva.id}"]["lifted_hm"]
+            eva.save
+          end
+          EvacuationAdvisory.release_all_data
         end
+      ensure
+          EvacuationAdvisory.set_callback(:save, :after, :execute_release_all_data)
       end
     else
       @search   = EvacuationAdvisory.search(params[:search])
@@ -87,18 +93,38 @@ class EvacuationAdvisoriesController < ApplicationController
   # ==== Args
   # ==== Return
   # ==== Raise
+#debugger 旧版
+#   def ticket
+#     #避難勧告･指示情報が存在しない場合、処理しない
+#     if EvacuationAdvisory.where(:project_id => @project.id).present?
+#       ActiveRecord::Base.transaction do
+#         ### Applic用チケット登録
+#         EvacuationAdvisory.create_applic_issue(@project)
+#         ### 公共コモンズ用チケット登録
+#         EvacuationAdvisory.create_commons_issue(@project)
+#       end
+#       flash[:notice] = "チケットを登録しました。"
+#     else
+#       flash[:error] = "避難勧告･指示情報が存在しません。"
+#     end
+#     redirect_to :action => :index
+#   end
+
   def ticket
-    # 避難勧告･指示情報が存在しない場合、処理しない
-    if EvacuationAdvisory.where(:project_id => @project.id).present?
-      ActiveRecord::Base.transaction do
-        ### Applic用チケット登録
-				EvacuationAdvisory.create_applic_issue(@project)
-        ### 公共コモンズ用チケット登録
-        EvacuationAdvisory.create_commons_issue(@project)
+    # 避難所情報が存在しない場合、処理しない
+    if EvacuationAdvisory.all.present?
+      begin
+        issues = EvacuationAdvisory.create_issues(@project)
+        links = []
+        issues.each do |issue|
+          links << view_context.link_to("##{issue.id}", issue_path(issue), :title => issue.subject)
+        end
+        flash[:notice] = l(:notice_issue_successful_create, :id => links.join(","))
+      rescue ActiveRecord::RecordInvalid => e
+        flash[:error] = e.message
       end
-      flash[:notice] = "チケットを登録しました。"
     else
-      flash[:error] = "避難勧告･指示情報が存在しません。"
+      flash[:error] = l(:error_not_exists_evacuation_advisories)
     end
     redirect_to :action => :index
   end
@@ -132,16 +158,18 @@ class EvacuationAdvisoriesController < ApplicationController
     }
     
     # 避難勧告･指示更新処理
-    ActiveRecord::Base.transaction do
-      result.each do |r|
-        # 避難勧告･指示識別番号を元に避難勧告･指示情報を取得
-        evacuation_advisory = Evacuation_advisory.find_by_identifier(r["headline"])
-        # 該当する避難勧告･指示がなければ処理しない
-        next if evacuation_advisory.blank?
-        # 対象人数
-        evacuation_advisory.head_count = r["head_count"]
-        # 対象世帯数
-        evacuation_advisory.households = r["households"]
+    begin
+      EvacuationAdvisory.skip_callback(:save, :after, :execute_release_all_data)
+      ActiveRecord::Base.transaction do
+        result.each do |r|
+          # 避難勧告･指示識別番号を元に避難勧告･指示情報を取得
+          evacuation_advisory = Evacuation_advisory.find_by_identifier(r["headline"])
+          # 該当する避難勧告･指示がなければ処理しない
+          next if evacuation_advisory.blank?
+          # 対象人数
+          evacuation_advisory.head_count = r["head_count"]
+          # 対象世帯数
+          evacuation_advisory.households = r["households"]
 
 
 
@@ -159,8 +187,12 @@ class EvacuationAdvisoriesController < ApplicationController
 
 
 
-        evacuation_advisory.save!
-      end if result.present?
+          evacuation_advisory.save!
+        end if result.present?
+        EvacuationAdvisory.release_all_data
+      end
+    ensure
+      EvacuationAdvisory.set_callback(:save, :after, :execute_release_all_data)
     end
 
     redirect_to :action => :index
@@ -192,8 +224,11 @@ class EvacuationAdvisoriesController < ApplicationController
   def create
     @evacuation_advisory = EvacuationAdvisory.new()
     @evacuation_advisory.assign_attributes(params[:evacuation_advisory], :as => :evacuation_advisory)
+    #debugger: 林さんの最新版では以下の2行がけずられている｡
+    #早急に差分を吸収すべし｡
     @evacuation_advisory.project_id = @project.id
     @evacuation_advisory.disaster_code = @project.identifier
+
     if @evacuation_advisory.save
       flash[:notice] = l(:notice_evacuation_advisory_successful_create, :id => "##{@evacuation_advisory.id} #{@evacuation_advisory.full_name}")
       redirect_to :action  => :edit, :id => @evacuation_advisory.id
