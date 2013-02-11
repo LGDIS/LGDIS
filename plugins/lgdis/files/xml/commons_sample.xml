@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <edxlde:EDXLDistribution
-	xmlns:pcx_sh="http://xml.publiccommons.ne.jp/pcxml1/body/shelter3"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:edxlde="urn:oasis:names:tc:emergency:EDXL:DE:1.0"
@@ -28,7 +27,7 @@
 
 					<!-- Control 部 -->
 					<Control>
-						<Title>Shelter</Title>
+						<Title></Title>
 						<edxlde:distributionStatus></edxlde:distributionStatus>
 						<EditorialOffice>
 							<pcx_eb:OfficeName></pcx_eb:OfficeName>

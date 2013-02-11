@@ -94,7 +94,9 @@ module Lgdis
       # ==== Raise
       def create_commons_msg
         # TODO
-        # 配信内容未作成
+        # 未実装
+        # XML ドキュメント取得
+        doc = create_commons_layouts
       end
 
       # Twitter 用配信メッセージ作成処理
@@ -157,9 +159,10 @@ module Lgdis
       # ==== Args
       # ==== Return
       # ==== Raise
-      def create_commmons_layouts
+      def create_commons_layouts
         # テンプレートの読み込み
-        file = File.new("#{Rails.root}/plugins/lgdis/files/xml/commons.xml")
+        commons_xml = DST_LIST['commons_xml'][self.tracker_id]
+        file = File.new("#{Rails.root}/plugins/lgdis/files/xml/#{commons_xml}")
         # Xmlドキュメントの生成
         doc  = REXML::Document.new(file)
         # tracker_id に紐付く標題を設定
@@ -200,7 +203,7 @@ module Lgdis
         doc.elements["//pcx_eb:Description"].add_text(self.updated_on.xmlschema)
 
         # Head 部要素追加
-        doc.elements["//pcx_ib:Title"].add_text(I18n.t('target_municipality') + self.project.name + ' ' + self.project.name + ' ' + title)
+        doc.elements["//pcx_ib:Title"].add_text(I18n.t('target_municipality') + self.project.name + ' ' +  (title.present? ? title : '緊急速報メール'))
         doc.elements["//pcx_ib:CreateDateTime"].add_text(self.created_on.xmlschema)
         doc.elements["//pcx_ib:FirstCreateDateTime"].add_text(self.created_on.xmlschema)
         # TODO
@@ -219,7 +222,8 @@ module Lgdis
         # TODO
         # 版番号処理 設計検討
         doc.elements["//commons:documentRevision"].add_text('')
-        doc.elements["//pcx_ib:Head/commons:documentID"].add_text('')
+        # uuid 生成タイミング、格納先検討必要
+        doc.elements["//pcx_ib:Head/commons:documentID"].add_text(self.project.identifier + (doc_id.present? ? doc_id : 'UUID'))
         doc.elements["//pcx_ib:Text"].add_text(custom_field_value_by_id(DST_LIST['custom_field_delivery']['summary']))
         # TODO
         # 設定ファイル(?)の値を設定
@@ -237,7 +241,10 @@ module Lgdis
         doc.elements["//commons:documentRevision"].add_text('')
         #TODO
         # uuid 生成タイミング、格納先検討必要
-        doc.elements["//commons:contentObject/commons:documentID"].add_text(self.project.identifier + ' ' + (DST_LIST['tracker_doc_id'][self.tracker_id]))
+        doc_id = DST_LIST['tracker_doc_id'][self.tracker_id]
+        doc.elements["//commons:contentObject/commons:documentID"].add_text(self.project.identifier + (doc_id.present? ? doc_id : 'UUID'))
+
+        return doc
       end
 
       # 公共コモンズ用XML 作成処理(エリアメールBody部)
