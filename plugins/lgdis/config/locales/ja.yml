@@ -2,6 +2,7 @@ ja:
   ####
   # 共通
   #
+  target_municipality: 石巻市
   label_search_condition_plural: 検索条件
   button_new: 新規登録
   map: 地図

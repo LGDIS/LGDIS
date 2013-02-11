@@ -92,7 +92,7 @@ delivery_job_map:
   2: SMTP_JichiShokuinRequestJob
   3: SMTP_AuthRequestJob
   4: TwitterRequestJob
-  5: FacEBOOKrEQUEstJob
+  5: FacebookRequestJob
   6: Atom_DigiSignageRequestJob
 
 destination_name:
@@ -107,9 +107,52 @@ create_msg_msd:
   1: create_commons_msg
   2: create_smtp_msg
   3: create_smtp_msg
-  4: create_sns_msg
-  5: create_sns_msg
+  4: create_twitter_msg
+  5: create_facebook_msg
   6: create_atom_msg
+
+commons_xml:
+  1: commons_evacuation.xml                     # 避難勧告・指示
+  2: commons_shelter.xml                        # 避難所情報
+  3: commons_damage_information.xml             # 被害情報
+  4: commons_disaster_response_headquarters.xml # 災害対策本部設置状況
+  5: commons_urgent_mail.xml                    # 緊急速報メール
+
+# TODO
+# お知らせ、緊急速報メールに紐付くトラッカーID 確認
+# tracker_id に紐付く標題
+tracker_title:
+  1: 避難勧告・指示
+  2: 避難所情報
+  16: 災害対策本部設置状況
+  168: 被害状況 # 路面の被害状況
+  169: 被害状況 # 路肩の被害状況
+  170: 被害状況 # 法面の被害状況
+  171: 被害状況 # 擁壁・護岸の被害状況
+  172: 被害状況 # 横断施設の被害状況
+  173: 被害状況 # トンネルの被害状況
+  174: 被害状況 # 道路附属物の被害状況
+  175: 被害状況 # 共同溝の被害状況
+  294: 被害状況 # 建築物（庁舎・校舎・体育館・ビル等）の被害状況
+  295: 被害状況 # 建築設備（受電・暖房設備・燃料の種類や残量等）の被害状況
+  411: 被害状況 # 被害状況
+
+# tracker_id に紐付くドキュメントID
+tracker_doc_id:
+  1: EvacuationOrder
+  2: Sheler
+  16: AntidisasterHeadquarter
+  168: DamageInformation # 路面の被害状況
+  169: DamageInformation # 路肩の被害状況
+  170: DamageInformation # 法面の被害状況
+  171: DamageInformation # 擁壁・護岸の被害状況
+  172: DamageInformation # 横断施設の被害状況
+  173: DamageInformation # トンネルの被害状況
+  174: DamageInformation # 道路附属物の被害状況
+  175: DamageInformation # 共同溝の被害状況
+  294: DamageInformation # 建築物（庁舎・校舎・体育館・ビル等）の被害状況
+  295: DamageInformation # 建築設備（受電・暖房設備・燃料の種類や残量等）の被害状況
+  411: DamageInformation # 被害状況
 
 status:
   request: 配信要求中
@@ -118,8 +161,13 @@ status:
   failed: 配信失敗
 
 # 配信内容にあたるカスタムフィールドID
-content_delivery:
-  summary: 4 # 見出し文(要約)
+custom_field_delivery:
+  corrected: 2 # 情報の取消時又は訂正時の説明文
+  summary: 4   # 見出し文(要約)
+  target_date: 10 # 情報の公開開始日時(日付)
+  target_time: 11 # 情報の公開開始日時(時間)
+  valid_date: 12  # 情報の公開終了日時(日付)
+  valid_time: 13  # 情報の公開終了日時(時間)
 
 # 災害訓練モードプロジェクトID
 training_prj:
@@ -127,6 +175,10 @@ training_prj:
 # 通信試験モードプロジェクトID
 test_prj:
   2: true
+# 公共情報コモンズ配信用XML(edxlde:distributionStatus)
+edxl_status:
+  2: System
+  6: Exercise
 
 # 公共情報コモンズへの発信
 # NOTE: 
@@ -147,6 +199,10 @@ disaster_portal_url: http://www.jice.or.jp/sinsai/sinsai_result.php
 # LGDSF URL
 lgdsf_url: http://203.138.187.88/lgdsf/staffs/send/
 
+# TODO
+# mailing_list の選択基準未決(手動 & 自動)
+# 職員招集用メーリングリスト
+
 mailing_list:
 # local_government_officer_mail: root@localhost.localdomain
 # machicomi_mail: apl@localhost.localdomain
@@ -159,6 +215,8 @@ mail_server:
   machicomi_server: 127.0.0.1
 
 smtp_auth_server_conf:
-  account: apl
-  password: JBC03142
-  tls: = false
+# account: apl
+# password: JBC03142
+# tls: = false
+  account: disastertraining2013
+  password: disastertraining
