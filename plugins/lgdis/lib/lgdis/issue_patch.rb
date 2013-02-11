@@ -103,7 +103,7 @@ module Lgdis
       # _summary_ :: 配信内容
       # ==== Raise
       def create_twitter_msg
-        summary = self.custom_field_value_by_id(DST_LIST['content_delivery']['summary'])
+        summary = self.custom_field_value_by_id(DST_LIST['custom_field_delivery']['summary'])
         return summary
       end
 
@@ -148,6 +148,105 @@ module Lgdis
         DST_LIST['training_prj'][self.project_id] ? \
           '【災害訓練】' + "\n" + url + "\n" + contents : url + "\n" + contents
       end
+
+      private
+
+      # 公共コモンズ用XML 作成処理
+      # Control部, Head部, Body部を結合し
+      # 配信内容を作成
+      # ==== Args
+      # ==== Return
+      # ==== Raise
+      def create_commmons_layouts
+        # テンプレートの読み込み
+        file = File.new("#{Rails.root}/plugins/lgdis/files/xml/commons.xml")
+        # Xmlドキュメントの生成
+        doc  = REXML::Document.new(file)
+        # tracker_id に紐付く標題を設定
+        title = DST_LIST['tracker_title'][self.tracker_id]
+
+        # TODO
+        # 新規フィールドの作成が必要
+        # カスタムフィールドとするのか、Issue テーブルに追加するのか未決
+        # Issue に追加する際は、登録画面の作成も必要
+
+        # edxl 部要素追加
+        #TODO
+        # uuid 生成タイミング、格納先検討必要
+        doc.elements["//edxlde:distributionID"].add_text('')
+        doc.elements["//edxlde:dateTimeSent"].add_text(Time.now.xmlschema)
+        doc.elements["//edxlde:distributionStatus"].add_text(DST_LIST['edxl_status'][self.project_id])
+        # TODO
+        # 新規作成フィールド
+        doc.elements["//edxlde:distributionType"].add_text('')
+        doc.elements["//edxlde:combinedConfidentiality"].add_text('')
+        # TODO
+        # 新規作成フィールド
+        doc.elements["//commons:targetArea/commons:areaName"].add_text('')
+        doc.elements["//edxlde:contentDescription"].add_text(custom_field_value_by_id(DST_LIST['custom_field_delivery']['summary']))
+
+        # Control 部要素追加
+        doc.elements["//edxlde:distributionStatus"].add_text(DST_LIST['edxl_status'][self.project_id])
+        # TODO
+        # 設定ファイル(?)の値を設定
+        doc.elements["//EditorialOffice/pcx_eb:OfficeName"].add_text('石巻市総務部防災対策課')
+        # TODO
+        # 設定ファイル(?)の値を設定
+        doc.elements["//PulishingOffice/pcx_eb:OfficeName"].add_text('石巻市')
+        # TODO
+        # 設定ファイル(?)の値を設定
+        doc.elements["//pcx_eb:contactType"].add_text('090123345678')
+        doc.elements["//pcx_eb:Description"].add_text(custom_field_value_by_id(DST_LIST['custom_field_delivery']['corrected']))
+        doc.elements["//pcx_eb:Description"].add_text(self.updated_on.xmlschema)
+
+        # Head 部要素追加
+        doc.elements["//pcx_ib:Title"].add_text(I18n.t('target_municipality') + self.project.name + ' ' + self.project.name + ' ' + title)
+        doc.elements["//pcx_ib:CreateDateTime"].add_text(self.created_on.xmlschema)
+        doc.elements["//pcx_ib:FirstCreateDateTime"].add_text(self.created_on.xmlschema)
+        # TODO
+        # 報告日時の設定避難所テーブルにしか存在しない為確認
+        doc.elements["//pcx_ib:ReportDateTime"].add_text('')
+        target_datetime=custom_field_value_by_id(DST_LIST['custom_field_delivery']['target_date']) + custom_field_value_by_id(DST_LIST['custom_field_delivery']['target_time'])
+        doc.elements["//pcx_ib:TargetDateTime"].add_text(target_datetime.xmlschema) unless target_datetime.blank?
+        valid_datetime=custom_field_value_by_id(DST_LIST['custom_field_delivery']['valid_date']) + custom_field_value_by_id(DST_LIST['custom_field_delivery']['valid_time'])
+        doc.elements["//pcx_ib:ValidDateTime"].add_text(valid_datetime.xmlschema) unless valid_datetime.blank?
+        #TODO
+        # uuid 生成タイミング、格納先検討必要
+        doc.elements["//edxlde:distributionID"].add_text('')
+        # TODO
+        # 新規作成フィールド
+        doc.elements["//edxlde:distributionType"].add_text('')
+        # TODO
+        # 版番号処理 設計検討
+        doc.elements["//commons:documentRevision"].add_text('')
+        doc.elements["//pcx_ib:Head/commons:documentID"].add_text('')
+        doc.elements["//pcx_ib:Text"].add_text(custom_field_value_by_id(DST_LIST['custom_field_delivery']['summary']))
+        # TODO
+        # 設定ファイル(?)の値を設定
+        doc.elements["//pcx_ib:Areas/pcx_ib:Area/commons:areaName"].add_text('')
+
+        # Edxl 部要素追加
+        # TODO
+        # 設定ファイル(?)の値を設定
+        doc.elements["//commons:publishingOfficeName"].add_text('石巻市')
+        # TODO
+        # 版番号処理 設計検討
+        doc.elements["//commons:previousDocumentRevision"].add_text('')
+        # TODO
+        # 版番号処理 設計検討
+        doc.elements["//commons:documentRevision"].add_text('')
+        #TODO
+        # uuid 生成タイミング、格納先検討必要
+        doc.elements["//commons:contentObject/commons:documentID"].add_text(self.project.identifier + ' ' + (DST_LIST['tracker_doc_id'][self.tracker_id]))
+      end
+
+      # 公共コモンズ用XML 作成処理(エリアメールBody部)
+      # ==== Args
+      # ==== Return
+      # ==== Raise
+      def create_commmons_area_mail_body
+      end
+
     end
   end
 end
