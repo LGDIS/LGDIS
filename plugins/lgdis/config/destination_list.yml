@@ -128,6 +128,19 @@ training_prj:
 test_prj:
   2: true
 
+# 公共情報コモンズへの発信
+# NOTE: 
+# endpoint below have to point to a URL 
+# where COMMONS web server process is running on.
+# In other word, IP address of non-router (including virtualizer router).
+# commons_endpoint= 'http://0.0.0.0/commons/subscriber/soap/testservice.example.com/'
+commons_endpoint: http://192.168.43.186/commons/subscriber/soap/testservice.example.com/
+commons_user: user1@example.com
+commons_pw: password
+commons_wsdl: /opt/fix/LGDIS/plugins/lgdis/lib/lgdis/ext_out/wsdl/MQService.wsdl
+commons_namespace: http://soap.publiccommons.ne.jp/
+
+
 # 災害情報ポータルURL
 disaster_portal_url: http://www.jice.or.jp/sinsai/sinsai_result.php
 
@@ -135,11 +148,12 @@ disaster_portal_url: http://www.jice.or.jp/sinsai/sinsai_result.php
 lgdsf_url: http://203.138.187.88/lgdsf/staffs/send/
 
 mailing_list:
-#   local_government_officer_mail: root@localhost.localdomain
-#  machicomi_mail: apl@localhost.localdomain
+# local_government_officer_mail: root@localhost.localdomain
+# machicomi_mail: apl@localhost.localdomain
   local_government_officer_mail: unistandard@gmail.com
   machicomi_mail: unistandard@gmail.com
-# mamoru@carrot.co.jp,
+                  # mamoru@carrot.co.jp
+
 mail_server:
   local_government_server: 127.0.0.1
   machicomi_server: 127.0.0.1
@@ -147,3 +161,4 @@ mail_server:
 smtp_auth_server_conf:
   account: apl
   password: JBC03142
+  tls: = false
