@@ -58,9 +58,11 @@
 						<commons:documentID></commons:documentID>
 						<pcx_ib:Headline>
 							<pcx_ib:Text></pcx_ib:Text>
-							<pcx_ib:Areas></pcx_ib:Areas>
-							<pcx_ib:Area></pcx_ib:Area>
-							<commons:areaName></commons:areaName>
+							<pcx_ib:Areas>
+								<pcx_ib:Area>
+									<commons:areaName></commons:areaName>
+								</pcx_ib:Area>
+							</pcx_ib:Areas>
 						</pcx_ib:Headline>
 					</pcx_ib:Head>
 					

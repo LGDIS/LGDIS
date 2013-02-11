@@ -2,7 +2,7 @@
 class DeliverIssuesController < ApplicationController
   unloadable
 
-  before_filter :find_project, :authorize
+  before_filter :find_project #, :authorize
 
   def index
     issue_id = params['issue'].to_i

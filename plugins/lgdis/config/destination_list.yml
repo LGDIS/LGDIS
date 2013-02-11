@@ -111,12 +111,24 @@ create_msg_msd:
   5: create_facebook_msg
   6: create_atom_msg
 
+# TODO
+# 紐付くトラッカー確認必要
 commons_xml:
-  1: commons_evacuation.xml                     # 避難勧告・指示
-  2: commons_shelter.xml                        # 避難所情報
-  3: commons_damage_information.xml             # 被害情報
-  4: commons_disaster_response_headquarters.xml # 災害対策本部設置状況
-  5: commons_urgent_mail.xml                    # 緊急速報メール
+  1: commons_evacuation.xml                      # 避難勧告・指示
+  2: commons_shelter.xml                         # 避難所情報
+  4: commons_urgent_mail.xml                     # 緊急速報メール
+  16: commons_disaster_response_headquarters.xml # 災害対策本部設置状況
+  168: commons_damage_information.xml            # 路面の被害状況
+  169: commons_damage_information.xml            # 路肩の被害状況
+  170: commons_damage_information.xml            # 法面の被害状況
+  171: commons_damage_information.xml            # 擁壁・護岸の被害状況
+  172: commons_damage_information.xml            # 横断施設の被害状況
+  173: commons_damage_information.xml            # トンネルの被害状況
+  174: commons_damage_information.xml            # 道路附属物の被害状況
+  175: commons_damage_information.xml            # 共同溝の被害状況
+  294: commons_damage_information.xml            # 建築物（庁舎・校舎・体育館・ビル等）の被害状況
+  295: commons_damage_information.xml            # 建築設備（受電・暖房設備・燃料の種類や残量等）の被害状況
+  411: commons_damage_information.xml            # 被害状況
 
 # TODO
 # お知らせ、緊急速報メールに紐付くトラッカーID 確認
