@@ -40,28 +40,35 @@
   });
 
 	// Google Fusion Tablesデータ取得＆画面セット
+	// target: 更新対象のエレメント(0=大分類、1=中分類、2=小分類) ※必須
 	// dai_id, tyu_id, syo_id: 各プルダウンのエレメントID ※必須
 	// dai: 大分類, tyu: 中分類 ※任意
-	function get_gft(dai_id, tyu_id, syo_id, dai, tyu) {
-		var sel = 'area_dai';
-		var whe = '';
-		if (dai) {
-			sel += ',area_tyu';
-			whe += "WHERE area_dai='" + dai + "'";
-			if (tyu) {
-				sel += ',area_syo';
-				whe += " AND area_tyu='" + tyu + "'";
-			}
+	function get_gft(target, dai_id, tyu_id, syo_id, dai, tyu) {
+		var sel, whe, target_id;
+		if (target == 0) {
+			sel = 'area_dai';
+			whe = '';
+			target_id = $(dai_id);
+		} else if (target == 1) {
+			sel = 'area_tyu';
+			whe = "WHERE area_dai='" + dai + "'";
+			target_id = $(tyu_id);
+		} else if (target == 2) {
+			sel = 'area_syo';
+			whe = "WHERE area_dai='" + dai + "' AND area_tyu='" + tyu + "'";
+			target_id = $(syo_id);
 		}
 		var query_string = 'SELECT '+sel+' FROM '+GOOGLE_FT_KEY+' '+whe+' GROUP BY '+sel+'';
 		var uri_string = 'http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent(query_string);
 		var query = new google.visualization.Query(uri_string);
 		query.send(function(response) {
 			if (!response.isError()) {
+				select = target_id;
+				select.empty();
+				select.append($("<option>").html('-----').attr({value: ''}));
 				var result_count = response.getDataTable().getNumberOfRows();
 				for (var i = 0; i < result_count; i++) {
-					select = $(dai ? (tyu ? syo_id : tyu_id) : dai_id);
-					var value = response.getDataTable().getValue(i, dai ? (tyu ? 2 : 1) : 0);//0=area_dai,1=area_tyu,2=area_tyu
+					var value = response.getDataTable().getValue(i, 0);
 					select.append($("<option>").html(value).attr({value: value}));
 				}
 			} else {
@@ -87,9 +94,7 @@
 		var syo_id = "#issue_custom_field_values_<%= area3 %>"
 		// ---dai
 		select = $(dai_id);
-		select.empty();
-		select.append($("<option>").html('-----').attr({value: ''}));
-		get_gft(dai_id, tyu_id, syo_id);
+		get_gft(0, dai_id, tyu_id, syo_id);
 		select.val('');
 		select.change(reselect2);
 		// ---tyu
@@ -108,9 +113,7 @@
 		var syo_id = "#issue_custom_field_values_<%= area3 %>"
 		// ---tyu
 		select = $(tyu_id);
-		select.empty();
-		select.append($("<option>").html('-----').attr({value: ''}));
-		get_gft(dai_id, tyu_id, syo_id, $(dai_id).val());
+		get_gft(1, dai_id, tyu_id, syo_id, $(dai_id).val());
 		select.val('');
 		select.change(reselect3);
 		// ---syo
@@ -125,9 +128,7 @@
 		var syo_id = "#issue_custom_field_values_<%= area3 %>"
 		// ---syo
 		select = $(syo_id);
-		select.empty();
-		select.append($("<option>").html('-----').attr({value: ''}));
-		get_gft(dai_id, tyu_id, syo_id, $(dai_id).val(), $(tyu_id).val());
+		get_gft(2, dai_id, tyu_id, syo_id, $(dai_id).val(), $(tyu_id).val());
 		select.val('');
 	}
 	<% end # end of CF_CONNECT.each %>
