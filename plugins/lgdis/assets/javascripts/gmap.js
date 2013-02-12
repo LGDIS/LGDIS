@@ -1,9 +1,7 @@
-// The default viewport of the map.
-const DEFAULT_MAP_CENTER = new google.maps.LatLng(35.702086,139.55979);//38.4342786010442, 141.30284786224365);//石巻市役所
-const DEFAULT_MAP_ZOOM = 13;
-const GOOGLE_FT_KEY = '1wVRsRYtnqjtYd4tMVAJt_zlS9TnOznTQdlGk9_g'; // FusionTablesのテーブルID
-
-var ft_id = null;
+// google maps api
+var DEFAULT_MAP_CENTER = new google.maps.LatLng(35.702086,139.55979);//38.4342786010442, 141.30284786224365);//石巻市役所
+var DEFAULT_MAP_ZOOM = 13;
+var GOOGLE_FT_KEY = '1wVRsRYtnqjtYd4tMVAJt_zlS9TnOznTQdlGk9_g'; // FusionTablesのテーブルID
 
 // key: map_id, value: LatLng
 var latlng_by_map_id = {};
@@ -72,7 +70,7 @@ function initClickableMap(map_id, field_id) {
 	// レイヤークリックイベントリスナ登録
 	google.maps.event.addListener(markered_map.layer, "click", function(event) {
 		// FusionTablesLayer再描画
-		ft_id = event.row.area_syo.value;
+		var ft_id = event.row.area_syo.value;
 		var where = "area_syo = '" + ft_id + "'"; //ユニークに特定できるクエリ
 		var mask_color = '#FF0000';
 		markered_map.layer.setMap(null);
