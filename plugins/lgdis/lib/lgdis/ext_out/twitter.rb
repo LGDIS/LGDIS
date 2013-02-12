@@ -20,9 +20,12 @@ class Lgdis::ExtOut::Twitter < ActiveRecord::Base
       Rails.logger.error("#{e.backtrace.join("\n")}" + "\n" + \
                          "#{o.create_log_time(msg, modulename)}")
       status = false
+      # エラー時のメール配信 -> if_common.rbのメソッドを呼び出す
+      o.mail_when_delivery_fails
     ensure
-      #アーカイブログ出力　
+      #アーカイブログ出力　  -> if_common.rbのメソッドを呼び出す
       o.leave_log(msg_hash)
+      print "\n"
       return status 
     end
   end
