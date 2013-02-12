@@ -58,13 +58,6 @@ module CustomFieldsHelper
         s << hidden_field_tag(field_name, '')
       end
       s
-    when "address"
-      splited_value = custom_value.value.to_s.split("/", 3)
-      id_prop = "issue_custom_field_values_#{custom_field.id}"
-      hidden_field_tag(field_name, custom_value, tag_options.merge(:id => id_prop)) +
-      text_field_tag(id_prop+"0", splited_value[0], tag_options.merge(:id => id_prop+"0", :size => 8)) +
-      text_field_tag(id_prop+"1", splited_value[1], tag_options.merge(:id => id_prop+"1", :size => 8)) +
-      text_field_tag(id_prop+"2", splited_value[2], tag_options.merge(:id => id_prop+"2", :size => 16))
     else
       text_field_tag(field_name, custom_value.value, tag_options)
     end
@@ -108,13 +101,6 @@ module CustomFieldsHelper
         options << [l(:label_none), '__none__'] unless custom_field.is_required?
         options += custom_field.possible_values_options(projects)
         select_tag(field_name, options_for_select(options), tag_options.merge(:multiple => custom_field.multiple?))
-      when "address"
-        splited_value = custom_value.value.to_s.split("/", 3)
-        id_prop = "issue_custom_field_values_#{custom_field.id}"
-        hidden_field_tag(field_name, custom_value, tag_options.merge(:id => id_prop)) +
-        text_field_tag(id_prop+"0", splited_value[0], tag_options.merge(:id => id_prop+"0", :size => 8)) +
-        text_field_tag(id_prop+"1", splited_value[1], tag_options.merge(:id => id_prop+"1", :size => 8)) +
-        text_field_tag(id_prop+"2", splited_value[2], tag_options.merge(:id => id_prop+"2", :size => 16))
       else
         text_field_tag(field_name, '', tag_options)
     end
