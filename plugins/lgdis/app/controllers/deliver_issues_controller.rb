@@ -76,7 +76,7 @@ class DeliverIssuesController < ApplicationController
       test_flag = DST_LIST['test_prj'][issue.project_id]
 
       if status != 'reject'
-        Resque.enqueue(eval(DST_LIST['delivery_job_map'][delivery_history.delivery_place_id]), summary, test_flag)
+        Resque.enqueue(eval(DST_LIST['delivery_job_map'][delivery_history.delivery_place_id]), summary, test_flag, issue)
 
         # アーカイブの為、チケットに登録
         msg = summary['message'].blank? ? summary : summary['message']

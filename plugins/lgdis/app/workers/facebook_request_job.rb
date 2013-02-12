@@ -2,7 +2,7 @@
 class FacebookRequestJob
   @queue = :facebook_request
 
-  def self.perform(msg, test_flg)
+  def self.perform(msg, test_flg, issue)
     begin
       str= "##################################### Facebook-WORKER がよばれました\n"
       Rails.logger.info("{#{str}");print("#{str}")
@@ -13,9 +13,8 @@ class FacebookRequestJob
       Rails.logger.error("#{e.backtrace.join("\n")}\n")
       status = false
     ensure
-      return status 
+      return status
     end
   end
-
 end
 

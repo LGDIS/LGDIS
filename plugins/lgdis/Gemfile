@@ -38,3 +38,6 @@ gem 'soap4r-ruby1.9', '2.0.5'
 
 # Delicious SOAP for the Ruby community
 gem 'savon', '2.1.0'
+
+# A simple universally unique ID generation library.
+gem 'uuidtools', '2.1.3'
