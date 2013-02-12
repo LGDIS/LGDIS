@@ -93,7 +93,25 @@ class EvacuationAdvisoriesController < ApplicationController
   # ==== Args
   # ==== Return
   # ==== Raise
-#debugger 旧版
+  def ticket
+    # 避難所情報が存在しない場合、処理しない
+    if EvacuationAdvisory.where(:project_id => @project.id).present?
+      begin
+        issues = EvacuationAdvisory.create_issues(@project)
+        links = []
+        issues.each do |issue|
+          links << view_context.link_to("##{issue.id}", issue_path(issue), :title => issue.subject)
+        end
+        flash[:notice] = l(:notice_issue_successful_create, :id => links.join(","))
+      rescue ActiveRecord::RecordInvalid => e
+        flash[:error] = e.message
+      end
+    else
+      flash[:error] = l(:error_not_exists_evacuation_advisories)
+    end
+    redirect_to :action => :index
+  end
+#旧版
 #   def ticket
 #     #避難勧告･指示情報が存在しない場合、処理しない
 #     if EvacuationAdvisory.where(:project_id => @project.id).present?
@@ -110,24 +128,6 @@ class EvacuationAdvisoriesController < ApplicationController
 #     redirect_to :action => :index
 #   end
 
-  def ticket
-    # 避難所情報が存在しない場合、処理しない
-    if EvacuationAdvisory.all.present?
-      begin
-        issues = EvacuationAdvisory.create_issues(@project)
-        links = []
-        issues.each do |issue|
-          links << view_context.link_to("##{issue.id}", issue_path(issue), :title => issue.subject)
-        end
-        flash[:notice] = l(:notice_issue_successful_create, :id => links.join(","))
-      rescue ActiveRecord::RecordInvalid => e
-        flash[:error] = e.message
-      end
-    else
-      flash[:error] = l(:error_not_exists_evacuation_advisories)
-    end
-    redirect_to :action => :index
-  end
   
   # 避難勧告･指示一覧検索画面 
   # (画面上ではサマリー画面表示ボ ンが非活性化されているので､実際にはこの処理はよばれません)
@@ -224,8 +224,6 @@ class EvacuationAdvisoriesController < ApplicationController
   def create
     @evacuation_advisory = EvacuationAdvisory.new()
     @evacuation_advisory.assign_attributes(params[:evacuation_advisory], :as => :evacuation_advisory)
-    #debugger: 林さんの最新版では以下の2行がけずられている｡
-    #早急に差分を吸収すべし｡
     @evacuation_advisory.project_id = @project.id
     @evacuation_advisory.disaster_code = @project.identifier
 

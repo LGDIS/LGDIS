@@ -116,9 +116,6 @@ class EvacuationAdvisory < ActiveRecord::Base
                  :length => {:maximum => 4000}
 
   before_create :number_evacuation_advisory_code #, :if => Proc.new { |evacuation_advisory| evacuation_advisory.identifier.nil? }
-#debugger: cf with Hayashi
-#   after_save :execute_release_all_data
-#   after_destroy :execute_release_all_data
   
 
 
@@ -236,10 +233,9 @@ class EvacuationAdvisory < ActiveRecord::Base
     doc.add_element("_避難勧告･指示") # Root
     
     # 避難所を取得しXMLを生成する
-    evacuation_advisories = EvacuationAdvisory.all
+#     evacuation_advisories = EvacuationAdvisory.all
     #Projectに紐付く避難勧告･指示を取得しXMLを生成する
-#debugger: cf with Hayashi
-#     evacuation_advisories = EvacuationAdvisory.where(:project_id => project.id)
+    evacuation_advisories = EvacuationAdvisory.where(:project_id => project.id)
     
     evacuation_advisories.each do |eva|
       node_eva = doc.root.add_element("_避難勧告･指示情報")
@@ -359,8 +355,8 @@ class EvacuationAdvisory < ActiveRecord::Base
         node_total_number.add_element("pcx_ev:HeadCount").add_text("#{summary.head_count_sum}") if summary.head_count_sum.present?
     end
     
-    EvacuationAdvisory.all.each do |eva|
-#     evas.each do |eva|
+#     EvacuationAdvisory.all.each do |eva|
+    evas.each do |eva|
       node_detail = node_evas.add_element("pcx_ev:Detail")
         # 発令区分
         node_detail.add_element("pcx_ev:Sort").add_text(CONST["sort_criteria"]["#{eva.sort_criteria}"]) if eva.sort_criteria.present?
@@ -449,13 +445,12 @@ class EvacuationAdvisory < ActiveRecord::Base
   # _shelters_ :: Shelterオブジェクト配列
   # ==== Return
   # ==== Raise
-#debugger: 避難所モデルをここで読み書きする必要があるか､要確認 evacuation はmemcached上にない｡
   def self.write_cache
     h = {}
     Shelter.all.each do |s|
       h[s.shelter_code] = {"name" => s.name, "area" => s.area}
     end
-    Rails.cache.write("shelter", h)
+#     Rails.cache.write("shelter", h)
   end
   
   # JSONファイルを上書きします。
