@@ -1,33 +1,32 @@
 <%= f.hidden_field :project_id_eq, :value => project.id %>
 <div class="splitcontent">
   <div class="splitcontentleft">
-    <%= field_for :advisory_type do |key, label| %>
+<%#    避難勧告･指示種別は非表示化になりました%>
+<%#    <%= field_for :advisory_type do |key, label| +|%>
+<%#      <%= label_tag{label} +|%>
+<%#      <%= f.select("#{key}_eq", options_for_select(@evacuation_advisory_const[key.to_s].invert, @search.advisory_type_eq),:include_blank => true) +|%>
+<%#    <% end +|%>
+
+    <%= field_for :sort_criteria do |key, label| %>
       <%= label_tag{label} %>
-			<%= f.select("#{key}_eq", options_for_select(@evacuation_advisory_const[key.to_s].invert, @search.advisory_type_eq),:include_blank => true) %>
-<%#      <%= select_tag key,'' +|%>
+      <%= f.select("#{key}_eq", options_for_select(@evacuation_advisory_const[key.to_s].invert, @search.sort_criteria_eq),:include_blank => true) %>
     <% end %>
 
-    <%= field_for :sort_criteria, :label => "発令区分" do |key, label| %>
+    <%= field_for :issue_or_lift do |key, label| %>
       <%= label_tag{label} %>
-			<%= f.select("#{key}_eq", options_for_select(@evacuation_advisory_const[key.to_s].invert, @search.sort_criteria_eq),:include_blank => true) %>
-    <% end %>
-    
-<%#    発令・解除地区名称をたばねた大分類が｢地区名｣でDB列をふやす必要がある　%>
-<%#    <%= field_for :location_area, :label => "地区名" do |key, label| +|%>
-<%#      <%= label_tag{label} +|%>
-<%#      <%= select_tag key,'' +|%>
-<%#    <% end +|%>
-    
-    <%= field_for :issue_or_lift, :label => "発令・解除区分" do |key, label| %>
-      <%= label_tag{label} %>
-			<%= f.select("advisory_type_eq", options_for_select(@evacuation_advisory_const[key.to_s].invert, @search.advisory_type_eq),:include_blank => true) %>
-<%#      symbol:issue_or_lift _がうまく移植されていない｡buggy k-takami"%>
+      <%= f.select("advisory_type_eq", options_for_select(@evacuation_advisory_const[key.to_s].invert, @search.advisory_type_eq),:include_blank => true) %>
+      <%#debugger   %>
 <%#      <%= f.select("#{key}_eq", options_for_select(@evacuation_advisory_const[key.to_s].invert, @search.issue_or_lift_eq),:include_blank => true) +|%>
     <% end %>
-    
-    <%= field_for :area, :label => "発令・解除地区名称" do |key, label| %>
+
+    <%= field_for :district  do |key, label| %>
       <%= label_tag{label} %>
-			<%= f.text_field "#{key}_eq", :value => @search.issued_at_gte.to_s, :size=>'50' %>
+      <%= f.select("#{key}_eq", options_for_select(@evacuation_advisory_const[key.to_s].invert, @search.district_eq),:include_blank => true) %>
+    <% end %>
+    
+    <%= field_for :area do |key, label| %>
+      <%= label_tag{label} %>
+      <%= f.text_field "#{key}_eq", :value => @search.issued_at_gte.to_s, :size=>'50' %>
     <% end %>
     
     <%= field_for :issued_at do |key, label| %>
@@ -37,12 +36,13 @@
       <%= f.text_field "#{key}_lte", :value => @search.issued_at_lte.to_s, :size=>'10' %> <%= calendar_for("search_#{key}_lte") %>
     <% end %>
 
-    <%= field_for :changed_at do |key, label| %>
-      <%= label_tag{label} %>
-      <%= f.text_field "#{key}_gte", :value => @search.changed_at_gte.to_s, :size=>'10' %> <%= calendar_for("search_#{key}_gte") %>
+<%#    移行日時は非表示になりました%>
+<%#    <%= field_for :changed_at do |key, label| +|%>
+<%#      <%= label_tag{label} +|%>
+<%#      <%= f.text_field "#{key}_gte", :value => @search.changed_at_gte.to_s, :size=>'10' +| <%= calendar_for("search_#{key}_gte") +|%>
       ～
-      <%= f.text_field "#{key}_lte", :value => @search.changed_at_lte.to_s, :size=>'10' %> <%= calendar_for("search_#{key}_lte") %>
-    <% end %>
+<%#      <%= f.text_field "#{key}_lte", :value => @search.changed_at_lte.to_s, :size=>'10' +| <%= calendar_for("search_#{key}_lte") +|%>
+<%#    <% end +|%>
 
     <%= field_for :lifted_at do |key, label| %>
       <%= label_tag{label} %>
@@ -53,95 +53,17 @@
 
   </div>
   
-<%#  webpage右の段%>
+  <%#  webpage右の段%>
   <div class="splitcontentright">
-<%#    <%= field_for :name do |key, label| +|%>
-<%#      <%= label_tag{label} +|%>
-<%#      <%= select_tag key,'' +|%>
-<%#    <% end +|%>
-<%#    %>
-<%#    <%= field_for :usable_flag do |key, label| +|%>
-<%#      <%= label_tag{label} +|%>
-<%#    #   <%= f.select("#{key}_eq", options_for_select(@evacuation_advisory_const[key.to_s].invert, @search.usable_flag_eq),:include_blank => true) +|%>
-<%#    <% end +|%>
-<%#    %>
-<%#    <%= field_for :openable_flag do |key, label| +|%>
-<%#      <%= label_tag{label} +|%>
-<%#    #  <%= f.select("#{key}_eq", options_for_select(@evacuation_advisory_const[key.to_s].invert, @search.openable_flag_eq),:include_blank => true) +|%>
-<%#    <% end +|%>
-<%#    %>
-<%#    <%= field_for :status do |key, label| +|%>
-<%#      <%= label_tag{label} +|%>
-<%#    #  <%= f.select("#{key}_eq", options_for_select(@evacuation_advisory_const[key.to_s].invert, @search.status_eq),:include_blank => true) +|%>
-<%#    <% end +|%>
   </div>
 </div>
 
 <div class="splitcontent">
   <div class="split3contentleft">
-<%#    <%= field_for :households do |key, label| +|%>
-<%#      <%= label_tag{label} +|%>
-<%#      ＞%>
-<%#      <%= f.text_field "#{key}_gte", :value => @search.households_gte, :size=>'10' +|%>
-<%#    <% end +|%>
-<%#    %>
-<%#    <%= field_for :upper_care_level_three_count do |key, label| +|%>
-<%#      <%= label_tag{label} +|%>
-<%#      ＞%>
-<%#  #    <%= f.text_field "#{key}_gte", :value => @search.upper_care_level_three_count_gte, :size=>'10' +|%>
-<%#    <% end +|%>
-    
-<%#    <%= field_for :bedridden_elderly_count do |key, label| +|%>
-<%#      <%= label_tag{label} +|%>
-<%#      ＞%>
-<%#    #  <%= f.text_field "#{key}_gte", :value => @search.bedridden_elderly_count_gte, :size=>'10' +|%>
-<%#    <% end +|%>
-    
-<%#    <%= field_for :physical_disability_certificate_count do |key, label| +|%>
-<%#      <%= label_tag{label} +|%>
-<%#      ＞%>
-<%#    #  <%= f.text_field "#{key}_gte", :value => @search.physical_disability_certificate_count_gte, :size=>'10' +|%>
-<%#    <% end +|%>
   </div>
-  
   <div class="split3contentcenter">
-<%#    <%= field_for :head_count do |key, label| +|%>
-<%#      <%= label_tag{label} +|%>
-<%#      ＞%>
-<%#      <%= f.text_field "#{key}_gte", :value => @search.head_count_gte, :size=>'10' +|%>
-<%#    <% end +|%>
-<%#    %>
-<%#    <%= field_for :elderly_alone_count do |key, label| +|%>
-<%#      <%= label_tag{label} +|%>
-<%#      ＞%>
-<%#    #  <%= f.text_field "#{key}_gte", :value => @search.elderly_alone_count_gte, :size=>'10' +|%>
-<%#    <% end +|%>
-<%#    %>
-<%#    <%= field_for :elderly_dementia_count do |key, label| +|%>
-<%#      <%= label_tag{label} +|%>
-<%#      ＞%>
-<%#    #  <%= f.text_field "#{key}_gte", :value => @search.elderly_dementia_count_gte, :size=>'10' +|%>
-<%#    <% end +|%>
   </div>
-  
   <div class="split3contentright">
-<%#    <%= field_for :injury_count do |key, label| +|%>
-<%#      <%= label_tag{label} +|%>
-<%#      ＞%>
-<%#    #  <%= f.text_field "#{key}_gte", :value => @search.injury_count_gte, :size=>'10' +|%>
-<%#    <% end +|%>
-<%#    %>
-<%#    <%= field_for :elderly_couple_count do |key, label| +|%>
-<%#      <%= label_tag{label} +|%>
-<%#      ＞%>
-<%#    #  <%= f.text_field "#{key}_gte", :value => @search.elderly_couple_count_gte, :size=>'10' +|%>
-<%#    <% end +|%>
-<%#    %>
-<%#    <%= field_for :rehabilitation_certificate_count do |key, label| +|%>
-<%#      <%= label_tag{label} +|%>
-<%#      ＞%>
-<%#    #  <%= f.text_field "#{key}_gte", :value => @search.rehabilitation_certificate_count_gte, :size=>'10' +|%>
-<%#    <% end +|%>
   </div>
 </div>
 

@@ -160,7 +160,7 @@ module Lgdis
 
         return map
       end
-      
+
       # 各種コンスタントデータを取得します
       # ==== Args
       # ==== Return
@@ -174,3 +174,4 @@ module Lgdis
 end
 
 IssuesController.send(:include, Lgdis::IssuesControllerPatch)
+

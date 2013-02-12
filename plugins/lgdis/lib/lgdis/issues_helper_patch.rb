@@ -5,10 +5,10 @@ module Lgdis
   module IssuesHelperPatch
     # XMLデータ抽出文字列
     XML_VIEW_SAMPLING_XPATH = %{//xmlns:Item[.//text()[contains(.,"石巻")]]}.freeze
-    STATUS = {'request'      => '配信要求中',
-              'done'         => '配信完了',
-              'done_test'    => '配信完了(通信試験モード)',
-              'reject'       => '配信却下',
+    STATUS = {'request' => '配信要求中',
+              'done'    => '配信完了',
+              'reject'  => '配信却下',
+              'failed'  => '配信失敗'
              }.freeze
 
     def self.included(base)

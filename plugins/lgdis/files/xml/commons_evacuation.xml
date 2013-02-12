@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<edxlde:EDXLDistribution
+	xmlns:pcx_ev="http://xml.publiccommons.ne.jp/pcxml1/body/evacuation3"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:edxlde="urn:oasis:names:tc:emergency:EDXL:DE:1.0"
+	xmlns:commons="http://xml.publiccommons.ne.jp/xml/edxl/"
+	xmlns:pcxml="http://xml.publiccommons.ne.jp/pcxml1/3"
+	xmlns:pcx_eb="http://xml.publiccommons.ne.jp/pcxml1/elementBasis3/"
+	xmlns:pcx_ib="http://xml.publiccommons.ne.jp/pcxml1/informationBasis3/">
+
+	<!-- EDXL 部 -->
+	<edxlde:distributionID></edxlde:distributionID>
+	<edxlde:senderID>"editor.lgdis.city.ishinomaki"</edxlde:senderID><!-- 固定値 -->
+	<edxlde:dateTimeSent></edxlde:dateTimeSent>
+	<edxlde:distributionStatus></edxlde:distributionStatus>
+	<edxlde:distributionType></edxlde:distributionType>
+	<edxlde:combinedConfidentiality></edxlde:combinedConfidentiality>
+	<commons:targetArea>
+		<commons:areaName></commons:areaName>
+	</commons:targetArea>
+	<edxlde:contentDescription></edxlde:contentDescription>
+
+	<commons:contentObject>
+		<edxlde:xmlContent>
+			<edxlde:embeddedXMLContent>
+				<Report>
+
+					<!-- Control 部 -->
+					<Control>
+						<Title>EvacuationOrder</Title>
+						<edxlde:distributionStatus></edxlde:distributionStatus>
+						<EditorialOffice>
+							<pcx_eb:OfficeName></pcx_eb:OfficeName>
+						</EditorialOffice>
+						<PulishingOffice>
+							<pcx_eb:OfficeName></pcx_eb:OfficeName>
+							<pcx_eb:ContactInfo>
+								<pcx_eb:contactType></pcx_eb:contactType>
+							</pcx_eb:ContactInfo>
+						</PulishingOffice>
+						<Errata>
+							<pcx_eb:Description></pcx_eb:Description>
+						</Errata>
+					</Control>
+
+					<!-- Head 部 -->
+					<pcx_ib:Head>
+						<pcx_ib:Title></pcx_ib:Title>
+						<pcx_ib:CreateDateTime></pcx_ib:CreateDateTime>
+						<pcx_ib:FirstCreateDateTime></pcx_ib:FirstCreateDateTime>
+						<pcx_ib:ReportDateTime></pcx_ib:ReportDateTime>
+						<pcx_ib:TargetDateTime></pcx_ib:TargetDateTime>
+						<pcx_ib:ValidDateTime></pcx_ib:ValidDateTime>
+						<edxlde:distributionID></edxlde:distributionID>
+						<edxlde:distributionType></edxlde:distributionType>
+						<commons:documentRevision></commons:documentRevision>
+						<commons:documentID></commons:documentID>
+						<pcx_ib:Headline>
+							<pcx_ib:Text></pcx_ib:Text>
+							<pcx_ib:Areas>
+								<pcx_ib:Area>
+									<commons:areaName></commons:areaName>
+								</pcx_ib:Area>
+							</pcx_ib:Areas>
+						</pcx_ib:Headline>
+					</pcx_ib:Head>
+					
+					<!-- Body 部-->
+					
+				</Report>
+			</edxlde:embeddedXMLContent>
+		</edxlde:xmlContent>
+		
+		<!-- EDXL 部 -->
+		<commons:publishingOfficeName></commons:publishingOfficeName>
+		<commons:previousDocumentRevision></commons:previousDocumentRevision>
+		<commons:documentRevision></commons:documentRevision>
+		<commons:documentID></commons:documentID>
+		<commons:category>EvacuationOrder</commons:category>
+
+	</commons:contentObject>
+</edxlde:EDXLDistribution>

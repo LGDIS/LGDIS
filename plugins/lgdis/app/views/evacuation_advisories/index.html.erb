@@ -34,9 +34,10 @@
         <% if authorize_for(:evacuation_advisories, :ticket) # 権限判定 %>
          <%= submit_tag l(:button_ticket), :kind => "ticket" %>
         <% end %>
-        <% if authorize_for(:evacuation_advisories, :summary) # 権限判定 %>
-          <%= submit_tag l(:button_summary), :kind => "summary" %>
-        <% end %>
+<%#        集計ボタンは非表示になりました%>
+<%#        <% if authorize_for(:evacuation_advisories, :summary) # 権限判定 +|%>
+<%#          <%= submit_tag l(:button_summary), :kind => "summary" +|%>
+<%#        <% end +|%>
       </p>
       <p style="text-align: right;">
         <%= will_paginate @evacuation_advisories, :previous_label => "前 &lt;&lt; ",
@@ -46,7 +47,6 @@
       </p>
     </div>
   </div>
-  
   <div class="autoscroll">
     <%= render :partial => 'list', :locals => {:project => @project, :evacuation_advisories => @evacuation_advisories} %>
   </div>

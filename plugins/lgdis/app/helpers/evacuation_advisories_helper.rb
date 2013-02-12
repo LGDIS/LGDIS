@@ -39,9 +39,9 @@ module EvacuationAdvisoriesHelper
     end
   end
   
-  # 避難所一覧画面一括更新用エラーメッセージ作成処理
+  # 避難勧告指示一覧画面一括更新用エラーメッセージ作成処理
   # ==== Args
-  # _objects_ :: 避難所情報配列
+  # _objects_ :: 避難勧告指示情報配列
   # ==== Return
   # エラーメッセージ
   # ==== Raise
@@ -51,8 +51,8 @@ module EvacuationAdvisoriesHelper
     objects.each do |object|
       errors = object.map do |o|
         o.errors.full_messages.map do |m|
-#           k-takami original:shelter_code replica: disaster_code
-          "#{l('evacuation_advisories.field_disaster_code')}\"#{o.disaster_code}\"の#{m}"
+#           k-takami original:shelter_code replica: identifier
+          "#{l('evacuation_advisories.field_identifier')}\"#{o.identifier}\"の#{m}"
         end
       end.flatten
     end
