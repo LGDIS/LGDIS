@@ -36,7 +36,12 @@ destination:
       - <<: *facebook
       - <<: *atom
     4: # JMA（警報・注意報）
+      - <<: *commons
       - <<: *smtp
+      - <<: *smtp_auth
+      - <<: *twitter
+      - <<: *facebook
+      - <<: *atom
   2: # Anonymous
     1: # 避難勧告指示・指示情報(公共コモンズ配信用)
       - <<: *commons
@@ -250,12 +255,13 @@ edxl_status:
   6: Exercise
 
 # 公共情報コモンズへの発信
-# NOTE: 
-# endpoint below have to point to a URL 
-# where COMMONS web server process is running on.
-# In other word, IP address of non-router (including virtualizer router).
-# commons_endpoint= 'http://0.0.0.0/commons/subscriber/soap/testservice.example.com/'
-commons_endpoint: http://192.168.43.186/commons/subscriber/soap/testservice.example.com/
+ # NOTE: 
+ # endpoint below have to point to a URL 
+ # where COMMONS web server process is running on.
+ # In other word, IP address of non-router (including virtualizer router).
+ # commons_endpoint= 'http://0.0.0.0/commons/subscriber/soap/testservice.example.com/'
+ # commons_endpoint: http://192.168.43.186/commons/subscriber/soap/testservice.example.com/
+commons_endpoint: http://192.168.11.7/commons/subscriber/soap/testservice.example.com/
 commons_user: user1@example.com
 commons_pw: password
 commons_wsdl: /opt/fix/LGDIS/plugins/lgdis/lib/lgdis/ext_out/wsdl/MQService.wsdl
@@ -283,9 +289,22 @@ mail_server:
   local_government_server: 127.0.0.1
   machicomi_server: 127.0.0.1
 
+#認証付きSMTPサーバーのときはSMTPサーバーに接続するために
+#以下のaccounat/ passwordをコメントインして適切な値をかいてください｡
 smtp_auth_server_conf:
-# account: apl
-# password: JBC03142
-# tls: = false
-  account: disastertraining2013
-  password: disastertraining
+  port: 25
+  mta_fqdn: localhost.localdomain
+  domain: localdomain
+#   account: apl
+#   password: JBC03142
+#   account: disastertraining2013
+#   password: disastertraining
+  tls: = false
+  charset: utf-8
+  fromname: root@localhost.localdomain 
+
+# 外部出力送信失敗時のメール通知パラメーター
+outbound_alert_mailto: apl@localhost.localdomain
+outbound_alert_title_prefix: "[石巻市Redmine外部配信ERROR] "
+outbound_alert_msg: ""
+
