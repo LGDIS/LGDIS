@@ -166,7 +166,9 @@ module Lgdis
         # Xmlドキュメントの生成
         doc  = REXML::Document.new(file)
         # tracker_id に紐付く標題を設定
-        title = DST_LIST['tracker_title'][self.tracker_id]
+        title  = DST_LIST['tracker_title'][self.tracker_id]
+        # tracker_id に紐付くドキュメントIDを設定
+        doc_id = DST_LIST['tracker_doc_id'][self.tracker_id]
 
         # TODO
         # 新規フィールドの作成が必要
@@ -241,7 +243,6 @@ module Lgdis
         doc.elements["//commons:documentRevision"].add_text('')
         #TODO
         # uuid 生成タイミング、格納先検討必要
-        doc_id = DST_LIST['tracker_doc_id'][self.tracker_id]
         doc.elements["//commons:contentObject/commons:documentID"].add_text(self.project.identifier + (doc_id.present? ? doc_id : 'UUID'))
 
         return doc
