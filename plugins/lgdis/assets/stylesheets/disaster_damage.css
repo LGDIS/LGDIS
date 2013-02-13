@@ -1,0 +1,65 @@
+
+.fdma_form_4 h4 {
+  border: none;
+}
+
+.fdma_form_4 h4,
+.fdma_form_4 th {
+  font-weight: normal;
+}
+
+.fdma_form_4 table {
+  width: 820px;
+  margin-left:auto;
+  margin-right:auto;
+  overflow: hidden;
+}
+.fdma_form_4 table {
+  border-collapse: collapse;
+  border: solid 1px;
+}
+.fdma_form_4 table th,
+.fdma_form_4 table td {
+  border: solid 1px;
+  border-left:none;
+  border-top:none;
+  white-space: nowrap;
+}
+.fdma_form_4 table.v-joining {
+  border-top: none;
+}
+.fdma_form_4 table .input{
+  width:1px;
+}
+.fdma_form_4 table .right{
+  float:right;
+}
+.fdma_form_4 .vertical {
+  width: 1px;
+  padding: 5px;
+  white-space: normal;
+}
+.fdma_form_4 .unit {
+  font-size: xx-small;
+  line-height: 120%;
+}
+.fdma_form_4 th.v-joined,
+.fdma_form_4 td.v-joined {
+  border-bottom: none;
+  padding-bottom: 3px;
+}
+.fdma_form_4 th.h-joined,
+.fdma_form_4 td.h-joined {
+  border-right: none;
+}
+.fdma_form_4 ul {
+  margin: 0;
+  padding-left: 24px;
+}
+.fdma_form_4 em.info table,
+.fdma_form_4 em.info table th,
+.fdma_form_4 em.info table td{
+  border: none;
+  white-space: normal;
+  vertical-align: top;
+}

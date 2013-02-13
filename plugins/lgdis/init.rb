@@ -45,12 +45,6 @@ Redmine::Plugin.register :lgdis do
   description '災害発生時における地方公共団体向けの包括的メッセージング:LGDIS (Local Government Disaster Information System) をRedmineに追加するプラグインです。'
   version '0.0.1'
 
-  project_module :shelters do
-    permission :view_shelters, :shelters => [:index, :edit]
-    permission :manage_shelters, :shelters => [:new, :create, :update, :destroy, :bulk_update, :ticket, :summary]
-  end
-  menu :project_menu, :shelters, { :controller => 'shelters', :action => 'index' }, :caption => :label_shelter, :after => :new_issue, :param => :project_id
-
   #避難勧告指示:(注:モデル名を'evacuation'に短縮する可能性あり)
   project_module :evacuation_advisories do
     permission :view_evacuation_advisories, :evacuation_advisories => [:index, :edit]
@@ -58,11 +52,23 @@ Redmine::Plugin.register :lgdis do
   end
   menu :project_menu, :evacuation_advisories, { :controller => 'evacuation_advisories', :action => 'index' }, :caption => :label_evacuation_advisory, :after => :new_issue, :param => :project_id
 
+  project_module :shelters do
+    permission :view_shelters, :shelters => [:index, :edit]
+    permission :manage_shelters, :shelters => [:new, :create, :update, :destroy, :bulk_update, :ticket, :summary]
+  end
+  menu :project_menu, :shelters, { :controller => 'shelters', :action => 'index' }, :caption => :label_shelter, :after => :evacuation_advisories, :param => :project_id
+
+  project_module :disaster_damage do
+    permission :view_disaster_damage, :disaster_damage => [:index]
+    permission :manage_disaster_damage, :disaster_damage => [:save, :ticket]
+  end
+  menu :project_menu, :disaster_damage, { :controller => 'disaster_damage', :action => 'index' }, :caption => :label_disaster_damage, :after => :shelters, :param => :project_id
+
   project_module :delivery_histories do
     # モジュール表示の為パーミッション定義を
     # project_module で囲む
     permission :request_delivery, :delivery_histories => [:index]
   end
+  menu :project_menu, :delivery_histories, { :controller => 'delivery_histories', :action => 'index' }, :caption => :project_module_deliver, :after => :disaster_damage, :param => :project_id
 
-  menu :project_menu, :delivery_histories, { :controller => 'delivery_histories', :action => 'index' }, :caption => :project_module_deliver, :after => :shelters, :param => :project_id
 end
