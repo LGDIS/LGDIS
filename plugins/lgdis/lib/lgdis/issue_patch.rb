@@ -165,6 +165,10 @@ module Lgdis
           edition_num = edition_mng.edition_num + 1
         end
 
+        # 運用種別フラグ
+        operation_flg = DST_LIST['commons_xml_field']['edxl_status'][self.project_id]
+        operation_flg = operation_flg.blank? ? 'Actual' : operation_flg
+
         # TODO
         # 新規フィールドの作成が必要
         # カスタムフィールドとするのか、Issue テーブルに追加するのか未決
@@ -173,39 +177,37 @@ module Lgdis
         # edxl 部要素追加
         doc.elements["//edxlde:distributionID"].add_text(uuid)
         doc.elements["//edxlde:dateTimeSent"].add_text(Time.now.xmlschema)
-        doc.elements["//edxlde:distributionStatus"].add_text(DST_LIST['edxl_status'][self.project_id])
+        doc.elements["//edxlde:distributionStatus"].add_text(operation_flg)
         # TODO
         # 新規作成フィールド
         doc.elements["//edxlde:distributionType"].add_text('')
-        doc.elements["//edxlde:combinedConfidentiality"].add_text('')
+        doc.elements["//edxlde:combinedConfidentiality"].add_text(DST_LIST['commons_xml_field']['confidential_message'])
         # TODO
         # 新規作成フィールド
         doc.elements["//commons:targetArea/commons:areaName"].add_text('')
         doc.elements["//edxlde:contentDescription"].add_text(custom_field_value_by_id(DST_LIST['custom_field_delivery']['summary']))
+        doc.elements["//edxlde:consumerRole/edxlde:valueListUrn"].add_text('publicCommons:media:urgentmail:carrier') # TODO 緊急速報メールの場合
+        doc.elements["//edxlde:consumerRole/edxlde:value"].add_text(DST_LIST['commons_xml_field']['carrier'][1]) # TODO 緊急速報メールの場合
 
         # Control 部要素追加
-        doc.elements["//edxlde:distributionStatus"].add_text(DST_LIST['edxl_status'][self.project_id])
+        doc.elements["//edxlde:distributionStatus"].add_text(operation_flg)
+        doc.elements["//EditorialOffice/pcx_eb:OfficeName"].add_text(DST_LIST['commons_xml_field']['editorial_office'])
+        doc.elements["//PulishingOffice/pcx_eb:OfficeName"].add_text(DST_LIST['commons_xml_field']['pulishing_office'])
+        doc.elements["//pcx_eb:contactType"].add_text(DST_LIST['contact_type']) unless DST_LIST['contact_type'].blank?
         # TODO
-        # 設定ファイル(?)の値を設定
-        doc.elements["//EditorialOffice/pcx_eb:OfficeName"].add_text('石巻市総務部防災対策課')
-        # TODO
-        # 設定ファイル(?)の値を設定
-        doc.elements["//PulishingOffice/pcx_eb:OfficeName"].add_text('石巻市')
-        # TODO
-        # 設定ファイル(?)の値を設定
-        doc.elements["//pcx_eb:contactType"].add_text('090123345678')
-        doc.elements["//pcx_eb:Description"].add_text(custom_field_value_by_id(DST_LIST['custom_field_delivery']['corrected']))
-        doc.elements["//pcx_eb:Description"].add_text(self.updated_on.xmlschema)
+        # タグ名が重複
+        doc.elements["//pcx_eb:Description"].add_text(custom_field_value_by_id(DST_LIST['custom_field_delivery']['corrected'])) if edition_mng.status == 0
+        doc.elements["//pcx_eb:Description"].add_text(self.updated_on.xmlschema) if edition_mng.status == 0
 
         # Head 部要素追加
-        doc.elements["//pcx_ib:Title"].add_text(I18n.t('target_municipality') + self.project.name + ' ' +  (title.present? ? title : '緊急速報メール'))
+        doc.elements["//pcx_ib:Title"].add_text(I18n.t('target_municipality') + ' ' + self.project.name + ' ' +  (title.present? ? title : '緊急速報メール'))
         doc.elements["//pcx_ib:CreateDateTime"].add_text(self.created_on.xmlschema)
         doc.elements["//pcx_ib:FirstCreateDateTime"].add_text(self.created_on.xmlschema)
         # TODO
         # 報告日時の設定避難所テーブルにしか存在しない為確認
         doc.elements["//pcx_ib:ReportDateTime"].add_text('')
         target_datetime=custom_field_value_by_id(DST_LIST['custom_field_delivery']['target_date']) + custom_field_value_by_id(DST_LIST['custom_field_delivery']['target_time'])
-        doc.elements["//pcx_ib:TargetDateTime"].add_text(target_datetime.xmlschema) unless target_datetime.blank?
+        doc.elements["//pcx_ib:TargetDateTime"].add_text(target_datetime.to_time.xmlschema) unless target_datetime.blank?
         valid_datetime=custom_field_value_by_id(DST_LIST['custom_field_delivery']['valid_date']) + custom_field_value_by_id(DST_LIST['custom_field_delivery']['valid_time'])
         doc.elements["//pcx_ib:ValidDateTime"].add_text(valid_datetime.xmlschema) unless valid_datetime.blank?
         doc.elements["//edxlde:distributionID"].add_text(uuid)
@@ -215,17 +217,13 @@ module Lgdis
         doc.elements["//commons:documentRevision"].add_text(edition_num)
         doc.elements["//pcx_ib:Head/commons:documentID"].add_text(uuid)
         doc.elements["//pcx_ib:Text"].add_text(custom_field_value_by_id(DST_LIST['custom_field_delivery']['summary']))
-        # TODO
-        # 設定ファイル(?)の値を設定
-        doc.elements["//pcx_ib:Areas/pcx_ib:Area/commons:areaName"].add_text('')
+        doc.elements["//pcx_ib:Areas/pcx_ib:Area/commons:areaName"].add_text(DST_LIST['custom_field_delivery']['area_name'])
 
         # Body 部
         doc.elements["//pcx_ib:Head"].next_sibling = REXML::Document.new self.xml_body
 
         # Edxl 部要素追加
-        # TODO
-        # 設定ファイル(?)の値を設定
-        doc.elements["//commons:publishingOfficeName"].add_text('石巻市')
+        doc.elements["//commons:publishingOfficeName"].add_text(DST_LIST['custom_field_delivery']['pulishing_office'])
         doc.elements["//commons:previousDocumentRevision"].add_text(edition_mng.edition_num)
         doc.elements["//commons:documentRevision"].add_text(edition_num)
         doc.elements["//commons:contentObject/commons:documentID"].add_text(uuid)

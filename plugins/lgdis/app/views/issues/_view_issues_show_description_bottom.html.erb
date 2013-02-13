@@ -190,7 +190,10 @@ end %>
       var pathArray = createPathArray(points) // points変数からpathの配列を作成
       var polylineOpts = {
           map: map,
-          path: pathArray
+          path: pathArray,
+          strokeColor: "#666666",
+          strokeOpacity: 0.9,
+          strokeWeight: 2
       };
 
       // PolylineOptionsを利用してPolylineを作成
@@ -225,7 +228,12 @@ end %>
       var pathArray = createPathArray(points) // points変数からpathの配列を作成
       var polygonOpts = {
           map: map,
-          paths: pathArray
+          paths: pathArray,
+          strokeColor: "#D96060",
+          strokeOpacity: 1,
+          strokeWeight: 1.5,
+          fillColor: "#D96060",
+          fillOpacity: 0.35
       };
 
       // polygonOptionsを利用してPolygonを作成
