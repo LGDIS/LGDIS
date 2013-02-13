@@ -1,0 +1,26 @@
+<%= stylesheet_link_tag params[:controller], :plugin => 'lgdis' %>
+<% html_title l(:label_disaster_damage) -%>
+
+<%= form_for @disaster_damage, :url => {:action => :save, :project_id => @project} do |f| %>
+  <h2>
+    <%= l(:label_disaster_damage) %>
+    <span style="float: right;">
+      <% if authorize_for(:disaster_damage, :save) # 権限判定 %>
+        <%= f.submit l(:button_save) %>
+      <% end %>
+    </span>
+  </h2>
+
+  <div class="box tabular">
+    <div id="all_attributes" class="fdma_form_4">
+      <%= error_messages_for 'disaster_damage' %>
+      <% @disabled = true unless authorize_for(:disaster_damage, :save) # 権限判定 %>
+      <%= render :partial => 'form_part_1', :locals => {:f => f} %>
+      <hr>
+      <%= render :partial => 'form_part_2_page_1', :locals => {:f => f} %>
+      <hr>
+      <%= render :partial => 'form_part_2_page_2', :locals => {:f => f} %>
+      <% include_calendar_headers_tags %>
+    </div>
+  </div>
+<% end %>

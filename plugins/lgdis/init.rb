@@ -58,11 +58,16 @@ Redmine::Plugin.register :lgdis do
   end
   menu :project_menu, :evacuation_advisories, { :controller => 'evacuation_advisories', :action => 'index' }, :caption => :label_evacuation_advisory, :after => :new_issue, :param => :project_id
 
+  project_module :disaster_damage do
+    permission :view_disaster_damage, :disaster_damage => [:index]
+    permission :manage_disaster_damage, :disaster_damage => [:save, :ticket]
+  end
+  menu :project_menu, :disaster_damage, { :controller => 'disaster_damage', :action => 'index' }, :caption => :label_disaster_damage, :after => :evacuation_advisories, :param => :project_id
+
   project_module :delivery_histories do
     # モジュール表示の為パーミッション定義を
     # project_module で囲む
     permission :request_delivery, :delivery_histories => [:index]
   end
-
   menu :project_menu, :delivery_histories, { :controller => 'delivery_histories', :action => 'index' }, :caption => :project_module_deliver, :after => :shelters, :param => :project_id
 end

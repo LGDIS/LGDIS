@@ -220,6 +220,127 @@ ja:
     field_lifted_date: 解除日時（年月日）
     field_lifted_hm: 解除日時（時分）
 
+  ####
+  # 災害被害情報（第４号様式）機能
+  #
+  project_module_disaster_damage: 災害被害情報（第４号様式）機能
+  permission_view_disaster_damage: 災害被害情報の閲覧
+  permission_manage_disaster_damage: 災害被害情報の管理
+
+  label_disaster_damage: 災害被害情報（第４号様式）
+
+  notice_disaster_damage_successful_save: 災害被害情報が保存されました。
+  error_not_exists_disaster_damage: 災害被害情報が存在しません。
+
+  # 項目名
+  disaster_damages:
+    field_disaster_occurred_location: その１（災害概況即報） / 災害の概況 / 発生場所
+    field_disaster_occurred_at: その１（災害概況即報） / 災害の概況 / 発生日時
+    field_general_disaster_situation: その１（災害概況即報） / 災害の概況
+    field_general_dead_count: その１（災害概況即報） / 被害の状況 / 死傷者 / 死者（人）
+    field_general_missing_count: その１（災害概況即報） / 被害の状況 / 死傷者 / 不明（人）
+    field_general_injured_count: その１（災害概況即報） / 被害の状況 / 死傷者 / 負傷者（人）
+    field_general_complete_collapse_houses_count: その１（災害概況即報） / 被害の状況 / 住家 / 全壊（棟）
+    field_general_partial_damage_houses_count: その１（災害概況即報） / 被害の状況 / 住家 / 一部破損（棟）
+    field_general_half_collapse_houses_count: その１（災害概況即報） / 被害の状況 / 住家 / 半壊（棟）
+    field_general_inundation_above_floor_level_houses_count: その１（災害概況即報） / 被害の状況 / 住家 / 床上浸水（棟）
+    field_general_damages_status: その１（災害概況即報） / 被害の状況
+    field_general_prefectural_antidisaster_headquarter_status: その１（災害概況即報） / 応急対策の状況 / 災害対策本部等の設置状況 / （都道府県）
+    field_general_prefectural_antidisaster_headquarter_status_at: その１（災害概況即報） / 応急対策の状況 / 災害対策本部等の設置状況 / （都道府県） / 設置状況日時
+    field_general_municipal_antidisaster_headquarter_of: その１（災害概況即報） / 応急対策の状況 / 災害対策本部等の設置状況 / （市町村） / 設置市町村
+    field_general_municipal_antidisaster_headquarter_status: その１（災害概況即報） / 応急対策の状況 / 災害対策本部等の設置状況 / （市町村）
+    field_general_municipal_antidisaster_headquarter_status_at: その１（災害概況即報） / 応急対策の状況 / 災害対策本部等の設置状況 / （市町村） / 設置状況日時
+    field_emergency_measures_status: その１（災害概況即報） / 応急対策の状況
+    field_dead_count: その２（被害状況即報） / 人的被害 / 死者（人）
+    field_missing_count: その２（被害状況即報） / 人的被害 / 行方不明者（人）
+    field_seriously_injured_count: その２（被害状況即報） / 人的被害 / 負傷者 / 重傷（人）
+    field_slightly_injured_count: その２（被害状況即報） / 人的被害 / 負傷者 / 軽傷（人）
+    field_complete_collapse_houses_count: その２（被害状況即報） / 住家被害 / 全壊（棟）
+    field_complete_collapse_households_count: その２（被害状況即報） / 住家被害 / 全壊（世帯）
+    field_complete_collapse_people_count: その２（被害状況即報） / 住家被害 / 全壊（人）
+    field_half_collapse_houses_count: その２（被害状況即報） / 住家被害 / 半壊（棟）
+    field_half_collapse_households_count: その２（被害状況即報） / 住家被害 / 半壊（世帯）
+    field_half_collapse_people_count: その２（被害状況即報） / 住家被害 / 半壊（人）
+    field_partial_damage_houses_count: その２（被害状況即報） / 住家被害 / 一部破損（棟）
+    field_partial_damage_households_count: その２（被害状況即報） / 住家被害 / 一部破損（世帯）
+    field_partial_damage_people_count: その２（被害状況即報） / 住家被害 / 一部破損（人）
+    field_inundation_above_floor_level_houses_count: その２（被害状況即報） / 住家被害 / 床上浸水（棟）
+    field_inundation_above_floor_level_households_count: その２（被害状況即報） / 住家被害 / 床上浸水（世帯）
+    field_inundation_above_floor_level_people_count: その２（被害状況即報） / 住家被害 / 床上浸水（人）
+    field_inundation_under_floor_level_houses_count: その２（被害状況即報） / 住家被害 / 床下浸水（棟）
+    field_inundation_under_floor_level_households_count: その２（被害状況即報） / 住家被害 / 床下浸水（世帯）
+    field_inundation_under_floor_level_people_count: その２（被害状況即報） / 住家被害 / 床下浸水（人）
+    field_damaged_public_building_count: その２（被害状況即報） / 非住家被害 / 公共建物（棟）
+    field_damaged_other_building_count: その２（被害状況即報） / 非住家被害 / その他（棟）
+    field_buried_or_washed_out_rice_field_ha: その２（被害状況即報） / その他 / 田 / 流出・埋没（ha）
+    field_under_water_rice_field_ha: その２（被害状況即報） / その他 / 田 / 冠水（ha）
+    field_buried_or_washed_out_upland_field_ha: その２（被害状況即報） / その他 / 畑 / 流出・埋没（ha）
+    field_under_water_upland_field_ha: その２（被害状況即報） / その他 / 畑 / 冠水（ha）
+    field_damaged_educational_facilities_count: その２（被害状況即報） / その他 / 文教施設（箇所）
+    field_damaged_hospitals_count: その２（被害状況即報） / その他 / 病院（箇所）
+    field_damaged_roads_count: その２（被害状況即報） / その他 / 道路（箇所）
+    field_damaged_bridges_count: そその２（被害状況即報） / その他 / 橋りょう（箇所）
+    field_damaged_rivers_count: その２（被害状況即報） / その他 / 河川（箇所）
+    field_damaged_harbors_count: その２（被害状況即報） / その他 / 港湾（箇所）
+    field_damaged_sand_control_count: その２（被害状況即報） / その他 / 砂防（箇所）
+    field_damaged_cleaning_facilities_count: その２（被害状況即報） / その他 / 清掃施設（箇所）
+    field_landslides_count: その２（被害状況即報） / その他 / 崖くずれ（箇所）
+    field_closed_lines_count: その２（被害状況即報） / その他 / 鉄道不通（箇所）
+    field_damaged_ships_count: その２（被害状況即報） / その他 / 被害船舶（隻）
+    field_water_failure_houses_count: その２（被害状況即報） / その他 / 水道（戸）
+    field_dead_telephone_lines_count: その２（被害状況即報） / その他 / 電話（回線）
+    field_blackout_houses_count: その２（被害状況即報） / その他 / 電気（戸）
+    field_gas_supply_stopped_houses_count: その２（被害状況即報） / その他 / ガス（戸）
+    field_damaged_concrete_block_walls_count: その２（被害状況即報） / その他 / ブロック塀等（箇所）
+    field_sufferer_houses_count: その２（被害状況即報） / り災世帯数（世帯）
+    field_sufferer_people_count: その２（被害状況即報） / り災者数（人）
+    field_fire_occurred_buildings_count: その２（被害状況即報） / 火災発生 / 建物（件）
+    field_fire_occurred_dangerous_substances_count: その２（被害状況即報） / 火災発生 / 危険物（件）
+    field_fire_occurred_others_count: その２（被害状況即報） / 火災発生 / その他（件）
+    field_public_educational_buildings_losses_amount: その２（被害状況即報） / 公立文教施設（千円）
+    field_agriculture_forestry_and_fisheries_buildings_losses_amount: その２（被害状況即報） / 農林水産業施設（千円）
+    field_public_civil_buildings_losses_amount: その２（被害状況即報） / 公立土木施設（千円）
+    field_other_public_buildings_losses_amount: その２（被害状況即報） / その他の公共施設（千円）
+    field_damaged_public_buildings_municipalities_count: その２（被害状況即報） / 公共施設被害市町村数（団体）
+    field_agriculture_losses_amount: その２（被害状況即報） / その他 / 農業被害（千円）
+    field_forestry_losses_amount: その２（被害状況即報） / その他 / 林業被害（千円）
+    field_livestock_losses_amount: その２（被害状況即報） / その他 / 畜産被害（千円）
+    field_fisheries_losses_amount: その２（被害状況即報） / その他 / 水産被害（千円）
+    field_commerce_and_industry_losses_amount: その２（被害状況即報） / その他 / 商工被害（千円）
+    field_other_losses_amount: その２（被害状況即報） / その他 / その他（千円）
+    field_prefectural_antidisaster_headquarter_status: その２（被害状況即報） / 災害対策本部等の設置状況 / 都道府県
+    field_prefectural_antidisaster_headquarter_status_at: その２（被害状況即報） / 災害対策本部等の設置状況 / 都道府県 / 設置状況日時
+    field_municipal_antidisaster_headquarter_of: その２（被害状況即報） / 災害対策本部等の設置状況 / 市町村 / 設置市町村
+    field_municipal_antidisaster_headquarter_type: その２（被害状況即報） / 災害対策本部等の設置状況 / 市町村 / 本部種別
+    field_municipal_antidisaster_headquarter_status: その２（被害状況即報） / 災害対策本部等の設置状況 / 市町村
+    field_municipal_antidisaster_headquarter_status_at: その２（被害状況即報） / 災害対策本部等の設置状況 / 市町村 / 設置状況日時
+    field_disaster_relief_act_applied_of: その２（被害状況即報） / 災害救助法適用市町村名
+    field_disaster_relief_act_applied_at: その２（被害状況即報） / 災害救助法適用市町村名 / 適用日時
+    field_disaster_relief_act_applied_municipalities_count: その２（被害状況即報） / 災害救助法適用市町村名 / 適用市町村数
+    field_turnout_fire_station_firefighter_count: その２（被害状況即報） / 消防職員出勤延人数（人）
+    field_turnout_fire_company_firefighter_count: その２（被害状況即報） / 消防団員出勤延人数（人）
+    field_note_disaster_occurred_location: その２（被害状況即報） / 備考 / 災害発生場所
+    field_note_disaster_occurred_date: その２（被害状況即報） / 備考 / 災害発生年月日
+    field_note_disaster_type_outline: その２（被害状況即報） / 備考 / 災害の種類概況
+    field_note_fire_services: その２（被害状況即報） / 備考 / 応急対策の状況 / 消防、水防、救急・救助等消防機関の活動状況
+    field_note_evacuation_advisories: その２（被害状況即報） / 備考 / 応急対策の状況 / 避難の勧告・指示の状況
+    field_note_shelters: その２（被害状況即報） / 備考 / 応急対策の状況 / 避難所の設置状況
+    field_note_other_local_government: その２（被害状況即報） / 備考 / 応急対策の状況 / 他の地方公共団体への応援要請、応援活動の状況
+    field_note_self_defence_force: その２（被害状況即報） / 備考 / 応急対策の状況 / 自衛隊の派遣要請、出勤状況
+    field_note_volunteer: その２（被害状況即報） / 備考 / 応急対策の状況 / 災害ボランティアの活動状況
+
+    field_disaster_occurred_date: その１（災害概況即報） / 災害の概況 / 発生日時（年月日）
+    field_disaster_occurred_hm: その１（災害概況即報） / 災害の概況 / 発生日時（時分）
+    field_general_prefectural_antidisaster_headquarter_status_date: その１（災害概況即報） / 応急対策の状況 / 災害対策本部等の設置状況 / （都道府県） / 設置状況日時（年月日）
+    field_general_prefectural_antidisaster_headquarter_status_hm: その１（災害概況即報） / 応急対策の状況 / 災害対策本部等の設置状況 / （都道府県） / 設置状況日時（時分）
+    field_general_municipal_antidisaster_headquarter_status_date: その１（災害概況即報） / 応急対策の状況 / 災害対策本部等の設置状況 / （市町村） / 設置状況日時（年月日）
+    field_general_municipal_antidisaster_headquarter_status_hm: その１（災害概況即報） / 応急対策の状況 / 災害対策本部等の設置状況 / （市町村） / 設置状況日時（時分）
+    field_prefectural_antidisaster_headquarter_status_date: その２（被害状況即報） / 災害対策本部等の設置状況 / 都道府県 / 設置状況日時（年月日）
+    field_prefectural_antidisaster_headquarter_status_hm: その２（被害状況即報） / 災害対策本部等の設置状況 / 都道府県 / 設置状況日時（時分）
+    field_municipal_antidisaster_headquarter_status_date: その２（被害状況即報） / 災害対策本部等の設置状況 / 市町村 / 設置状況日時（年月日）
+    field_municipal_antidisaster_headquarter_status_hm: その２（被害状況即報） / 災害対策本部等の設置状況 / 市町村 / 設置状況日時（時分）
+    field_disaster_relief_act_applied_date: その２（被害状況即報） / 災害救助法適用市町村名 / 適用日時（年月日）
+    field_disaster_relief_act_applied_hm: その２（被害状況即報） / 災害救助法適用市町村名 / 適用日時（時分）
 
   # GoogleMaps入力
   button_map_show: 地図を表示
