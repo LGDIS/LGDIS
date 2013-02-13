@@ -3,7 +3,7 @@ class Atom_DigiSignageRequestJob
   #TODO:佐藤さんに伝達:SMTP_DigiSignageRequestJob Atom_DigiSignageRequestJob
   @queue = :atom_digi_signage_request
 
-  def self.perform(msg_hash, test_flg)
+  def self.perform(msg_hash, test_flg, issue)
     begin
       str= "##################################### 災害情報ポータルWORKER がよばれました\n"
       Rails.logger.info("{#{str}");print("#{str}")
@@ -14,10 +14,9 @@ class Atom_DigiSignageRequestJob
       Rails.logger.error("#{e.backtrace.join("\n")}\n")
       status = false
     ensure
-      return status 
+      return status
     end
   end
-
 end
 
 #debugcode

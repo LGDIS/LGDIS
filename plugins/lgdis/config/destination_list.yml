@@ -28,16 +28,28 @@ atom: &atom
 
 destination:
   1: # Non member
-    1: #避難勧告･指示(仮)debugger 
+    1: # 避難勧告指示・指示情報(公共コモンズ配信用)
       - <<: *commons
       - <<: *smtp
       - <<: *smtp_auth
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
-#     4: # JMA（警報・注意報）
-#       - <<: *smtp
+    4: # JMA（警報・注意報）
+      - <<: *commons
+      - <<: *smtp
+      - <<: *smtp_auth
+      - <<: *twitter
+      - <<: *facebook
+      - <<: *atom
   2: # Anonymous
+    1: # 避難勧告指示・指示情報(公共コモンズ配信用)
+      - <<: *commons
+      - <<: *smtp
+      - <<: *smtp_auth
+      - <<: *twitter
+      - <<: *facebook
+      - <<: *atom
     4: # JMA（警報・注意報）
       - <<: *commons
       - <<: *smtp
@@ -46,6 +58,13 @@ destination:
       - <<: *facebook
       - <<: *atom
   3: # 管理者(プロトタイプ環境 admin)
+    1: # 避難勧告指示・指示情報(公共コモンズ配信用)
+      - <<: *commons
+      - <<: *smtp
+      - <<: *smtp_auth
+      - <<: *twitter
+      - <<: *facebook
+      - <<: *atom
     4: # 気象情報（警報・注意報）
       - <<: *commons
       - <<: *smtp
@@ -53,9 +72,8 @@ destination:
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
-# - {target_num: 1, name: I18n.l(load_dir['commons'])}
   6: # モデレータ
-    1: #避難勧告･指示(仮)debugger 
+    1: # 避難勧告指示・指示情報(公共コモンズ配信用)
       - <<: *commons
       - <<: *smtp
       - <<: *smtp_auth
@@ -70,6 +88,13 @@ destination:
       - <<: *facebook
       - <<: *atom
   7: # エリアマネージャ
+    1: # 避難勧告指示・指示情報(公共コモンズ配信用)
+      - <<: *commons
+      - <<: *smtp
+      - <<: *smtp_auth
+      - <<: *twitter
+      - <<: *facebook
+      - <<: *atom
     4: # JMA（警報・注意報）
       - <<: *commons
       - <<: *smtp
@@ -78,6 +103,13 @@ destination:
       - <<: *facebook
       - <<: *atom
   8: # 市役所内一般入力者
+    1: # 避難勧告指示・指示情報(公共コモンズ配信用)
+      - <<: *commons
+      - <<: *smtp
+      - <<: *smtp_auth
+      - <<: *twitter
+      - <<: *facebook
+      - <<: *atom
     4: # JMA（警報・注意報）
       - <<: *commons
       - <<: *smtp
@@ -86,6 +118,13 @@ destination:
       - <<: *facebook
       - <<: *atom
   9: # 外部入力者
+    1: # 避難勧告指示・指示情報(公共コモンズ配信用)
+      - <<: *commons
+      - <<: *smtp
+      - <<: *smtp_auth
+      - <<: *twitter
+      - <<: *facebook
+      - <<: *atom
     4: # JMA（警報・注意報）
       - <<: *commons
       - <<: *smtp
@@ -94,6 +133,13 @@ destination:
       - <<: *facebook
       - <<: *atom
   10: # 閲覧者
+    1: # 避難勧告指示・指示情報(公共コモンズ配信用)
+      - <<: *commons
+      - <<: *smtp
+      - <<: *smtp_auth
+      - <<: *twitter
+      - <<: *facebook
+      - <<: *atom
     4: # JMA（警報・注意報）
       - <<: *commons
       - <<: *smtp
@@ -103,6 +149,7 @@ destination:
       - <<: *atom
 
 delivery_job_map:
+  1: SOAP_KJcommonsRequestJob
   2: SMTP_JichiShokuinRequestJob
   3: SMTP_AuthRequestJob
   4: TwitterRequestJob
@@ -194,6 +241,7 @@ custom_field_delivery:
   target_time: 11 # 情報の公開開始日時(時間)
   valid_date: 12  # 情報の公開終了日時(日付)
   valid_time: 13  # 情報の公開終了日時(時間)
+  type_update: 25 # 更新種別
 
 # 災害訓練モードプロジェクトID
 training_prj:

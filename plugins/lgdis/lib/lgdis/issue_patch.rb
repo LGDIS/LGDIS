@@ -87,18 +87,6 @@ module Lgdis
         return value
       end
 
-      # 公共情報コモンズ用 配信メッセージ作成処理
-      # ==== Args
-      # ==== Return
-      # _summary_ :: 配信内容
-      # ==== Raise
-      def create_commons_msg
-        # TODO
-        # 未実装
-        # XML ドキュメント取得
-        doc = create_commons_layouts
-      end
-
       # Twitter 用配信メッセージ作成処理
       # ==== Args
       # ==== Return
@@ -151,15 +139,14 @@ module Lgdis
           '【災害訓練】' + "\n" + url + "\n" + contents : url + "\n" + contents
       end
 
-      private
-
       # 公共コモンズ用XML 作成処理
       # Control部, Head部, Body部を結合し
       # 配信内容を作成
       # ==== Args
       # ==== Return
+      # _doc_ :: 配信内容
       # ==== Raise
-      def create_commons_layouts
+      def create_commons_msg
         # テンプレートの読み込み
         commons_xml = DST_LIST['commons_xml'][self.tracker_id]
         file = File.new("#{Rails.root}/plugins/lgdis/files/xml/#{commons_xml}")
@@ -169,6 +156,14 @@ module Lgdis
         title  = DST_LIST['tracker_title'][self.tracker_id]
         # tracker_id に紐付くドキュメントIDを設定
         doc_id = DST_LIST['tracker_doc_id'][self.tracker_id]
+        edition_mng = EditionManagement.find_by_project_id_and_tracker_id(self.project_id, self.tracker_id)
+        if edition_mng.blank? || edition_mng.status == 0
+          uuid = UUIDTools::UUID.random_create.to_s
+          edition_num = 1
+        else
+          uuid = edition_mng.uuid
+          edition_num = edition_mng.edition_num + 1
+        end
 
         # TODO
         # 新規フィールドの作成が必要
@@ -176,9 +171,7 @@ module Lgdis
         # Issue に追加する際は、登録画面の作成も必要
 
         # edxl 部要素追加
-        #TODO
-        # uuid 生成タイミング、格納先検討必要
-        doc.elements["//edxlde:distributionID"].add_text('')
+        doc.elements["//edxlde:distributionID"].add_text(uuid)
         doc.elements["//edxlde:dateTimeSent"].add_text(Time.now.xmlschema)
         doc.elements["//edxlde:distributionStatus"].add_text(DST_LIST['edxl_status'][self.project_id])
         # TODO
@@ -215,38 +208,32 @@ module Lgdis
         doc.elements["//pcx_ib:TargetDateTime"].add_text(target_datetime.xmlschema) unless target_datetime.blank?
         valid_datetime=custom_field_value_by_id(DST_LIST['custom_field_delivery']['valid_date']) + custom_field_value_by_id(DST_LIST['custom_field_delivery']['valid_time'])
         doc.elements["//pcx_ib:ValidDateTime"].add_text(valid_datetime.xmlschema) unless valid_datetime.blank?
-        #TODO
-        # uuid 生成タイミング、格納先検討必要
-        doc.elements["//edxlde:distributionID"].add_text('')
+        doc.elements["//edxlde:distributionID"].add_text(uuid)
         # TODO
         # 新規作成フィールド
         doc.elements["//edxlde:distributionType"].add_text('')
-        # TODO
-        # 版番号処理 設計検討
-        doc.elements["//commons:documentRevision"].add_text('')
-        # uuid 生成タイミング、格納先検討必要
-        doc.elements["//pcx_ib:Head/commons:documentID"].add_text(self.project.identifier + (doc_id.present? ? doc_id : 'UUID'))
+        doc.elements["//commons:documentRevision"].add_text(edition_num)
+        doc.elements["//pcx_ib:Head/commons:documentID"].add_text(uuid)
         doc.elements["//pcx_ib:Text"].add_text(custom_field_value_by_id(DST_LIST['custom_field_delivery']['summary']))
         # TODO
         # 設定ファイル(?)の値を設定
         doc.elements["//pcx_ib:Areas/pcx_ib:Area/commons:areaName"].add_text('')
 
+        # Body 部
+        doc.elements["//pcx_ib:Head"].next_sibling = REXML::Document.new self.xml_body
+
         # Edxl 部要素追加
         # TODO
         # 設定ファイル(?)の値を設定
         doc.elements["//commons:publishingOfficeName"].add_text('石巻市')
-        # TODO
-        # 版番号処理 設計検討
-        doc.elements["//commons:previousDocumentRevision"].add_text('')
-        # TODO
-        # 版番号処理 設計検討
-        doc.elements["//commons:documentRevision"].add_text('')
-        #TODO
-        # uuid 生成タイミング、格納先検討必要
-        doc.elements["//commons:contentObject/commons:documentID"].add_text(self.project.identifier + (doc_id.present? ? doc_id : 'UUID'))
+        doc.elements["//commons:previousDocumentRevision"].add_text(edition_mng.edition_num)
+        doc.elements["//commons:documentRevision"].add_text(edition_num)
+        doc.elements["//commons:contentObject/commons:documentID"].add_text(uuid)
 
         return doc
       end
+
+      private
 
       # 公共コモンズ用XML 作成処理(エリアメールBody部)
       # ==== Args
