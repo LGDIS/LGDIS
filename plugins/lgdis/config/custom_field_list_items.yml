@@ -2,25 +2,83 @@ load_dir: ./plugins/lgdis/files/custom_field_list_items # 読込ファイルの�
 load_settings:  # 読込設定詳細
   # カスタムフィールドID: [読込ファイル名, 読込列番号(0始まり)]
   1:    [ConsumerRole.csv, 1]               # 受信媒体
-  3:    [Areas.csv, 1]                      # 事象の起こった場所
-  14:   [DisasterInformationType.csv, 1]    # 情報識別区分
-  16:   [OtherSubCategory.csv, 1]           # 小分類（生活情報・広報・その他）
-  132:  [RoadSubCategory.csv, 1]            # 小分類（交通）
-  347:  [WaterSubCategory.csv, 1]           # 小分類（水道・給水）
+  3:    [Areas.csv, 1]                      # 事象の発生市区町村
+  14:   [DisasterInformationType.csv, 1]    # 情報の識別区分
   413:  [SubCategory.csv, 1]                # 小分類
   134:  [MessageStatus.csv, 1]              # メッセージ状態
   135:  [MessageType.csv, 1]                # メッセージ種別
   136:  [DeliveryArea.csv, 1]               # 配信先
-  137:  [Accuracy.csv, 1]                   # 確実度
+  137:  [Accuracy.csv, 1]                   # 情報の確実度
   138:  [SupportStatus.csv, 1]              # 対応
   139:  [DamageType.csv, 1]                 # 被害種別
-  31:   [HouseDamageType.csv, 1]            # 被害区分（住家被害区分）
-  34:   [BuildingDamageObject.csv, 1]       # 被害対象（非住家被害区分）
-  35:   [BuildingDamageType.csv, 1]         # 被害区分（非住家被害区分）
-  140:  [OtherDamageObject.csv, 1]          # 被害対象（その他被害区分）
-  141:  [BuildingDamageType.csv, 1]         # 被害区分（その他被害区分）
+  31:   [HouseDamageType.csv, 1]            # 住家被害区分
+  34:   [BuildingDamageObject.csv, 1]       # 非住家被害対象
+  35:   [BuildingDamageType.csv, 1]         # 非住家被害区分
+  140:  [OtherDamageObject.csv, 1]          # その他被害対象
+  141:  [BuildingDamageType.csv, 1]         # その他被害区分
   38:   [ShelterWarehouse.csv, 1]           # 避難所・倉庫名
   39:   [RequirementCategory.csv, 1]        # 要望カテゴリ
   40:   [SupplyCategory.csv, 1]             # 物資カテゴリ
   115:  [HeadquartersType.csv, 1]           # 本部種別
-  116:  [EstablishStatus.csv, 1]            # 設置状況
+  116:  [EstablishStatus.csv, 1]            # 設置状况
+  142:  [APPLIC【コード辞書（防災情報共有）_05】.HumanDamageType.csv, 1]    # 人的被害区分
+  145:  [APPLIC【コード辞書（共通）_03】.Sex.csv, 1]                        # 性別
+  159:  [APPLIC【コード辞書（防災情報共有）_28】.AdministratorType.csv, 1]  # 道路管理者
+  161:  [APPLIC【コード辞書（防災情報共有）_29】.RoadType.csv, 1]           # 道路種別
+  164:  [APPLIC【コード辞書（防災情報共有）_31】.EmergencyRoute.csv, 1]     # 緊急輸送路の指定
+  168:  [eventRoadSurfaceDamage.csv, 1]                                     # 路面被害状況
+  169:  [eventShoulderDamage.csv, 1]                                        # 路肩被害状況
+  170:  [eventSlopeFaceDamage.csv, 1]                                       # 法面被害状況
+  171:  [eventRetainingWallRevetmentDamage.csv, 1]                          # 擁壁・護岸被害状況
+  172:  [eventCrossingFacilityDamage.csv, 1]                                # 横断施設被害状況
+  173:  [eventTunnelDamage.csv, 1]                                          # トンネル被害状況
+  174:  [eventRoadAccessoriesDamage.csv, 1]                                 # 道路附属物被害状況
+  175:  [eventCommonDuctDamage.csv, 1]                                      # 共同溝被害状況
+  176:  [eventEmbankmentDamageConditions.csv, 1]                            # 盛土被害状況
+  177:  [eventOutlineInformationRoadsideFire.csv, 1]                        # 沿道火災
+  178:  [eventOutlineInformationRoadPassingObstacle.csv, 1]                 # 道路通行障害物
+  179:  [eventStatusCode.csv, 1]                                            # 事象状態区分
+  180:  [eventEmergencyRestorationConditions.csv, 1]                        # 応急復旧状況
+  185:  [eventBridgeDamage.csv, 1]                                          # 橋梁被害状況
+  232:  [APPLIC【コード辞書（防災情報共有）_32】.TimeControlType.csv, 1]    # 時間帯規制種別
+  236:  [APPLIC【コード辞書（防災情報共有）_33】.Detour.csv, 1]             # 迂回路有無
+  238:  [roadLaneType.csv, 2]                                               # 対象車線種別
+  240:  [eventRestrictionCause.csv, 2]                                      # 交通規制原因
+  241:  [eventCauseDetails.csv, 2]                                          # 交通規制原因詳細
+  242:  [eventRestrictionContent.csv, 2]                                    # 交通規制内容
+  243:  [eventRestrictionContentDetails.csv, 2]                             # 交通規制内容詳細
+  244:  [eventTrafficRestrictionVehicle.csv, 2]                             # 対象車両の種別
+  247:  [eventCauseOfTheTrafficJam.csv, 2]                                  # 交通渋滞原因
+  248:  [eventCauseOfTheTrafficJamDetail.csv, 2]                            # 交通渋滞原因詳細
+  249:  [eventTrafficJamForecast.csv, 2]                                    # 交通渋滞予測
+  251:  [eventTrafficJamLesStatus.csv, 2]                                   # 交通渋滞状況
+  252:  [eventAccidentPattern.csv, 2]                                       # 交通事故形態
+  253:  [eventAccidentObject.csv, 2]                                        # 交通事故対象物
+  254:  [eventAccidentHandlingConditions.csv, 2]                            # 交通事故処理状況
+  259:  [eventPatternOfBrokenDownCar.csv, 2]                                # 路上故障車形態
+  260:  [eventRemovalStatusOfBrokenDownCar.csv, 2]                          # 路上故障車移動状態
+  261:  [eventTargetObstacles.csv, 2]                                       # 路上障害物名
+  262:  [eventObstaclesForm.csv, 2]                                         # 路上障害物状況
+  263:  [eventObstaclesStatus.csv, 2]                                       # 路上障害物の処理状況
+  264:  [eventOperationContent.csv, 2]                                      # 道路工事内容
+  265:  [eventConstructionType.csv, 2]                                      # 道路工事種別
+  266:  [eventConstructionOperationConditions.csv, 2]                       # 道路工事作業形態
+  267:  [eventWeatherConditions.csv, 2]                                     # 道路工事天候条件
+  272:  [eventConditionOfFire.csv, 2]                                       # 道路火災状態
+  273:  [eventTunnelFireDetection.csv, 2]                                   # トンネル火災発生検知
+  274:  [eventHandlingConditions.csv, 2]                                    # 道路火災処理状況
+  275:  [eventRoadSurfaceConditions.csv, 2]                                 # 道路面状態
+  276:  [eventAhsRoadSurfaceConditions13Detail.csv, 2]                      # 道路面状態（AHS13分類）
+  277:  [eventAhsRoadSurfaceConditions7.csv, 2]                             # 道路面状態（AHS7分類）
+  278:  [eventAhsRoadSurfaceConditions5.csv, 2]                             # 道路面状態（AHS5分類）
+  322:  [MedicalFacilityType.csv, 1]                                        # 医療施設の種類
+  323:  [HospitalType.csv, 1]                                               # 病院の種類
+  327:  [MedicalTreatment.csv, 1]                                           # 被災後の診療可能科目
+  201:  [Cause of the waterworks suspension of water supply.csv, 1]         # 断水の原因要素
+  210:  [Cause of the sewer suspension of water supply.csv, 1]              # 下水道機能停止の原因要素
+  218:  [Cause of the gas supply stop.csv, 1]                               # ガス供給停止の原因要素
+  226:  [Cause interruption of the communication network.csv, 1]            # 電話等不通の原因要素
+  310:  [Disaster weak-related facilities.csv, 1]                           # 災害弱者関連施設の種類
+  419:  [Bridge damage division.csv, 1]                                     # 橋梁被害区分
+  163:  [Road damage division.csv, 1]                                       # 道路被害区分
+  422:  [The metropolis and districts.csv, 1]                               # 事象の発生都道府県
