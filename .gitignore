@@ -28,6 +28,7 @@
 /vendor/cache
 /vendor/rails
 /plugins/lgdis/config/settings.yml
+/plugins/lgdis/config/custom_field_connection.yml
 *.rbc
 
 /.bundle
