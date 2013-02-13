@@ -24,7 +24,7 @@ class Lgdis::ExtOut::Twitter < ActiveRecord::Base
       o.mail_when_delivery_fails
     ensure
       #アーカイブログ出力　  -> if_common.rbのメソッドを呼び出す
-      o.leave_log(msg_hash)
+      o.leave_log(msg)
       print "\n"
       return status 
     end

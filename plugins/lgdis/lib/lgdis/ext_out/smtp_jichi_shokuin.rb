@@ -1,14 +1,14 @@
 # -*- encoding: utf-8 -*-
 class Lgdis::ExtOut::SMTP_JichiShokuin  < ActiveRecord::Base
-  def self.send_message(msg_hash, test_flg)
+  def self.send_message(msg, test_flg)
     modulename="JichiShokuin"
     o = IfCommon.new
     #hash below is a dummy hash before integration testing: k-takami 
-    mailing_list_name = msg_hash["mailing_list_name"]
-    title = msg_hash["title"]
-    message = msg_hash["message"]
-#     charset = msg_hash["charset"]
-#     from  = msg_hash["from"]
+    mailing_list_name = msg["mailing_list_name"]
+    title = msg["title"]
+    message = msg["message"]
+#     charset = msg["charset"]
+#     from  = msg["from"]
 
     begin
       if test_flg.blank?
@@ -16,14 +16,14 @@ class Lgdis::ExtOut::SMTP_JichiShokuin  < ActiveRecord::Base
           status = @mail=Lgdis::ExtOut::Mailer.setup(mailing_list_name, title, message).deliver
       end
       #TODO: アーカイブ出力に関して、課題検討中? 現在はlogger で対応
-      Rails.logger.info("#{o.create_log_time(msg_hash,modulename)}")
+      Rails.logger.info("#{o.create_log_time(msg,modulename)}")
     rescue => e
       Rails.logger.error("#{e.backtrace.join("\n")}" + "\n" + \
-                         "#{o.create_log_time(msg_hash,modulename)}")
+                         "#{o.create_log_time(msg,modulename)}")
       status = false
     ensure
       #アーカイブログ出力　
-      o.leave_log(msg_hash)
+      o.leave_log(msg)
       return status 
     end
   end

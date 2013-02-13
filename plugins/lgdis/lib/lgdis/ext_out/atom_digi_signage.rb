@@ -1,4 +1,7 @@
 # -*- encoding: utf-8 -*-
+# simple-geoRSS(ATOM1.0)生成I/Fよびだしワーカー
+#Railsコンソールから呼ぶ場合は､RedmineのIssueオブジェクトを引数にして以下の様に呼び出す;
+#  例: Lgdis::ExtOut::ATOM_DigiSignage.send_message(Issue.all[1], false)
 class Lgdis::ExtOut::ATOM_DigiSignage  < ActiveRecord::Base
   def self.send_message(msg, test_flg)
     modulename="DigiSignage"
@@ -19,7 +22,7 @@ class Lgdis::ExtOut::ATOM_DigiSignage  < ActiveRecord::Base
       status = false
     ensure
       #アーカイブログ出力　
-      o.leave_log(msg_hash)
+      o.leave_log(msg)
       return status 
     end
   end

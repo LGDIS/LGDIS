@@ -3,7 +3,7 @@
 #Simple-geoATOM I/F スクリプト本体のつかいかた:
 #スクリプトとしてつかうばあいは ruby feeder.rb
 #Railsコンソールから呼ぶ場合は､RedmineのIssueオブジェクトを引数にして以下の様に呼び出す;
-#    例: SetupXML.arrange_and_put(Issue.first)
+#    例: SetupXML.arrange_and_put(Issue.all[1])
 
 #Simple-geoATOM テンプレートファイル "*.tmpl"のメタタグ記法
 # #{ }でそのまま出力
@@ -140,12 +140,15 @@ class SetupXML
 
           strbuf += indents + "<georss:relationshipTag>iconfile=" + rand(16).to_s + "-dot.png</georss:relationshipTag>\n"
           cnt_geo += 1
-       }
+        }
         #descriptionはtwitterにあわせて140文字制限｡今は単純に説明文だけを出力している
+        
+        web_fqdn = Socket.gethostbyname(Socket.gethostname).first.to_s
+
         xml.items = [
             {
              :title     => "#{issue.tracker.name} ##{issue.id}: #{issue.subject}",
-						 :url       => "/issues/#{issue.id}",
+						 :url       => "http://#{web_fqdn}/#{issue.project.identifier}/issues/#{issue.id}",
              :uuid      => `uuidgen`.chomp,
              :date      => time,
              :description => issue.description.to_s[0,140] ,
