@@ -35,4 +35,7 @@ RedmineApp::Application.routes.draw do
   end
   post "deliver_issues/request_delivery"
   post "deliver_issues/allow_delivery"
+
+  match "/auth/:provider/callback" => "omniauth_callbacks#auth",  :via => [:get, :post]
+  match "/auth/:provider"          => "omniauth_callbacks#error", :via => [:get, :post]
 end

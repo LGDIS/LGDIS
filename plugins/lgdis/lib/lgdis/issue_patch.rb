@@ -26,7 +26,7 @@ module Lgdis
         validates :xml_head_infokind, :length => {:maximum => 100}
         validates :xml_head_infokindversion, :length => {:maximum => 12}
         validates :xml_head_text, :length => {:maximum => 500}
-        
+
         safe_attributes 'xml_control_status',
           'xml_control',
           'xml_control_status',
@@ -49,14 +49,14 @@ module Lgdis
           'xml_head_text',
           'xml_body',
           :if => lambda {|issue, user| issue.new_record? || user.allowed_to?(:edit_issues, issue.project) }
-        
+
         alias_method_chain :copy_from, :geographies
       end
     end
-    
+
     module ClassMethods
     end
-    
+
     module InstanceMethods
       # チケット情報のコピー
       # チケット位置情報もコピーするように処理追加
@@ -137,18 +137,16 @@ module Lgdis
         file = File.new("#{Rails.root}/plugins/lgdis/files/xml/#{commons_xml}")
         # Xmlドキュメントの生成
         doc  = REXML::Document.new(file)
+
         # tracker_id に紐付く標題を設定
         title  = DST_LIST['tracker_title'][self.tracker_id]
+
         # tracker_id に紐付くドキュメントIDを設定
         doc_id = DST_LIST['tracker_doc_id'][self.tracker_id]
         edition_mng = EditionManagement.find_by_project_id_and_tracker_id(self.project_id, self.tracker_id)
-        if edition_mng.blank? || edition_mng.status == 0
-          uuid = UUIDTools::UUID.random_create.to_s
-          edition_num = 1
-        else
-          uuid = edition_mng.uuid
-          edition_num = edition_mng.edition_num + 1
-        end
+
+        # status(更新種別), uuid, edition_num(版番号)を設定
+        edition_fields_map = set_edition_mng_field(edition_mng)
 
         # 運用種別フラグ
         operation_flg = DST_LIST['commons_xml_field']['edxl_status'][self.project_id]
@@ -160,7 +158,7 @@ module Lgdis
         # Issue に追加する際は、登録画面の作成も必要
 
         # edxl 部要素追加
-        doc.elements["//edxlde:distributionID"].add_text(uuid)
+        doc.elements["//edxlde:distributionID"].add_text(edition_fields_map['uuid'])
         doc.elements["//edxlde:dateTimeSent"].add_text(Time.now.xmlschema)
         doc.elements["//edxlde:distributionStatus"].add_text(operation_flg)
         # TODO
@@ -181,8 +179,8 @@ module Lgdis
         doc.elements["//pcx_eb:contactType"].add_text(DST_LIST['contact_type']) unless DST_LIST['contact_type'].blank?
         # TODO
         # タグ名が重複
-        doc.elements["//pcx_eb:Description"].add_text(custom_field_value(DST_LIST['custom_field_delivery']['corrected'])) if edition_mng.status == 0
-        doc.elements["//pcx_eb:Description"].add_text(self.updated_on.xmlschema) if edition_mng.status == 0
+        doc.elements["//pcx_eb:Description"].add_text(custom_field_value(DST_LIST['custom_field_delivery']['corrected'])) if edition_fields_map['status'] == 0
+        doc.elements["//pcx_eb:Description"].add_text(self.updated_on.xmlschema) if edition_fields_map['status'] == 0
 
         # Head 部要素追加
         doc.elements["//pcx_ib:Title"].add_text(I18n.t('target_municipality') + ' ' + self.project.name + ' ' +  (title.present? ? title : '緊急速報メール'))
@@ -191,16 +189,16 @@ module Lgdis
         # TODO
         # 報告日時の設定避難所テーブルにしか存在しない為確認
         doc.elements["//pcx_ib:ReportDateTime"].add_text('')
-        target_datetime=custom_field_value(DST_LIST['custom_field_delivery']['target_date']) + custom_field_value(DST_LIST['custom_field_delivery']['target_time'])
-        doc.elements["//pcx_ib:TargetDateTime"].add_text(target_datetime.to_time.xmlschema) unless target_datetime.blank?
-        valid_datetime=custom_field_value(DST_LIST['custom_field_delivery']['valid_date']) + custom_field_value(DST_LIST['custom_field_delivery']['valid_time'])
-        doc.elements["//pcx_ib:ValidDateTime"].add_text(valid_datetime.xmlschema) unless valid_datetime.blank?
-        doc.elements["//edxlde:distributionID"].add_text(uuid)
+        target_datetime=custom_field_value(DST_LIST['custom_field_delivery']['target_date']) + ' ' + custom_field_value(DST_LIST['custom_field_delivery']['target_time'])
+        doc.elements["//pcx_ib:TargetDateTime"].add_text(target_datetime.to_datetime.xmlschema) unless target_datetime.blank?
+        valid_datetime=custom_field_value(DST_LIST['custom_field_delivery']['valid_date']) + ' ' + custom_field_value(DST_LIST['custom_field_delivery']['valid_time'])
+        doc.elements["//pcx_ib:ValidDateTime"].add_text(valid_datetime.to_datetime.xmlschema) unless valid_datetime.blank?
+        doc.elements["//edxlde:distributionID"].add_text(edition_fields_map['uuid'])
         # TODO
         # 新規作成フィールド
         doc.elements["//edxlde:distributionType"].add_text('')
-        doc.elements["//commons:documentRevision"].add_text(edition_num)
-        doc.elements["//pcx_ib:Head/commons:documentID"].add_text(uuid)
+        doc.elements["//pcx_ib:Head/commons:documentRevision"].add_text("#{edition_fields_map['edition_num']}")
+        doc.elements["//pcx_ib:Head/commons:documentID"].add_text(edition_fields_map['uuid'])
         doc.elements["//pcx_ib:Text"].add_text(custom_field_value(DST_LIST['custom_field_delivery']['summary']))
         doc.elements["//pcx_ib:Areas/pcx_ib:Area/commons:areaName"].add_text(DST_LIST['custom_field_delivery']['area_name'])
 
@@ -209,9 +207,9 @@ module Lgdis
 
         # Edxl 部要素追加
         doc.elements["//commons:publishingOfficeName"].add_text(DST_LIST['custom_field_delivery']['pulishing_office'])
-        doc.elements["//commons:previousDocumentRevision"].add_text(edition_mng.edition_num)
-        doc.elements["//commons:documentRevision"].add_text(edition_num)
-        doc.elements["//commons:contentObject/commons:documentID"].add_text(uuid)
+        doc.elements["//commons:previousDocumentRevision"].add_text("#{edition_fields_map['edition_num']}")
+        doc.elements["//commons:contentObject/commons:documentRevision"].add_text("#{edition_fields_map['edition_num']}")
+        doc.elements["//commons:contentObject/commons:documentID"].add_text(edition_fields_map['uuid'])
 
         return doc
       end
@@ -225,6 +223,27 @@ module Lgdis
       def create_commmons_area_mail_body
       end
 
+      # 版番号管理テーブル用フィールド設定処理
+      # UUID, 更新種別(status), 版番号(edition_num) を
+      # ハッシュで返却します
+      # ==== Args
+      # ==== Return
+      # ==== Raise
+      def set_edition_mng_field(edition_mng)
+        uuid        = edition_mng.blank? || edition_mng.status == 0 ? \
+                      UUIDTools::UUID.random_create.to_s : edition_mng.uuid
+        status      = edition_mng.blank? || edition_mng.status == 0 ? \
+                      1 : edition_mng.status
+        edition_num = edition_mng.blank? || edition_mng.status == 0 ? \
+                      1 : edition_mng.edition_num + 1
+
+        edition_field_map = Hash.new
+        edition_field_map.store('uuid', uuid)
+        edition_field_map.store('status', status)
+        edition_field_map.store('edition_num', edition_num)
+
+        return edition_field_map
+      end
     end
   end
 end

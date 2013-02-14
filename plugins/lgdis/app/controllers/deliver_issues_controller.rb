@@ -11,7 +11,8 @@ class DeliverIssuesController < ApplicationController
     @delivery_history = DeliveryHistory.find_by_id delivery_history_id
     # 配信内容作成処理
     contents = create_summary(@issue, @delivery_history)
-    @summary = contents['message'].blank? ? contents : contents['message']
+
+    @summary = contents.instance_of?(Hash) ? contents['message'] : contents
   end
 
   # 外部配信要求処理(手動配信)

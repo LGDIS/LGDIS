@@ -14,12 +14,8 @@ RedmineApp::Application.configure do
   config.action_view.cache_template_loading            = false  #k-takai開発専用目的
 
   # Don't care if the mailer can't send
-  # なぜか現状のrepositryはSMTPメール送信が無効になっている｡
-#   config.action_mailer.raise_delivery_errors = false 
-  # しかしActionMailerをつかったSMTP外部配信では､以下の様に配信許可をする必要がある､
-  # と考える｡
-  config.action_mailer.perform_deliveries = true 
-  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.raise_delivery_errors = false 
+ 
 
   config.active_support.deprecation = :log
 end

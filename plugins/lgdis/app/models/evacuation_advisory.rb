@@ -37,8 +37,9 @@ class EvacuationAdvisory < ActiveRecord::Base
 #:NoMethodError (undefined method `keys' for nil:NilClass):
   validates :disaster_code, :presence => true, 
                 :length => {:maximum => 20}
-  validates :advisory_type, :presence => true,
+  validates :advisory_type, 
                 :inclusion => {:in => CONST[:advisory_type.to_s].keys, :allow_blank => true}
+                #: presence => true, 2013年2月14日木曜日 必須扱いから外した｡
   validates :sort_criteria, :presence => true,
                 :inclusion => {:in => CONST[:sort_criteria.to_s].keys, :allow_blank => true}
   validates :issue_or_lift,

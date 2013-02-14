@@ -15,6 +15,7 @@ SETTINGS = YAML.load_file("#{Rails.root}/plugins/lgdis/config/settings.yml")["#{
 CF_CONNECT = YAML.load_file("#{Rails.root}/plugins/lgdis/config/custom_field_connection.yml")["custom_field_connection"]
 
 require_dependency 'lgdis/project_patch'
+require_dependency 'lgdis/user_patch'
 require_dependency 'lgdis/custom_fields_helper_patch'
 require_dependency 'lgdis/issue_patch'
 require_dependency 'lgdis/issues_helper_patch' # issues_controller_patch より先にload する必要あり
@@ -71,4 +72,11 @@ Redmine::Plugin.register :lgdis do
   end
   menu :project_menu, :delivery_histories, { :controller => 'delivery_histories', :action => 'index' }, :caption => :project_module_deliver, :after => :disaster_damage, :param => :project_id
 
+  # プラグイン設定
+  settings :default => {
+    :enable_external_auth => true,
+  }, :partial => 'settings/external_auth'
 end
+
+# ActiveSupport::Dependencies.autoload_pathsではconst_missingが発生しないとロードされないため、明示的にロードする
+require "#{Rails.root}/plugins/lgdis/config/initializers/omniauth"
