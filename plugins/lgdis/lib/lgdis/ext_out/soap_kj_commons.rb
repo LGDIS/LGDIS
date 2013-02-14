@@ -1,15 +1,26 @@
 # -*- encoding: utf-8 -*-
-class Lgdis::ExtOut::SOAP_KJcommons  < ActiveRecord::Base
-# 処理概要:
-# 配信管理モジュール側からはREXMLにロードした状態ででXML(PCXML)オブジェクトが引き渡されることを前提とする 
-# Gemfileでrequireされたcommon_client.rbで､
-# XML(PCXML)の周辺をSOAPヘッダータグとWS-Security認証タグで包んで
-# 最後にコモンズWSDLで定義されたpublishメソッドを呼んで送信している｡ 
+# 公共情報コモンズにSOAPメッセージを送信する制御プログラム
+#
+# 作動条件:
+# 配信管理モジュール側からREXMLに読み込んだXML(PCXML)オブジェクトが引き渡されること｡ 
 
 # IRBコンソールでの呼び出し例: 
 #   引数0に読ませたいPCXMLファイル名をわたしてREXMLにロードする例:
 #   Lgdis::ExtOut::SOAP_KJcommons.send_message(REXML::Document.new(File.open("#{Rails.root.to_s}/plugins/lgdis/lib/lgdis/ext_out/adsoltestbest.xml")),false)
 
+class Lgdis::ExtOut::SOAP_KJcommons  < ActiveRecord::Base
+
+  # I/Fよびだし処理 非同期処理にはResqueを使用)
+  # 最後にログ出力をし､戻り値を返す
+  # 処理中にエラーがあれば､destination_list.ymlで設定された
+  # SMTPサーバーとalert先にメール通知をする
+  # ==== Args
+  # _msg_ :: 送信先､表題､メッセージ本文を含んだハッシュ(=連想配列)
+  # _test_flg_ :: 試験モードフラグ
+  # _issue_ :: Redmineチケット
+  # ==== Return
+  # _status_ :: 戻り値
+  # ==== Raise
   def self.send_message(msg, test_flg, issue=nil)
     modulename="SOAP_KJcommons"
     o = IfCommon.new

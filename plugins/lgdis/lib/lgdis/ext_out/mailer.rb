@@ -1,10 +1,16 @@
 # -*- encoding: utf-8 -*-
-#require 'nkf'
+# SMTP Plain/AUTH メールをメモリー空間に作るクラス｡
+# 設定はRails.root/plugins/lgdis/config/destination_list.ymlで行う｡
+
 class Lgdis::ExtOut::Mailer < ActionMailer::Base
-
-  def new
-  end
-
+  # SMTP-plain(認証なしSMTP)サーバーむけメールインスタンスを生成する｡
+  # ==== Args
+  # _mailing_list_name_ :: 送信先メールアドレス
+  # _title_ :: eメール件名
+  # _message_ :: eメール本文
+  # ==== Return
+  # __ :: 正常終了はMail::Message クラス､異常終了はfalseを返す｡
+  # ==== Raise
   def setup(mailing_list_name, title, message) 
     begin
       #SMTP-plain
@@ -34,6 +40,14 @@ class Lgdis::ExtOut::Mailer < ActionMailer::Base
     end
   end
 
+  # SMTP-AUTH(認証ありMTP)サーバーむけメールインスタンスを生成する｡
+  # ==== Args
+  # _mailing_list_name_ :: 送信先メールアドレス
+  # _title_ :: eメール件名
+  # _message_ :: eメール本文
+  # ==== Return
+  # __ :: 正常終了はMail::Message クラス､異常終了はfalseを返す｡
+  # ==== Raise
   def setup_auth(mailing_list_name, title, message ) 
     begin
       #SMTP-AUTH

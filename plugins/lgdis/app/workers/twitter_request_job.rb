@@ -1,7 +1,17 @@
-# coding: utf-8
+# -*- encoding: utf-8 -*-
+# twitterへの投稿処理をよびだすクラス 非同期処理にはResqueを使用
 class TwitterRequestJob
   @queue = :twitter_request
 
+  # twitterへの投稿処理をよびだすクラス 非同期処理にはResqueを使用
+  # 最後にログ出力を行い､戻り値を返す
+  # ==== Args
+  # _msg_ :: 送信先､表題､メッセージ本文を含んだハッシュ(=連想配列)
+  # _test_flg_ :: 試験モードフラグ
+  # _issue_ :: Redmineチケット
+  # ==== Return
+  # _status_ :: 戻り値
+  # ==== Raise
   def self.perform(msg, test_flg, issue)
     begin
       str= "##################################### Twitter-WORKER がよばれました\n"

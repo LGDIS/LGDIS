@@ -1,6 +1,14 @@
 # -*- encoding: utf-8 -*-
+# 外部配信機能共通処理クラス
+#
 class IfCommon
 
+  # ログファイルをのこす｡｢アーカイブ｣的意味をもつ｡
+  # ==== Args
+  # _msg_ :: 任意のオブジェク｡通常は文字列を想定している｡
+  # ==== Return
+  # _status_ :: 戻り値 正常終了はTrue, 異常終了はFalseを返す
+  # ==== Raise
   def leave_log(msg)
     modulename="if_common"
     begin
@@ -22,15 +30,27 @@ class IfCommon
     end
   end
 
+  # ログファイル出力内容の整形
+  # ==== Args
+  # _msg_ :: 記録内容主部
+  # _modulename_ :: 記録対象がどこで発生したかを示す文字列
+  # ==== Return
+  # _strnew_ :: 年月日時分秒､モジュール名､記録内容主部を連結した文字列
+  # ==== Raise
   def create_log_time(msg,modulename)
-    time     = Time.now.strftime("%Y/%m/%d %H:%M:%S")
-    time  = "[" + "#{time}" + "]" + "[" + "#{modulename}" + "]" + " \"" + \
-               "#{msg}" + "\""
-    return time
+    time = Time.now.strftime("%Y/%m/%d %H:%M:%S")
+    strnew= "[" + "#{time}" + "]" + "[" + "#{modulename}" + "]" + " \"" + \
+               "#{msg.to_s}" + "\""
+    return strnew
   end
 
+  # 外部配信エラー時のメールによる通報処理
+  # この通報処理自体がエラーになったときはログファイルに記録する｡
+  # ==== Args
+  # __ :: 引数はなく､plugin/lgdis/config/destination_list.ymlの設定値で通報設定をする｡
+  # ==== Return
+  # ==== Raise
   def mail_when_delivery_fails
-    # エラー時のメール配信
     modulename="if_common"
     o = IfCommon.new
     begin

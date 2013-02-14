@@ -1,4 +1,18 @@
+# -*- encoding: utf-8 -*-
+# Facebook投稿処理I/Fプログラム
 class Lgdis::ExtOut::Facebook < ActiveRecord::Base
+
+  # Facebook投稿処理
+  # 最後にログ出力をし､戻り値を返す
+  #
+  # 処理中にエラーがあれば､destination_list.ymlで設定された
+  # SMTPサーバーとalert先にメール通知をする
+  # ==== Args
+  # _msg_ :: 送信先､表題､メッセージ本文を含んだハッシュ(=連想配列)
+  # _test_flg_ :: 試験モードフラグ
+  # ==== Return
+  # _status_ :: 戻り値
+  # ==== Raise
   def self.send_message(msg, test_flg)
     modulename="Facebook"
     o = IfCommon.new
