@@ -1,19 +1,25 @@
 # -*- encoding: utf-8 -*-
+# 認証なしSMTP送信プログラムwrapper
 class Lgdis::ExtOut::SMTP_JichiShokuin  < ActiveRecord::Base
+  # 認証なしSMTP送信プログラムwrapper
+  # ==== Args
+  # _msg_ :: 送信先､表題､メッセージ本文を含んだハッシュ(=連想配列)
+  # _test_flg_ :: 試験モードフラグ
+  # _issue_ :: Redmineチケット
+  # ==== Return
+  # _status_ :: 正常終了はMail::Message クラス､異常終了はfalseを返す｡
+  # ==== Raise
   def self.send_message(msg, test_flg)
     modulename="JichiShokuin"
     o = IfCommon.new
-    #hash below is a dummy hash before integration testing: k-takami 
     mailing_list_name = msg["mailing_list_name"]
     title = msg["title"]
     message = msg["message"]
-#     charset = msg["charset"]
-#     from  = msg["from"]
 
     begin
       if test_flg.blank?
-      # ② 自治体職員向け SMTP I/F を呼び出す。
-          status = @mail=Lgdis::ExtOut::Mailer.setup(mailing_list_name, title, message).deliver
+      # 自治体職員向け SMTP-AUTH生成プログラムを呼びだし､送信する。
+        status = @mail=Lgdis::ExtOut::Mailer.setup(mailing_list_name, title, message).deliver
       end
       #TODO: アーカイブ出力に関して、課題検討中? 現在はlogger で対応
       Rails.logger.info("#{o.create_log_time(msg,modulename)}")
@@ -28,7 +34,29 @@ class Lgdis::ExtOut::SMTP_JichiShokuin  < ActiveRecord::Base
     end
   end
 end
-#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #debugcode  
 # raise #=> RuntimeError:
 #p ls -alt  /root/Maildir/new/*

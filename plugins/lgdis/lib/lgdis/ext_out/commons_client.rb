@@ -1,4 +1,5 @@
-# encoding: utf-8
+# -*- encoding: utf-8 -*-
+# 公共情報コモンズにSOAPメッセージを生成送信するI/Fをよびだす非同期処理ワーカー
 require 'rexml/document'
 require 'xsd/datatypes'
 require 'base64'
@@ -8,137 +9,185 @@ require 'soap/rpc/driver'
 require 'soap/wsdlDriver'
 require 'savon'
 
+# 処理内容
+# ==== Args
+# __ :: 
+# ==== Return
+# __ ::
+# ==== Raise
 class CommonsClient
-	# soap element prefixes(namespaces)
-	ENV_PREFIX = 'S'								# prefix for soap envelope
-	PUB_INFO_COM_PREFIX = 'pcsoap'	# prefix for public information commons interface
-	WS_SECURITY_PREFIX = 'wsse'			# prefix for ws-security
-	WS_UTILITY_PREFIX = 'wsu'				# prefix for ws-utility
-  XML_PREFIX = 'xml'							# prefix for xml
+  # soap element prefixes(namespaces)
+  ENV_PREFIX = 'S'                # prefix for soap envelope
+  PUB_INFO_COM_PREFIX = 'pcsoap'  # prefix for public information commons interface
+  WS_SECURITY_PREFIX = 'wsse'      # prefix for ws-security
+  WS_UTILITY_PREFIX = 'wsu'        # prefix for ws-utility
+  XML_PREFIX = 'xml'              # prefix for xml
 
-	# oasis wss URIs
-  WSE_NAMESPACE_URI = 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd'				# Namespace for WS Security Secext.
-	WSU_NAMESPACE_URI = 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd'			# Namespace for WS Security Utility.
-  PASSWORD_TEXT_URI = 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText'		# PasswordText URI.
-  PASSWORD_DIGEST_URI = 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordDigest'	# PasswordDigest URI.
-	BASE64_URI = 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary'
+  # oasis wss URIs
+  WSE_NAMESPACE_URI = 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd'        # Namespace for WS Security Secext.
+  WSU_NAMESPACE_URI = 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd'      # Namespace for WS Security Utility.
+  PASSWORD_TEXT_URI = 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText'    # PasswordText URI.
+  PASSWORD_DIGEST_URI = 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordDigest'  # PasswordDigest URI.
+  BASE64_URI = 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary'
 
-	# other URIs
-	SOAP_ENVELOPE_URI = 'http://schemas.xmlsoap.org/soap/envelope/'
-	PUB_INFO_COMMONS_URI = 'http://soap.publiccommons.ne.jp/'
-	XML_NAMESPACE = 'http://www.w3.org/XML/1998/namespace'
+  # other URIs
+  SOAP_ENVELOPE_URI = 'http://schemas.xmlsoap.org/soap/envelope/'
+  PUB_INFO_COMMONS_URI = 'http://soap.publiccommons.ne.jp/'
+  XML_NAMESPACE = 'http://www.w3.org/XML/1998/namespace'
 
-	def initialize(wsdl, endpoint, namespace)
+  # 処理内容
+  # ==== Args
+  # __ :: 
+  # ==== Return
+  # __ ::
+  # ==== Raise
+  def initialize(wsdl, endpoint, namespace)
     @wsdl_uri = wsdl
-		@endpoint_uri = endpoint
-		@namespace_uri = namespace
-	end
+    @endpoint_uri = endpoint
+    @namespace_uri = namespace
+  end
 
-	def set_auth(username, password)
-		@username = username
-		@password = password
-	end
+  # 処理内容
+  # ==== Args
+  # __ :: 
+  # ==== Return
+  # __ ::
+  # ==== Raise
+  def set_auth(username, password)
+    @username = username
+    @password = password
+  end
 
-	def send(data)
-		wsdl_uri = @wsdl_uri
-		endpoint_uri = @endpoint_uri
-		namespace_uri = @namespace_uri
+  # 処理内容
+  # ==== Args
+  # __ :: 
+  # ==== Return
+  # __ ::
+  # ==== Raise
+  def send(data)
+    wsdl_uri = @wsdl_uri
+    endpoint_uri = @endpoint_uri
+    namespace_uri = @namespace_uri
     
-		client = Savon.client do
-			wsdl wsdl_uri
-			endpoint endpoint_uri
-			namespace namespace_uri
-		end
+    client = Savon.client do
+      wsdl wsdl_uri
+      endpoint endpoint_uri
+      namespace namespace_uri
+    end
 
-		doc = create_soap_document(data)
-		response = client.call(:publish) do 
-			xml doc
-		end
-	end
+    doc = create_soap_document(data)
+    response = client.call(:publish) do 
+      xml doc
+    end
+  end
 
 private
-	def create_soap_document(data)
-		doc = REXML::Document.new
-		doc << REXML::XMLDecl.new
+  # 処理内容
+  # ==== Args
+  # __ :: 
+  # ==== Return
+  # __ ::
+  # ==== Raise
+  def create_soap_document(data)
+    doc = REXML::Document.new
+    doc << REXML::XMLDecl.new
 
-		# soap envelope
-		env_prefix = 'S'
-		envelope = REXML::Element.new ENV_PREFIX + ':Envelope'
-		envelope.add_namespace ENV_PREFIX, SOAP_ENVELOPE_URI
+    # soap envelope
+    #env_prefix = 'S'
+    envelope = REXML::Element.new ENV_PREFIX + ':Envelope'
+    envelope.add_namespace ENV_PREFIX, SOAP_ENVELOPE_URI
 
-		soap_header = create_soap_header
-		soap_body = create_soap_body(data)
+    soap_header = create_soap_header
+    soap_body = create_soap_body(data)
 
-		envelope.add soap_header
-		envelope.add soap_body
+    envelope.add soap_header
+    envelope.add soap_body
 
-		doc.add envelope
+    doc.add envelope
 p doc.to_s
-	end
+  end
 
-	def create_wsse_header
-		wsse_username = @username
-		wsse_nonce = Base64.encode64((rand() * 1000000000).to_i.to_s).chomp
-		wsse_created = XSD::XSDDateTime.new(Time.now.utc - 30).to_s.gsub(/\..*/, "") + 'Z'
-		wssePassword = Base64.encode64(Digest::SHA1.digest(Base64.decode64(wsse_nonce) + wsse_created + @password)).chomp
-		# security
-		security_element = REXML::Element.new WS_SECURITY_PREFIX + ':Security'
-		security_element.add_attribute ENV_PREFIX + ':mustUnderstand', '1'
-		security_element.add_namespace WS_SECURITY_PREFIX, WSE_NAMESPACE_URI
+  # 処理内容
+  # ==== Args
+  # __ :: 
+  # ==== Return
+  # __ ::
+  # ==== Raise
+  def create_wsse_header
+    wsse_username = @username
+    wsse_nonce = Base64.encode64((rand() * 1000000000).to_i.to_s).chomp
+    wsse_created = XSD::XSDDateTime.new(Time.now.utc - 30).to_s.gsub(/\..*/, "") + 'Z'
+    wssePassword = Base64.encode64(Digest::SHA1.digest(Base64.decode64(wsse_nonce) + wsse_created + @password)).chomp
+    # security
+    security_element = REXML::Element.new WS_SECURITY_PREFIX + ':Security'
+    security_element.add_attribute ENV_PREFIX + ':mustUnderstand', '1'
+    security_element.add_namespace WS_SECURITY_PREFIX, WSE_NAMESPACE_URI
 
-		# usernameToken
-		username_token_element = REXML::Element.new WS_SECURITY_PREFIX + ':UsernameToken'
-		username_token_element.add_namespace WS_SECURITY_PREFIX, WSE_NAMESPACE_URI
-		username_token_element.add_namespace WS_UTILITY_PREFIX, WSU_NAMESPACE_URI
+    # usernameToken
+    username_token_element = REXML::Element.new WS_SECURITY_PREFIX + ':UsernameToken'
+    username_token_element.add_namespace WS_SECURITY_PREFIX, WSE_NAMESPACE_URI
+    username_token_element.add_namespace WS_UTILITY_PREFIX, WSU_NAMESPACE_URI
 
-		# username
-		username_element = REXML::Element.new WS_SECURITY_PREFIX + ':Username'
-		username_element.text = wsse_username
-		username_token_element.add username_element
+    # username
+    username_element = REXML::Element.new WS_SECURITY_PREFIX + ':Username'
+    username_element.text = wsse_username
+    username_token_element.add username_element
 
-		# password
-		password_element = REXML::Element.new WS_SECURITY_PREFIX + ':Password'
-		password_element.add_attribute 'Type', PASSWORD_DIGEST_URI
-		password_element.text = wssePassword
-		username_token_element.add password_element
+    # password
+    password_element = REXML::Element.new WS_SECURITY_PREFIX + ':Password'
+    password_element.add_attribute 'Type', PASSWORD_DIGEST_URI
+    password_element.text = wssePassword
+    username_token_element.add password_element
 
-		# nonce
-		nonce_element = REXML::Element.new WS_SECURITY_PREFIX + ':Nonce'
-		nonce_element.add_attribute 'EncodingType', BASE64_URI 
-		nonce_element.text =wsse_nonce
-		username_token_element.add nonce_element
+    # nonce
+    nonce_element = REXML::Element.new WS_SECURITY_PREFIX + ':Nonce'
+    nonce_element.add_attribute 'EncodingType', BASE64_URI 
+    nonce_element.text =wsse_nonce
+    username_token_element.add nonce_element
 
-		# created
-		created_element = REXML::Element.new WS_UTILITY_PREFIX + ':Created'  
-		created_element.add_namespace WS_UTILITY_PREFIX, WSU_NAMESPACE_URI
-		created_element.text = wsse_created
-		username_token_element.add created_element
+    # created
+    created_element = REXML::Element.new WS_UTILITY_PREFIX + ':Created'  
+    created_element.add_namespace WS_UTILITY_PREFIX, WSU_NAMESPACE_URI
+    created_element.text = wsse_created
+    username_token_element.add created_element
 
-		security_element.add username_token_element
-		return security_element
-	end
+    security_element.add username_token_element
+    return security_element
+  end
 
-	def create_soap_header
-		# soap header
-		soap_header = REXML::Element.new ENV_PREFIX + ':Header'
-		soap_header.add create_wsse_header
-		return soap_header
-	end
+  # 処理内容
+  # ==== Args
+  # __ :: 
+  # ==== Return
+  # __ ::
+  # ==== Raise
+  def create_soap_header
+    # soap header
+    soap_header = REXML::Element.new ENV_PREFIX + ':Header'
+    soap_header.add create_wsse_header
+    return soap_header
+  end
 
-	def create_soap_body(data)
-		# soap body
-		soap_body = REXML::Element.new  ENV_PREFIX + ':Body'
+  # 処理内容
+  # ==== Args
+  # __ :: 
+  # ==== Return
+  # __ ::
+  # ==== Raise
+  def create_soap_body(data)
+    # soap body
+    soap_body = REXML::Element.new  ENV_PREFIX + ':Body'
 
-		# These tags are specific to public information commons.
-		publish_element = REXML::Element.new PUB_INFO_COM_PREFIX + ':publish'
-		publish_element.add_namespace ENV_PREFIX, SOAP_ENVELOPE_URI
-	  publish_element.add_namespace PUB_INFO_COM_PREFIX, PUB_INFO_COMMONS_URI
-	  publish_element.add_namespace XML_PREFIX, XML_NAMESPACE
-		message_element = REXML::Element.new PUB_INFO_COM_PREFIX + ':message'
-		message_element.add REXML::XPath.first(data,'//*')
-		
-		publish_element.add message_element
-		soap_body.add publish_element
-		return soap_body
-	end
+    # These tags are specific to public information commons.
+    publish_element = REXML::Element.new PUB_INFO_COM_PREFIX + ':publish'
+    publish_element.add_namespace ENV_PREFIX, SOAP_ENVELOPE_URI
+    publish_element.add_namespace PUB_INFO_COM_PREFIX, PUB_INFO_COMMONS_URI
+    publish_element.add_namespace XML_PREFIX, XML_NAMESPACE
+    message_element = REXML::Element.new PUB_INFO_COM_PREFIX + ':message'
+    message_element.add REXML::XPath.first(data,'//*')
+    
+    publish_element.add message_element
+    soap_body.add publish_element
+    return soap_body
+  end
 end

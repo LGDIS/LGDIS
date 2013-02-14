@@ -345,7 +345,8 @@ class EvacuationAdvisory < ActiveRecord::Base
     
     node_header = node_evas.add_element("pcx_eb:Disaster")
       node_header.add_element("pcx_eb:DisasterName").add_text("#{project.name}") if project.name.present?  #.add_text("#{summary.}") if summary..present?
-    node_evas.add_element("pcx_ev:ComplementaryInfo").add_text("避難勧告･指示一覧") if evas[0].present? 
+    node_evas.add_element("pcx_ev:ComplementaryInfo"). if evas[0].present? 
+    #node_evas.add_element("pcx_ev:ComplementaryInfo").add_text("避難勧告･指示一覧") if evas[0].present? 
     # 避難勧告指示の総数
     if summary.head_count_sum.present? || summary.households_sum.present? 
       node_total_number = node_evas.add_element("pcx_ev:TotalNumber")

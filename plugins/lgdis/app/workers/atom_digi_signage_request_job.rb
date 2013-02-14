@@ -1,8 +1,15 @@
 # coding: utf-8
+# simple-geoRSS(ATOM1.0)生成I/Fをよびだす非同期処理ワーカー
 class Atom_DigiSignageRequestJob
-  #TODO:佐藤さんに伝達:SMTP_DigiSignageRequestJob Atom_DigiSignageRequestJob
   @queue = :atom_digi_signage_request
 
+  # I/Fよびだし処理 非同期処理にはResqueを使用
+  # ==== Args
+  # _msg_ :: Redmineチケット
+  # _test_flg_ :: 試験モードフラグ
+  # ==== Return
+  # _status_ :: 戻り値
+  # ==== Raise
   def self.perform(msg_hash, test_flg, issue)
     begin
       str= "##################################### 災害情報ポータルWORKER がよばれました\n"
@@ -18,6 +25,36 @@ class Atom_DigiSignageRequestJob
     end
   end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #debugcode
 # Atom_DigiSignageRequestJob.perform({"mailing_list_name" =>"root@localhost.localdomain", "title" => "TEST-title漢字"}, false)

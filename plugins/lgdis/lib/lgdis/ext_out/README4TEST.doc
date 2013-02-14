@@ -1,0 +1,50 @@
+= Rails IRBコンソールからの外部出力テスト用 コマンド例:
+
+=公共情報コモンズ: SOAP + WS-Security UsernameToken + EDXLDE
+  ==RESQUEワーカーよびだし
+  # Lgdis::ExtOut::SOAP_KJcommons.send_message(REXML::Document.new(File.open("#{Rails.root.to_s}/plugins/lgdis/lib/lgdis/ext_out/adsoltestbest.xml")),false)
+
+=災害情報ポータル: simple-GeoRSS_ATOM version 1.0
+  ==RESQUEワーカーよびだし
+  # Lgdis::ExtOut::ATOM_DigiSignage.send_message(Issue.all[1], false)
+  ==プログラム本体直接よびだし
+  # SetupXML.arrange_and_put(Issue.all[1])
+  ==出力結果確認
+  # system("ls -alt /opt/fix/LGDIS/public/atom/")
+
+
+=SMTP Mailer本体プログラム本体直接よびだし
+=動作前提:　Rails.root/config/environments に以下の2行を追加してSMTPメールを送信可能にすること｡
+  * config.action_mailer.perform_deliveries = true 
+  * config.action_mailer.raise_delivery_errors = true
+
+  ==SMTP-plain 
+  # Lgdis::ExtOut::Mailer.setup( "apl@localhost.localdomain","title題名", "SMTP-PLAIN message本文").deliver
+  # Lgdis::ExtOut::Mailer.setup( "root@localhost.localdomain","title題名", "SMTP-PLAIN message本文").deliver
+  ==SMTP-AUTH 
+  # Lgdis::ExtOut::Mailer.setup_auth( "apl@localhost.localdomain","title題名", "SMTP-AUTH message本文").deliver
+  # Lgdis::ExtOut::Mailer.setup_auth( "root@localhost.localdomain","title題名", "SMTP-AUTH message本文").deliver
+  ==出力結果確認
+  # system ("tail /var/log/maillog*; date;ls -alt /home/apl/Maildir/new/ ; ls -alt /root/Maildir/new/" )
+
+  ==自治体職員むけSMTPメール
+    ===wrapper直接よびだし
+    # Lgdis::ExtOut::SMTP_JichiShokuin.send_message({"mailing_list_name" =>"ktakami@di-system.co.jp", "title" => "title題名", "message" =>"message本文"}, false)
+    # Lgdis::ExtOut::SMTP_JichiShokuin.send_message({"mailing_list_name" =>"root@localhost.localdomain", "title" => "title題名", "message" =>"message本文"}, false)
+    ===RESQUEワーカーよびだし(工事中｡文書改版番号DocumentID仕様実装中のため｡)
+    # SMTP_JichiShokuinRequestJob.perform({"mailing_list_name" =>"root@localhost.localdomain", "title" => "title題名", "message" =>"message本文"}, false)
+
+  ==SMTP-AUTHメール
+    ===wrapper直接よびだし
+    # Lgdis::ExtOut::SMTP_Auth.send_message({"mailing_list_name" => "apl@localhost.localdomain", "title" => "title題名", "message" => "message本文"}, false)
+    # Lgdis::ExtOut::SMTP_Auth.send_message({"mailing_list_name" => "root@localhost.localdomain", "title" => "title題名", "message" =>"message本文"}, false)
+    ===RESQUEワーカーよびだし(工事中｡文書改版番号DocumentID仕様実装中のため｡)
+    # SMTP_AuthRequestJob.perform({"mailing_list_name" =>"apl@localhost.localdomain", "title" => "title題名", "message" =>"message本文"}, false)
+    # SMTP_AuthRequestJob.perform({"mailing_list_name" =>"root@localhost.localdomain", "title" => "title題名", "message" =>"message本文"}, false)
+
+=Facebook
+  # Lgdis::ExtOut::Twitter.send_message("test内容", false)
+
+=twitter
+  # Lgdis::ExtOut::Facebook.send_message("test内容", false)
+
