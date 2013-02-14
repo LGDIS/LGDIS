@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <edxlde:EDXLDistribution
+	xmlns:pcx_um="http://xml.publiccommons.ne.jp/pcxml1/body/UrgentMail3"
+	targetNamespace="http://xml.publiccommons.ne.jp/pcxml1/body/UrgentMail3"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:edxlde="urn:oasis:names:tc:emergency:EDXL:DE:1.0"
 	xmlns:commons="http://xml.publiccommons.ne.jp/xml/edxl/"
 	xmlns:pcxml="http://xml.publiccommons.ne.jp/pcxml1/3"
 	xmlns:pcx_eb="http://xml.publiccommons.ne.jp/pcxml1/elementBasis3/"
-	xmlns:pcx_ib="http://xml.publiccommons.ne.jp/pcxml1/informationBasis3/">
+	xmlns:pcx_ib="http://xml.publiccommons.ne.jp/pcxml1/informationBasis3/"><!-- pcx_um.xsd 参照 -->
 
 	<!-- EDXL 部 -->
 	<edxlde:distributionID></edxlde:distributionID>
