@@ -7,7 +7,7 @@ gem "coderay", "1.0.8"
 # 1.9 or later system, you do not need to be installed
 # gem "fastercsv", "~> 1.5.0", :platforms => [:mri_18, :mingw_18, :jruby]
 gem "builder", "3.0.0"
-gem 'debugger'	
+gem 'debugger'
 
 # Optional gem for LDAP authentication
 group :ldap do

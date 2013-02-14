@@ -346,3 +346,11 @@ ja:
   button_map_show: 地図を表示
   button_map_hide: 地図を隠す
   label_address: 住所(マップ)
+
+  # 認証
+  external_auth:
+    field_enable: 'OpenID(Google)/OAuth(Twitter,facebook)を有効にする'
+    sign_in_via: '%{kind}アカウントでログイン'
+    result:
+      success: '%{kind} アカウントによる個人認証に成功しました。'
+      failure: '%{kind} アカウントによる個人認証に失敗しました。'
