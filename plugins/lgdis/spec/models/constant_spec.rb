@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 require 'spec_helper'
 describe Constant do
   describe "#hash_for_table" do

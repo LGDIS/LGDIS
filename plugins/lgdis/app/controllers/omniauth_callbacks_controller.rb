@@ -48,6 +48,8 @@ class OmniauthCallbacksController < ApplicationController
   # ==== Raise
   def redirect_to_result(provider)
     if @user && @user.persisted?
+      @user.update_attribute(:last_login_on, Time.now)
+      self.logged_user = @user
       logger.info "Successful authentication for '#{@user.login}' from #{request.remote_ip} via #{provider} at #{Time.now.utc}"
       flash[:notice] =  I18n.t "external_auth.result.success", :kind => provider
       redirect_back_or_default :controller => 'my', :action => 'page'

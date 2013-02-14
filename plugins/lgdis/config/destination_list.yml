@@ -191,6 +191,20 @@ commons_xml:
   295: commons_damage_information.xml            # 建築設備（受電・暖房設備・燃料の種類や残量等）の被害状況
   411: commons_damage_information.xml            # 被害状況
 
+commons_xml_field:
+  confidential_message: UNCLASSIFIED AND NOTSENSITIVE # メッセージの機密性
+  carrier:      # 受信媒体(キャリア)
+    1: UMC1     # NTTDocomo
+    2: UMC2     # KDDI
+    3: UMC3     # SoftBank
+  edxl_status:  # 運用種別
+    2: System   # 通信試験モード
+    6: Exercise # 災害訓練モード
+  editorial_office: 石巻市総務部防災対策課 # 作成部署情報(部署名)
+  pulishing_office: 石巻市                 # 発表部署情報(部署名)
+  contact_type: 09012345678                # 発表部署情報(電話番号)
+  area_name: 石巻市                        # 事象の起きた場所
+
 # TODO
 # お知らせ、緊急速報メールに紐付くトラッカーID 確認
 # tracker_id に紐付く標題
@@ -250,9 +264,6 @@ training_prj:
 test_prj:
   2: true
 # 公共情報コモンズ配信用XML(edxlde:distributionStatus)
-edxl_status:
-  2: System
-  6: Exercise
 
 # 公共情報コモンズへの発信
  # NOTE: 

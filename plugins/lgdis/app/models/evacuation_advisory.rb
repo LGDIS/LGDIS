@@ -37,8 +37,9 @@ class EvacuationAdvisory < ActiveRecord::Base
 #:NoMethodError (undefined method `keys' for nil:NilClass):
   validates :disaster_code, :presence => true, 
                 :length => {:maximum => 20}
-  validates :advisory_type, :presence => true,
+  validates :advisory_type, 
                 :inclusion => {:in => CONST[:advisory_type.to_s].keys, :allow_blank => true}
+                #: presence => true, 2013年2月14日木曜日 必須扱いから外した｡
   validates :sort_criteria, :presence => true,
                 :inclusion => {:in => CONST[:sort_criteria.to_s].keys, :allow_blank => true}
   validates :issue_or_lift,
@@ -345,7 +346,8 @@ class EvacuationAdvisory < ActiveRecord::Base
     
     node_header = node_evas.add_element("pcx_eb:Disaster")
       node_header.add_element("pcx_eb:DisasterName").add_text("#{project.name}") if project.name.present?  #.add_text("#{summary.}") if summary..present?
-    node_evas.add_element("pcx_ev:ComplementaryInfo").add_text("避難勧告･指示一覧") if evas[0].present? 
+    node_evas.add_element("pcx_ev:ComplementaryInfo"). if evas[0].present? 
+    #node_evas.add_element("pcx_ev:ComplementaryInfo").add_text("避難勧告･指示一覧") if evas[0].present? 
     # 避難勧告指示の総数
     if summary.head_count_sum.present? || summary.households_sum.present? 
       node_total_number = node_evas.add_element("pcx_ev:TotalNumber")

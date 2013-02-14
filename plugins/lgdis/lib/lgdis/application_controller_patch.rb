@@ -9,7 +9,6 @@ module Lgdis
 
       base.class_eval do
         unloadable
-        alias_method_chain :require_login, :external_auth
       end
     end
 
@@ -30,11 +29,6 @@ module Lgdis
           constant_list[c[0]] = c[1]["name"]
         end
         return constant_list
-      end
-      #
-      def require_login_with_external_auth
-        return false if Setting.plugin_lgdis[:enable_external_auth]
-        require_login_without_external_auth
       end
     end
   end
