@@ -69,7 +69,7 @@
 <div class="splitcontent">
 <%#APPLIC-applicable fields below%>
   <div class="splitcontentleft">
-    <%= field_for :advisory_type, :required => true do |key, label| %>
+    <%= field_for :advisory_type do |key, label| %>
       <%= label_tag{label} %>
       <%= f.select key, options_for_select(@evacuation_advisory_const[key.to_s].invert, f.object.send(key)),{:include_blank => true},:disabled => @disabled %>
     <% end %>

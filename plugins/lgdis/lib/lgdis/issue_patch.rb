@@ -26,7 +26,7 @@ module Lgdis
         validates :xml_head_infokind, :length => {:maximum => 100}
         validates :xml_head_infokindversion, :length => {:maximum => 12}
         validates :xml_head_text, :length => {:maximum => 500}
-        
+
         safe_attributes 'xml_control_status',
           'xml_control',
           'xml_control_status',
@@ -49,14 +49,14 @@ module Lgdis
           'xml_head_text',
           'xml_body',
           :if => lambda {|issue, user| issue.new_record? || user.allowed_to?(:edit_issues, issue.project) }
-        
+
         alias_method_chain :copy_from, :geographies
       end
     end
-    
+
     module ClassMethods
     end
-    
+
     module InstanceMethods
       # チケット情報のコピー
       # チケット位置情報もコピーするように処理追加
@@ -72,28 +72,13 @@ module Lgdis
         self
       end
 
-      # カスタムフィールドIDより
-      # チケットに紐付くカスタムフィールドのvalue を返却する
-      # ==== Args
-      # ==== Return
-      # ==== Raise
-      def custom_field_value_by_id(custom_field_id)
-        value = nil
-        self.custom_values.each do |custom_value|
-          if custom_value.custom_field_id == custom_field_id
-            value = custom_value.value
-          end
-        end
-        return value
-      end
-
       # Twitter 用配信メッセージ作成処理
       # ==== Args
       # ==== Return
       # _summary_ :: 配信内容
       # ==== Raise
       def create_twitter_msg
-        summary = self.custom_field_value_by_id(DST_LIST['custom_field_delivery']['summary'])
+        summary = self.custom_field_value(DST_LIST['custom_field_delivery']['summary'])
         return summary
       end
 
@@ -183,7 +168,7 @@ module Lgdis
         # TODO
         # 新規作成フィールド
         doc.elements["//commons:targetArea/commons:areaName"].add_text('')
-        doc.elements["//edxlde:contentDescription"].add_text(custom_field_value_by_id(DST_LIST['custom_field_delivery']['summary']))
+        doc.elements["//edxlde:contentDescription"].add_text(custom_field_value(DST_LIST['custom_field_delivery']['summary']))
         doc.elements["//edxlde:consumerRole/edxlde:valueListUrn"].add_text('publicCommons:media:urgentmail:carrier') # TODO 緊急速報メールの場合
         doc.elements["//edxlde:consumerRole/edxlde:value"].add_text(DST_LIST['commons_xml_field']['carrier'][1]) # TODO 緊急速報メールの場合
 
@@ -194,7 +179,7 @@ module Lgdis
         doc.elements["//pcx_eb:contactType"].add_text(DST_LIST['contact_type']) unless DST_LIST['contact_type'].blank?
         # TODO
         # タグ名が重複
-        doc.elements["//pcx_eb:Description"].add_text(custom_field_value_by_id(DST_LIST['custom_field_delivery']['corrected'])) if edition_fields_map['status'] == 0
+        doc.elements["//pcx_eb:Description"].add_text(custom_field_value(DST_LIST['custom_field_delivery']['corrected'])) if edition_fields_map['status'] == 0
         doc.elements["//pcx_eb:Description"].add_text(self.updated_on.xmlschema) if edition_fields_map['status'] == 0
 
         # Head 部要素追加
@@ -204,9 +189,9 @@ module Lgdis
         # TODO
         # 報告日時の設定避難所テーブルにしか存在しない為確認
         doc.elements["//pcx_ib:ReportDateTime"].add_text('')
-        target_datetime=custom_field_value_by_id(DST_LIST['custom_field_delivery']['target_date']) + ' ' + custom_field_value_by_id(DST_LIST['custom_field_delivery']['target_time'])
+        target_datetime=custom_field_value(DST_LIST['custom_field_delivery']['target_date']) + ' ' + custom_field_value(DST_LIST['custom_field_delivery']['target_time'])
         doc.elements["//pcx_ib:TargetDateTime"].add_text(target_datetime.to_datetime.xmlschema) unless target_datetime.blank?
-        valid_datetime=custom_field_value_by_id(DST_LIST['custom_field_delivery']['valid_date']) + ' ' + custom_field_value_by_id(DST_LIST['custom_field_delivery']['valid_time'])
+        valid_datetime=custom_field_value(DST_LIST['custom_field_delivery']['valid_date']) + ' ' + custom_field_value(DST_LIST['custom_field_delivery']['valid_time'])
         doc.elements["//pcx_ib:ValidDateTime"].add_text(valid_datetime.to_datetime.xmlschema) unless valid_datetime.blank?
         doc.elements["//edxlde:distributionID"].add_text(edition_fields_map['uuid'])
         # TODO
@@ -214,7 +199,7 @@ module Lgdis
         doc.elements["//edxlde:distributionType"].add_text('')
         doc.elements["//pcx_ib:Head/commons:documentRevision"].add_text("#{edition_fields_map['edition_num']}")
         doc.elements["//pcx_ib:Head/commons:documentID"].add_text(edition_fields_map['uuid'])
-        doc.elements["//pcx_ib:Text"].add_text(custom_field_value_by_id(DST_LIST['custom_field_delivery']['summary']))
+        doc.elements["//pcx_ib:Text"].add_text(custom_field_value(DST_LIST['custom_field_delivery']['summary']))
         doc.elements["//pcx_ib:Areas/pcx_ib:Area/commons:areaName"].add_text(DST_LIST['custom_field_delivery']['area_name'])
 
         # Body 部

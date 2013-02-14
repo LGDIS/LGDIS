@@ -1,4 +1,18 @@
+# -*- encoding: utf-8 -*-
+# twitterへの投稿をするクラス
 class Lgdis::ExtOut::Twitter < ActiveRecord::Base
+
+  # twitterへの投稿をするクラス
+  # 最後にログ出力をし､戻り値を返す
+  # 処理中にエラーがあれば､destination_list.ymlで設定された
+  # SMTPサーバーに接続しalert先へのメール通知を試みる
+  # ==== Args
+  # _msg_ :: 送信先､表題､メッセージ本文を含んだハッシュ(=連想配列)
+  # _test_flg_ :: 試験モードフラグ
+  # _issue_ :: Redmineチケット
+  # ==== Return
+  # _status_ :: 戻り値
+  # ==== Raise
   def self.send_message(msg, test_flg)
     modulename="Twitter"
     o = IfCommon.new
