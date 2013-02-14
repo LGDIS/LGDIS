@@ -18,9 +18,14 @@
 	<commons:targetArea>
 		<commons:areaName></commons:areaName>
 	</commons:targetArea>
-	<edxlde:contentDescription></edxlde:contentDescription>
 
 	<commons:contentObject>
+		<edxlde:contentDescription></edxlde:contentDescription>
+		<edxlde:consumerRole>
+			<edxlde:valueListUrn></edxlde:valueListUrn>
+			<edxlde:value></edxlde:value>
+		</edxlde:consumerRole>
+
 		<edxlde:xmlContent>
 			<edxlde:embeddedXMLContent>
 				<Report>

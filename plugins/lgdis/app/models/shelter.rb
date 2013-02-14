@@ -321,17 +321,19 @@ class Shelter < ActiveRecord::Base
   # Issueオブジェクト
   # ==== Raise
   def self.create_commons_issue(project)
-    # テンプレートの読み込み
-    file = File.new("#{Rails.root}/plugins/lgdis/files/xml/commons.xml")
     # Xmlドキュメントの生成
-    doc  = REXML::Document.new(file)
+    doc  = REXML::Document.new
     
     # 避難人数、避難世帯数の集計値および避難所件数の取得
     summary  = Shelter.select("SUM(head_count) AS head_count_sum, SUM(head_count_voluntary) AS head_count_voluntary_sum,
       SUM(households) AS households_sum, SUM(households_voluntary) AS households_voluntary_sum, COUNT(*) AS count").first
     
-    # Shelter要素の取得
-    node_shelter = doc.elements["edxlde:EDXLDistribution/commons:contentObject/edxlde:xmlContent/edxlde:embeddedXMLContent/Report/pcx_sh:Shelter"]
+    # Shelter要素の追加
+    node_shelter = doc.add_element("pcx_sh:Shelter") # Root
+    
+    node_disaster = node_shelter.add_element("pcx_eb:Disaster")
+    node_disaster.add_element("pcx_eb:DisasterName").add_text("#{project.name}")
+    node_shelter.add_element("pcx_sh:ComplementaryInfo")
     
     # 子要素がすべてブランクの場合、親要素を生成しない
     if summary.head_count_sum.present? || summary.head_count_voluntary_sum.present? ||
@@ -384,9 +386,9 @@ class Shelter < ActiveRecord::Base
       when "1" # 未開設
         date = nil
       when "2" # 開設
-        date = shelter.opened_at.strftime("%Y/%m/%d %H:%M:%S") if shelter.opened_at.present?
+        date = shelter.opened_at.xmlschema if shelter.opened_at.present?
       when "3" # 閉鎖
-        date = shelter.closed_at.strftime("%Y/%m/%d %H:%M:%S") if shelter.closed_at.present?
+        date = shelter.closed_at.xmlschema if shelter.closed_at.present?
       when "4" # 不明
         date = nil
       when "5" # 常設
@@ -416,13 +418,13 @@ class Shelter < ActiveRecord::Base
       end
       
       # 避難所状況確認日時
-      node_information.add_element("pcx_sh:CheckedDateTime").add_text("#{shelter.checked_at.strftime("%Y/%m/%d %H:%M:%S")}") if shelter.checked_at.present?
+      node_information.add_element("pcx_sh:CheckedDateTime").add_text("#{shelter.checked_at.xmlschema}") if shelter.checked_at.present?
     end
     
     issue = Issue.new
     issue.tracker_id = 2
     issue.project_id = project.id
-    issue.subject    = "避難所情報 #{Time.now.strftime("%Y/%m/%d %H:%M:%S")}"
+    issue.subject    = "避難所情報 #{Time.now.xmlschema}"
     issue.author_id  = User.current.id
     issue.xml_body   = doc.to_s
     issue.save!

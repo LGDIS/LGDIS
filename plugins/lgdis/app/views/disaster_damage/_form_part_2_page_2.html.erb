@@ -1,0 +1,166 @@
+<table style="table-layout: fixed">
+  <col width="2%">
+  <col width="11%">
+  <col width="3%">
+  <col width="14%">
+  <col width="1%">
+  <col width="2%">
+  <col width="2%">
+  <col width="10%">
+  <col width="2%">
+  <col width="14%">
+  <tbody>
+  <tr>
+    <th colspan=3>区　　　　　　　　　　　　　分</th>
+    <th>被　　　　　　　　　　　　　害</th>
+    <th rowspan=9 class="vertical h-joined" style="line-height: 250%;">災害対策本部</th>
+    <th rowspan=9 class="vertical" style="line-height: 250%;">等の設置状況</th>
+    <th rowspan=3 class="vertical">都道府県</th>
+    <td colspan=3 rowspan=2 class="input v-joined"><%= f.text_area :prefectural_antidisaster_headquarter_status,:size=>'39x2',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th colspan=2>公　立　文　教　施　設</th>
+    <th>千円</th>
+    <td class="input"><%= f.text_field :public_educational_buildings_losses_amount,:size=>'24',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th colspan=2>農　林　水　産　業　施　設</th>
+    <th>千円</th>
+    <td class="input"><%= f.text_field :agriculture_forestry_and_fisheries_buildings_losses_amount,:size=>'24',:disabled => @disabled %></td>
+    <td colspan=3 class="input">
+      <%= f.text_field :prefectural_antidisaster_headquarter_status_date,:size=>'10',:disabled => @disabled %><%= calendar_for("#{f.object_name}_prefectural_antidisaster_headquarter_status_date") unless @disabled %>
+      <%= f.text_field :prefectural_antidisaster_headquarter_status_hm,:size=>'5',:disabled => @disabled %>
+    </td>
+  </tr>
+  <tr>
+    <th colspan=2>公　共　土　木　施　設</th>
+    <th>千円</th>
+    <td class="input"><%= f.text_field :public_civil_buildings_losses_amount,:size=>'24',:disabled => @disabled %></td>
+    <th rowspan=6 class="vertical" style="line-height: 300%;">市町村</th>
+    <td colspan=3 class="input v-joined"><%= f.text_field :municipal_antidisaster_headquarter_of,:size=>'24',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th colspan=2>そ　の　他　の　公　共　施　設</th>
+    <th>千円</th>
+    <td class="input"><%= f.text_field :other_public_buildings_losses_amount,:size=>'24',:disabled => @disabled %></td>
+    <td colspan=3 class="input v-joined"><%= f.select :municipal_antidisaster_headquarter_type, options_for_select(@disaster_damage_const["municipal_antidisaster_headquarter_type"].invert, f.object.municipal_antidisaster_headquarter_type),{:include_blank => true},:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th colspan=2>小　　　　　　　　　　　計</th>
+    <th>千円</th>
+    <td></td>
+    <td colspan=3 class="input v-joined"><%= f.select :municipal_antidisaster_headquarter_status, options_for_select(@disaster_damage_const["municipal_antidisaster_headquarter_status"].invert, f.object.municipal_antidisaster_headquarter_status),{:include_blank => true},:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th colspan=2>公共施設被害市町村数</th>
+    <th>団体</th>
+    <td class="input"><%= f.text_field :damaged_public_buildings_municipalities_count,:size=>'24',:disabled => @disabled %></td>
+    <td colspan=3 rowspan=3 class="input">
+      <%= f.text_field :municipal_antidisaster_headquarter_status_date,:size=>'10',:disabled => @disabled %><%= calendar_for("#{f.object_name}_municipal_antidisaster_headquarter_status_date") unless @disabled %>
+      <%= f.text_field :municipal_antidisaster_headquarter_status_hm,:size=>'5',:disabled => @disabled %>
+    </td>
+  </tr>
+  <tr>
+    <th rowspan=8 class="vertical" style="line-height: 400%;">その他</th>
+    <th>農　　　業　　　被　　　害</th>
+    <th>千円</th>
+    <td class="input"><%= f.text_field :agriculture_losses_amount,:size=>'24',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th>林　　　業　　　被　　　害</th>
+    <th>千円</th>
+    <td class="input"><%= f.text_field :forestry_losses_amount,:size=>'24',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th>畜　　　産　　　被　　　害</th>
+    <th>千円</th>
+    <td class="input"><%= f.text_field :livestock_losses_amount,:size=>'24',:disabled => @disabled %></td>
+    <th rowspan=5 class="vertical h-joined" style="line-height: 200%;">災害救助法</th>
+    <th rowspan=5 class="vertical" style="line-height: 120%;">適用市町村名</th>
+    <td colspan=4 class="input v-joined"><%= f.text_field :disaster_relief_act_applied_of,:size=>'24',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th>水　　　産　　　被　　　害</th>
+    <th>千円</th>
+    <td class="input"><%= f.text_field :fisheries_losses_amount,:size=>'24',:disabled => @disabled %></td>
+    <td colspan=4 rowspan=3 class="input">
+      <%= f.text_field :disaster_relief_act_applied_date,:size=>'10',:disabled => @disabled %><%= calendar_for("#{f.object_name}_disaster_relief_act_applied_date") unless @disabled %>
+      <%= f.text_field :disaster_relief_act_applied_hm,:size=>'5',:disabled => @disabled %>
+    </td>
+  </tr>
+  <tr>
+    <th>商　　　工　　　被　　　害</th>
+    <th>千円</th>
+    <td class="input"><%= f.text_field :commerce_and_industry_losses_amount,:size=>'24',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <td rowspan=2></td>
+    <td rowspan=2></td>
+    <td rowspan=2></td>
+  </tr>
+  <tr>
+    <td colspan=4 class="input">計<%= f.text_field :disaster_relief_act_applied_municipalities_count,:size=>'24',:disabled => @disabled %>団体</td>
+  </tr>
+  <tr>
+    <th>そ　　　　　の　　　　　他</th>
+    <th>千円</th>
+    <td class="input"><%= f.text_field :other_losses_amount,:size=>'24',:disabled => @disabled %></td>
+    <th colspan=4>消&nbsp;防&nbsp;職&nbsp;員&nbsp;出&nbsp;動&nbsp;延&nbsp;人&nbsp;数</th>
+    <th >人</th>
+    <td class="input"><%= f.text_field :turnout_fire_station_firefighter_count,:size=>'24',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th colspan=2>被　　　　害　　　　総　　　　額</th>
+    <th>千円</th>
+    <td></td>
+    <th colspan=4>消&nbsp;防&nbsp;団&nbsp;員&nbsp;出&nbsp;動&nbsp;延&nbsp;人&nbsp;数</th>
+    <th >人</th>
+    <td class="input"><%= f.text_field :turnout_fire_company_firefighter_count,:size=>'24',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th class="vertical" style="line-height: 2000%;">備考</th>
+    <td colspan=9 class="input">
+      災害発生場所<br>
+      <%= f.text_field :note_disaster_occurred_location,:size=>'120',:disabled => @disabled %><br>
+      災害発生年月日<br>
+      <%= f.text_field :note_disaster_occurred_date,:size=>'120',:disabled => @disabled %><br>
+      災害の種類概況<br>
+      <%= f.text_area :note_disaster_type_outline,:size=>'95x3',:disabled => @disabled %><br>
+      応急対策の状況<br>
+      <ul>
+        <li>
+          消防、水防、救急・救助等消防機関の活動状況<br>
+          <%= f.text_area :note_fire_services,:size=>'92x3',:disabled => @disabled %>
+        </li>
+        <li>
+          避難の勧告・指示の状況<br>
+          <%= f.text_area :note_evacuation_advisories,:size=>'92x3',:disabled => @disabled %>
+        </li>
+        <li>
+          避難所の設置状況<br>
+          <%= f.text_area :note_shelters,:size=>'92x3',:disabled => @disabled %>
+        </li>
+        <li>
+          他の地方公共団体への応援要請、応援活動の状況<br>
+          <%= f.text_area :note_other_local_government,:size=>'92x3',:disabled => @disabled %>
+        </li>
+        <li>
+          自衛隊の派遣要請、出動状況<br>
+          <%= f.text_area :note_self_defence_force,:size=>'92x3',:disabled => @disabled %>
+        </li>
+        <li>
+          災害ボランティアの活動状況<br>
+          <%= f.text_area :note_volunteer,:size=>'92x3',:disabled => @disabled %>
+        </li>
+      </ul>
+    </td>
+  </tr>
+  </tbody>
+</table>
+<em class="info">
+  <table>
+    <tr>
+      <td>※被害額は省略することができるものとする。</td>
+    </tr>
+  </table>
+</em>

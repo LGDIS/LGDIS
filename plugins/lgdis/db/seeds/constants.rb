@@ -83,3 +83,11 @@ Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'category', 
 Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'category', text: '32 その他', value: '32', _order: '32')
 Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'category', text: '99 未定義災害', value: '32', _order: '99')
 
+# 災害被害情報モデル
+# 災害対策本部等設置状況_市町村_本部種別
+Constant.create(kind1: 'TD', kind2: 'disaster_damages', kind3: 'municipal_antidisaster_headquarter_type', text: '警戒本部', value: '1', _order: '1')
+Constant.create(kind1: 'TD', kind2: 'disaster_damages', kind3: 'municipal_antidisaster_headquarter_type', text: '対策本部', value: '2', _order: '2')
+# 災害対策本部等設置状況_市町村
+Constant.create(kind1: 'TD', kind2: 'disaster_damages', kind3: 'municipal_antidisaster_headquarter_status', text: '解散', value: '1', _order: '1')
+Constant.create(kind1: 'TD', kind2: 'disaster_damages', kind3: 'municipal_antidisaster_headquarter_status', text: '設置', value: '2', _order: '2')
+

@@ -1,0 +1,215 @@
+<h3>第４号様式（その２）</h3>
+<h4>（被害状況即報）</h4>
+<table>
+  <tr>
+    <th colspan=3>都　道　府　県</th>
+    <td colspan=3></td>
+    <th colspan=4>区　　　　　　　　　　　　　分</th>
+    <th>被　　　　　　　　　　　　　害</th>
+  </tr>
+  <tr>
+    <th colspan=3 rowspan=4>災　　害　　名<br>・<br>報　告　番　号</th>
+    <td colspan=3 class="v-joined">災　害　名</td>
+    <th rowspan=23 class="vertical" style="line-height: 2000%;">その他</th>
+    <th rowspan=2 class="vertical">田</th>
+    <th>流　　失　　・　　埋　　没</th>
+    <th>ha</th>
+    <td class="input"><%= f.text_field :buried_or_washed_out_rice_field_ha,:size=>'28',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <td colspan=3 class="v-joined">第　　　　　　　　　報</td>
+    <th>冠　　　　　　　　　　　水</th>
+    <th>ha</th>
+    <td class="input"><%= f.text_field :under_water_rice_field_ha,:size=>'28',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <td colspan=3 class="v-joined"></td>
+    <th rowspan=2 class="vertical">畑</th>
+    <th>流　　失　　・　　埋　　没</th>
+    <th>ha</th>
+    <td class="input"><%= f.text_field :buried_or_washed_out_upland_field_ha,:size=>'28',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <td colspan=3>（　　　　月　　　　日　　　　時現在）</td>
+    <th>冠　　　　　　　　　　　水</th>
+    <th>ha</th>
+    <td class="input"><%= f.text_field :under_water_upland_field_ha,:size=>'28',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th colspan=3 rowspan=2>報　告　者　名</th>
+    <td colspan=3 class="v-joined"></td>
+    <th colspan=2>文　　　教　　　施　　　設</th>
+    <th class="vertical unit">箇所</th>
+    <td class="input"><%= f.text_field :damaged_educational_facilities_count,:size=>'28',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <td colspan=3></td>
+    <th colspan=2>病　　　　　　　　　　　院</th>
+    <th class="vertical unit">箇所</th>
+    <td class="input"><%= f.text_field :damaged_hospitals_count,:size=>'28',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th colspan=5>区　　　　　　　　　　　　　分</th>
+    <th>被　　　　　　　　　　　　　害</th>
+    <th colspan=2>道　　　　　　　　　　　路</th>
+    <th class="vertical unit">箇所</th>
+    <td class="input"><%= f.text_field :damaged_roads_count,:size=>'28',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th rowspan=4 class="vertical" style="line-height: 200%;">人的被害</th>
+    <th colspan=3>死　　　　　　　　　　　者</th>
+    <th>人</th>
+    <td class="input"><%= f.text_field :dead_count,:size=>'28',:disabled => @disabled %></td>
+    <th colspan=2>橋　　　り　　　ょ　　　う</th>
+    <th class="vertical unit">箇所</th>
+    <td class="input"><%= f.text_field :damaged_bridges_count,:size=>'28',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th colspan=3>行　　方　　不　　明　　者</th>
+    <th>人</th>
+    <td class="input"><%= f.text_field :missing_count,:size=>'28',:disabled => @disabled %></td>
+    <th colspan=2>河　　　　　　　　　　　川</th>
+    <th class="vertical unit">箇所</th>
+    <td class="input"><%= f.text_field :damaged_rivers_count,:size=>'28',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th class="vertical" rowspan=2>負傷者</th>
+    <th colspan=2>重　　　　　　　　　　　傷</th>
+    <th>人</th>
+    <td class="input"><%= f.text_field :seriously_injured_count,:size=>'28',:disabled => @disabled %></td>
+    <th colspan=2>港　　　　　　　　　　　湾</th>
+    <th class="vertical unit">箇所</th>
+    <td class="input"><%= f.text_field :damaged_harbors_count,:size=>'28',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th colspan=2>軽　　　　　　　　　　　傷</th>
+    <th>人</th>
+    <td class="input"><%= f.text_field :slightly_injured_count,:size=>'28',:disabled => @disabled %></td>
+    <th colspan=2>砂　　　　　　　　　　　防</th>
+    <th class="vertical unit">箇所</th>
+    <td class="input"><%= f.text_field :damaged_sand_control_count,:size=>'28',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th rowspan=15 class="vertical" style="line-height: 900%;">住家被害</th>
+    <th colspan=3 rowspan=3>全　　　　　　　　　　　壊</th>
+    <th>棟</th>
+    <td class="input"><%= f.text_field :complete_collapse_houses_count,:size=>'28',:disabled => @disabled %></td>
+    <th colspan=2>清　　　掃　　　施　　　設</th>
+    <th class="vertical unit">箇所</th>
+    <td class="input"><%= f.text_field :damaged_cleaning_facilities_count,:size=>'28',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th class="vertical unit">世帯</th>
+    <td class="input"><%= f.text_field :complete_collapse_households_count,:size=>'28',:disabled => @disabled %></td>
+    <th colspan=2>崖　　　く　　　ず　　　れ</th>
+    <th class="vertical unit">箇所</th>
+    <td class="input"><%= f.text_field :landslides_count,:size=>'28',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th>人</th>
+    <td class="input"><%= f.text_field :complete_collapse_people_count,:size=>'28',:disabled => @disabled %></td>
+    <th colspan=2>鉄　　　道　　　不　　　通</th>
+    <th class="vertical unit">箇所</th>
+    <td class="input"><%= f.text_field :closed_lines_count,:size=>'28',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th colspan=3 rowspan=3>半　　　　　　　　　　　壊</th>
+    <th>棟</th>
+    <td class="input"><%= f.text_field :half_collapse_houses_count,:size=>'28',:disabled => @disabled %></td>
+    <th colspan=2>被　　　害　　　船　　　舶</th>
+    <th>隻</th>
+    <td class="input"><%= f.text_field :damaged_ships_count,:size=>'28',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th class="vertical unit">世帯</th>
+    <td class="input"><%= f.text_field :half_collapse_households_count,:size=>'28',:disabled => @disabled %></td>
+    <th colspan=2>水　　　　　　　　　　　道</th>
+    <th>戸</th>
+    <td class="input"><%= f.text_field :water_failure_houses_count,:size=>'28',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th>人</th>
+    <td class="input"><%= f.text_field :half_collapse_people_count,:size=>'28',:disabled => @disabled %></td>
+    <th colspan=2>電　　　　　　　　　　　話</th>
+    <th class="vertical unit">回線</th>
+    <td class="input"><%= f.text_field :dead_telephone_lines_count,:size=>'28',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th colspan=3 rowspan=3>一　　　部　　　破　　　損</th>
+    <th>棟</th>
+    <td class="input"><%= f.text_field :partial_damage_houses_count,:size=>'28',:disabled => @disabled %></td>
+    <th colspan=2>電　　　　　　　　　　　気</th>
+    <th>戸</th>
+    <td class="input"><%= f.text_field :blackout_houses_count,:size=>'28',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th class="vertical unit">世帯</th>
+    <td class="input"><%= f.text_field :partial_damage_households_count,:size=>'28',:disabled => @disabled %></td>
+    <th colspan=2>ガ　　　　　　　　　　　ス</th>
+    <th>戸</th>
+    <td class="input"><%= f.text_field :gas_supply_stopped_houses_count,:size=>'28',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th>人</th>
+    <td class="input"><%= f.text_field :partial_damage_people_count,:size=>'28',:disabled => @disabled %></td>
+    <th colspan=2>ブ　ロ　ッ　ク　塀　等</th>
+    <th class="vertical unit">箇所</th>
+    <td class="input"><%= f.text_field :damaged_concrete_block_walls_count,:size=>'28',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th colspan=3 rowspan=3>床　　　上　　　浸　　　水</th>
+    <th>棟</th>
+    <td class="input"><%= f.text_field :inundation_above_floor_level_houses_count,:size=>'28',:disabled => @disabled %></td>
+    <td colspan=2 rowspan=3></td>
+    <td rowspan=3></td>
+    <td rowspan=3></td>
+  </tr>
+  <tr>
+    <th class="vertical unit">世帯</th>
+    <td class="input"><%= f.text_field :inundation_above_floor_level_households_count,:size=>'28',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th>人</th>
+    <td class="input"><%= f.text_field :inundation_above_floor_level_people_count,:size=>'28',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th colspan=3 rowspan=3>床　　　下　　　浸　　　水</th>
+    <th>棟</th>
+    <td class="input"><%= f.text_field :inundation_under_floor_level_houses_count,:size=>'28',:disabled => @disabled %></td>
+    <th colspan=3>り　　災　　世　　帯　　数</th>
+    <th class="vertical unit">世帯</th>
+    <td class="input"><%= f.text_field :sufferer_houses_count,:size=>'28',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th class="vertical unit">世帯</th>
+    <td class="input"><%= f.text_field :inundation_under_floor_level_households_count,:size=>'28',:disabled => @disabled %></td>
+    <th colspan=3>り　　　災　　　者　　　数</th>
+    <th>人</th>
+    <td class="input"><%= f.text_field :sufferer_people_count,:size=>'28',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th>人</th>
+    <td class="input"><%= f.text_field :inundation_under_floor_level_people_count,:size=>'28',:disabled => @disabled %></td>
+    <th rowspan=3 class="vertical">火災発生</th>
+    <th colspan=2>建　　　　　　　　　　　物</th>
+    <th>件</th>
+    <td class="input"><%= f.text_field :fire_occurred_buildings_count,:size=>'28',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th rowspan=2 class="vertical">非住家</th>
+    <th colspan=3>公　　　共　　　建　　　物</th>
+    <th>棟</th>
+    <td class="input"><%= f.text_field :damaged_public_building_count,:size=>'28',:disabled => @disabled %></td>
+    <th colspan=2>危　　　　　険　　　　　物</th>
+    <th>件</th>
+    <td class="input"><%= f.text_field :fire_occurred_dangerous_substances_count,:size=>'28',:disabled => @disabled %></td>
+  </tr>
+  <tr>
+    <th colspan=3>そ　　　　　の　　　　　他</th>
+    <th>棟</th>
+    <td class="input"><%= f.text_field :damaged_other_building_count,:size=>'28',:disabled => @disabled %></td>
+    <th colspan=2>そ　　　　　の　　　　　他</th>
+    <th>件</th>
+    <td class="input"><%= f.text_field :fire_occurred_others_count,:size=>'28',:disabled => @disabled %></td>
+  </tr>
+</table>

@@ -1,0 +1,96 @@
+<h3>第４号様式（その１）</h3>
+<h4>（災害概況即報）</h4>
+
+<table>
+  <tr>
+    <th rowspan=2 class="vertical" style="line-height: 300%;">災害の概況</th>
+    <th>発生場所</th>
+    <td class="input">
+      <%= f.text_field :disaster_occurred_location,:size=>'70',:disabled => @disabled %>
+    </td>
+    <th>発生日時</th>
+    <td class="input">
+      <%= f.text_field :disaster_occurred_date,:size=>'10',:disabled => @disabled %><%= calendar_for("#{f.object_name}_disaster_occurred_date") unless @disabled %>
+      <%= f.text_field :disaster_occurred_hm,:size=>'5',:disabled => @disabled %>
+    </td>
+  </tr>
+  <tr>
+    <td class="input" colspan=4>
+      <%= f.text_area :general_disaster_situation,:size=>'95x15',:disabled => @disabled %>
+    </td>
+  </tr>
+</table>
+
+<table class="v-joining">
+  <tr>
+    <th rowspan=3 class="vertical" style="line-height: 300%;">被害の状況</th>
+    <th rowspan=2>死　　傷　　者</th>
+    <th>死　　　　　者</th>
+    <td class="input">
+      <%= f.text_field :general_dead_count,:size=>'10',:disabled => @disabled %>人
+    </td>
+    <td class="input">
+      不明　<%= f.text_field :general_missing_count,:size=>'10',:disabled => @disabled %>人
+    </td>
+    <th rowspan=2>住　　　　　家</th>
+    <td class="input">
+      全壊　<%= f.text_field :general_complete_collapse_houses_count,:size=>'10',:disabled => @disabled %>棟
+    </td>
+    <td class="input">
+      一部破損　<%= f.text_field :general_partial_damage_houses_count,:size=>'10',:disabled => @disabled %>棟
+    </td>
+  </tr>
+  <tr>
+    <th>負　　傷　　者</th>
+    <td class="input">
+      <%= f.text_field :general_injured_count,:size=>'10',:disabled => @disabled %>人
+    </td>
+    <td>
+      <span class="right">人</span>計
+    </td>
+    <td class="input">
+      半壊　<%= f.text_field :general_half_collapse_houses_count,:size=>'10',:disabled => @disabled %>棟
+    </td>
+    <td class="input">
+      床上浸水　<%= f.text_field :general_inundation_above_floor_level_houses_count,:size=>'10',:disabled => @disabled %>棟
+    </td>
+  </tr>
+  <tr>
+    <td class="input" colspan=7>
+      <%= f.text_area :general_damages_status,:size=>'95x10',:disabled => @disabled %>
+    </td>
+  </tr>
+</table>
+
+<table class="v-joining">
+  <tr>
+    <th rowspan=2 class="vertical" style="line-height: 300%;">応急対策の状況</th>
+    <th>災害対策本部等の<br><br>設　　置　　状　　況</th>
+    <td class="input">
+      （都道府県）<br>
+      <%= f.text_area :general_prefectural_antidisaster_headquarter_status,:size=>'30x2',:disabled => @disabled %><br>
+      <%= f.text_field :general_prefectural_antidisaster_headquarter_status_date,:size=>'10',:disabled => @disabled %><%= calendar_for("#{f.object_name}_general_prefectural_antidisaster_headquarter_status_date") unless @disabled %>
+      <%= f.text_field :general_prefectural_antidisaster_headquarter_status_hm,:size=>'5',:disabled => @disabled %>
+    </td>
+    <td class="input">
+      （市町村）
+      <%= f.text_field :general_municipal_antidisaster_headquarter_of,:size=>'24',:disabled => @disabled %><br>
+      <%= f.text_area :general_municipal_antidisaster_headquarter_status,:size=>'45x2',:disabled => @disabled %><br>
+      <%= f.text_field :general_municipal_antidisaster_headquarter_status_date,:size=>'10',:disabled => @disabled %><%= calendar_for("#{f.object_name}_general_municipal_antidisaster_headquarter_status_date") unless @disabled %>
+      <%= f.text_field :general_municipal_antidisaster_headquarter_status_hm,:size=>'5',:disabled => @disabled %>
+    </td>
+  </tr>
+  <tr>
+    <td class="input" colspan=3>
+      <%= f.text_area :emergency_measures_status,:size=>'95x10',:disabled => @disabled %>
+    </td>
+  </tr>
+</table>
+<em class="info">
+  <table>
+    <tr>
+      <th>（注）</th>
+      <td>第一報については、原則として、覚知後30分以内で可能な限り早く、分かる範囲で記載して報告すること。（確認がとれていない事項については、確認がとれていない旨（「未確認」等）を記入して報告すれば足りること。）</td>
+    </tr>
+  </table>
+</em>
