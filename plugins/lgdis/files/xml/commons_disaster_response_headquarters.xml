@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <edxlde:EDXLDistribution
+	xmlns:pcx_ev="http://xml.publiccommons.ne.jp/pcxml1/body/evacuation3"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:edxlde="urn:oasis:names:tc:emergency:EDXL:DE:1.0"

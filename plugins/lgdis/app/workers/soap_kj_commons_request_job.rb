@@ -21,11 +21,13 @@ class SOAP_KJcommonsRequestJob
   def register(issue)
     project_id = issue.project_id
     tracker_id = issue.tracker_id
-    type_update = issue.custom_field_value_by_id(DST_LIST['custom_field_delivery']['type_update'])
+    # カスタムフィールドが固まるまでの仮実装
+#    type_update = issue.custom_field_value_by_id(DST_LIST['custom_field_delivery']['type_update'])
+    type_update = 1
 
     edition_mng = EditionManagement.find_by_project_id_and_tracker_id(project_id, tracker_id)
     # 新規追加処理
-    if edition.blank?
+    if edition_mng.blank?
       EditionManagement.create(:project_id => project_id,
                                :tracker_id => tracker_id,
                                :issue_id   => issue.id,
