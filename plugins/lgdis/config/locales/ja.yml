@@ -7,6 +7,7 @@ ja:
   button_new: 新規登録
   map: 地図
   description_project_identifier_on_create: システムで自動設定されます
+  text_select_tracker: 登録するチケットのトラッカーを選んでください
   
   activerecord:
     errors:
