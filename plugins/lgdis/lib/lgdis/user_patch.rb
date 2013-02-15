@@ -25,7 +25,9 @@ module Lgdis
       # RuntimeError :: プラグイン設定で機能が無効化されているとき、想定しないプロバイダによる認可のとき
       def find_for_open_id(access_token, signed_in_resource=nil)
         raise "illegal authorizer: #{access_token.provider}" unless access_token.provider == 'google'
-        raise "currently disabled sign-in via #{access_token.provider}" unless Setting.plugin_lgdis[:enable_external_auth]
+        if !(Setting.plugin_lgdis.present? && Setting.plugin_lgdis[:enable_external_auth])
+          raise "currently disabled sign-in via #{access_token.provider}"
+        end
         loginid = access_token.info['email']
         uid = access_token.uid
         return authorized_user(loginid, uid, GOOGLE_IDENTIFIER)
@@ -40,7 +42,9 @@ module Lgdis
       # ==== Raise
       # RuntimeError :: プラグイン設定で機能が無効化されているとき、想定しないプロバイダによる認可のとき
       def find_for_oauth(access_token, signed_in_resource=nil)
-        raise "currently disabled sign-in via #{access_token.provider}" unless Setting.plugin_lgdis[:enable_external_auth]
+        if !(Setting.plugin_lgdis.present? && Setting.plugin_lgdis[:enable_external_auth])
+          raise "currently disabled sign-in via #{access_token.provider}"
+        end
         case access_token.provider
         when 'twitter'
           return authorized_user("@" + access_token.info.nickname, access_token.uid, TWITTER_IDENTIFIER)
