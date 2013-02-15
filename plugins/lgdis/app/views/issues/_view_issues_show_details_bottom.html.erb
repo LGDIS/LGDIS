@@ -1,54 +1,54 @@
 <fieldset class="collapsible collapsed">
   <legend onclick="toggleFieldset(this);"><%= l(:ext_out_field) %></legend>
   <div>
-      <nobr>
-        <p><strong><label><%= l(:delivery_place) %>:</label></strong></p>
-        <%= form_tag("/deliver_issues/request_delivery") do %>
-          <%= hidden_field_tag :issue_id, @issue.id %>
-          <%= hidden_field_tag :current_user, User.current %>
-          <%= hidden_field_tag :project_id, @project.identifier %>
+    <nobr>
+      <p><strong><label><%= l(:delivery_place) %>:</label></strong></p>
+      <%= form_tag("/deliver_issues/request_delivery") do %>
+        <%= hidden_field_tag :issue_id, @issue.id %>
+        <%= hidden_field_tag :current_user, User.current %>
+        <%= hidden_field_tag :project_id, @project.identifier %>
 
-          <% unless @destination_list.blank? %>
-            <% @destination_list.each do |dest|%>
-                <%= check_box_tag "ext_out_target[]", dest['target_num'] %><label><%= dest['name'] %></label>
-            <% end %>
-            <%= submit_tag l(:permission_request_delivery) %>
+        <% unless @destination_list.blank? %>
+          <% @destination_list.each do |dest|%>
+              <%= check_box_tag "ext_out_target[]", dest['target_num'] %><label><%= dest['name'] %></label>
           <% end %>
+          <%= submit_tag l(:permission_request_delivery) %>
         <% end %>
+      <% end %>
 
-        <p><strong><label><%= l(:delivery_status) %>:</label></strong></p>
-        <% if check_permissions(@issue) %>
-          <% unless @delivery_histories.blank? %>
-            <% @delivery_histories.each do | d_h | %>
-                <div class="table_border">
-                <label><%= tm_fmt(d_h.process_date) %></label>
-                <label style="position:absolute; left:240px;">
-                  <%= DST_LIST['destination_name'][d_h.delivery_place_id] %>
-                </label>
-                <label style="position:absolute; left:450px;"><%= DST_LIST['status'][d_h.status] %></label>
-                <% if d_h.status == 'request' || d_h.status == 'failed' %>
-                <label style="position:absolute; left:580px;">
-                  <%= link_to "配信確認", {:controller => "deliver_issues",
-                                           :action => "index",
-                                           :project_id => @project,
-                                           :issue => @issue,
-                                           :delivery_history_id=>d_h.id} %>
-                </label>
-                <% end %>
-                </div>
-            <% end %>
-          <% end %>
-        <% else %>
-          <% unless @delivery_history.blank? %>
-            <% @delivery_history.each do | d_h | %>
-              <p class="table_border">
-                <%= tm_fmt(d_h.process_date) %>
+      <p><strong><label><%= l(:delivery_status) %>:</label></strong></p>
+      <% if check_permissions(@issue) %>
+        <% unless @delivery_histories.blank? %>
+          <% @delivery_histories.each do | d_h | %>
+              <div class="table_border">
+              <label><%= tm_fmt(d_h.process_date) %></label>
+              <label style="position:absolute; left:240px;">
                 <%= DST_LIST['destination_name'][d_h.delivery_place_id] %>
-                <%= DST_LIST['status'][d_h.status] %>
-              </p>
-            <% end %>
+              </label>
+              <label style="position:absolute; left:450px;"><%= DST_LIST['status'][d_h.status] %></label>
+              <% if d_h.status == 'request' || d_h.status == 'failed' %>
+              <label style="position:absolute; left:580px;">
+                <%= link_to "配信確認", {:controller => "deliver_issues",
+                                         :action => "index",
+                                         :project_id => @project,
+                                         :issue => @issue,
+                                         :delivery_history_id=>d_h.id} %>
+              </label>
+              <% end %>
+              </div>
           <% end %>
         <% end %>
+      <% else %>
+        <% unless @delivery_history.blank? %>
+          <% @delivery_history.each do | d_h | %>
+            <p class="table_border">
+              <%= tm_fmt(d_h.process_date) %>
+              <%= DST_LIST['destination_name'][d_h.delivery_place_id] %>
+              <%= DST_LIST['status'][d_h.status] %>
+            </p>
+          <% end %>
+        <% end %>
+      <% end %>
 <%
 =begin
          render :partial => 'issues/request_delivery_form',
@@ -59,7 +59,7 @@
          end
 =end
 %>
-      </nobr>
+    </nobr>
   </div>
 </fieldset>
 <hr />

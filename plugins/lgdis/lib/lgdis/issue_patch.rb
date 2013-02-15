@@ -141,8 +141,6 @@ module Lgdis
         # tracker_id に紐付く標題を設定
         title  = DST_LIST['tracker_title'][self.tracker_id]
 
-        # tracker_id に紐付くドキュメントIDを設定
-        doc_id = DST_LIST['tracker_doc_id'][self.tracker_id]
         edition_mng = EditionManagement.find_by_project_id_and_tracker_id(self.project_id, self.tracker_id)
 
         # status(更新種別), uuid, edition_num(版番号)を設定
@@ -151,6 +149,16 @@ module Lgdis
         # 運用種別フラグ
         operation_flg = DST_LIST['commons_xml_field']['edxl_status'][self.project_id]
         operation_flg = operation_flg.blank? ? 'Actual' : operation_flg
+
+        # 希望公開開始日時
+        target_date = custom_field_value(DST_LIST['custom_field_delivery']['target_date'])
+        target_time = custom_field_value(DST_LIST['custom_field_delivery']['target_time'])
+        target_datetime = target_date.blank? || target_time.blank? ? nil : target_date + ' ' + target_time
+
+        # 希望公開終了日時
+        valid_date = custom_field_value(DST_LIST['custom_field_delivery']['valid_date'])
+        valid_time = custom_field_value(DST_LIST['custom_field_delivery']['valid_time'])
+        valid_datetime = valid_date.blank? || valid_time.blank? ? nil : valid_date + ' ' + valid_time
 
         # TODO
         # 新規フィールドの作成が必要
@@ -189,9 +197,7 @@ module Lgdis
         # TODO
         # 報告日時の設定避難所テーブルにしか存在しない為確認
         doc.elements["//pcx_ib:ReportDateTime"].add_text('')
-        target_datetime=custom_field_value(DST_LIST['custom_field_delivery']['target_date']) + ' ' + custom_field_value(DST_LIST['custom_field_delivery']['target_time'])
         doc.elements["//pcx_ib:TargetDateTime"].add_text(target_datetime.to_datetime.xmlschema) unless target_datetime.blank?
-        valid_datetime=custom_field_value(DST_LIST['custom_field_delivery']['valid_date']) + ' ' + custom_field_value(DST_LIST['custom_field_delivery']['valid_time'])
         doc.elements["//pcx_ib:ValidDateTime"].add_text(valid_datetime.to_datetime.xmlschema) unless valid_datetime.blank?
         doc.elements["//edxlde:distributionID"].add_text(edition_fields_map['uuid'])
         # TODO

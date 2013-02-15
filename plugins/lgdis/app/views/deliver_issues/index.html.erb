@@ -15,9 +15,9 @@
       </th>
     </tr>
     <tr>
-      <th style="text-align: left">配信内容</th>
+      <th style="text-align: left">配信内容 :</th>
       <th style="text-align: left">
-        <%= @summary %>
+        <%= text_area_tag 'contents', @summary, {:readonly=>true,:size => "100x30"} %>
       </th>
     </tr>
     <tr>
