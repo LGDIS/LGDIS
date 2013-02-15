@@ -1,4 +1,4 @@
-<% if Setting.plugin_lgdis[:enable_external_auth] %>
+<% if Setting.plugin_lgdis.present? && Setting.plugin_lgdis[:enable_external_auth] %>
   <%= button_to l('external_auth.sign_in_via', :kind => 'Google'), '/auth/google' %>
   <%= button_to l('external_auth.sign_in_via', :kind => 'Twitter'), '/auth/twitter' %>
   <%= button_to l('external_auth.sign_in_via', :kind => 'facebook'), '/auth/facebook' %>
