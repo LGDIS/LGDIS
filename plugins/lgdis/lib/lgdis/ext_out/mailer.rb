@@ -15,6 +15,8 @@ class Lgdis::ExtOut::Mailer < ActionMailer::Base
     begin
       #SMTP-plain
       str= "■SMTP-PLAIN: ML/T/MSG=" + mailing_list_name + " " + title + " " + message 
+      ActionMailer::Base.perform_deliveries = true
+      ActionMailer::Base.raise_delivery_errors = true
 
       fromname = DST_LIST['smtp_auth_server_conf']['fromname']
       charset= DST_LIST['smtp_auth_server_conf']['charset']
@@ -52,6 +54,8 @@ class Lgdis::ExtOut::Mailer < ActionMailer::Base
     begin
       #SMTP-AUTH
       str= "■SMTPAUTH: ML/T/MSG=" + mailing_list_name + " " + title + " " + message 
+      ActionMailer::Base.perform_deliveries = true
+      ActionMailer::Base.raise_delivery_errors = true
       
       fromname = DST_LIST['smtp_auth_server_conf']['fromname']
       charset= DST_LIST['smtp_auth_server_conf']['charset']
@@ -99,7 +103,6 @@ class Lgdis::ExtOut::Mailer < ActionMailer::Base
 end
 
 if __FILE__ == $0
-  SetupXML.arrange_and_put
 end
 
 
