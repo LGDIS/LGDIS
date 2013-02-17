@@ -52,25 +52,99 @@ class IfCommon
   # ==== Raise
   def mail_when_delivery_fails
     modulename="if_common"
-    o = IfCommon.new
     begin
-      alert_to = DST_LIST['outbound_alert_mailto'].to_s
-      title_prefix = DST_LIST['outbound_alert_title_prefix'].to_s + Time.now.xmlschema+" "
-      msg = DST_LIST['alert_msg'].to_s
-      account = DST_LIST['smtp_auth_server_conf']['account']
-      pw = DST_LIST['smtp_auth_server_conf']['password']
-
+      alert_to = DST_LIST['disruption_alert_mailto'].to_s
+      title_prefix = DST_LIST['disruption_alert_title_prefix'].to_s + Time.now.xmlschema+" "
+      msg = DST_LIST['disruption_alert_msg'].to_s
+      account = DST_LIST['smtp_server3']['account']
+      pw = DST_LIST['smtp_server3']['password']
       if account.present? || pw.present?
-        #tls =  DST_LIST['smtp_auth_server_conf']['tls']
-        status2 = Lgdis::ExtOut::Mailer.setup_auth( alert_to,title_prefix, msg).deliver
+        status2 = Lgdis::ExtOut::MailerExtra.setup_auth( alert_to, title_prefix, msg).deliver
       else
-        status2 = Lgdis::ExtOut::Mailer.setup( alert_to,title_prefix, msg).deliver
+        status2 = Lgdis::ExtOut::MailerExtra.setup( alert_to, title_prefix, msg).deliver
       end
-      o.create_log_time(status2.to_s + "\n", modulename) if status2.class != Mail::Message
+      create_log_time(status2.to_s + "\n", modulename) if status2.class != Mail::Message
     rescue => e
-      str_tmp = "#{e.backtrace.join("\n")}\n#{o.create_log_time(msg,modulename)}"
+      str_tmp = "#{e.backtrace.join("\n")}\n#{create_log_time(msg,modulename)}"
       Rails.logger.error(str_tmp); puts str_tmp
     end
   end
 
+  # チケットへの送信履歴書き込み処理
+  # ==== Args
+  # _msg_ :: 
+  # _modulename_ :: 記録対象がどこで発生したかを示す文字列
+  # _issue_ ::: 
+  # ==== Return
+  # _strnew_ :: 年月日時分秒､モジュール名､記録内容主部を連結した文字列
+  # ==== Raise
+  def feedback_to_issue_screen(msg, issue, delivery_history=nil, status)
+    tgt  = DST_LIST['destination_name'][delivery_history.delivery_place_id].to_s
+    dhid = delivery_history.id
+    notes = ""
+
+    case msg
+    when String, Hash
+      notessuffix = "\n#{msg.to_s}"
+    when NIL
+    else
+      if msg.elements["//edxlde:dateTimeSent"].present?
+        #コモンズ向けREXML::Doc型msgの難点:
+        #チケット作成後､初回配信要求処理のときはmsg.elements["//edxlde:dateTimeSent"]
+        #が存在しているが､その直後にIssues#init_journalで初期化すると
+        #XMLがきえるため､dateTimeSentも きえ､取得できない｡
+        notes = msg.elements["//edxlde:dateTimeSent"].text 
+        notes = notes.to_s.to_datetime.strftime("%Y/年%m月%d日 %H時%M分%S秒の")
+      end
+    end
+    notes += "配信要求No.#{dhid} #{tgt}むけの結果は"
+    notes += (status != false) ? "正常でした" : "エラーでした"
+    notes += notessuffix.to_s
+    current_journal =  Journal.find_by_sql(
+      "select * from journals where journalized_id = #{issue.id} 
+      and notes like '%#{dhid}%#{tgt}%' limit 1"
+    )
+    if current_journal.size == 0
+      current_journal = Journal.new(:journalized => issue, :user => User.current, :notes => notes)
+      current_journal.save
+    else
+      current_journal[0].update_attributes(:notes => notes)
+      current_journal[0].save
+    end
+#     journal  = issue.init_journal(User.current, msg )
+  end
+
+  # 文書改版管理処理｡取り消しされた場合はDocumentID(=UUID)を発番し
+  # 版番号を1にリセットする｡
+  # ==== Args
+  # _issue_ :: Redmineチケット
+  # ==== Return
+  # ==== Raise
+  def register_edition(issue) 
+    project_id = issue.project_id
+    tracker_id = issue.tracker_id
+    # カスタムフィールドが固まるまでの仮実装
+#    type_update = issue.custom_field_value(DST_LIST['custom_field_delivery']['type_update'])
+    type_update = 1
+    edition_mng = EditionManagement.find_by_project_id_and_tracker_id(project_id, tracker_id)
+
+    # 新規追加処理
+    if edition_mng.blank?
+      EditionManagement.create(:project_id => project_id,
+                               :tracker_id => tracker_id,
+                               :issue_id   => issue.id,
+                               :uuid       => 'uuid')
+    else
+      edition_status = 1
+      edition_status = 0 if type_update=='cancel'
+      # 直近の配信で、配信取消されていた場合は、版番号を振りなおす
+      # それ以外は版番号をインクリメント
+      edition_num = edition_mng.status == 0 ? 1 : edition_mng.edition_num+=1
+      edition_mng.update_attributes(:status      => edition_status,
+                                    :edition_num => edition_num)
+    end
+  end
 end
+
+#debugcode
+# Journal.find_all_by_journalized_id(issue.id).each{|l| p l}

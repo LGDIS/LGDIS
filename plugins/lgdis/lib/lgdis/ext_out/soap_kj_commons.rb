@@ -6,9 +6,9 @@
 
 # IRBコンソールでの呼び出し例: 
 #   引数0に読ませたいPCXMLファイル名をわたしてREXMLにロードする例:
-#   Lgdis::ExtOut::SOAP_KJcommons.send_message(REXML::Document.new(File.open("#{Rails.root.to_s}/plugins/lgdis/lib/lgdis/ext_out/adsoltestbest.xml")),false)
+#   Lgdis::ExtOut::SoapKjCommons.send_message(REXML::Document.new(File.open("#{Rails.root.to_s}/plugins/lgdis/lib/lgdis/ext_out/adsoltestbest.xml")),false)
 
-class Lgdis::ExtOut::SOAP_KJcommons  < ActiveRecord::Base
+class Lgdis::ExtOut::SoapKjCommons  < ActiveRecord::Base
 
   # I/Fよびだし処理 非同期処理にはResqueを使用)
   # 最後にログ出力をし､戻り値を返す
@@ -42,13 +42,11 @@ class Lgdis::ExtOut::SOAP_KJcommons  < ActiveRecord::Base
 
         client = CommonsClient.new( wsdl, endpoint, namespace)
         client.set_auth(usename, password)
-        client.send(msg)
+        status = client.send(msg)
       end
       #TODO: アーカイブ出力に関して、課題検討中? 現在はlogger で対応
       Rails.logger.info("#{o.create_log_time(msg,modulename)}")
-
       #raise #=> RuntimeError:
-      status = true
     rescue => e
       str_tmp = "#{e.backtrace.join("\n")}\n#{o.create_log_time(msg,modulename)}"
       Rails.logger.error(str_tmp); puts str_tmp
@@ -57,8 +55,7 @@ class Lgdis::ExtOut::SOAP_KJcommons  < ActiveRecord::Base
       o.mail_when_delivery_fails
     ensure
       #アーカイブログ出力　  -> if_common.rbのメソッドを呼び出す
-      o.leave_log(msg)
-      print "\n"
+      o.leave_log(msg);print "\n"
       return status 
     end
   end

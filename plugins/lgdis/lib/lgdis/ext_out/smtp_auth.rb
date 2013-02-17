@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 # 認証付きSMTP送信(SMTP-AUTH)の送信処理wrapperプログラム
-class Lgdis::ExtOut::SMTP_Auth  < ActiveRecord::Base
+class Lgdis::ExtOut::SmtpAuth  < ActiveRecord::Base
 
   # SMTP送信処理プログラム本体をよびだし
   # ==== Args
@@ -31,10 +31,11 @@ class Lgdis::ExtOut::SMTP_Auth  < ActiveRecord::Base
       Rails.logger.error("#{e.backtrace.join("\n")}" + "\n" + \
                          "#{o.create_log_time(msg,modulename)}")
       status = false
-      return status 
+      # エラー時のメール配信 -> if_common.rbのメソッドを呼び出す
+      o.mail_when_delivery_fails
     ensure
-      # アーカイブログ出力　
-      o.leave_log(msg)
+      #アーカイブログ出力　  -> if_common.rbのメソッドを呼び出す
+      o.leave_log(msg);print "\n"
       return status 
     end
   end

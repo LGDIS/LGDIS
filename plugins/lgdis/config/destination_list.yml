@@ -149,12 +149,13 @@ destination:
       - <<: *atom
 
 delivery_job_map:
-  1: SOAP_KJcommonsRequestJob
-  2: SMTP_JichiShokuinRequestJob
-  3: SMTP_AuthRequestJob
+#   1: SOAP_KJcommonsRequestJob
+  1: SoapKjCommonsRequestJob
+  2: SmtpJichiShokuinRequestJob
+  3: SmtpAuthRequestJob
   4: TwitterRequestJob
   5: FacebookRequestJob
-  6: Atom_DigiSignageRequestJob
+  6: AtomDigiSignageRequestJob
 
 destination_name:
   1: 公共情報コモンズ
@@ -270,9 +271,10 @@ test_prj:
  # endpoint below have to point to a URL 
  # where COMMONS web server process is running on.
  # In other word, IP address of non-router (including virtualizer router).
- # commons_endpoint= 'http://0.0.0.0/commons/subscriber/soap/testservice.example.com/'
- # commons_endpoint: http://192.168.43.186/commons/subscriber/soap/testservice.example.com/
-commons_endpoint: http://192.168.11.7/commons/subscriber/soap/testservice.example.com/
+#ie
+commons_endpoint: http://192.168.43.186/commons/subscriber/soap/testservice.example.com/
+# sha
+# commons_endpoint: http://192.168.11.7/commons/subscriber/soap/testservice.example.com/
 commons_user: user1@example.com
 commons_pw: password
 commons_wsdl: /opt/fix/LGDIS/plugins/lgdis/lib/lgdis/ext_out/wsdl/MQService.wsdl
@@ -290,32 +292,46 @@ lgdsf_url: http://203.138.187.88/lgdsf/staffs/send/
 # 職員招集用メーリングリスト
 
 mailing_list:
-# local_government_officer_mail: root@localhost.localdomain
-# machicomi_mail: apl@localhost.localdomain
-  local_government_officer_mail: unistandard@gmail.com
-  machicomi_mail: unistandard@gmail.com
-                  # mamoru@carrot.co.jp
+  local_government_officer_mail: root@localhost.localdomain
+  machicomi_mail: apl@localhost.localdomain
+              # mamoru@carrot.co.jp
 
-mail_server:
-  local_government_server: 127.0.0.1
-  machicomi_server: 127.0.0.1
+# 外部出力送信失敗時のメール通知パラメーター
+disruption_alert_mailto: apl@localhost.localdomain
+disruption_alert_title_prefix: "[石巻市Redmine外部配信ERROR] "
+disruption_alert_msg: ""
 
-#認証付きSMTPサーバーのときはSMTPサーバーに接続するために
-#以下のaccounat/ passwordをコメントインして適切な値をかいてください｡
-smtp_auth_server_conf:
+#SMTPサーバー設定1:認証なしSMTP専用(自治体職員向け)
+smtp_server1:
+  port: 25
+  mta_fqdn: localhost.localdomain
+  domain: localdomain
+  fromname: root@localhost.localdomain 
+  charset: utf-8
+
+#SMTPサーバー設定2:SMTP-AUTH   専用(まち.comi向け)
+smtp_server2:
+  port: 25
+  mta_fqdn: localhost.localdomain
+  domain: localdomain
+  account: apl
+  password: JBC03142
+#   account: disastertraining2013
+#   password: disastertraining
+  fromname: root@localhost.localdomain 
+  charset: utf-8
+#   tls: = false
+
+#SMTPサーバー設定3:現状では認証なし設定(外部出力エラー検知通報を想定)
+#サーバー接続accountまたはpasswordのどれかに値があり､コメントインされていれば
+#SMTP-AUTH設定と見なす｡認証なしにしたければ､それらをコメントアウトすること｡
+smtp_server3:
   port: 25
   mta_fqdn: localhost.localdomain
   domain: localdomain
 #   account: apl
 #   password: JBC03142
-#   account: disastertraining2013
-#   password: disastertraining
-  tls: = false
-  charset: utf-8
   fromname: root@localhost.localdomain 
-
-# 外部出力送信失敗時のメール通知パラメーター
-outbound_alert_mailto: apl@localhost.localdomain
-outbound_alert_title_prefix: "[石巻市Redmine外部配信ERROR] "
-outbound_alert_msg: ""
+  charset: utf-8
+#   tls: = false
 

@@ -7,7 +7,7 @@
 #
 # 作動条件: Rails.root/plugins/lgdis/Gemfileでrequireされていること｡
 #
-class SOAP_KJcommonsRequestJob
+class SoapKjCommonsRequestJob
   @queue = :soap_kj_commons_request
 
   # I/Fよびだし処理 非同期処理にはResqueを使用
@@ -19,51 +19,25 @@ class SOAP_KJcommonsRequestJob
   # ==== Return
   # _status_ :: 戻り値
   # ==== Raise
-  def self.perform(msg, test_flg, issue)
+  def self.perform(msg, test_flg, issue, delivery_history)
+    o = IfCommon.new
     begin
-      # TODO
-      # XML からUUID, 版番号を取得する
       str= "##################################### 公共情報コモンズWORKER がよばれました\n"
       Rails.logger.info("#{str}");print("#{str}")
-      status = Lgdis::ExtOut::SOAP_KJcommons.send_message(msg, test_flg)
+      status = Lgdis::ExtOut::SoapKjCommons.send_message(msg, test_flg)
     rescue => e
       Rails.logger.error("#{e.backtrace.join("\n")}\n")
       status = false
+      # エラー時のメール配信 -> if_common.rbのメソッドを呼び出す
+      o.mail_when_delivery_fails
     ensure
-      register(issue) if status
+      #アーカイブログ出力　  -> if_common.rbのメソッドを呼び出す
+      o.leave_log(msg); print "\n"
+      o.register_edition(issue) if status != false
+      o.feedback_to_issue_screen(msg, issue, delivery_history, status)
       return status
     end
   end
 
-  # 文書改版管理処理｡取り消しされた場合はDocumentID(=UUID)を発番し
-  # 版番号を1にリセットする｡
-  # ==== Args
-  # _issue_ :: Redmineチケット
-  # ==== Return
-  # ==== Raise
-  def register(issue)
-    project_id = issue.project_id
-    tracker_id = issue.tracker_id
-    # カスタムフィールドが固まるまでの仮実装
-#    type_update = issue.custom_field_value(DST_LIST['custom_field_delivery']['type_update'])
-    type_update = 1
-
-    edition_mng = EditionManagement.find_by_project_id_and_tracker_id(project_id, tracker_id)
-    # 新規追加処理
-    if edition_mng.blank?
-      EditionManagement.create(:project_id => project_id,
-                               :tracker_id => tracker_id,
-                               :issue_id   => issue.id,
-                               :uuid       => 'uuid')
-    else
-      edition_status = 1
-      edition_status = 0 if type_update=='cancel'
-      # 直近の配信で、配信取消されていた場合は、版番号を振りなおす
-      # それ以外は版番号をインクリメント
-      edition_num = edition_mng.status == 0 ? 1 : edition_mng.edition_num+=1
-      edition_mng.update_attributes(:status      => edition_status,
-                                    :edition_num => edition_num)
-    end
-  end
 end
 

@@ -331,9 +331,11 @@ class EvacuationAdvisory < ActiveRecord::Base
   # ==== Raise
   def self.create_commons_issue(project)
     # テンプレートの読み込み
-    file = File.new("#{Rails.root}/plugins/lgdis/files/xml/commons_evacuation.xml")
+#     file = File.new("#{Rails.root}/plugins/lgdis/files/xml/commons_evacuation.xml")
+
     # Xmlドキュメントの生成
-    doc  = REXML::Document.new(file)
+#     doc  = REXML::Document.new(file)
+    doc  = REXML::Document.new
     
     # Projectに紐付く避難勧告･指示を取得しXMLを生成する
     #林版にあわせて以下の行をコメントアウトすべきか
@@ -342,11 +344,11 @@ class EvacuationAdvisory < ActiveRecord::Base
     # 避難人数、避難世帯数の集計値および避難勧告･指示件数の取得
      summary  = evas.select("SUM(head_count) AS head_count_sum, SUM(households) AS households_sum, COUNT(*) AS count").first
     # EvacuationAdvisory要素の取得
-    node_evas = doc.elements["edxlde:EDXLDistribution/commons:contentObject/edxlde:xmlContent/edxlde:embeddedXMLContent/Report/pcx_ev:EvacuationOrder"]
-    
+#     node_evas = doc.elements["edxlde:EDXLDistribution/commons:contentObject/edxlde:xmlContent/edxlde:embeddedXMLContent/Report/pcx_ev:EvacuationOrder"]
+    node_evas = doc.add_element("pcx_ev:EvacuationOrder") 
     node_header = node_evas.add_element("pcx_eb:Disaster")
       node_header.add_element("pcx_eb:DisasterName").add_text("#{project.name}") if project.name.present?  #.add_text("#{summary.}") if summary..present?
-    node_evas.add_element("pcx_ev:ComplementaryInfo"). if evas[0].present? 
+    node_evas.add_element("pcx_ev:ComplementaryInfo") if evas[0].present? 
     #node_evas.add_element("pcx_ev:ComplementaryInfo").add_text("避難勧告･指示一覧") if evas[0].present? 
     # 避難勧告指示の総数
     if summary.head_count_sum.present? || summary.households_sum.present? 
@@ -401,7 +403,6 @@ class EvacuationAdvisory < ActiveRecord::Base
     
     return issue
   end
-
 
 
 
