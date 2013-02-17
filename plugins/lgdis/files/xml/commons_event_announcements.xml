@@ -34,7 +34,7 @@
 
 					<!-- Control 部 -->
 					<Control>
-						<Title>Shelter</Title>
+						<Title>GeneralInformation</Title>
 						<edxlde:distributionStatus></edxlde:distributionStatus>
 						<EditorialOffice>
 							<pcx_eb:OfficeName></pcx_eb:OfficeName>
@@ -52,7 +52,7 @@
 
 					<!-- Head 部 -->
 					<pcx_ib:Head>
-						<pcx_ib:Title></pcx_ib:Title>
+						<pcx_ib:Title>お知らせ</pcx_ib:Title>
 						<pcx_ib:CreateDateTime></pcx_ib:CreateDateTime>
 						<pcx_ib:FirstCreateDateTime></pcx_ib:FirstCreateDateTime>
 						<pcx_ib:ReportDateTime></pcx_ib:ReportDateTime>

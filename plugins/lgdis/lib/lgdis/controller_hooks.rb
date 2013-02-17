@@ -63,6 +63,10 @@ module Lgdis
     # ==== Return
     # ==== Raise
     def deliver_issue(context)
+      # TODO
+      # *号配備番号がパーサより送られてくる為
+      # 紐付くメーリングリストに自動配信する
+
       issue = context[:issue]
 
       # TODO

@@ -1,12 +1,15 @@
 <%= stylesheet_link_tag params[:controller], :plugin => 'lgdis' %>
 <% html_title l(:label_disaster_damage) -%>
 
-<%= form_for @disaster_damage, :url => {:action => :save, :project_id => @project} do |f| %>
+<%= form_for @disaster_damage, :url => {:action => :index, :project_id => @project} do |f| %>
+  <%= hidden_field_tag "commit_kind" %>
   <h2>
     <%= l(:label_disaster_damage) %>
     <span style="float: right;">
       <% if authorize_for(:disaster_damage, :save) # 権限判定 %>
-        <%= f.submit l(:button_save) %>
+        <%= submit_tag l(:button_save), :kind => "save" %>
+        <%= submit_tag l(:button_ticket), :kind => "ticket" %>
+        <%= select_tag :tracker_id, options_for_select(@project.trackers.select {|t| [16, 17, 18].index(t.id)}.collect {|t| [t.name, t.id]}), :prompt => "--- #{l(:text_select_tracker)} ---" %>
       <% end %>
     </span>
   </h2>
@@ -23,4 +26,12 @@
       <% include_calendar_headers_tags %>
     </div>
   </div>
+<% end %>
+<%= javascript_tag do %>
+  // Submitボタン切り替え
+  $(document).ready(function() {
+    $(":submit").bind("click", function() {
+      $("#commit_kind").val($(this).attr("kind"));
+    });
+  });
 <% end %>

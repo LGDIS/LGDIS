@@ -7,6 +7,7 @@ ja:
   button_new: 新規登録
   map: 地図
   description_project_identifier_on_create: システムで自動設定されます
+  text_select_tracker: 登録するチケットのトラッカーを選んでください
   
   activerecord:
     errors:
@@ -345,7 +346,7 @@ ja:
   # GoogleMaps入力
   button_map_show: 地図を表示
   button_map_hide: 地図を隠す
-  label_address: 住所(マップ)
+  button_area_get: エリア取得
 
   # 認証
   external_auth:
