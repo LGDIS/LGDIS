@@ -15,11 +15,41 @@ class DisasterDamageController < ApplicationController
   
   # 災害被害情報（第４号様式）画面
   # 初期表示処理
+  # 押下されたボタンにより処理を分岐
+  # ==== Args
+  # _params[:commit_kind]_ :: ボタン種別
+  # ==== Return
+  # 保存ボタンが押下された場合、画面入力を保存する
+  # チケット登録ボタンが押下された場合、選択されたトラッカーのチケットを登録する
+  # ==== Raise
   # ==== Args
   # ==== Return
   # ==== Raise
   def index
-    @disaster_damage = DisasterDamage.first_or_create
+    case params["commit_kind"]
+    when "save"
+      save
+    when "ticket"
+      ticket
+    else
+      @disaster_damage = DisasterDamage.first_or_initialize
+    end
+  end
+  
+  # 災害被害情報（第４号様式）画面
+  # 保存処理
+  # ==== Args
+  # ==== Return
+  # ==== Raise
+  def save
+    @disaster_damage = DisasterDamage.first_or_initialize
+    @disaster_damage.assign_attributes(params[:disaster_damage])
+    if @disaster_damage.save
+      flash[:notice] = l(:notice_disaster_damage_successful_save)
+      redirect_to :action  => :index
+    else
+      render :action  => :index
+    end
   end
   
   # 災害被害情報（第４号様式）画面
@@ -28,10 +58,11 @@ class DisasterDamageController < ApplicationController
   # ==== Return
   # ==== Raise
   def ticket
-    # 災害被害情報が存在しない場合、処理しない
-    if DisasterDamage.first.present?
+    if params[:tracker_id].blank?
+      flash[:error] = l(:text_select_tracker)
+    elsif DisasterDamage.first.present?
       begin
-        issues = DisasterDamage.create_issues(@project)
+        issues = DisasterDamage.create_issues(@project, params[:tracker_id])
         links = []
         issues.each do |issue|
           links << view_context.link_to("##{issue.id}", issue_path(issue), :title => issue.subject)
@@ -41,25 +72,10 @@ class DisasterDamageController < ApplicationController
         flash[:error] = e.message
       end
     else
+      # 災害被害情報が存在しない場合、処理しない
       flash[:error] = l(:error_not_exists_disaster_damage)
     end
     redirect_to :action => :index
-  end
-  
-  # 災害被害情報（第４号様式）画面
-  # 保存処理
-  # ==== Args
-  # ==== Return
-  # ==== Raise
-  def save
-    @disaster_damage = DisasterDamage.first_or_create
-    @disaster_damage.assign_attributes(params[:disaster_damage], :as => :shelter)
-    if @disaster_damage.save
-      flash[:notice] = l(:notice_disaster_damage_successful_save)
-      redirect_to :action  => :index, :id => @disaster_damage.id
-    else
-      render :action  => :index
-    end
   end
   
   private

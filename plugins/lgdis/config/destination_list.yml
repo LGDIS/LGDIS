@@ -25,6 +25,9 @@ facebook: &facebook
 atom: &atom
   target_num: 6
   name: 災害情報ポータル
+urgent_mail: &urgent_mail
+  target_num: 7
+  name: 緊急速報メール
 
 destination:
   1: # Non member
@@ -35,6 +38,7 @@ destination:
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
+      - <<: *urgent_mail
     4: # JMA（警報・注意報）
       - <<: *commons
       - <<: *smtp
@@ -42,6 +46,7 @@ destination:
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
+      - <<: *urgent_mail
   2: # Anonymous
     1: # 避難勧告指示・指示情報(公共コモンズ配信用)
       - <<: *commons
@@ -50,6 +55,7 @@ destination:
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
+      - <<: *urgent_mail
     4: # JMA（警報・注意報）
       - <<: *commons
       - <<: *smtp
@@ -57,6 +63,7 @@ destination:
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
+      - <<: *urgent_mail
   3: # 管理者(プロトタイプ環境 admin)
     1: # 避難勧告指示・指示情報(公共コモンズ配信用)
       - <<: *commons
@@ -65,6 +72,7 @@ destination:
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
+      - <<: *urgent_mail
     4: # 気象情報（警報・注意報）
       - <<: *commons
       - <<: *smtp
@@ -72,6 +80,7 @@ destination:
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
+      - <<: *urgent_mail
   6: # モデレータ
     1: # 避難勧告指示・指示情報(公共コモンズ配信用)
       - <<: *commons
@@ -80,6 +89,7 @@ destination:
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
+      - <<: *urgent_mail
     4: # JMA（警報・注意報）
       - <<: *commons
       - <<: *smtp
@@ -87,6 +97,7 @@ destination:
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
+      - <<: *urgent_mail
   7: # エリアマネージャ
     1: # 避難勧告指示・指示情報(公共コモンズ配信用)
       - <<: *commons
@@ -95,6 +106,7 @@ destination:
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
+      - <<: *urgent_mail
     4: # JMA（警報・注意報）
       - <<: *commons
       - <<: *smtp
@@ -102,6 +114,7 @@ destination:
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
+      - <<: *urgent_mail
   8: # 市役所内一般入力者
     1: # 避難勧告指示・指示情報(公共コモンズ配信用)
       - <<: *commons
@@ -110,6 +123,7 @@ destination:
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
+      - <<: *urgent_mail
     4: # JMA（警報・注意報）
       - <<: *commons
       - <<: *smtp
@@ -117,6 +131,7 @@ destination:
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
+      - <<: *urgent_mail
   9: # 外部入力者
     1: # 避難勧告指示・指示情報(公共コモンズ配信用)
       - <<: *commons
@@ -125,6 +140,7 @@ destination:
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
+      - <<: *urgent_mail
     4: # JMA（警報・注意報）
       - <<: *commons
       - <<: *smtp
@@ -132,6 +148,7 @@ destination:
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
+      - <<: *urgent_mail
   10: # 閲覧者
     1: # 避難勧告指示・指示情報(公共コモンズ配信用)
       - <<: *commons
@@ -140,6 +157,7 @@ destination:
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
+      - <<: *urgent_mail
     4: # JMA（警報・注意報）
       - <<: *commons
       - <<: *smtp
@@ -147,14 +165,16 @@ destination:
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
+      - <<: *urgent_mail
 
 delivery_job_map:
-  1: SOAP_KJcommonsRequestJob
-  2: SMTP_JichiShokuinRequestJob
-  3: SMTP_AuthRequestJob
+  1: SoapKjCommonsRequestJob
+  2: SmtpJichiShokuinRequestJob
+  3: SmtpAuthRequestJob
   4: TwitterRequestJob
   5: FacebookRequestJob
-  6: Atom_DigiSignageRequestJob
+  6: AtomDigiSignageRequestJob
+  7: SoapKjCommonsRequestJob
 
 destination_name:
   1: 公共情報コモンズ
@@ -163,6 +183,7 @@ destination_name:
   4: Twitter
   5: Facebook
   6: 災害情報ポータル
+  7: 緊急速報メール
 
 create_msg_msd:
   1: create_commons_msg
@@ -171,25 +192,119 @@ create_msg_msd:
   4: create_twitter_msg
   5: create_facebook_msg
   6: create_atom_msg
+  7: create_commons_msg
 
-# TODO
-# 紐付くトラッカー確認必要
 commons_xml:
+  0: commons_urgent_mail.xml                     # 緊急速報メール
   1: commons_evacuation.xml                      # 避難勧告・指示
   2: commons_shelter.xml                         # 避難所情報
-  4: commons_urgent_mail.xml                     # 緊急速報メール
-  16: commons_disaster_response_headquarters.xml # 災害対策本部設置状況
-  168: commons_damage_information.xml            # 路面の被害状況
-  169: commons_damage_information.xml            # 路肩の被害状況
-  170: commons_damage_information.xml            # 法面の被害状況
-  171: commons_damage_information.xml            # 擁壁・護岸の被害状況
-  172: commons_damage_information.xml            # 横断施設の被害状況
-  173: commons_damage_information.xml            # トンネルの被害状況
-  174: commons_damage_information.xml            # 道路附属物の被害状況
-  175: commons_damage_information.xml            # 共同溝の被害状況
-  294: commons_damage_information.xml            # 建築物（庁舎・校舎・体育館・ビル等）の被害状況
-  295: commons_damage_information.xml            # 建築設備（受電・暖房設備・燃料の種類や残量等）の被害状況
-  411: commons_damage_information.xml            # 被害状況
+  7: commons_damage_information.xml              # 人的被害報告
+  8: commons_damage_information.xml              # 住家建物被害報告
+  9: commons_damage_information.xml              # 道路被害報告
+  10: commons_damage_information.xml             # 橋梁被害報告
+  11: commons_damage_information.xml             # 上水道被害報告
+  12: commons_damage_information.xml             # 下水道被害報告
+  13: commons_damage_information.xml             # ガス設備被害報告
+  14: commons_damage_information.xml             # 通信網被害報告
+  15: commons_damage_information.xml             # その他被害報告
+  33: commons_damage_information.xml             # 非住家建物被害報告
+  34: commons_damage_information.xml             # 高等学校被害報告
+  35: commons_damage_information.xml             # 中学校被害報告
+  36: commons_damage_information.xml             # 小学校被害報告
+  37: commons_damage_information.xml             # 幼稚園被害報告
+  38: commons_damage_information.xml             # 保育所被害報告
+  39: commons_damage_information.xml             # 災害弱者関連施設被害報告
+  40: commons_damage_information.xml             # 医療施設被害報告
+  41: commons_damage_information.xml             # 災害重要施設被害報告
+  16: commons_disaster_response_headquarters.xml # 災害対策本部設置報告
+  17: commons_disaster_response_headquarters.xml # 被害要約報告(概況)
+  18: commons_disaster_response_headquarters.xml # 被害要約報告(状況)
+  20: commons_event_announcements.xml            # 道路通行規制に関する情報
+  21: commons_event_announcements.xml            # 道路渋滞に関する情報
+  25: commons_event_announcements.xml            # 道路工事に関する情報
+  27: commons_event_announcements.xml            # 道路路面状況に関する情報
+  42: commons_event_announcements.xml            # 鉄道の運行に関する情報
+  72: commons_event_announcements.xml            # バスの運行に関する情報
+  73: commons_event_announcements.xml            # 航空路の運行に関する情報
+  74: commons_event_announcements.xml            # 船舶路の運行に関する情報
+  75: commons_event_announcements.xml            # その他公共交通の運行に関する情報
+  50: commons_event_announcements.xml            # 電気に関する情報
+  55: commons_event_announcements.xml            # 給水に関する情報
+  43: commons_event_announcements.xml            # 上水道に関する情報
+  44: commons_event_announcements.xml            # 下水道に関する情報
+  45: commons_event_announcements.xml            # ガスに関する情報
+  46: commons_event_announcements.xml            # 通信網に関する情報
+  51: commons_event_announcements.xml            # 臨時災害放送に関する情報
+  52: commons_event_announcements.xml            # 行政手続きに関する情報
+  53: commons_event_announcements.xml            # その他の被災者支援に関する情報
+  54: commons_event_announcements.xml            # 学校・幼稚園・保育所に関する情報
+  56: commons_event_announcements.xml            # 健康・福祉・介護に関する情報
+  57: commons_event_announcements.xml            # 環境に関する情報
+  58: commons_event_announcements.xml            # 防犯に関する情報
+  59: commons_event_announcements.xml            # 医療に関する情報
+  60: commons_event_announcements.xml            # 炊き出し・物資配布に関する情報
+  61: commons_event_announcements.xml            # 入浴サービスに関する情報
+  62: commons_event_announcements.xml            # 安置所に関する情報
+  63: commons_event_announcements.xml            # 災害習得物に関する情報
+  64: commons_event_announcements.xml            # ボランティアの支援を受けたい方への情報
+  65: commons_event_announcements.xml            # ボランティア活動をしたい方への情報
+  66: commons_event_announcements.xml            # 営業店舗に関する情報
+
+tracker_title:
+  0: 緊急速報メール        # 緊急速報メール
+  1: 避難勧告・指示        # 避難勧告・指示
+  2: 避難所情報            # 避難所情報
+  7: 被害状況              # 人的被害報告
+  8: 被害状況              # 住家建物被害報告
+  9: 被害状況              # 道路被害報告
+  10: 被害状況             # 橋梁被害報告
+  11: 被害状況             # 上水道被害報告
+  12: 被害状況             # 下水道被害報告
+  13: 被害状況             # ガス設備被害報告
+  14: 被害状況             # 通信網被害報告
+  15: 被害状況             # その他被害報告
+  33: 被害状況             # 非住家建物被害報告
+  34: 被害状況             # 高等学校被害報告
+  35: 被害状況             # 中学校被害報告
+  36: 被害状況             # 小学校被害報告
+  37: 被害状況             # 幼稚園被害報告
+  38: 被害状況             # 保育所被害報告
+  39: 被害状況             # 災害弱者関連施設被害報告
+  40: 被害状況             # 医療施設被害報告
+  41: 被害状況             # 災害重要施設被害報告
+  16: 災害対策本部設置状況 # 災害対策本部設置報告
+  17: 災害対策本部設置状況 # 被害要約報告(概況)
+  18: 災害対策本部設置状況 # 被害要約報告(状況)
+  20: イベント・お知らせ   # 道路通行規制に関する情報
+  21: イベント・お知らせ   # 道路渋滞に関する情報
+  25: イベント・お知らせ   # 道路工事に関する情報
+  27: イベント・お知らせ   # 道路路面状況に関する情報
+  42: イベント・お知らせ   # 鉄道の運行に関する情報
+  43: イベント・お知らせ   # 上水道に関する情報
+  44: イベント・お知らせ   # 下水道に関する情報
+  45: イベント・お知らせ   # ガスに関する情報
+  46: イベント・お知らせ   # 通信網に関する情報
+  50: イベント・お知らせ   # 電気に関する情報
+  51: イベント・お知らせ   # 臨時災害放送に関する情報
+  52: イベント・お知らせ   # 行政手続きに関する情報
+  53: イベント・お知らせ   # その他の被災者支援に関する情報
+  54: イベント・お知らせ   # 学校・幼稚園・保育所に関する情報
+  55: イベント・お知らせ   # 給水に関する情報
+  56: イベント・お知らせ   # 健康・福祉・介護に関する情報
+  57: イベント・お知らせ   # 環境に関する情報
+  58: イベント・お知らせ   # 防犯に関する情報
+  59: イベント・お知らせ   # 医療に関する情報
+  60: イベント・お知らせ   # 炊き出し・物資配布に関する情報
+  61: イベント・お知らせ   # 入浴サービスに関する情報
+  62: イベント・お知らせ   # 安置所に関する情報
+  63: イベント・お知らせ   # 災害習得物に関する情報
+  64: イベント・お知らせ   # ボランティアの支援を受けたい方への情報
+  65: イベント・お知らせ   # ボランティア活動をしたい方への情報
+  66: イベント・お知らせ   # 営業店舗に関する情報
+  72: イベント・お知らせ   # バスの運行に関する情報
+  73: イベント・お知らせ   # 航空路の運行に関する情報
+  74: イベント・お知らせ   # 船舶路の運行に関する情報
+  75: イベント・お知らせ   # その他公共交通の運行に関する情報
 
 commons_xml_field:
   confidential_message: UNCLASSIFIED AND NOTSENSITIVE # メッセージの機密性
@@ -204,42 +319,6 @@ commons_xml_field:
   pulishing_office: 石巻市                 # 発表部署情報(部署名)
   contact_type: 09012345678                # 発表部署情報(電話番号)
   area_name: 石巻市                        # 事象の起きた場所
-
-# TODO
-# お知らせ、緊急速報メールに紐付くトラッカーID 確認
-# tracker_id に紐付く標題
-tracker_title:
-  1: 避難勧告・指示
-  2: 避難所情報
-  16: 災害対策本部設置状況
-  168: 被害状況 # 路面の被害状況
-  169: 被害状況 # 路肩の被害状況
-  170: 被害状況 # 法面の被害状況
-  171: 被害状況 # 擁壁・護岸の被害状況
-  172: 被害状況 # 横断施設の被害状況
-  173: 被害状況 # トンネルの被害状況
-  174: 被害状況 # 道路附属物の被害状況
-  175: 被害状況 # 共同溝の被害状況
-  294: 被害状況 # 建築物（庁舎・校舎・体育館・ビル等）の被害状況
-  295: 被害状況 # 建築設備（受電・暖房設備・燃料の種類や残量等）の被害状況
-  411: 被害状況 # 被害状況
-
-# tracker_id に紐付くドキュメントID
-tracker_doc_id:
-  1: EvacuationOrder
-  2: Sheler
-  16: AntidisasterHeadquarter
-  168: DamageInformation # 路面の被害状況
-  169: DamageInformation # 路肩の被害状況
-  170: DamageInformation # 法面の被害状況
-  171: DamageInformation # 擁壁・護岸の被害状況
-  172: DamageInformation # 横断施設の被害状況
-  173: DamageInformation # トンネルの被害状況
-  174: DamageInformation # 道路附属物の被害状況
-  175: DamageInformation # 共同溝の被害状況
-  294: DamageInformation # 建築物（庁舎・校舎・体育館・ビル等）の被害状況
-  295: DamageInformation # 建築設備（受電・暖房設備・燃料の種類や残量等）の被害状況
-  411: DamageInformation # 被害状況
 
 status:
   request: 配信要求中
@@ -266,7 +345,7 @@ test_prj:
 # 公共情報コモンズ配信用XML(edxlde:distributionStatus)
 
 # 公共情報コモンズへの発信
- # NOTE: 
+ # NOTE:
  # endpoint below have to point to a URL 
  # where COMMONS web server process is running on.
  # In other word, IP address of non-router (including virtualizer router).
@@ -294,7 +373,6 @@ mailing_list:
 # machicomi_mail: apl@localhost.localdomain
   local_government_officer_mail: unistandard@gmail.com
   machicomi_mail: unistandard@gmail.com
-                  # mamoru@carrot.co.jp
 
 mail_server:
   local_government_server: 127.0.0.1

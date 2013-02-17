@@ -20,9 +20,7 @@ RedmineApp::Application.routes.draw do
     resources :evacuation_advisories, :except => [:show, :index]
 
   # 災害被害情報（第４号様式）機能
-    match '/disaster_damage/ticket' => 'disaster_damage#ticket',  :via => :get
-    match '/disaster_damage'        => 'disaster_damage#save',    :via => [:put,:post]
-    match '/disaster_damage'        => 'disaster_damage#index',   :via => :get
+    match '/disaster_damage'        => 'disaster_damage#index',   :via => [:get,:post,:put]
 
   end
   resources :deliver_issues do
