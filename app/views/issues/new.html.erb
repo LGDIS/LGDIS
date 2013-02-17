@@ -1,15 +1,3 @@
-<%= javascript_tag do %>
-//submit前にカスタムフィールド(3連項目)を連結
-function beforeSubmit() {
-  var obj;
-  <% cf_values = @issue.editable_custom_field_values.select{|cf| cf.custom_field.field_format=='address'} %>
-  <% cf_values.each do |cf_value| %>
-    <% cf_field_id = "issue_custom_field_values_#{cf_value.custom_field.id}" %>
-    obj = $("#<%= cf_field_id %>");
-    obj.val($("#<%= cf_field_id %>0").val() + "/" + $("#<%= cf_field_id %>1").val() + "/" + $("#<%= cf_field_id %>2").val());
-  <% end %>
-}
-<% end %>
 <h2><%=l(:label_issue_new)%></h2>
 
 <%= call_hook(:view_issues_new_top, {:issue => @issue}) %>
@@ -53,8 +41,8 @@ function beforeSubmit() {
     <% end %>
   </div>
 
-  <%= submit_tag l(:button_create), :onclick=> 'beforeSubmit();' %>
-  <%= submit_tag l(:button_create_and_continue), :name => 'continue', :onclick=> 'beforeSubmit();' %>
+  <%= submit_tag l(:button_create) %>
+  <%= submit_tag l(:button_create_and_continue), :name => 'continue' %>
   <%= preview_link preview_new_issue_path(:project_id => @project), 'issue-form' %>
 
   <%= javascript_tag "$('#issue_subject').focus();" %>

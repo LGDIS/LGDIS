@@ -43,7 +43,6 @@ Redmine::CustomFieldFormat.map do |fields|
   fields.register 'bool', :label => :label_boolean
   fields.register 'user', :only => %w(Issue TimeEntry Version Project), :edit_as => 'list'
   fields.register 'version', :only => %w(Issue TimeEntry Version Project), :edit_as => 'list'
-  fields.register 'address', :order => 5
 end
 
 # Permissions

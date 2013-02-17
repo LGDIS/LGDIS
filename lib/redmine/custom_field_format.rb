@@ -44,7 +44,7 @@ module Redmine
       l(value == "1" ? :general_text_Yes : :general_text_No)
     end
 
-    ['string','text','int','float','list','address'].each do |name|
+    ['string','text','int','float','list'].each do |name|
       define_method("format_as_#{name}") {|value|
         return value
       }
