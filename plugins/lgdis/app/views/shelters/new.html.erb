@@ -6,7 +6,7 @@
     <%= l(:label_shelter_new) %>
     <span style="float: right;">
       <%= f.submit l(:button_save) %>
-      <input type="button" value="<%= l(:button_back) %>" onclick="history.back()">
+      <input type="button" value="<%= l(:button_back) %>" onclick="window.location='<%= url_for :action => :index, :project_id => @project %>';">
     </span>
   </h2>
 
