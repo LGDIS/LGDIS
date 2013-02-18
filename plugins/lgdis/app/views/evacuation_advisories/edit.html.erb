@@ -11,7 +11,7 @@
       <% if authorize_for(:evacuation_advisories, :destroy) # 権限判定 %>
         <input type="button" value="<%= l(:button_delete) %>" onclick="if (window.confirm('<%= l(:text_evacuation_advisory_destroy_confirmation) %>')) window.location='<%= url_for :action => :destroy, :id => @evacuation_advisory, :project_id => @project %>'; return false;">
       <% end %>
-      <input type="button" value="<%= l(:button_back) %>" onclick="history.back()">
+      <input type="button" value="<%= l(:button_back) %>" onclick="window.location='<%= url_for :action => :index, :project_id => @project %>';">
     </span>
   </h2>
 

@@ -12,7 +12,7 @@ class TwitterRequestJob
   # ==== Return
   # _status_ :: 戻り値
   # ==== Raise
-  def self.perform(msg, test_flg, issue, delivery_history)
+  def self.perform(msg, test_flg, issue, delivery_history=nil)
     o = IfCommon.new
     begin
       str= "##################################### Twitter-WORKER がよばれました\n"

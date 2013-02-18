@@ -17,16 +17,16 @@ class SheltersController < ApplicationController
   # 避難所一覧検索画面
   # 初期表示処理
   # 押下されたボタンにより処理を分岐
+  # * 検索ボタンが押下された場合、検索条件を元に検索を行い結果を表示する
+  # * クリアボタンが押下された場合、検索条件が未指定の状態で検索を行い結果を表示する
+  # * 新規登録ボタンが押下された場合、避難所登録画面に遷移する
+  # * 更新ボタンが押下された場合、避難所情報の一括更新を行う
+  # * チケット登録ボタンが押下された場合、全ての避難所情報をXML化しチケットに登録する
+  # * 集計ボタンが押下された場合、LGDPMから避難者集計情報を取得し避難所情報に登録する
   # ==== Args
-  # _params[:search]_ :: 検索条件
-  # _params[:commit_kind]_ :: ボタン種別
+  # _search_ :: 検索条件
+  # _commit_kind_ :: ボタン種別
   # ==== Return
-  # 検索ボタンが押下された場合、検索条件を元に検索を行い結果を表示する
-  # クリアボタンが押下された場合、検索条件が未指定の状態で検索を行い結果を表示する
-  # 新規登録ボタンが押下された場合、避難所登録画面に遷移する
-  # 更新ボタンが押下された場合、避難所情報の一括更新を行う
-  # チケット登録ボタンが押下された場合、全ての避難所情報をXML化しチケットに登録する
-  # 集計ボタンが押下された場合、LGDPMから避難者集計情報を取得し避難所情報に登録する
   # ==== Raise
   def index
     case params["commit_kind"]
@@ -56,7 +56,7 @@ class SheltersController < ApplicationController
   # 避難所一覧検索画面
   # ステータス更新処理
   # ==== Args
-  # _params[:shelters]_ :: 避難所更新情報配列
+  # _shelters_ :: 避難所更新情報配列
   # ==== Return
   # ==== Raise
   def bulk_update
@@ -68,12 +68,7 @@ class SheltersController < ApplicationController
         Shelter.skip_callback(:save, :after, :execute_release_all_data)
         ActiveRecord::Base.transaction do
           @shelters.each do |shelter|
-            shelter.shelter_sort = params[:shelters]["#{shelter.id}"]["shelter_sort"]
-            shelter.opened_date  = params[:shelters]["#{shelter.id}"]["opened_date"]
-            shelter.opened_hm    = params[:shelters]["#{shelter.id}"]["opened_hm"]
-            shelter.closed_date  = params[:shelters]["#{shelter.id}"]["closed_date"]
-            shelter.closed_hm    = params[:shelters]["#{shelter.id}"]["closed_hm"]
-            shelter.status       = params[:shelters]["#{shelter.id}"]["status"]
+            shelter.assign_attributes(params[:shelters]["#{shelter.id}"], :as => :shelter)
             shelter.save
           end
           Shelter.release_all_data
@@ -96,7 +91,7 @@ class SheltersController < ApplicationController
   # ==== Raise
   def ticket
     # 避難所情報が存在しない場合、処理しない
-    if Shelter.all.present?
+    if Shelter.limit(1).present?
       begin
         issues = Shelter.create_issues(@project)
         links = []
@@ -131,11 +126,23 @@ class SheltersController < ApplicationController
       # ユーザ認証の設定
       req1.set_form_data({'user[login]'=>SETTINGS["lgdpm"]["login"], 'user[password]'=>SETTINGS["lgdpm"]["password"]}, ';')
       res1 = http.request(req1)
+      case res1
+      when Net::HTTPSuccess, Net::HTTPRedirection
+        # OK
+      else
+        res1.value
+      end
       # 認証情報をCookieから取得
       res1.get_fields('Set-Cookie').each{|str| k,v = str[0...str.index(';')].split('='); cookie[k] = v}
       # 避難者情報取得
       req2 = Net::HTTP::Get.new(SETTINGS["lgdpm"]["index_path"], {'Cookie'=>cookie.map{|k,v| "#{k}=#{v}"}.join(';')})
       res2 = http.request(req2)
+      case res2
+      when Net::HTTPSuccess, Net::HTTPRedirection
+        # OK
+      else
+        res2.value
+      end
       # 取得した結果をパース
       result = JSON.parse(res2.body)
     }
@@ -178,6 +185,11 @@ class SheltersController < ApplicationController
       Shelter.set_callback(:save, :after, :execute_release_all_data)
     end
     
+  rescue Errno::ECONNREFUSED
+    flash[:error] = l(:error_connection_refused)
+  rescue Net::HTTPServerException => e
+    flash[:error] = e.message
+  ensure
     redirect_to :action => :index
   end
   

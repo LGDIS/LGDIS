@@ -12,12 +12,16 @@ class Shelter < ActiveRecord::Base
                   :manager_another_name,:reported_date, :reported_hm,:building_damage_info,
                   :electric_infra_damage_info,:communication_infra_damage_info,
                   :other_damage_info,:usable_flag,:openable_flag,:note,
+                  :head_count, :households,:injury_count, :upper_care_level_three_count,
+                  :elderly_alone_count, :elderly_couple_count, :bedridden_elderly_count,
+                  :elderly_dementia_count, :rehabilitation_certificate_count, :physical_disability_certificate_count,
+                  :created_by, :updated_by,
                   :as => :shelter
   
   attr_accessible :head_count,:households,:injury_count,:upper_care_level_three_count,
                   :elderly_alone_count,:elderly_couple_count,:bedridden_elderly_count,
                   :elderly_dementia_count,:rehabilitation_certificate_count,
-                  :physical_disability_certificate_count,
+                  :physical_disability_certificate_count, :updated_by,
                   :as => :count
   
   # 正の整数チェック用オプションハッシュ値
@@ -129,6 +133,10 @@ class Shelter < ActiveRecord::Base
                 :numericality => POSITIVE_INTEGER
   validates :note,
                 :length => {:maximum => 4000}
+  validates :created_by,
+                :length => {:maximum => 255}
+  validates :updated_by,
+                :length => {:maximum => 255}
   
   before_create :number_shelter_code, :if => Proc.new { |shelter| shelter.shelter_code.nil? }
   after_save :execute_release_all_data
