@@ -19,6 +19,7 @@
   <tbody>
     <% shelters.each do |shelter| %>
       <tr class="<%= cycle("even", "odd") -%>">
+        <%= hidden_field_tag "shelters[#{shelter.id}][updated_by]", User.current.login %>
         <td style="text-align: center;">
           <a href=<%= edit_project_shelter_path(@project, shelter) %> >
             <%= shelter.shelter_code %>
@@ -52,7 +53,7 @@
           <%= select_tag "shelters[#{shelter.id}][status]", options_for_select(@shelter_const["status"].invert,
             shelter.status), {:include_blank => true, :disabled => @disabled} %>
         </td>
-        <td style="text-align: center;">登録者</td>
+        <td style="text-align: center;"><%= shelter.created_by %></td>
         <td style="text-align: center;"><%= shelter.created_at.strftime("%y/%m/%d") %></td>
       </tr>
     <% end if shelters.present? %>

@@ -12,6 +12,7 @@
 
   <div class="box tabular">
     <div id="all_attributes">
+      <%= f.hidden_field :created_by, :value => User.current.login %>
       <%= render :partial => 'form', :locals => {:f => f} %>
     </div>
   </div>

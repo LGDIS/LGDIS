@@ -86,13 +86,11 @@
   </div>
 </div>
 
-<hr>
-
 <div class="splitcontent">
   <div class="splitcontentleft">
     <%= field_for :head_count do |key, label| %>
       <%= label_tag{label} %>
-      <%= f.object.send key %>
+      <%= f.text_field key,:size=>'10',:disabled => @disabled %>
     <% end %>
     
     <%= field_for :head_count_voluntary do |key, label| %>
@@ -110,7 +108,7 @@
   <div class="splitcontentright">
     <%= field_for :households do |key, label| %>
       <%= label_tag{label} %>
-      <%= f.object.send key %>
+      <%= f.text_field key,:size=>'10',:disabled => @disabled %>
     <% end %>
     
     <%= field_for :households_voluntary do |key, label| %>
@@ -119,6 +117,8 @@
     <% end %>
   </div>
 </div>
+
+<hr>
 
 <div class="splitcontent">
   <div class="split3contentleft">
@@ -177,17 +177,17 @@
   
   <%= field_for :injury_count do |key, label| %>
     <%= label_tag{label} %>
-    <%= f.object.send key %>
+    <%= f.text_field key,:size=>'10',:disabled => @disabled %>
   <% end %>
   
   <%= field_for :elderly_couple_count do |key, label| %>
     <%= label_tag{label} %>
-    <%= f.object.send key %>
+    <%= f.text_field key,:size=>'10',:disabled => @disabled %>
   <% end %>
   
   <%= field_for :rehabilitation_certificate_count do |key, label| %>
     <%= label_tag{label} %>
-    <%= f.object.send key %>
+    <%= f.text_field key,:size=>'10',:disabled => @disabled %>
   <% end %>
 </div>
 
@@ -199,17 +199,17 @@
   
   <%= field_for :upper_care_level_three_count do |key, label| %>
     <%= label_tag{label} %>
-    <%= f.object.send key %>
+    <%= f.text_field key,:size=>'10',:disabled => @disabled %>
   <% end %>
   
   <%= field_for :bedridden_elderly_count do |key, label| %>
     <%= label_tag{label} %>
-    <%= f.object.send key %>
+    <%= f.text_field key,:size=>'10',:disabled => @disabled %>
   <% end %>
   
   <%= field_for :physical_disability_certificate_count do |key, label| %>
     <%= label_tag{label} %>
-    <%= f.object.send key %>
+    <%= f.text_field key,:size=>'10',:disabled => @disabled %>
   <% end %>
 </div>
 
@@ -218,12 +218,12 @@
   
   <%= field_for :elderly_alone_count do |key, label| %>
     <%= label_tag{label} %>
-    <%= f.object.send key %>
+    <%= f.text_field key,:size=>'10',:disabled => @disabled %>
   <% end %>
   
   <%= field_for :elderly_dementia_count do |key, label| %>
     <%= label_tag{label} %>
-    <%= f.object.send key %>
+    <%= f.text_field key,:size=>'10',:disabled => @disabled %>
   <% end %>
 </div>
 
