@@ -70,11 +70,14 @@ class CommonsClient
     namespace_uri = @namespace_uri
     
     #Savon property でSSHオプションをつけたい｡
-    debugger
     client = Savon.client do
       wsdl wsdl_uri
       endpoint endpoint_uri
       namespace namespace_uri
+#       ssl_verify_mode :none 
+#       ssl_ca_cert_file "/root/work/ruby-1.9.3-p194/test/rubygems/ca_cert.pem"
+#       ssl_cert_key_file "/root/work/ruby-1.9.3-p194/test/rubygems/data/gem-private_key.pem"
+#       ssl_cert_file "/root/work/ruby-1.9.3-p194/test/rubygems/data/gem-private_key.pem"
     end
 
     doc = create_soap_document(data)
