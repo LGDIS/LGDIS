@@ -1,15 +1,27 @@
 # -*- coding:utf-8 -*-
-class OmniauthCallbacksController < ApplicationController
-  # 認可
+class OmniauthCallbacksController < AccountController
+
+  # CSRF警告メッセージを抑制
+  skip_before_filter :verify_authenticity_token
+
+  # 認可結果(OK)コールバックアクション
   # ==== Args
   # ==== Return
   # ==== Raise
   def auth
-    send(params[:provider].to_s.to_sym)
+    begin
+      send(params[:provider].to_s.to_sym)
+    rescue Lgdis::UserPatch::ClassMethods::InvalidAuthProvider, Lgdis::UserPatch::ClassMethods::ExternalAuthDisabled
+      redirect_to signin_path
+    end
   end
 
+  # 認可結果(NG)コールバックアクション
+  # ==== Args
+  # ==== Return
+  # ==== Raise
   def error
-    render_404
+    redirect_to signin_path
   end
 
   private
@@ -19,8 +31,8 @@ class OmniauthCallbacksController < ApplicationController
   # ==== Return
   # ==== Raise
   def google
-    @user = User.find_for_open_id(request.env["omniauth.auth"])
-    redirect_to_result('google')
+    user = User.find_for_open_id(request.env["omniauth.auth"])
+    redirect_to_result(user)
   end
 
   # Twitterによる認可結果リダイレクトアクション
@@ -28,8 +40,8 @@ class OmniauthCallbacksController < ApplicationController
   # ==== Return
   # ==== Raise
   def twitter
-    @user = User.find_for_oauth(request.env["omniauth.auth"])
-    redirect_to_result('twitter')
+    user = User.find_for_oauth(request.env["omniauth.auth"])
+    redirect_to_result(user)
   end
 
   # facebookによる認可結果リダイレクトアクション
@@ -37,25 +49,37 @@ class OmniauthCallbacksController < ApplicationController
   # ==== Return
   # ==== Raise
   def facebook
-    @user = User.find_for_oauth(request.env["omniauth.auth"])
-    redirect_to_result('facebook')
+    user = User.find_for_oauth(request.env["omniauth.auth"])
+    redirect_to_result(user)
   end
 
-  # 共通リダイレクト処理
+  # 共通ログイン・リダイレクト処理
   # ==== Args
-  # _provider_ :: 認可プロバイダ名(String)
+  # _user_ :: ログインユーザ(User)
   # ==== Return
   # ==== Raise
-  def redirect_to_result(provider)
-    if @user && @user.persisted?
-      @user.update_attribute(:last_login_on, Time.now)
-      self.logged_user = @user
-      logger.info "Successful authentication for '#{@user.login}' from #{request.remote_ip} via #{provider} at #{Time.now.utc}"
-      flash[:notice] =  I18n.t "external_auth.result.success", :kind => provider
-      redirect_back_or_default :controller => 'my', :action => 'page'
+  def redirect_to_result(user)
+    if user.new_record?
+      user.admin = false
+      user.random_password
+      user.register
+      # Automatic activation
+      user.activate
+      user.last_login_on = Time.now
+      if user.save(:validate => false)
+        self.logged_user = user
+        flash[:notice] = I18n.t("external_auth.result.success", :kind => user.provider)
+        redirect_to :controller => 'my', :action => 'account'
+      else
+        flash[:error] = I18n.t("external_auth.result.failure", :kind => user.provider)
+        error
+        return
+      end
     else
-      session["devise.#{provider}_data"] = request.env["omniauth.auth"]
-      redirect_to :action => :index
+      session["devise.#{user.provider}_data"] = request.env["omniauth.auth"]
+      successful_authentication(user)
+      flash[:notice] =  I18n.t("external_auth.result.success", :kind => user.provider)
     end
+    logger.info "Successful authentication for '#{user.login}' from #{request.remote_ip} via #{user.provider} at #{Time.now.utc}"
   end
 end
