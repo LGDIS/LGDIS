@@ -138,6 +138,12 @@ module Lgdis
         # Xmlドキュメントの生成
         doc  = REXML::Document.new(file)
 
+        # XML Body 部作成
+        # XML 生成時に名前空間を明示的に指定しないとエラーとなる為準備
+        start_element = DST_LIST['commons_xml_field']['namespace_start_tag']
+        end_element   = DST_LIST['commons_xml_field']['namespace_end_tag']
+        xml_body = start_element + self.xml_body + end_element
+
         # tracker_id に紐付く標題を設定
         title  = DST_LIST['tracker_title'][self.tracker_id]
 
@@ -209,7 +215,7 @@ module Lgdis
         doc.elements["//pcx_ib:Areas/pcx_ib:Area/commons:areaName"].add_text(DST_LIST['custom_field_delivery']['area_name'])
 
         # Body 部
-        doc.elements["//pcx_ib:Head"].next_sibling = REXML::Document.new self.xml_body
+        doc.elements["//pcx_ib:Head"].next_sibling = REXML::Document.new xml_body
 
         # Edxl 部要素追加
         doc.elements["//commons:publishingOfficeName"].add_text(DST_LIST['custom_field_delivery']['pulishing_office'])
