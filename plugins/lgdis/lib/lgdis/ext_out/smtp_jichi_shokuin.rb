@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 # 認証なしSMTP送信プログラムwrapper
-class Lgdis::ExtOut::SMTP_JichiShokuin  < ActiveRecord::Base
+class Lgdis::ExtOut::SmtpJichiShokuin  < ActiveRecord::Base
   # 認証なしSMTP送信プログラムwrapper
   # ==== Args
   # _msg_ :: 送信先､表題､メッセージ本文を含んだハッシュ(=連想配列)
@@ -27,9 +27,12 @@ class Lgdis::ExtOut::SMTP_JichiShokuin  < ActiveRecord::Base
       Rails.logger.error("#{e.backtrace.join("\n")}" + "\n" + \
                          "#{o.create_log_time(msg,modulename)}")
       status = false
+      # エラー時のメール配信 -> if_common.rbのメソッドを呼び出す
+      o.mail_when_delivery_fails
     ensure
-      #アーカイブログ出力　
+      #アーカイブログ出力　  -> if_common.rbのメソッドを呼び出す
       o.leave_log(msg)
+      print "\n"
       return status 
     end
   end

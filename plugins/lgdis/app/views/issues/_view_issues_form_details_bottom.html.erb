@@ -18,23 +18,29 @@
   <%= stylesheet_link_tag 'issue', :plugin => 'lgdis' %>
 <% end %>
 <%= javascript_tag do %>
-  // GoogleMaps
   $(function(){
-    <% cf_values = issue.editable_custom_field_values.select{|cf| cf.custom_field.field_format=='address'} %>
-    <% cf_values.each do |cf_value|
-        cf_field_id = "issue_custom_field_values_#{cf_value.custom_field.id}" %>
-    $("#<%= cf_field_id %>2").after("\
-      <span id='<%= cf_field_id %>_map_show_link'>\
-        <a href='#' onclick=\"toggleClickableMap('<%= cf_field_id %>_map','<%= cf_field_id %>0'); return false;\">\
-          <img class=\"ui-datepicker-trigger\" src=\"/plugin_assets/lgdis/images/gmap.png\" alt=\"<%= l(:button_map_show) %>\">\
-        </a>\
-      </span>\
-      <span id='<%= cf_field_id %>_map_hide_link' style='display: none'>\
-        <a href='#' onclick=\"clearMap('<%= cf_field_id %>_map'); return false;\">\
-          <img class=\"ui-datepicker-trigger\" src=\"/images/cancel.png\" alt=\"<%= l(:button_map_hide) %>\">\
-        </a>\
-      </span>\
-      <div id='<%= cf_field_id %>_map' class='input_map' style='display: none'></div>\
+    // input support by google-maps for 3 areas
+    <% CF_ADDRESS.each do |cf_value|
+       cf_value[0,3].zip(['dai','tyu','syo']).each do |fid, type|
+         fid_map = "#{fid}_map"
+         fid_text = "issue_custom_field_values_#{fid}"
+    %>
+    $("#<%= fid_text %>").after("\
+       <span id=\"<%= fid_map %>_show_link\">\
+         <img class=\"ui-datepicker-trigger\" src=\"/plugin_assets/lgdis/images/gmap.png\" alt=\"<%= l(:button_map_show) %>\" onclick=\"showMap('<%= fid_map %>','issue_custom_field_values_<%= cf_value[0] %>','issue_custom_field_values_<%= cf_value[1] %>','issue_custom_field_values_<%= cf_value[2] %>', '<%= type %>'); return false;\">\
+       </span>\
+       <span id=\"<%= fid_map %>_hide_link\" style=\"display: none\">\
+         <img class=\"ui-datepicker-trigger\" src=\"/images/cancel.png\" alt=\"<%= l(:button_map_hide) %>\" onclick=\"clearMap('<%= fid_map %>'); return false;\">\
+       </span>\
+       <div id=\"<%= fid_map %>\" class=\"input_map\" style=\"display: none\"></div>\
+    ");
+    <% end -%>
+    // convert address to area
+    <% fid_text = "issue_custom_field_values_#{cf_value[3]}" %>
+    $("#<%= fid_text %>").after("\
+       <span>\
+         <img class=\"ui-datepicker-trigger\" src=\"/plugin_assets/lgdis/images/gmap.png\" alt=\"<%= l(:button_area_get) %>\" onclick=\"getArea('<%= fid_text %>','issue_custom_field_values_<%= cf_value[0] %>', 'issue_custom_field_values_<%= cf_value[1] %>','issue_custom_field_values_<%= cf_value[2] %>'); return false;\">\
+       </span>\
     ");
     <% end -%>
   });
@@ -82,45 +88,70 @@
 				for (var j = 0; j < response.getReasons().length; j++) {
 					console.log(" "+response.getReasons()[j]);
 				}
-				console.log("-----");
 			}
 		});
 	}
 
-	// connection
+	// Google Fusion TablesからLatLngに該当するエリアデータ取得＆画面セット
+	// latlng: 入力文字から取得した座標 ※必須
+	// dai_id, tyu_id, syo_id: 各プルダウンのエレメントID ※必須
+	function get_gft_address(latlng, dai_id, tyu_id, syo_id) {
+		var query_string = 'SELECT area_dai,area_tyu,area_syo FROM '+GOOGLE_FT_KEY+' WHERE ST_INTERSECTS(kml, CIRCLE(LATLNG('+latlng.lat()+','+latlng.lng()+'),1.0))';
+		var uri_string = 'http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent(query_string);
+		var query = new google.visualization.Query(uri_string);
+		query.send(function(response) {
+			if (!response.isError()) {
+				var result_count = response.getDataTable().getNumberOfRows();
+				if (result_count > 0) {
+					var result = response.getDataTable();
+					$("#"+dai_id).val(result.getValue(0, 0));
+					$("#"+tyu_id).val(result.getValue(0, 1));
+					$("#"+syo_id).val(result.getValue(0, 2));
+				} else {
+					console.log("ERROR: no row(s) found.");
+				}
+			} else {
+				console.log("ERROR:");
+				console.log(response.getMessage());
+				console.log(" "+response.getDetailedMessage());
+				for (var j = 0; j < response.getReasons().length; j++) {
+					console.log(" "+response.getReasons()[j]);
+				}
+			}
+		});
+	}
+
 	google.load('visualization', '1');
+	// connection
 	<% CF_CONNECT.each do |connections| %>
     <% area1, area2, area3 = connections %>
     <% area1_text = CustomValue.find_by_custom_field_id_and_customized_type_and_customized_id(area1, "Issue", issue.id).try(:value) %>
     <% area2_text = CustomValue.find_by_custom_field_id_and_customized_type_and_customized_id(area2, "Issue", issue.id).try(:value) %>
     <% area3_text = CustomValue.find_by_custom_field_id_and_customized_type_and_customized_id(area3, "Issue", issue.id).try(:value) %>
+	// Google Fusion Tablesで絞り込み入力補助(大分類)
 	function get_connection_data() {
-		var select;
 		var dai_id = "#issue_custom_field_values_<%= area1 %>"
 		var tyu_id = "#issue_custom_field_values_<%= area2 %>"
 		var syo_id = "#issue_custom_field_values_<%= area3 %>"
 		// ---dai
-		select = $(dai_id);
 		get_gft(0, '<%= area1_text %>', dai_id, tyu_id, syo_id);
-		select.change(reselect2);
+		$(dai_id).change(reselect2);
 	}
+	// Google Fusion Tablesで絞り込み入力補助(中分類)
 	function reselect2() {
-		var select;
 		var dai_id = "#issue_custom_field_values_<%= area1 %>"
 		var tyu_id = "#issue_custom_field_values_<%= area2 %>"
 		var syo_id = "#issue_custom_field_values_<%= area3 %>"
 		// ---tyu
-		select = $(tyu_id);
 		get_gft(1, '<%= area2_text %>', dai_id, tyu_id, syo_id, $(dai_id).val());
-		select.change(reselect3);
+		$(tyu_id).change(reselect3);
 	}
+	// Google Fusion Tablesで絞り込み入力補助(小分類)
 	function reselect3() {
-		var select;
 		var dai_id = "#issue_custom_field_values_<%= area1 %>"
 		var tyu_id = "#issue_custom_field_values_<%= area2 %>"
 		var syo_id = "#issue_custom_field_values_<%= area3 %>"
 		// ---syo
-		select = $(syo_id);
 		get_gft(2, '<%= area3_text %>', dai_id, tyu_id, syo_id, $(dai_id).val(), $(tyu_id).val());
 	}
 	<% end # end of CF_CONNECT.each %>

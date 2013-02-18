@@ -346,7 +346,7 @@ ja:
   # GoogleMaps入力
   button_map_show: 地図を表示
   button_map_hide: 地図を隠す
-  label_address: 住所(マップ)
+  button_area_get: エリア取得
 
   # 認証
   external_auth:

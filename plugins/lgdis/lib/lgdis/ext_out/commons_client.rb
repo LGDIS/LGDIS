@@ -69,6 +69,8 @@ class CommonsClient
     endpoint_uri = @endpoint_uri
     namespace_uri = @namespace_uri
     
+    #Savon property でSSHオプションをつけたい｡
+    debugger
     client = Savon.client do
       wsdl wsdl_uri
       endpoint endpoint_uri

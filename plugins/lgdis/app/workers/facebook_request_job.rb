@@ -11,7 +11,8 @@ class FacebookRequestJob
   # ==== Return
   # _status_ :: 戻り値
   # ==== Raise
-  def self.perform(msg, test_flg, issue)
+  def self.perform(msg, test_flg, issue, delivery_history=nil)
+    o = IfCommon.new
     begin
       str= "##################################### Facebook-WORKER がよばれました\n"
       Rails.logger.info("{#{str}");print("#{str}")
@@ -19,7 +20,13 @@ class FacebookRequestJob
     rescue => e
       Rails.logger.error("#{e.backtrace.join("\n")}\n")
       status = false
+      # エラー時のメール配信 -> if_common.rbのメソッドを呼び出す
+      o.mail_when_delivery_fails
     ensure
+      #アーカイブログ出力　  -> if_common.rbのメソッドを呼び出す
+      o.leave_log(msg); print "\n"
+      o.register_edition(issue) if status != false
+      o.feedback_to_issue_screen(msg, issue, delivery_history, status)
       return status
     end
   end

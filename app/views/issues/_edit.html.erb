@@ -1,15 +1,3 @@
-<%= javascript_tag do %>
-//submit前にカスタムフィールド(3連項目)を連結
-function beforeSubmit() {
-  var obj;
-  <% cf_values = @issue.editable_custom_field_values.select{|cf| cf.custom_field.field_format=='address'} %>
-  <% cf_values.each do |cf_value| %>
-    <% cf_field_id = "issue_custom_field_values_#{cf_value.custom_field.id}" %>
-    obj = $("#<%= cf_field_id %>");
-    obj.val($("#<%= cf_field_id %>0").val() + "/" + $("#<%= cf_field_id %>1").val() + "/" + $("#<%= cf_field_id %>2").val());
-  <% end %>
-}
-<% end %>
 <%= labelled_form_for @issue, :html => {:id => 'issue-form', :multipart => true} do |f| %>
     <%= error_messages_for 'issue', 'time_entry' %>
     <%= render :partial => 'conflict' if @conflict %>
@@ -56,7 +44,7 @@ function beforeSubmit() {
 
     <%= f.hidden_field :lock_version %>
     <%= hidden_field_tag 'last_journal_id', params[:last_journal_id] || @issue.last_journal_id %>
-    <%= submit_tag l(:button_submit), :onclick=> 'beforeSubmit();' %>
+    <%= submit_tag l(:button_submit) %>
     <%= preview_link preview_edit_issue_path(:project_id => @project, :id => @issue), 'issue-form' %>
 <% end %>
 
