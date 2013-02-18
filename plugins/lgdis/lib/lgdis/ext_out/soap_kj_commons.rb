@@ -29,19 +29,19 @@ class Lgdis::ExtOut::SoapKjCommons  < ActiveRecord::Base
       if test_flg.blank?
         if DST_LIST['commons_user'].present?
           endpoint=DST_LIST['commons_endpoint']
-          usename, password = [DST_LIST['commons_user'], DST_LIST['commons_pw']]
+          username, password = [DST_LIST['commons_user'], DST_LIST['commons_pw']]
           wsdl = DST_LIST['commons_wsdl']
           namespace = DST_LIST['commons_namespace']
         else
           endpoint="http://***.***.***.***/commons/subscriber/soap/testservice.example.com/"
-          usename, password = ['user1@example.com','password']
+          username, password = ['user1@example.com','password']
           pwd="#{Redmine::Plugin.registered_plugins[:lgdis].directory}/lib/lgdis/ext_out"
           wsdl = "#{pwd}/wsdl/MQService.wsdl"
           namespace = 'http://soap.publiccommons.ne.jp/'
         end
 
         client = CommonsClient.new( wsdl, endpoint, namespace)
-        client.set_auth(usename, password)
+        client.set_auth(username, password)
         status = client.send(msg)
       end
       #TODO: アーカイブ出力に関して、課題検討中? 現在はlogger で対応
