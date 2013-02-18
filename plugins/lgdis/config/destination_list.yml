@@ -352,9 +352,9 @@ test_prj:
  # where COMMONS web server process is running on.
  # In other word, IP address of non-router (including virtualizer router).
 #ie
-commons_endpoint: http://192.168.43.186/commons/subscriber/soap/testservice.example.com/
+# commons_endpoint: http://192.168.43.186/commons/subscriber/soap/testservice.example.com/
 # sha
-# commons_endpoint: http://192.168.11.7/commons/subscriber/soap/testservice.example.com/
+commons_endpoint: http://192.168.11.7/commons/subscriber/soap/testservice.example.com/
 commons_user: user1@example.com
 commons_pw: password
 commons_wsdl: /opt/fix/LGDIS/plugins/lgdis/lib/lgdis/ext_out/wsdl/MQService.wsdl
