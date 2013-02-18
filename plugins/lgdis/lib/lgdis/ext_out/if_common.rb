@@ -80,7 +80,7 @@ class IfCommon
   # ==== Raise
   def feedback_to_issue_screen(msg, issue, delivery_history=nil, status)
     tgt  = DST_LIST['destination_name'][delivery_history.delivery_place_id].to_s
-    dhid = delivery_history.id
+    dhid = delivery_history.presents? ? "No. " + delivery_history.id.to_s : ""
     notes = ""
 
     case msg
@@ -97,7 +97,7 @@ class IfCommon
         notes = notes.to_s.to_datetime.strftime("%Y/年%m月%d日 %H時%M分%S秒の")
       end
     end
-    notes += "配信要求No.#{dhid} #{tgt}むけの結果は"
+    notes += "配信要求#{dhid} #{tgt}むけの結果は"
     notes += (status != false) ? "正常でした" : "エラーでした"
     notes += notessuffix.to_s
     current_journal =  Journal.find_by_sql(
