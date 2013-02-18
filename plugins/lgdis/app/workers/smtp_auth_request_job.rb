@@ -11,7 +11,7 @@ class SmtpAuthRequestJob
   # ==== Return
   # _status_ :: 正常終了はMail::Message クラス､異常終了はfalseを返す｡
   # ==== Raise
-  def self.perform(msg, test_flg, issue, delivery_history)
+  def self.perform(msg, test_flg, issue, delivery_history=nil)
     o = IfCommon.new
     begin
       str= "##################################### SMTP-AUTH-WORKER がよばれました\n"
