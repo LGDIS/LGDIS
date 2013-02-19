@@ -58,9 +58,9 @@ class CommonsClient
     @password = password
   end
 
-  # 処理内容
+  # SOAP形式メッセージを送信する
   # ==== Args
-  # __ :: 
+  # _data_ :: 
   # ==== Return
   # __ ::
   # ==== Raise
@@ -74,10 +74,20 @@ class CommonsClient
       wsdl wsdl_uri
       endpoint endpoint_uri
       namespace namespace_uri
-#       ssl_verify_mode :none 
-#       ssl_ca_cert_file "/root/work/ruby-1.9.3-p194/test/rubygems/ca_cert.pem"
-#       ssl_cert_key_file "/root/work/ruby-1.9.3-p194/test/rubygems/data/gem-private_key.pem"
-#       ssl_cert_file "/root/work/ruby-1.9.3-p194/test/rubygems/data/gem-private_key.pem"
+      #クライアントに配置した認証局証明書ファイルの場所 
+      #片側認証方式ではこれがあればよい
+      if endpoint_uri =~ /https/ 
+        if $0 == "script/rails"
+          # Rails/Redmineから呼ばれた場合は設定ファイルの証明書を読む
+          ssl_ca_cert_file DST_LIST['commons_ssl_ca_cert']
+        else
+          ssl_ca_cert_file "/opt/fix/SOAPdev/etc/pki/CA/cacert.pem"
+        end
+      end
+      #以下2行はカギ情報伝送方式(例:X509認証)で必要になる
+      #公開･プライベートカギ情報へのファイルパス･
+        #ssl_cert_file "
+        #ssl_cert_key_file "
     end
 
     doc = create_soap_document(data)
@@ -126,7 +136,7 @@ p doc.to_s
     wssePassword = Base64.encode64(Digest::SHA1.digest(Base64.decode64(wsse_nonce) + wsse_created + @password)).chomp
     # security
     security_element = REXML::Element.new WS_SECURITY_PREFIX + ':Security'
-    security_element.add_attribute ENV_PREFIX + ':mustUnderstand', '1'
+#     security_element.add_attribute ENV_PREFIX + ':mustUnderstand', '1'
     security_element.add_namespace WS_SECURITY_PREFIX, WSE_NAMESPACE_URI
 
     # usernameToken
