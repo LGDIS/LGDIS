@@ -10,12 +10,12 @@ class AtomDigiSignageRequestJob
   # ==== Return
   # _status_ :: 戻り値
   # ==== Raise
-  def self.perform(msg_hash, test_flg, issue, delivery_history=nil)
+  def self.perform(msg, test_flg, issue, delivery_history=nil, draft_flg=true)
     o = IfCommon.new
     begin
       str= "##################################### 災害情報ポータルWORKER がよばれました\n"
       Rails.logger.info("{#{str}");print("#{str}")
-      status = Lgdis::ExtOut::AtomDigiSignage.send_message(msg_hash, test_flg)
+      status = Lgdis::ExtOut::AtomDigiSignage.send_message(msg, test_flg,draft_flg)
     rescue => e
       Rails.logger.error("#{e.backtrace.join("\n")}\n")
       status = false
