@@ -327,6 +327,7 @@ status:
   done: 配信完了
   reject: 配信却下
   failed: 配信失敗
+  runtime: 配信中
 
 # 配信内容にあたるカスタムフィールドID
 custom_field_delivery:
