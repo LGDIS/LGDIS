@@ -92,10 +92,29 @@ module Lgdis
           points = set_points(issue_geographies)
           lines  = set_lines(issue_geographies)
           polygons = set_polygons(issue_geographies)
+          locations = set_locations(issue_geographies)
         end
+        @locations = locations
         @points   = points
         @lines    = lines.blank? ? [] : lines
         @polygons = polygons.blank? ? [] : polygons
+      end
+
+      # google map 表示用のチケット地理データ(地名)を返却します
+      # ==== Args
+      # ==== Return
+      # ==== Raise
+      def set_locations(issue_geographies)
+        locations=[]
+        issue_geographies.each do |geo|
+          unless geo.location.blank?
+            hash = {}
+            hash.store('location', geo.location)
+            hash.store('remarks', geo.remarks)
+            locations.push hash
+          end
+        end
+        return locations
       end
 
       # google map 表示用のチケット地理データ(位置座標)を返却します
