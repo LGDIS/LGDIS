@@ -84,6 +84,7 @@ class CommonsClient
     response = client.call(:publish) do 
       xml doc
     end
+    return true
   end
 
 private

@@ -233,11 +233,9 @@ class EvacuationAdvisory < ActiveRecord::Base
     doc << REXML::XMLDecl.new('1.0', 'UTF-8')
     doc.add_element("_避難勧告･指示") # Root
     
-    # 避難所を取得しXMLを生成する
-#     evacuation_advisories = EvacuationAdvisory.all
-    #Projectに紐付く避難勧告･指示を取得しXMLを生成する
-    evacuation_advisories = EvacuationAdvisory.where(:project_id => project.id)
-    
+    #避難勧告･指示を取得しXMLを生成する
+#   evacuation_advisories = EvacuationAdvisory.where(:project_id => project.id)
+    evacuation_advisories = EvacuationAdvisory.all
     evacuation_advisories.each do |eva|
       node_eva = doc.root.add_element("_避難勧告･指示情報")
       

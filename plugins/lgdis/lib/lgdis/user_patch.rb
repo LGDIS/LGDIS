@@ -15,68 +15,54 @@ module Lgdis
       TWITTER_IDENTIFIER = 'twitter'
       FACEBOOK_IDENTIFIER = 'facebook'
 
-      # create user authorized by google
+      class InvalidAuthProvider < StandardError; end
+      class ExternalAuthDisabled < StandardError; end
+
+      # OpenIDで認可されたユーザを取得する
       # ==== Args
       # _access_token_ :: openidアクセストークン
       # _signed_in_resource_ :: RESERVED
       # ==== Return
-      # Userオブジェクト
+      # Userオブジェクト ※新規ユーザの場合は未save
       # ==== Raise
-      # RuntimeError :: プラグイン設定で機能が無効化されているとき、想定しないプロバイダによる認可のとき
+      # InvalidAuthProvider :: 想定しないプロバイダによる認可のとき
+      # ExternalAuthDisabled :: プラグイン設定で機能が無効化されているとき
       def find_for_open_id(access_token, signed_in_resource=nil)
-        raise "illegal authorizer: #{access_token.provider}" unless access_token.provider == 'google'
+        raise InvalidAuthProvider, "illegal authorizer: #{access_token.provider}" unless access_token.provider == 'google'
         if !(Setting.plugin_lgdis.present? && Setting.plugin_lgdis[:enable_external_auth])
-          raise "currently disabled sign-in via #{access_token.provider}"
+          raise ExternalAuthDisabled, "currently disabled sign-in via #{access_token.provider}"
         end
-        loginid = access_token.info['email']
-        uid = access_token.uid
-        return authorized_user(loginid, uid, GOOGLE_IDENTIFIER)
+        user = self.find_or_initialize_by_provider_and_uid(GOOGLE_IDENTIFIER, access_token.uid)
+        user.login = access_token.info['email']
+        return user
       end
 
-      # create user authorized by twitter/facebook
+      # OAuthで認可されたユーザを取得する
       # ==== Args
       # _access_token_ :: oauthアクセストークン
       # _signed_in_resource_ :: RESERVED
       # ==== Return
-      # Userオブジェクト
+      # Userオブジェクト ※新規ユーザの場合は未save
       # ==== Raise
-      # RuntimeError :: プラグイン設定で機能が無効化されているとき、想定しないプロバイダによる認可のとき
+      # InvalidAuthProvider :: 想定しないプロバイダによる認可のとき
+      # ExternalAuthDisabled :: プラグイン設定で機能が無効化されているとき
       def find_for_oauth(access_token, signed_in_resource=nil)
         if !(Setting.plugin_lgdis.present? && Setting.plugin_lgdis[:enable_external_auth])
-          raise "currently disabled sign-in via #{access_token.provider}"
+          raise ExternalAuthDisabled, "currently disabled sign-in via #{access_token.provider}"
         end
         case access_token.provider
         when 'twitter'
-          return authorized_user("@" + access_token.info.nickname, access_token.uid, TWITTER_IDENTIFIER)
+          user = self.find_or_initialize_by_provider_and_uid(TWITTER_IDENTIFIER, access_token.uid)
+          user.login = "@" + access_token.info.nickname
+          return user
         when 'facebook'
-          return authorized_user(access_token.info.name, access_token.uid, FACEBOOK_IDENTIFIER)
+          user = self.find_or_initialize_by_provider_and_uid(FACEBOOK_IDENTIFIER, access_token.uid)
+          user.login = access_token.info.name
+          return user
         end
-        raise "illegal authorizer: #{access_token.provider}"
+        raise InvalidAuthProvider, "illegal authorizer: #{access_token.provider}"
       end
 
-      private
-
-      # 認可されたユーザを取得する(存在しなければ新規登録もする)
-      # ==== Args
-      # _loginid_ :: ログインユーザID(String) ※"@user"や"Yamada Kazuo"などのユーザ名
-      # _uid_ :: ログインユーザ識別子(String)
-      # _provider_ :: 認可プロバイダ名(String)
-      # ==== Return
-      # Userオブジェクト
-      # ==== Raise
-      def authorized_user(loginid, uid, provider)
-        user = User.where(:provider => provider, :uid => uid).first
-        unless user
-          user = User.new(:language => Setting.default_language, :mail_notification => Setting.default_notification_option)
-          user.provider = provider
-          user.uid = uid
-          user.login = loginid
-          user.admin = false
-          user.password, user.password_confirmation = [nil, nil]
-          user.save!(:validate => false)
-        end
-        return user
-      end
     end
 
     module InstanceMethods

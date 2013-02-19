@@ -171,22 +171,6 @@ class EvacuationAdvisoriesController < ApplicationController
           # 対象世帯数
           evacuation_advisory.households = r["households"]
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
           evacuation_advisory.save!
         end if result.present?
         EvacuationAdvisory.release_all_data
@@ -194,9 +178,20 @@ class EvacuationAdvisoriesController < ApplicationController
     ensure
       EvacuationAdvisory.set_callback(:save, :after, :execute_release_all_data)
     end
-
+  rescue Errno::ECONNREFUSED
+    flash[:error] = l(:error_connection_refused)
+  rescue Net::HTTPServerException => e
+    flash[:error] = e.message
+  ensure
     redirect_to :action => :index
   end
+
+
+
+
+
+
+
   
   # 避難勧告･指示登録・更新画面
   # 初期表示処理（新規登録）
