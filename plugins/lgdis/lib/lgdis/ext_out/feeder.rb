@@ -92,8 +92,9 @@ class SetupXML
   # _options _ :: Redmineチケット｡省略可能｡
   # ==== Return
   # ==== Raise
-  def self.arrange_and_put(options = nil, tmpl_path = nil)
-    if options.nil?
+  def self.arrange_and_put(issue = nil, tmpl_path = nil, draft_flg=true)
+
+    if issue.nil?
       xml = SetupXML.get("#{Dir.pwd}/georss1_0.tmpl", :mime_type => "application/rss+xml")
     else
       xml = SetupXML.get("#{Rails.root.to_s}/plugins/lgdis/lib/lgdis/ext_out/georss1_0.tmpl", :mime_type => "application/rss+xml")
@@ -103,7 +104,7 @@ class SetupXML
     #TODO 注:UUIDはversion 1 [時刻とノードをベースにした一意値]を生成,centOS依存
     xml.uuid        = `uuidgen`.chomp
 
-    if options.nil?
+    if issue.nil?
       xml.title       = "Simple-geoRSS1.0(ATOM)のテスト"
       xml.subtitle    = "ref: http://georss.org/simple"
       xml.author      = "Dr. Thaddeus Remor"
@@ -128,7 +129,7 @@ class SetupXML
       outfile = "/opt/LGDIS/public/atom/#{time}-geoatom.rdf"
     else
 
-      issue           = options
+      issue           = issue
       xml.title       = "#{issue.project.name}"
       xml.subtitle    = "ref: http://georss.org/simple"
       xml.author      = issue.author.name
@@ -168,11 +169,16 @@ class SetupXML
          :description => issue.description.to_s[0,140] ,
          :geoinfo   => strbuf
       } ]
-      outfile = "#{Rails.root.to_s}/public/atom/#{time}-geoatom.rdf"
+
+      if draft_flg
+        outfile = "#{Rails.root.to_s}/plugins/lgdis/lib/lgdis/ext_out/tmp"
+      else
+        outfile = "#{Rails.root.to_s}/public/atom/#{time}-geoatom.rdf"
+      end
+
     end
 
     #simple-geoRSS(ATOM)ファイル出力　
-#     outfile = "#{Rails.root.to_s}/public/atom/#{time}-geoatom.rdf"
     stdout_old = $stdout.dup 
     open(outfile, "w+b") do |f|
       $stdout.reopen(f)
@@ -180,9 +186,13 @@ class SetupXML
     end
     $stdout.flush;$stdout.reopen stdout_old 
 
-    #simple-geoRSS(ATOM) コンソール出力　
-    xml.show #if options.nil?
-
+    if draft_flg
+      xml = REXML::Document.new(File.new(outfile))
+      puts xml.to_s
+    else
+      #simple-geoRSS(ATOM) 画面出力　
+      xml.show #if issue.nil?
+    end
     return xml
 
   end
