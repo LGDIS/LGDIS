@@ -4,6 +4,7 @@
 #  スクリプトとしてつかうばあいは ruby feeder.rb
 #  Railsコンソールから呼ぶ場合は､RedmineのIssueオブジェクトを引数にして以下の様に呼び出す;
 #    例: SetupXML.arrange_and_put(Issue.all[1])
+#    正常終了時の戻り値は: showメソッドで標準出力にgeoRSSを出力するだけのクラス
 #  ref:/#{Rails.root}/app/views/journals/index.builder
 
 #Simple-geoATOM テンプレートファイル "*.tmpl"のメタタグ記法
@@ -170,11 +171,6 @@ class SetupXML
       outfile = "#{Rails.root.to_s}/public/atom/#{time}-geoatom.rdf"
     end
 
-    #simple-geoRSS(ATOM) コンソール出力　
-    xml.show #if options.nil?
-debugger
-    return xml
-
     #simple-geoRSS(ATOM)ファイル出力　
 #     outfile = "#{Rails.root.to_s}/public/atom/#{time}-geoatom.rdf"
     stdout_old = $stdout.dup 
@@ -183,6 +179,11 @@ debugger
       xml.show
     end
     $stdout.flush;$stdout.reopen stdout_old 
+
+    #simple-geoRSS(ATOM) コンソール出力　
+    xml.show #if options.nil?
+
+    return xml
 
   end
 
