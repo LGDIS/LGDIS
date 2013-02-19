@@ -9,7 +9,7 @@ class DeliveryHistoriesController < ApplicationController
   # ==== Return
   # ==== Raise
   def index
-    @delivery_histories = DeliveryHistory.find(:all)
+    @delivery_histories = DeliveryHistory.find_by_project_id(@project.id)
   end
 
   private
