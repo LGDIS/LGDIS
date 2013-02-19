@@ -9,12 +9,6 @@ require 'soap/rpc/driver'
 require 'soap/wsdlDriver'
 require 'savon'
 
-# 処理内容
-# ==== Args
-# __ :: 
-# ==== Return
-# __ ::
-# ==== Raise
 class CommonsClient
   # soap element prefixes(namespaces)
   ENV_PREFIX = 'S'                # prefix for soap envelope
@@ -37,9 +31,10 @@ class CommonsClient
 
   # 処理内容
   # ==== Args
-  # __ :: 
+  # _wdsl_ :: 
+  # _endpoint_ :: 
+  # _namespace_ :: 
   # ==== Return
-  # __ ::
   # ==== Raise
   def initialize(wsdl, endpoint, namespace)
     @wsdl_uri = wsdl
@@ -49,9 +44,9 @@ class CommonsClient
 
   # 処理内容
   # ==== Args
-  # __ :: 
+  # _username_ :: 
+  # __essword_ :: 
   # ==== Return
-  # __ ::
   # ==== Raise
   def set_auth(username, password)
     @username = username
@@ -62,7 +57,6 @@ class CommonsClient
   # ==== Args
   # _data_ :: 
   # ==== Return
-  # __ ::
   # ==== Raise
   def send(data)
     wsdl_uri = @wsdl_uri
@@ -100,9 +94,8 @@ class CommonsClient
 private
   # 処理内容
   # ==== Args
-  # __ :: 
+  # _data_ :: 
   # ==== Return
-  # __ ::
   # ==== Raise
   def create_soap_document(data)
     doc = REXML::Document.new
@@ -125,9 +118,7 @@ p doc.to_s
 
   # 処理内容
   # ==== Args
-  # __ :: 
   # ==== Return
-  # __ ::
   # ==== Raise
   def create_wsse_header
     wsse_username = @username
@@ -173,9 +164,7 @@ p doc.to_s
 
   # 処理内容
   # ==== Args
-  # __ :: 
   # ==== Return
-  # __ ::
   # ==== Raise
   def create_soap_header
     # soap header
@@ -186,9 +175,8 @@ p doc.to_s
 
   # 処理内容
   # ==== Args
-  # __ :: 
+  # _data_ :: 
   # ==== Return
-  # __ ::
   # ==== Raise
   def create_soap_body(data)
     # soap body
