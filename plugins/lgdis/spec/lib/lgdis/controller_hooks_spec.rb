@@ -70,7 +70,6 @@ describe Lgdis::ControllerHooks do
       it "return xml_head_reportdatetime, xml_head_title" do
         return_name = @hooks.__send__(:new_project_name, @issue)
         return_name.should == "02/02/2013 09:12 pm xml_head_title"
-        p return_name
       end
     end
     describe "issue.xml_head_reportdatetime not present, issue.xml_head_title present " do
@@ -84,7 +83,6 @@ describe Lgdis::ControllerHooks do
       it "return xml_head_title only" do
         return_name = @hooks.__send__(:new_project_name, @issue)
         return_name.should == "xml_head_title"
-        p return_name
       end
     end
     describe "issue.xml_head_reportdatetime not present, issue.xml_head_title not present " do
@@ -98,7 +96,6 @@ describe Lgdis::ControllerHooks do
       it "call create_project" do
         return_name = @hooks.__send__(:new_project_name, @issue)
         return_name.should == "02/03/2013 10:13 pm"
-        p return_name
       end
     end
   end
