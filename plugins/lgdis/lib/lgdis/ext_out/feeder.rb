@@ -159,10 +159,9 @@ class SetupXML
       #descriptionはtwitterにあわせて140文字制限｡今は単純に説明文だけを出力している
       
       web_fqdn = Socket.gethostbyname(Socket.gethostname).first.to_s
-
+#     :url       => "http://#{web_fqdn}/issues/#{issue.id}",
       xml.items = [ {
          :title     => "#{issue.tracker.name} ##{issue.id}: #{issue.subject}",
-         :url       => "http://#{web_fqdn}/issues/#{issue.id}",
          :uuid      => `uuidgen`.chomp,
          :date      => time,
          :description => issue.description.to_s[0,140] ,
@@ -171,16 +170,19 @@ class SetupXML
       outfile = "#{Rails.root.to_s}/public/atom/#{time}-geoatom.rdf"
     end
 
+    #simple-geoRSS(ATOM) コンソール出力　
+    xml.show #if options.nil?
+debugger
+    return xml
+
     #simple-geoRSS(ATOM)ファイル出力　
+#     outfile = "#{Rails.root.to_s}/public/atom/#{time}-geoatom.rdf"
     stdout_old = $stdout.dup 
     open(outfile, "w+b") do |f|
       $stdout.reopen(f)
       xml.show
     end
     $stdout.flush;$stdout.reopen stdout_old 
-
-    #simple-geoRSS(ATOM) コンソール出力　
-    xml.show #if options.nil?
 
   end
 
