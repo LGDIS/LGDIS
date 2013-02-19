@@ -1,54 +1,133 @@
 <fieldset class="collapsible collapsed">
   <legend onclick="toggleFieldset(this);"><%= l(:ext_out_field) %></legend>
-  <div>
-    <nobr>
-      <p><strong><label><%= l(:delivery_place) %>:</label></strong></p>
-      <%= form_tag("/deliver_issues/request_delivery") do %>
+  <%= form_tag("/deliver_issues/request_delivery") do %>
+    <div>
+      <nobr>
+        <p><strong><label><%= l(:delivery_place) %>:</label></strong></p>
         <%= hidden_field_tag :issue_id, @issue.id %>
         <%= hidden_field_tag :current_user, User.current %>
         <%= hidden_field_tag :project_id, @project.identifier %>
 
         <% unless @destination_list.blank? %>
           <% @destination_list.each do |dest|%>
-              <%= check_box_tag "ext_out_target[]", dest['target_num'] %><label><%= dest['name'] %></label>
+            <%= check_box_tag "ext_out_target[]", dest['target_num'] %><label><%= dest['name'] %></label>
           <% end %>
-          <%= submit_tag l(:permission_request_delivery) %>
         <% end %>
-      <% end %>
+    </div>
 
-      <p><strong><label><%= l(:delivery_status) %>:</label></strong></p>
-      <% if check_permissions(@issue) %>
-        <% unless @delivery_histories.blank? %>
-          <% @delivery_histories.each do | d_h | %>
-              <div class="table_border">
-              <label><%= tm_fmt(d_h.process_date) %></label>
-              <label style="position:absolute; left:240px;">
-                <%= DST_LIST['destination_name'][d_h.delivery_place_id] %>
-              </label>
-              <label style="position:absolute; left:450px;"><%= DST_LIST['status'][d_h.status] %></label>
-              <% if d_h.status == 'request' || d_h.status == 'failed' %>
-              <label style="position:absolute; left:580px;">
-                <%= link_to "配信確認", {:controller => "deliver_issues",
-                                         :action => "index",
-                                         :project_id => @project,
-                                         :issue => @issue,
-                                         :delivery_history_id=>d_h.id} %>
-              </label>
-              <% end %>
-              </div>
+    <p><strong><label><%= l(:control_plane_settings) %>:</label></strong></p>
+    <div class="search_condition tabular">
+      <div class="splitcontent">
+        <div class="splitcontentleft">
+          <p>
+            <label>情報のタイトル</label>
+            <%= text_field_tag 'issue[mail_subject]',@issue.mail_subject %>
+          </p>
+
+          <p>
+            <label>情報の見出し要約文</label>
+            <%= text_area_tag 'issue[summary]', @issue.summary, {:size => "20x5"} %>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="search_condition tabular">
+      <div class="splitcontent">
+        <div class="splitcontentleft">
+          <p>
+            <label>情報の更新種別</label>
+            <%= select_tag 'issue[type_update]', ' ' %>
+          </p>
+        </div>
+        <div class="splitcontentright">
+          <p>
+            <label>取消の説明文</label>
+            <%= text_area_tag 'issue[description_cancel]', @issue.description_cancel, {:size => "20x5"} %>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="search_condition tabular">
+      <div class="splitcontent">
+        <div class="splitcontentleft">
+          <p>
+            <label>情報の発表日時</label>
+            <%= text_field_tag "issue_published_at", @issue.published_at, :size=>'10' %><%= calendar_for("issue_published_at") %>
+            <%= text_field_tag "issue_published_at_time", '', :size=>'10' %>
+          </p>
+        </div>
+        <div class="splitcontentright">
+          <p>
+            <label>情報の配信対象地域</label>
+            <%= select_tag 'issue[delivered_area]', '' %>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="search_condition tabular">
+      <div class="splitcontent">
+        <div class="splitcontentleft">
+          <p>
+            <label>情報の公開開始日時</label>
+            <%= text_field_tag "issue_opened_at", @issue.opened_at, :size=>'10' %><%= calendar_for("issue_opened_at") %>
+            <%= text_field_tag "issue_opened_at_time", @issue.opened_at, :size=>'10' %>
+          </p>
+        </div>
+        <div class="splitcontentright">
+          <p>
+            <label>情報の公開終了日時</label>
+            <%= text_field_tag "issue_closed_at", @issue.closed_at, :size=>'10' %><%= calendar_for("issue_closed_at") %>
+            <%= text_field_tag "issue_closed_at_time", @issue.closed_at, :size=>'10' %>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="search_condition tabular">
+      <div class="splitcontent">
+        <div class="splitcontentleft">
+          <%= submit_tag l(:permission_request_delivery) %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+
+  <p><strong><label><%= l(:delivery_status) %>:</label></strong></p>
+  <% if check_permissions(@issue) %>
+    <% unless @delivery_histories.blank? %>
+      <% @delivery_histories.each do | d_h | %>
+          <div class="table_border">
+          <label><%= tm_fmt(d_h.process_date) %></label>
+          <label style="position:absolute; left:240px;">
+            <%= DST_LIST['destination_name'][d_h.delivery_place_id] %>
+          </label>
+          <label style="position:absolute; left:450px;"><%= DST_LIST['status'][d_h.status] %></label>
+          <% if d_h.status == 'request' || d_h.status == 'failed' %>
+          <label style="position:absolute; left:580px;">
+            <%= link_to "配信確認", {:controller => "deliver_issues",
+                                     :action => "index",
+                                     :project_id => @project,
+                                     :issue => @issue,
+                                     :delivery_history_id=>d_h.id} %>
+          </label>
           <% end %>
-        <% end %>
-      <% else %>
-        <% unless @delivery_history.blank? %>
-          <% @delivery_history.each do | d_h | %>
-            <p class="table_border">
-              <%= tm_fmt(d_h.process_date) %>
-              <%= DST_LIST['destination_name'][d_h.delivery_place_id] %>
-              <%= DST_LIST['status'][d_h.status] %>
-            </p>
-          <% end %>
-        <% end %>
+          </div>
       <% end %>
+    <% end %>
+  <% else %>
+    <% unless @delivery_history.blank? %>
+      <% @delivery_history.each do | d_h | %>
+        <p class="table_border">
+          <%= tm_fmt(d_h.process_date) %>
+          <%= DST_LIST['destination_name'][d_h.delivery_place_id] %>
+          <%= DST_LIST['status'][d_h.status] %>
+        </p>
+      <% end %>
+    <% end %>
+  <% end %>
 <%
 =begin
          render :partial => 'issues/request_delivery_form',
@@ -60,6 +139,5 @@
 =end
 %>
     </nobr>
-  </div>
 </fieldset>
 <hr />
