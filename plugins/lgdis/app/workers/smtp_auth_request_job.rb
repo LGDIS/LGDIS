@@ -25,6 +25,8 @@ class SmtpAuthRequestJob
       # エラー時のメール配信 -> if_common.rbのメソッドを呼び出す
       o.mail_when_delivery_fails
     ensure
+      # 配信ステータスの更新
+      delivery_history.update_attributes(:status => (status == false ? 'failed' : 'done'))
       #アーカイブログ出力　  -> if_common.rbのメソッドを呼び出す
       o.leave_log(msg); print "\n"
       o.register_edition(issue) if status != false

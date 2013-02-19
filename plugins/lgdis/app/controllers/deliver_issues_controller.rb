@@ -62,7 +62,7 @@ class DeliverIssuesController < ApplicationController
   def allow_delivery
     begin
       id       = params[:id].to_i
-      status   = params[:allow].blank? ? 'reject' : 'done'
+      status   = params[:allow].blank? ? 'reject' : 'runtime'
       issue_id = params[:issue_id].to_i
 
       delivery_history = DeliveryHistory.find_by_id(id)
@@ -77,7 +77,7 @@ class DeliverIssuesController < ApplicationController
       test_flag = DST_LIST['test_prj'][issue.project_id]
 
       if status != 'reject'
-        Resque.enqueue(eval(DST_LIST['delivery_job_map'][delivery_history.delivery_place_id]), summary, test_flag, issue)
+        Resque.enqueue(eval(DST_LIST['delivery_job_map'][delivery_history.delivery_place_id]), summary, test_flag, issue, delivery_history)
 
         # アーカイブの為、チケットに登録
         msg = summary['message'].blank? ? summary : summary['message']
