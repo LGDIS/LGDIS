@@ -10,6 +10,7 @@ module Lgdis
       base.class_eval do
         unloadable
         before_filter :build_new_issue_geography_from_params, :only => [:create]
+        before_filter :init, :only => [:show]
         before_filter :get_delivery_histories, :only => [:show]
         before_filter :get_destination_list, :only => [:show]
         before_filter :set_issue_geography_data, :only => [:show]
@@ -22,6 +23,14 @@ module Lgdis
 
     module InstanceMethods
       private
+
+      # 共通初期処理
+      # ==== Args
+      # ==== Return
+      # ==== Raise
+      def init
+        @issue_const = Constant::hash_for_table(Issue.table_name)
+      end
 
       # リクエストパラメータから、登録用のチケット地理データを構築します
       # ==== Args

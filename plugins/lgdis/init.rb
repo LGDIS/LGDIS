@@ -15,6 +15,8 @@ SETTINGS = YAML.load_file("#{Rails.root}/plugins/lgdis/config/settings.yml")["#{
 CF_CONNECT = YAML.load_file("#{Rails.root}/plugins/lgdis/config/custom_field_connection.yml")["custom_field_connection"]
 CF_ADDRESS = YAML.load_file("#{Rails.root}/plugins/lgdis/config/custom_field_connection.yml")["custom_field_address"]
 
+require_dependency 'lgdis/acts_as_customizable_patch'
+require_dependency 'lgdis/custom_field_patch'
 require_dependency 'lgdis/project_patch'
 require_dependency 'lgdis/user_patch'
 require_dependency 'lgdis/issue_patch'

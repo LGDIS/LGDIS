@@ -91,3 +91,14 @@ Constant.create(kind1: 'TD', kind2: 'disaster_damages', kind3: 'municipal_antidi
 Constant.create(kind1: 'TD', kind2: 'disaster_damages', kind3: 'municipal_antidisaster_headquarter_status', text: '解散', value: '1', _order: '1')
 Constant.create(kind1: 'TD', kind2: 'disaster_damages', kind3: 'municipal_antidisaster_headquarter_status', text: '設置', value: '2', _order: '2')
 
+# コントロールプレーン部
+# 情報の更新種別
+Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'type_update', text: '新規', value: '1', _order: '1')
+Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'type_update', text: '更新', value: '2', _order: '2')
+Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'type_update', text: '取消', value: '3', _order: '3')
+# TODO
+# seed とするかcache とするか確認
+# 情報の配信対象地域(仮想データ)
+Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'delivered_area', text: '石巻市', value: '1', _order: '1')
+Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'delivered_area', text: '仙台市', value: '2', _order: '2')
+

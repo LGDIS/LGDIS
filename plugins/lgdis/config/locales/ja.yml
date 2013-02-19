@@ -8,13 +8,12 @@ ja:
   map: 地図
   description_project_identifier_on_create: システムで自動設定されます
   text_select_tracker: 登録するチケットのトラッカーを選んでください
+  text_custom_field_default_value_multiple_info: '初期値が複数の場合は、1行に1個ずつ記述してください。'
   
   activerecord:
     errors:
       messages:
         not_an_integer: は整数で入力してください
-  
-  field_is_default_all_selected: デフォルト全選択
   
   ####
   # 課題管理機能
@@ -149,6 +148,7 @@ ja:
   ext_out_field: 外部出力
   delivery_place: 配信先
   delivery_status: 配信状況
+  control_plane_settings: コントロールプレーン部 設定内容
   commons: 公共情報コモンズ
   machicomi: まちcomi
   twitter: Twitter

@@ -26,7 +26,7 @@
   <div class="splitcontentright">
     <%= field_for :name do |key, label| %>
       <%= label_tag{label} %>
-      <%= select_tag key,'' %>
+      <%= f.text_field "#{key}_like", :value => @search.name_like %>
     <% end %>
     
     <%= field_for :openable_flag do |key, label| %>
