@@ -80,7 +80,7 @@ class IfCommon
   # ==== Raise
   def feedback_to_issue_screen(msg, issue, delivery_history=nil, status)
     tgt  = DST_LIST['destination_name'][delivery_history.delivery_place_id].to_s
-    dhid = delivery_history.presents? ? "No. " + delivery_history.id.to_s : ""
+    dhid = delivery_history.nil? ? "" : "No. " + delivery_history.id.to_s
     notes = ""
 
     case msg
@@ -89,10 +89,6 @@ class IfCommon
     when NIL
     else
       if msg.elements["//edxlde:dateTimeSent"].present?
-        #コモンズ向けREXML::Doc型msgの難点:
-        #チケット作成後､初回配信要求処理のときはmsg.elements["//edxlde:dateTimeSent"]
-        #が存在しているが､その直後にIssues#init_journalで初期化すると
-        #XMLがきえるため､dateTimeSentも きえ､取得できない｡
         notes = msg.elements["//edxlde:dateTimeSent"].text 
         notes = notes.to_s.to_datetime.strftime("%Y/年%m月%d日 %H時%M分%S秒の")
       end
@@ -104,14 +100,7 @@ class IfCommon
       "select * from journals where journalized_id = #{issue.id} 
       and notes like '%#{dhid}%#{tgt}%' limit 1"
     )
-    if current_journal.size == 0
-      current_journal = Journal.new(:journalized => issue, :user => User.current, :notes => notes)
-      current_journal.save
-    else
-      current_journal[0].update_attributes(:notes => notes)
-      current_journal[0].save
-    end
-#     journal  = issue.init_journal(User.current, msg )
+    return issue.init_journal(User.current, notes )
   end
 
   # 文書改版管理処理｡取り消しされた場合はDocumentID(=UUID)を発番し

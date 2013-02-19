@@ -43,6 +43,8 @@ class Shelters < ActiveRecord::Migration
       t.integer    :physical_disability_certificate_count
       t.string     :note, :limit => 4000
       t.timestamp  :deleted_at
+      t.string     :created_by
+      t.string     :updated_by
       t.timestamps
     end
     
@@ -88,6 +90,8 @@ class Shelters < ActiveRecord::Migration
     set_column_comment(:shelters, :physical_disability_certificate_count, "身体障害者手帳所持者_計")
     set_column_comment(:shelters, :note, "備考")
     set_column_comment(:shelters, :deleted_at, "削除日時")
+    set_column_comment(:shelters, :created_by, "登録者")
+    set_column_comment(:shelters, :updated_by, "更新者")
     set_column_comment(:shelters, :created_at, "登録日時")
     set_column_comment(:shelters, :updated_at, "更新日時")
   end
