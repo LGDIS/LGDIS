@@ -10,6 +10,7 @@ module Lgdis
       base.class_eval do
         unloadable
         serialize :default_value  # 初期値をシリアライズ化して格納
+        alias_method_chain :validate_field_value, :connect
       end
     end
     
@@ -50,6 +51,17 @@ module Lgdis
         else
           super(arg)
         end
+      end
+
+      # カスタムフィールドのバリデーション
+      # 連携項目は値域チェックを行わない
+      # ==== Args
+      # _value_ :: 入力値
+      # ==== Return
+      # ==== Raise
+      def validate_field_value_with_connect(value)
+        return [] if [CF_CONNECT].flatten.include?(self.id)
+        return validate_field_value_without_connect(value)
       end
     end
   end
