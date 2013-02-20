@@ -37,12 +37,14 @@
         <div class="splitcontentleft">
           <p>
             <label>情報の更新種別</label>
-            <%= select_tag 'issue[type_update]', ' ' %>
+            <%= select_tag 'issue[type_update]',
+              options_for_select(@issue_const["type_update"].invert, @issue.type_update) %>
+
           </p>
         </div>
         <div class="splitcontentright">
           <p>
-            <label>取消の説明文</label>
+            <label>情報の取消時の説明文</label>
             <%= text_area_tag 'issue[description_cancel]', @issue.description_cancel, {:size => "20x5"} %>
           </p>
         </div>
@@ -61,7 +63,9 @@
         <div class="splitcontentright">
           <p>
             <label>情報の配信対象地域</label>
-            <%= select_tag 'issue[delivered_area]', '' %>
+            <%= select_tag 'issue[type_update]',
+              options_for_select(@issue_const["type_update"].invert, @issue.type_update) %>
+
           </p>
         </div>
       </div>
