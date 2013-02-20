@@ -62,56 +62,21 @@ module Lgdis
     # _context_ :: コンテキスト
     # ==== Return
     # ==== Raise
-    def deliver_issue(context)
-      # TODO
-      # *号配備番号がパーサより送られてくる為
-      # 紐付くメーリングリストに自動配信する
-
+    def deliver_issue(context={})
       issue = context[:issue]
-
-      # TODO
-      # parser より外部配信先の配列を取得予定
-      # destination_ids = issue['destination_ids']
-      # 現在は仮でTwitter を設定
-      destination_ids = [4]
-      # 通信試験モード判定
-      test_flag = DST_LIST['test_prj'][issue.project_id]
+      raise "配備番号が未設定です" if (auto_target = context[:params][:issue][:auto_target]).blank?
 
       # TODO
       # redis が起動されている必要がある
-      unless destination_ids.blank?
-        destination_ids.each do |id|
-          str = "issue." + DST_LIST['create_msg_msd'][id]
-          # 配信先に合わせ配信内容作成処理
-          summary = eval(str)
-
-          # Twitter, Facebook, の本文へ適宜URL, 災害訓練モード設定
-          check_ary = [DST_LIST['twitter']['target_num'],
-                       DST_LIST['facebook']['target_num']]
-          if check_ary.include?(id)
-            summary = issue.add_url_and_training(summary, id)
-          end
-
-          Resque.enqueue(eval(DST_LIST['delivery_job_map'][id]), summary, test_flag)
-          # 自動配信の履歴を登録
-          DeliveryHistory.new(
-                              :issue_id          => issue.id,
-                              :project_id        => issue.project_id,
-                              :delivery_place_id => id,
-                              :request_user      => User.current.login,
-                              :status            => 'request',
-                              :process_date      => Time.now)
-
-          # アーカイブの為、チケットに登録
-          msg = summary['message'].blank? ? summary : summary['message']
-          journal = issue.init_journal(User.current, msg)
-
-          unless issue.save
-            # TODO
-            # log 出力内容
-            # Rails.logger.error
-          end
-        end
+      (DST_LIST['auto_destination'][auto_target.to_i] || {}).each do |destination|
+        deliveryhistory = DeliveryHistory.create!(
+                            :issue_id          => issue.id,
+                            :project_id        => issue.project_id,
+                            :delivery_place_id => destination['id'],
+                            :request_user      => User.current.login,
+                            :status            => 'request',
+                            :process_date      => Time.now)
+        issue.deliver(deliveryhistory, 'runtime')
       end
     end
   end

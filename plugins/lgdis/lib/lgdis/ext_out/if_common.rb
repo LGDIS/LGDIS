@@ -79,7 +79,7 @@ class IfCommon
   # _strnew_ :: 年月日時分秒､モジュール名､記録内容主部を連結した文字列
   # ==== Raise
   def feedback_to_issue_screen(msg, issue, delivery_history=nil, status)
-    tgt  = DST_LIST['destination_name'][delivery_history.delivery_place_id].to_s
+    tgt  = DST_LIST['delivery_place'][delivery_history.delivery_place_id]['name'].to_s
     dhid = delivery_history.nil? ? "" : "No. " + delivery_history.id.to_s
     notes = ""
 
