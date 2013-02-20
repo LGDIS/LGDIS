@@ -4,6 +4,7 @@ class Shelter < ActiveRecord::Base
   unloadable
   
   acts_as_paranoid
+  validates_as_paranoid
   
   attr_accessible :name,:name_kana,:area,:address,:phone,:fax,:e_mail,:person_responsible,
                   :shelter_type,:shelter_type_detail,:shelter_sort,:opened_date,:opened_hm,
@@ -33,8 +34,9 @@ class Shelter < ActiveRecord::Base
   # コンスタント存在チェック用
   CONST = Constant::hash_for_table(self.table_name).freeze
   
-  validates :name, :presence => true, 
+  validates :name, :presence => true,
                 :length => {:maximum => 30}
+  validates_uniqueness_of_without_deleted :name
   validates :name_kana,
                 :length => {:maximum => 60}
   validates :area, :presence => true

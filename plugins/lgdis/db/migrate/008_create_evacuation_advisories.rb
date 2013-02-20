@@ -52,6 +52,9 @@ class CreateEvacuationAdvisories < ActiveRecord::Migration
       
     end
 
+    add_index(:evacuation_advisories, :area, :unique => true, :where => 'deleted_at is NULL')
+    add_index(:evacuation_advisories, :identifier, :unique => true, :where => 'deleted_at is NULL')
+
 #TODO:将来的には発令・解除区分のデータ型をRDBMSで対応しているENUM型にする可能性がある｡
 #     execute <<-SQL
 #       ALTER TABLE 'evacuation_advisories' ADD status ENUM('指示等なし','避難準備','避難勧告','避難指示','警戒区域') NOT NULL;

@@ -48,6 +48,9 @@ class Shelters < ActiveRecord::Migration
       t.timestamps
     end
     
+    add_index(:shelters, :name, :unique => true, :where => 'deleted_at is NULL')
+    add_index(:shelters, :shelter_code, :unique => true, :where => 'deleted_at is NULL')
+    
     set_table_comment(:shelters, "避難所情報")
     set_column_comment(:shelters, :name, "避難所名")
     set_column_comment(:shelters, :name_kana, "避難所名カナ")

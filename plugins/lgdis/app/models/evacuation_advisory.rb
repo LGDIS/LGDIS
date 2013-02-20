@@ -3,11 +3,7 @@ class EvacuationAdvisory < ActiveRecord::Base
   unloadable
 
   acts_as_paranoid
-  
-#   belongs_to :project
-#   validates :project, :presence => true
-#   validates :disaster_code, :presence => true, :length => {:maximum => 20}
-#   validates :area_kana, :length => {:maximum => 100}  #, :presence => true,
+  validates_as_paranoid
   
   attr_accessible :advisory_type,:sort_criteria,:issue_or_lift,:area,
                   :area_kana,:district,:issued_date,:issued_hm,:issued_hm,:changed_date,
@@ -16,16 +12,7 @@ class EvacuationAdvisory < ActiveRecord::Base
                   :emergency_hq_needed_prefecture,:emergency_hq_needed_city,
                   :alert,:alerting_area,:siren_area,:evacuation_order,
                   :evacuate_from,:evacuate_to,:evacuation_steps_by_authorities,:remarks, 
-                  :households,:head_count,
-                  :as => :evacuation_advisory
-                  #:disaster_code,
-
-#   attr_accessible :households,:head_count,
-#                   :as => :count
-
-
-
-
+                  :households,:head_count
 
   ##正の整数チェック用オプションハッシュ値
   POSITIVE_INTEGER = {:only_integer => true,
@@ -37,16 +24,15 @@ class EvacuationAdvisory < ActiveRecord::Base
   CONST = Constant::hash_for_table(self.table_name).freeze
   
   #Data base NOT-NULL項目validations
-#:NoMethodError (undefined method `keys' for nil:NilClass):
   validates :advisory_type, 
                 :inclusion => {:in => CONST[:advisory_type.to_s].keys, :allow_blank => true}
-                #: presence => true, 2013年2月14日木曜日 必須扱いから外した｡
   validates :sort_criteria, :presence => true,
                 :inclusion => {:in => CONST[:sort_criteria.to_s].keys, :allow_blank => true}
   validates :issue_or_lift,
                 :inclusion => {:in => CONST[:issue_or_lift.to_s].keys, :allow_blank => true}
   validates :area, :presence => true,
                 :length => {:maximum => 100}
+  validates_uniqueness_of_without_deleted :area
   validates :district,
                 :inclusion => {:in => CONST[:district.to_s].keys, :allow_blank => true}
 
@@ -114,27 +100,7 @@ class EvacuationAdvisory < ActiveRecord::Base
   validates :remarks,
                  :length => {:maximum => 4000}
 
-  before_create :number_evacuation_advisory_code #, :if => Proc.new { |evacuation_advisory| evacuation_advisory.identifier.nil? }
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  before_create :number_evacuation_advisory_code , :if => Proc.new { |evacuation_advisory| evacuation_advisory.identifier.nil? }
   
   # 属性のローカライズ名取得
   # validateエラー時のメッセージに使用されます。
@@ -230,7 +196,6 @@ class EvacuationAdvisory < ActiveRecord::Base
     doc.add_element("_避難勧告･指示") # Root
     
     #避難勧告･指示を取得しXMLを生成する
-#   evacuation_advisories = EvacuationAdvisory.where(:project_id => project.id)
     evacuation_advisories = EvacuationAdvisory.all
     evacuation_advisories.each do |eva|
       node_eva = doc.root.add_element("_避難勧告･指示情報")
@@ -287,36 +252,7 @@ class EvacuationAdvisory < ActiveRecord::Base
     
     return issue
   end
-
   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   # 公共コモンズ用チケット登録処理
   # ==== Args
   # _project_ :: Projectオブジェクト
@@ -324,12 +260,6 @@ class EvacuationAdvisory < ActiveRecord::Base
   # Issueオブジェクト
   # ==== Raise
   def self.create_commons_issue(project)
-    #林氏最新版にあわせる以前の旧版: テンプレートの読み込みとXmlドキュメントの生成
-#     file = File.new("#{Rails.root}/plugins/lgdis/files/xml/commons_evacuation.xml")
-#     doc  = REXML::Document.new(file)
-#     evas = EvacuationAdvisory.where(:project_id => project.id)
-#     node_evas = doc.elements["edxlde:EDXLDistribution/commons:contentObject/edxlde:xmlContent/edxlde:embeddedXMLContent/Report/pcx_ev:EvacuationOrder"]
-
     # Xmlドキュメントの生成
     doc  = REXML::Document.new
     # Projectに紐付く避難勧告･指示を取得しXMLを生成する
@@ -396,45 +326,8 @@ class EvacuationAdvisory < ActiveRecord::Base
     
     return issue
   end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  
+  # TODO: 不要であれば、削除のこと
   # 全データ公開処理を行います。
   # cacheデータと、JSONファイルを上書きします。
   # ==== Args
@@ -445,6 +338,7 @@ class EvacuationAdvisory < ActiveRecord::Base
     create_json_file
   end
   
+  # TODO: 不要であれば、削除のこと
   # cacheデータを上書きします。
   # ==== Args
   # _shelters_ :: Shelterオブジェクト配列
@@ -458,6 +352,7 @@ class EvacuationAdvisory < ActiveRecord::Base
 #     Rails.cache.write("shelter", h)
   end
   
+  # TODO: 不要であれば、削除のこと
   # JSONファイルを上書きします。
   # ==== Args
   # _shelters_ :: Shelterオブジェクト配列

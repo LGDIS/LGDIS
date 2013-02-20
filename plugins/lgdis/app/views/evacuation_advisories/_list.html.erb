@@ -5,15 +5,9 @@
       <th style="text-align: center;">発令区分</th>
       <th style="text-align: center;">発令・解除区分</th>
       <th style="text-align: center;">発令日時</th>
-<%#      <th style="text-align: center;">移行日時</th>%>
       <th style="text-align: center;">解除日時</th>
       <th style="text-align: center;">対象世帯数</th>
       <th style="text-align: center;">対象人数</th>
-
-
-
-
-
     </tr>
   </thead>
   <tbody>
@@ -35,12 +29,6 @@
           <%= calendar_for("evacuation_advisories_#{evacuation_advisory.id}_issued_date") %>
           <%= text_field_tag "evacuation_advisories[#{evacuation_advisory.id}][issued_hm]", evacuation_advisory.issued_hm, :size => "5", :disabled => @disabled %>
         </td>
-<%#        移行日は非表示になりました%>
-<%#        <td style="text-align: center;" nowrap>%>
-<%#          <%= text_field_tag "evacuation_advisories[#{evacuation_advisory.id}][changed_date]", evacuation_advisory.changed_date, :size => "10", :disabled => @disabled +|%>
-<%#          <%= calendar_for("evacuation_advisories_#{evacuation_advisory.id}_changed_date") +|%>
-<%#          <%= text_field_tag "evacuation_advisories[#{evacuation_advisory.id}][changed_hm]", evacuation_advisory.lifted_hm, :size => "5", :disabled => @disabled +|%>
-<%#        </td>%>
         <td style="text-align: center;" nowrap>
           <%= text_field_tag "evacuation_advisories[#{evacuation_advisory.id}][lifted_date]", evacuation_advisory.lifted_date, :size => "10", :disabled => @disabled %>
           <%= calendar_for("evacuation_advisories_#{evacuation_advisory.id}_lifted_date") %>

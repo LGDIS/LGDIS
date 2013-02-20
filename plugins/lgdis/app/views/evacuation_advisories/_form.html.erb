@@ -1,25 +1,21 @@
 <%= error_messages_for 'evacuation_advisory' %>
-<div class="nonsplitcontent"> </div>
 <div class="splitcontent">
-<%#COMMONS-applicable fields below%>
   <div class="splitcontentleft">
-
     <%= field_for :area, :required => true do |key, label| %>
       <%= label_tag{label} %>
       <%= f.text_field key,:size=>'50',:disabled => @disabled %>
     <% end %>
-
+    
     <%= field_for :area_kana do |key, label| %>
       <%= label_tag{label} %>
       <%= f.text_field key,:size=>'50',:disabled => @disabled %>
     <% end %>
-
+    
     <%= field_for :district do |key, label| %>
       <%= label_tag{label} %>
       <%= f.select key, options_for_select(@evacuation_advisory_const[key.to_s].invert, f.object.send(key)),{:include_blank => true},:disabled => @disabled %>
     <% end %>
-
-
+    
     <%= field_for :sort_criteria, :required => true do |key, label| %>
       <%= label_tag{label} %>
       <%= f.select key, options_for_select(@evacuation_advisory_const[key.to_s].invert, f.object.send(key)),{:include_blank => true},:disabled => @disabled %>
@@ -29,7 +25,6 @@
       <%= label_tag{label} %>
       <%= f.select key, options_for_select(@evacuation_advisory_const[key.to_s].invert, f.object.send(key)),{:include_blank => true},:disabled => @disabled %>
     <% end %>
-
   </div>
 
   <div class="splitcontentright">
@@ -38,13 +33,6 @@
       <%= f.text_field :issued_date,:size=>'10',:disabled => @disabled %><%= calendar_for("#{f.object_name}_issued_date") unless @disabled %>
       <%= f.text_field :issued_hm,:size=>'5',:disabled => @disabled %>
     <% end %>
-
-<%#移行日時は非表示になりました%>
-<%#    <%= field_for :changed_at do |key, label| +|%>
-<%#      <%= label_tag{label} +|%>
-<%#      <%= f.text_field :changed_date,:size=>'10',:disabled => @disabled +|<%= calendar_for("#{f.object_name}_changed_date") unless @disabled +|%>
-<%#      <%= f.text_field :changed_hm,:size=>'5',:disabled => @disabled +|%>
-<%#    <% end +|%>
     
     <%= field_for :lifted_at do |key, label| %>
       <%= label_tag{label} %>
@@ -56,59 +44,52 @@
       <%= label_tag{label} %>
       <%= f.text_field key,:size=>'70',:disabled => @disabled %>
     <% end %>
+    
     <%= field_for :head_count do |key, label| %>
       <%= label_tag{label} %>
       <%= f.text_field key,:size=>'70',:disabled => @disabled %>
     <% end %>
   </div>
-
 </div>
 
 <hr>
 
 <div class="splitcontent">
-<%#APPLIC-applicable fields below%>
   <div class="splitcontentleft">
     <%= field_for :advisory_type do |key, label| %>
       <%= label_tag{label} %>
       <%= f.select key, options_for_select(@evacuation_advisory_const[key.to_s].invert, f.object.send(key)),{:include_blank => true},:disabled => @disabled %>
     <% end %>
-
-<%#    識別情報は非表示になりました%>
-<%#    <%= field_for :identifier, :required => true do |key, label| +|%>
-<%#      <%= label_tag{label} +|%>
-<%#      <%= f.text_field key,:size=>'70',:disabled => @disabled +|%>
-<%#    <% end +|%>
-
+    
     <%= field_for :category do |key, label| %>
       <%= label_tag{label} %>
       <%= f.select key, options_for_select(@evacuation_advisory_const[key.to_s].invert, f.object.send(key)),{:include_blank => true},:disabled => @disabled %>
     <% end %>
-
+    
     <%= field_for :cause do |key, label| %>
       <%= label_tag{label} %>
       <%= f.text_field key,:size=>'70',:disabled => @disabled %>
     <% end %>
+    
     <%= field_for :headline do |key, label| %>
       <%= label_tag{label} %>
       <%= f.text_field key,:size=>'70',:disabled => @disabled %>
     <% end %>
-
+    
     <%= field_for :message do |key, label| %>
       <%= label_tag{label} %>
       <%= f.text_field key,:size=>'70',:disabled => @disabled %>
     <% end %>
-
+    
     <%= field_for :emergency_hq_needed_prefecture do |key, label| %>
       <%= label_tag{label} %>
       <%= f.text_field key,:size=>'70',:disabled => @disabled %>
     <% end %>
-
+    
     <%= field_for :emergency_hq_needed_city do |key, label| %>
       <%= label_tag{label} %>
       <%= f.text_field key,:size=>'70',:disabled => @disabled %>
     <% end %>
-
   </div>
 
   <div class="splitcontentright">

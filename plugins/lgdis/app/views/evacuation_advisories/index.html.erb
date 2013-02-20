@@ -34,10 +34,6 @@
         <% if authorize_for(:evacuation_advisories, :ticket) # 権限判定 %>
          <%= submit_tag l(:button_ticket), :kind => "ticket" %>
         <% end %>
-<%#        集計ボタンは非表示になりました%>
-<%#        <% if authorize_for(:evacuation_advisories, :summary) # 権限判定 +|%>
-<%#          <%= submit_tag l(:button_summary), :kind => "summary" +|%>
-<%#        <% end +|%>
       </p>
       <p style="text-align: right;">
         <%= will_paginate @evacuation_advisories, :previous_label => "前 &lt;&lt; ",
@@ -60,7 +56,7 @@
     });
   });
   
-  // 避難所一覧行リンククリック処理
+  // 避難勧告・指示一覧行リンククリック処理
   $(function($) {
     $('tr[data-href]').addClass('clickable').click(function(e) {
       if (!$(e.target).is('a')) {
