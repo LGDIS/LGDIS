@@ -11,6 +11,8 @@ class AtomDigiSignageRequestJob
   # _status_ :: 戻り値
   # ==== Raise
   def self.perform(msg, test_flg, issue, delivery_history=nil, draft_flg=true)
+    # issueがハッシュになっているため再取得する
+    issue = Issue.find(issue['issue']['id'])
     o = IfCommon.new
     begin
       str= "##################################### 災害情報ポータルWORKER がよばれました\n"
@@ -23,7 +25,10 @@ class AtomDigiSignageRequestJob
       o.mail_when_delivery_fails
     ensure
       # 配信ステータスの更新
-      delivery_history.update_attributes(:status => (status == false ? 'failed' : 'done'))
+      unless delivery_history.nil?
+        delivery_history = DeliveryHistory.find(delivery_history['delivery_history']['id'])
+        delivery_history.update_attributes(:status => (status == false ? 'failed' : 'done'))
+      end
       #アーカイブログ出力　  -> if_common.rbのメソッドを呼び出す
       o.leave_log(msg); print "\n"
       o.register_edition(issue) if status != false
