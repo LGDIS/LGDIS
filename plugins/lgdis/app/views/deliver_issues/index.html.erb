@@ -1,4 +1,4 @@
-<%= form_tag("/deliver_issues/allow_delivery") do %>
+<%= form_tag(:controller => :deliver_issues, :action => :allow_delivery) do %>
 <%= hidden_field_tag 'id',        @delivery_history.id %>
 <%= hidden_field_tag :issue_id,   @issue.id %>
 <%= hidden_field_tag :project_id, @issue.project.identifier %>

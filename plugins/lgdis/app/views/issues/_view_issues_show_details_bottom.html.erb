@@ -2,7 +2,7 @@
 <fieldset class="collapsible">
   <legend onclick="toggleFieldset(this);"><%= l(:ext_out_field) %></legend>
   <div>
-  <%= form_tag("/deliver_issues/request_delivery") do %>
+  <%= form_tag(:controller => :deliver_issues, :action => :request_delivery) do %>
     <div>
         <p><strong><label><%= l(:delivery_place) %>:</label></strong></p>
         <%= hidden_field_tag :issue_id, @issue.id %>
