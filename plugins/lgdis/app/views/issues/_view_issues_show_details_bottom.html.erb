@@ -108,7 +108,7 @@
           <div class="table_border">
           <label><%= tm_fmt(d_h.process_date) %></label>
           <label style="position:absolute; left:240px;">
-            <%= DST_LIST['destination_name'][d_h.delivery_place_id] %>
+            <%= DST_LIST['delivery_place'][d_h.delivery_place_id]['name'] %>
           </label>
           <label style="position:absolute; left:450px;"><%= DST_LIST['status'][d_h.status] %></label>
           <% if d_h.status == 'request' || d_h.status == 'failed' %>
@@ -128,7 +128,7 @@
       <% @delivery_history.each do | d_h | %>
         <p class="table_border">
           <%= tm_fmt(d_h.process_date) %>
-          <%= DST_LIST['destination_name'][d_h.delivery_place_id] %>
+          <%= DST_LIST['delivery_place'][d_h.delivery_place_id]['name'] %>
           <%= DST_LIST['status'][d_h.status] %>
         </p>
       <% end %>

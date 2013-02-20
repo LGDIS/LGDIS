@@ -10,7 +10,7 @@ class DeliverIssuesController < ApplicationController
     @issue = Issue.find_by_id issue_id
     @delivery_history = DeliveryHistory.find_by_id delivery_history_id
     # 配信内容作成処理
-    contents = create_summary(@issue, @delivery_history)
+    contents = @issue.create_summary(@delivery_history.delivery_place_id)
 
     @summary = contents.instance_of?(Hash) ? contents['message'] : contents
   end
@@ -53,52 +53,28 @@ class DeliverIssuesController < ApplicationController
   # ==== Return
   # ==== Raise
   def allow_delivery
-    begin
-      id       = params[:id].to_i
-      status   = params[:allow].blank? ? 'reject' : 'runtime'
-      issue_id = params[:issue_id].to_i
+    id       = params[:id].to_i
+    status_to   = params[:allow].blank? ? 'reject' : 'runtime'
+    issue_id = params[:issue_id].to_i
 
-      delivery_history = DeliveryHistory.find_by_id(id)
-      issue = Issue.find_by_id(issue_id)
+    delivery_history = DeliveryHistory.find_by_id(id)
+    issue = Issue.find_by_id(issue_id)
 
-      return if delivery_history.blank? || issue.blank?
+    return if delivery_history.blank? || issue.blank?
 
-      # 配信内容作成処理
-      summary = create_summary(issue, delivery_history)
-
-      # 通信試験モード判定
-      test_flag = DST_LIST['test_prj'][issue.project_id]
-
-      if status != 'reject'
-        Resque.enqueue(eval(DST_LIST['delivery_job_map'][delivery_history.delivery_place_id]), summary, test_flag, issue, delivery_history)
-
-        # アーカイブの為、チケットに登録
-        msg = summary['message'].blank? ? summary : summary['message']
-        journal = issue.init_journal(User.current, msg)
-        unless issue.save
-         # TODO
-         # log 出力内容
-         # Rails.logger.error
-        end
-
-        flash[:notice] = l(:notice_delivery_successful)
-      else
-        flash[:notice] = l(:notice_delivery_request_reject)
-      end
-    rescue
-      # TODO
-      # log 出力
-      p $!
-      status = 'failed'
+    case issue.deliver(delivery_history, status_to).status
+    when 'reject'
+      flash[:notice] = l(:notice_delivery_request_reject)
+    when 'failed'
       flash[:notice] = l(:notice_delivery_failed)
-    ensure
-      delivery_history.update_attribute(:status, status)
-      respond_to do |format|
-        format.html do
-          redirect_back_or_default({:controller => 'issues',
-                                    :action     => 'show',
-                                    :id         => issue_id.to_i})
-        end
+    else
+      flash[:notice] = l(:notice_delivery_successful)
+    end
+    respond_to do |format|
+      format.html do
+        redirect_back_or_default({:controller => 'issues',
+                                  :action     => 'show',
+                                  :id         => issue_id.to_i})
       end
     end
   end

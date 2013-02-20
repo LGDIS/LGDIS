@@ -127,38 +127,87 @@ module Lgdis
         self
       end
 
+      # 配信処理
+      # ==== Args
+      # _delivery_history_ :: DeliveryHistoryオブジェクト
+      # _status_to_ :: 更新先ステータス
+      # ==== Return
+      # DeliveryHistoryオブジェクト
+      # ==== Raise
+      def deliver(delivery_history, status_to)
+        begin
+        if status_to == 'runtime'
+          delivery_place_id = delivery_history.delivery_place_id
+          summary = create_summary(delivery_place_id)
+          delivery_job_class = eval(DST_LIST['delivery_place'][delivery_place_id]['delivery_job_class'])
+          test_flag = DST_LIST['test_prj'][self.project_id]
+          p summary
+          Resque.enqueue(delivery_job_class, summary, test_flag, self, delivery_history)
+          # アーカイブの為、チケットに登録
+          msg = summary['message'].blank? ? summary : summary['message']
+          journal = self.init_journal(User.current, msg)
+          unless self.save
+           # TODO
+           # log 出力内容
+           # Rails.logger.error
+          end
+        end
+        rescue
+          # TODO
+          # log 出力
+          p $!
+          status_to = 'failed'
+        ensure
+          delivery_history.update_attribute(:status, status_to)
+        end
+        return delivery_history
+      end
+
+      # 配信内容作成処理
+      # ==== Args
+      # _delivery_place_id_ :: 外部配信先ID
+      # ==== Return
+      # 配信内容
+      # ==== Raise
+      def create_summary(delivery_place_id)
+        return eval("self.#{DST_LIST['delivery_place'][delivery_place_id]['create_msg_method']}(delivery_place_id)")
+      end
+
       # Twitter 用配信メッセージ作成処理
       # ==== Args
+      # _delivery_place_id_ :: 外部配信先ID
       # ==== Return
-      # _summary_ :: 配信内容
+      # 配信内容文字列
       # ==== Raise
-      def create_twitter_msg
-        summary = self.name_in_custom_field_value(DST_LIST['custom_field_delivery']['summary'])
+      def create_twitter_msg(delivery_place_id)
+        summary = self.add_url_and_training(self.name_in_custom_field_value(DST_LIST['custom_field_delivery']['summary']), delivery_place_id)
         return summary
       end
 
       # Facebook 用配信メッセージ作成処理
       # ==== Args
+      # _delivery_place_id_ :: 外部配信先ID
       # ==== Return
-      # _summary_ :: 配信内容
+      # 配信内容文字列
       # ==== Raise
-      def create_facebook_msg
-        summary = self.description
+      def create_facebook_msg(delivery_place_id)
+        summary = self.add_url_and_training(self.description, delivery_place_id)
         return summary
       end
 
       # メール用 配信メッセージ作成処理
       # ==== Args
+      # _delivery_place_id_ :: 外部配信先ID
       # ==== Return
-      # _summary_ :: 配信内容
+      # 配信内容ハッシュ
       # ==== Raise
-      def create_smtp_msg
+      def create_smtp_msg(delivery_place_id)
         summary = Hash.new
-        str = self.add_url_and_training(self.summary, DST_LIST['smtp']['target_num'])
+        # TODO:件名、本文が未決
+        str = self.add_url_and_training(self.summary, delivery_place_id)
 
-        # TODO
-        # mailing_list の選択基準未決(手動 & 自動)
-        summary.store('mailing_list_name', DST_LIST['mailing_list']['local_government_officer_mail'])
+        raise "送信先アドレス設定がありません" unless to = DST_LIST['delivery_place'][delivery_place_id]['to']
+        summary.store('mailing_list_name', to)
         summary.store('title', self.mail_subject)
         summary.store('message', str)
         return summary
@@ -166,10 +215,11 @@ module Lgdis
 
       # ATOM 用 配信メッセージ作成処理
       # ==== Args
+      # _delivery_place_id_ :: 外部配信先ID
       # ==== Return
-      # _summary_ :: 配信内容
+      # 配信内容
       # ==== Raise
-      def create_atom_msg
+      def create_atom_msg(delivery_place_id)
 =begin
         obj = SetupXML.arrange_and_put(self)
         summary = obj.show
@@ -179,27 +229,34 @@ module Lgdis
 
       # 災害訓練,URL 追加処理
       # ==== Args
-      # _issue_ :: チケット情報
+      # _contents_ :: コンテンツ文字列
+      # _delivery_place_id_ :: 外部配信先ID
       # ==== Return
-      # _summary_ :: 配信内容
+      # 引数のコンテンツ文字列に災害訓練、URLを追加した文字列
       # ==== Raise
-      def add_url_and_training(contents, exit_out_id)
-        url = exit_out_id==DST_LIST['smtp']['target_num'] ? \
-                DST_LIST['lgdsf_url'] : DST_LIST['disaster_portal_url']
+      def add_url_and_training(contents, delivery_place_id)
+        url = ''
+        case DST_LIST['delivery_place'][delivery_place_id]['add_url_type']
+        when 'disaster_portal'
+          url = DST_LIST['disaster_portal_url']
+        when 'lgdsf'
+          url = DST_LIST['lgdsf_url']
+        end
 
         # 災害訓練モード判定
         DST_LIST['training_prj'][self.project_id] ? \
-          '【災害訓練】' + "\n" + url + "\n" + contents : url + "\n" + contents
+          '【災害訓練】' + "\n" + url.to_s + "\n" + contents.to_s : url.to_s + "\n" + contents.to_s
       end
 
       # 公共コモンズ用XML 作成処理
       # Control部, Head部, Body部を結合し
       # 配信内容を作成
       # ==== Args
+      # _delivery_place_id_ :: 外部配信先ID
       # ==== Return
-      # _doc_ :: 配信内容
+      # 配信内容
       # ==== Raise
-      def create_commons_msg
+      def create_commons_msg(delivery_place_id)
         # テンプレートの読み込み
         commons_xml = DST_LIST['commons_xml'][self.tracker_id]
         file = File.new("#{Rails.root}/plugins/lgdis/files/xml/#{commons_xml}")
