@@ -759,8 +759,7 @@ class DisasterDamage < ActiveRecord::Base
         node_facilities_losses.add_element("pcx_di:TotalLosses", {"pcx_di:currencyUnit" => "千円"})
                               .add_text("#{int_sum(dd.public_educational_buildings_losses_amount,
                                                    dd.agriculture_forestry_and_fisheries_buildings_losses_amount,
-                                                   dd.public_civil_buildings_losses_amount,
-                                                   dd.other_public_buildings_losses_amount)}")
+                                                   dd.public_civil_buildings_losses_amount)}")
       end
       
       # その他の被害額
@@ -807,7 +806,6 @@ class DisasterDamage < ActiveRecord::Base
                  .add_text("#{int_sum(dd.public_educational_buildings_losses_amount,
                                       dd.agriculture_forestry_and_fisheries_buildings_losses_amount,
                                       dd.public_civil_buildings_losses_amount,
-                                      dd.other_public_buildings_losses_amount,
                                       dd.agriculture_losses_amount,
                                       dd.forestry_losses_amount,
                                       dd.livestock_losses_amount,
