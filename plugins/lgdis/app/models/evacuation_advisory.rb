@@ -4,9 +4,12 @@ class EvacuationAdvisory < ActiveRecord::Base
 
   acts_as_paranoid
   
-  belongs_to :project
+#   belongs_to :project
+#   validates :project, :presence => true
+#   validates :disaster_code, :presence => true, :length => {:maximum => 20}
+#   validates :area_kana, :length => {:maximum => 100}  #, :presence => true,
   
-  attr_accessible :disaster_code,:advisory_type,:sort_criteria,:issue_or_lift,:area,
+  attr_accessible :advisory_type,:sort_criteria,:issue_or_lift,:area,
                   :area_kana,:district,:issued_date,:issued_hm,:issued_hm,:changed_date,
                   :changed_hm,:lifted_date,:lifted_hm,:address,:category,:cause,
                   :staff_no,:full_name,:alias,:headline,:message,
@@ -15,6 +18,7 @@ class EvacuationAdvisory < ActiveRecord::Base
                   :evacuate_from,:evacuate_to,:evacuation_steps_by_authorities,:remarks, 
                   :households,:head_count,
                   :as => :evacuation_advisory
+                  #:disaster_code,
 
 #   attr_accessible :households,:head_count,
 #                   :as => :count
@@ -33,10 +37,7 @@ class EvacuationAdvisory < ActiveRecord::Base
   CONST = Constant::hash_for_table(self.table_name).freeze
   
   #Data base NOT-NULL項目validations
-  validates :project, :presence => true
 #:NoMethodError (undefined method `keys' for nil:NilClass):
-  validates :disaster_code, :presence => true, 
-                :length => {:maximum => 20}
   validates :advisory_type, 
                 :inclusion => {:in => CONST[:advisory_type.to_s].keys, :allow_blank => true}
                 #: presence => true, 2013年2月14日木曜日 必須扱いから外した｡
@@ -46,8 +47,6 @@ class EvacuationAdvisory < ActiveRecord::Base
                 :inclusion => {:in => CONST[:issue_or_lift.to_s].keys, :allow_blank => true}
   validates :area, :presence => true,
                 :length => {:maximum => 100}
-  validates :area_kana,
-                :length => {:maximum => 100}  #, :presence => true,
   validates :district,
                 :inclusion => {:in => CONST[:district.to_s].keys, :allow_blank => true}
 
@@ -74,7 +73,6 @@ class EvacuationAdvisory < ActiveRecord::Base
   validates :lifted_hm, :presence => true, :unless => "lifted_date.blank?"
 
   #そのほかの項目チェック:DB定義順
-  validates :project, :presence => true
   validates :households,
                  :numericality => POSITIVE_INTEGER
   validates :head_count,
@@ -160,7 +158,6 @@ class EvacuationAdvisory < ActiveRecord::Base
                     :default => ["field_#{attr}".to_sym, attr])
   end
   
-  # 
   # 日時フィールドに対して、日付、時刻フィールドに分割したアクセサを定義します。
   # 例) create_at ⇒ create_date, create_hm
   # ==== Args
@@ -221,7 +218,6 @@ class EvacuationAdvisory < ActiveRecord::Base
     return issues
   end
   
-  # 
   # Applic用チケット登録処理
   # ==== Args
   # _project_ :: Projectオブジェクト
@@ -238,9 +234,8 @@ class EvacuationAdvisory < ActiveRecord::Base
     evacuation_advisories = EvacuationAdvisory.all
     evacuation_advisories.each do |eva|
       node_eva = doc.root.add_element("_避難勧告･指示情報")
-      
-      node_eva.add_element("避難勧告_指示識別情報").add_text("#{eva.identifier}")
-      node_eva.add_element("災害名").add_text("#{eva.project.name}")
+      node_eva.add_element("災害識別情報").add_text("#{project.disaster_code}")
+      node_eva.add_element("災害名").add_text("#{project.name}")
       node_eva.add_element("都道府県").add_text("")
       node_eva.add_element("市町村_消防本部名").add_text("")
       
@@ -285,7 +280,7 @@ class EvacuationAdvisory < ActiveRecord::Base
     issue = Issue.new
     issue.tracker_id = 30
     issue.project_id = project.id
-    issue.subject    = "避難勧告指示 #{Time.now.strftime("%Y/%m/%d %H:%M:%S")}"
+    issue.subject    = "避難勧告･指示 #{Time.now.strftime("%Y/%m/%d %H:%M:%S")}"
     issue.author_id  = User.current.id
     issue.xml_body   = doc.to_s
     issue.save!
@@ -293,6 +288,7 @@ class EvacuationAdvisory < ActiveRecord::Base
     return issue
   end
 
+  
 
 
 
@@ -328,26 +324,25 @@ class EvacuationAdvisory < ActiveRecord::Base
   # Issueオブジェクト
   # ==== Raise
   def self.create_commons_issue(project)
-    # テンプレートの読み込み
+    #林氏最新版にあわせる以前の旧版: テンプレートの読み込みとXmlドキュメントの生成
 #     file = File.new("#{Rails.root}/plugins/lgdis/files/xml/commons_evacuation.xml")
+#     doc  = REXML::Document.new(file)
+#     evas = EvacuationAdvisory.where(:project_id => project.id)
+#     node_evas = doc.elements["edxlde:EDXLDistribution/commons:contentObject/edxlde:xmlContent/edxlde:embeddedXMLContent/Report/pcx_ev:EvacuationOrder"]
 
     # Xmlドキュメントの生成
-#     doc  = REXML::Document.new(file)
     doc  = REXML::Document.new
-    
     # Projectに紐付く避難勧告･指示を取得しXMLを生成する
-    #林版にあわせて以下の行をコメントアウトすべきか
-    evas = EvacuationAdvisory.where(:project_id => project.id)
+    evas = EvacuationAdvisory.all
 
     # 避難人数、避難世帯数の集計値および避難勧告･指示件数の取得
-     summary  = evas.select("SUM(head_count) AS head_count_sum, SUM(households) AS households_sum, COUNT(*) AS count").first
+     summary  = EvacuationAdvisory.select("SUM(head_count) AS head_count_sum, SUM(households) AS households_sum, COUNT(*) AS count").first
+
     # EvacuationAdvisory要素の取得
-#     node_evas = doc.elements["edxlde:EDXLDistribution/commons:contentObject/edxlde:xmlContent/edxlde:embeddedXMLContent/Report/pcx_ev:EvacuationOrder"]
     node_evas = doc.add_element("pcx_ev:EvacuationOrder") 
     node_header = node_evas.add_element("pcx_eb:Disaster")
-      node_header.add_element("pcx_eb:DisasterName").add_text("#{project.name}") if project.name.present?  #.add_text("#{summary.}") if summary..present?
-    node_evas.add_element("pcx_ev:ComplementaryInfo") if evas[0].present? 
-    #node_evas.add_element("pcx_ev:ComplementaryInfo").add_text("避難勧告･指示一覧") if evas[0].present? 
+      node_header.add_element("pcx_eb:DisasterName").add_text("#{project.name}")
+    node_evas.add_element("pcx_ev:ComplementaryInfo")
     # 避難勧告指示の総数
     if summary.head_count_sum.present? || summary.households_sum.present? 
       node_total_number = node_evas.add_element("pcx_ev:TotalNumber")
@@ -395,7 +390,7 @@ class EvacuationAdvisory < ActiveRecord::Base
     issue.tracker_id = 1
     issue.project_id = project.id
     issue.subject    = "避難勧告･指示 #{Time.now.xmlschema}"
-    issue.author_id  = User.current.id 
+    issue.author_id  = User.current.id
     issue.xml_body   = doc.to_s
     issue.save!
     
@@ -426,10 +421,19 @@ class EvacuationAdvisory < ActiveRecord::Base
 
 
 
-  # 避難勧告･指示情報初期登録処理→ShelterモデルをProject配下から独立する仕様にもとづき
-  # メソッドはありません｡
-  #   def self.import_initial_data(project)
-  #   end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   # 全データ公開処理を行います。
   # cacheデータと、JSONファイルを上書きします。
@@ -487,7 +491,6 @@ class EvacuationAdvisory < ActiveRecord::Base
   # ==== Return
   # ==== Raise
   def set_date_time_attr(attr, date, hm)
-    p date,hm
     begin
       date = Date.strptime(date.to_s, "%Y-%m-%d") unless date.is_a?(Date)
     rescue

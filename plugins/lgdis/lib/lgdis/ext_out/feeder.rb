@@ -171,7 +171,7 @@ class SetupXML
       } ]
 
       if draft_flg
-        outfile = "#{Rails.root.to_s}/plugins/lgdis/lib/lgdis/ext_out/tmp"
+        outfile = "#{Rails.root.to_s}/plugins/lgdis/lib/lgdis/ext_out/.tmp"
       else
         outfile = "#{Rails.root.to_s}/public/atom/#{time}-geoatom.rdf"
       end

@@ -51,7 +51,6 @@ module EvacuationAdvisoriesHelper
     objects.each do |object|
       errors = object.map do |o|
         o.errors.full_messages.map do |m|
-#           k-takami original:shelter_code replica: identifier
           "#{l('evacuation_advisories.field_identifier')}\"#{o.identifier}\"の#{m}"
         end
       end.flatten
