@@ -15,6 +15,8 @@ class DeliverIssuesController < ApplicationController
     @summary = contents.instance_of?(Hash) ? contents['message'] : contents
   end
 
+  class ParamsException < StandardError; end
+
   # 外部配信要求処理(手動配信)
   # 外部配信要求受付け処理を行います
   # ==== Args
@@ -26,34 +28,21 @@ class DeliverIssuesController < ApplicationController
     ext_out_ary = params[:ext_out_target]
 
     issue = Issue.find_by_id issue_id.to_i
+    raise ParamsException, l(:notice_delivery_unselected) if ext_out_ary.blank?
 
-    unless ext_out_ary.blank?
-      ext_out_ary.each do |e|
-        histry_obj = DeliveryHistory.new(
-                       :issue_id          => issue_id,
-                       :project_id        => User.current.id,
-                       :delivery_place_id => e.to_i,
-                       :request_user      => user_name,
-                       :status            => 'request',
-                       :process_date      => Time.now)
-
-        if histry_obj.save && issue.update_attributes(params[:issue])
-          flash[:notice] = l(:notice_delivery_request_successful)
-        else
-          flash[:notice] = l(:notice_delivery_request_failed)
-        end
-      end
-    else
-      flash[:notice] = l(:notice_delivery_unselected)
+    ActiveRecord::Base.transaction do
+      issue.update_attributes!(params[:issue])
+      DeliveryHistory.create_for_history(issue, ext_out_ary)
+      flash[:notice] = l(:notice_delivery_request_successful)
     end
-
-    respond_to do |format|
-      format.html do
-        redirect_back_or_default({:controller => 'issues',
-                                  :action     => 'show',
-                                  :id         => issue_id.to_i})
-      end
-    end
+  rescue ActiveRecord::RecordInvalid
+    flash[:notice] = l(:notice_delivery_request_failed)
+  rescue ParamsException => e
+    flash[:notice] = e
+  ensure
+    redirect_back_or_default({:controller => 'issues',
+                              :action     => 'show',
+                              :id         => issue_id.to_i})
   end
 
   # 外部配信処理(手動配信)

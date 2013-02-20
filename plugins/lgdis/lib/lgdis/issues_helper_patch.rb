@@ -19,6 +19,32 @@ module Lgdis
     end
 
     module InstanceMethods
+      # チケット照会画面一括更新用エラーメッセージ作成処理
+      # ==== Args
+      # _objects_ :: チケット情報配列
+      # ==== Return
+      # エラーメッセージ
+      # ==== Raise
+      def error_messages_for_issues(*objects)
+        html   = ""
+        errors = nil
+        objects.each do |object|
+          errors = object.map do |o|
+            o.errors.full_messages.map do |m|
+              "#{m}"
+            end
+          end.flatten
+        end
+        if errors.any?
+          html << "<div id='errorExplanation'><ul>\n"
+          errors.each do |error|
+            html << "<li>#{h error}</li>\n"
+          end
+          html << "</ul></div>\n"
+        end
+        html.html_safe
+      end
+
       def check_permissions(issue)
         # TODO
         # 要求者と許可者の権限が増えた為修正必要
