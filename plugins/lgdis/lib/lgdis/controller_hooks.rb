@@ -93,9 +93,19 @@ module Lgdis
           end
 
           Resque.enqueue(eval(DST_LIST['delivery_job_map'][id]), summary, test_flag)
+          # 自動配信の履歴を登録
+          DeliveryHistory.new(
+                              :issue_id          => issue.id,
+                              :project_id        => issue.project_id,
+                              :delivery_place_id => id,
+                              :request_user      => User.current.login,
+                              :status            => 'request',
+                              :process_date      => Time.now)
+
           # アーカイブの為、チケットに登録
           msg = summary['message'].blank? ? summary : summary['message']
           journal = issue.init_journal(User.current, msg)
+
           unless issue.save
             # TODO
             # log 出力内容
