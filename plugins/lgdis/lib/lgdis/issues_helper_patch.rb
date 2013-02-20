@@ -5,11 +5,6 @@ module Lgdis
   module IssuesHelperPatch
     # XMLデータ抽出文字列
     XML_VIEW_SAMPLING_XPATH = %{//xmlns:Item[.//text()[contains(.,"石巻")]]}.freeze
-    STATUS = {'request' => '配信要求中',
-              'done'    => '配信完了',
-              'reject'  => '配信却下',
-              'failed'  => '配信失敗'
-             }.freeze
 
     def self.included(base)
       base.extend(ClassMethods)
@@ -25,6 +20,9 @@ module Lgdis
 
     module InstanceMethods
       def check_permissions(issue)
+        # TODO
+        # 要求者と許可者の権限が増えた為修正必要
+        return true
         flag = false
         return false if issue.blank?
         User.current.roles_for_project(issue.project).each do |r|
@@ -37,10 +35,6 @@ module Lgdis
 
       def tm_fmt(time)
         time.strftime("%Y年%m月%d日 %H時%M分%S秒")
-      end
-
-      def conv_st(status)
-        STATUS[status]
       end
 
       # XML型フィールドの画面表示部生成

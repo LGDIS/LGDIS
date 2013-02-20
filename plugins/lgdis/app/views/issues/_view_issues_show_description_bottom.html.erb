@@ -116,6 +116,9 @@ end %>
   // DBにポリゴンデータが複数存在する可能性があるため配列で全てのポリゴンデータを作成
   var global_polygons = <%== @polygons.to_json %>
 
+  // ロケーションデータ作成
+  // DBにロケーションデータが複数存在する可能性があるため配列で全てのロケーションデータを作成
+  var global_locations = <%== @locations.to_json %>
   // ------------------------------------------------
   // グローバル変数
   var map;
@@ -137,15 +140,57 @@ end %>
     map = new google.maps.Map(document.getElementById("map"), opts);
 
     // ポイントマーカー作成
-      createPoints(global_points, map);
+    createPoints(global_points, map);
 
     // ポリライン作成
-      createPolyline(global_lines, map);
+    createPolyline(global_lines, map);
 
     // ポリゴン作成
-      createPolygon(global_polygons, map);
+    createPolygon(global_polygons, map);
 
+    // ロケーション作成
+    createLocations(global_locations, map);
   }
+  
+  /**
+   * ロケーションマーカー作成メソッド
+   */
+  function createLocations(locations, map) {
+    var geocoder = new google.maps.Geocoder();  // Geocoding用インスタンス
+    for (var i = 0; i < locations.length; i++) {
+      // Location(地名)をGeocodingで座標データに変換する
+      var location = locations[i].location;
+      var remarks = locations[i].remarks;
+      if (location) {
+        geocoder.geocode({'address': location}, function(results, status){
+          if (status == google.maps.GeocoderStatus.OK) {
+            // Goecoding成功の場合のみ処理
+            var marker = new google.maps.Marker({
+              position: results[0].geometry.location,
+              map: map
+            });
+            
+            if (remarks) {
+              // マーカーオブジェクトに備考文字を設定
+              // クリックイベント中にオブジェクトから文字列を取得する必要があるため
+              marker.set('remarks', remarks);
+              
+              // クリックイベント時の処理
+              google.maps.event.addListener(marker, 'click', function(e){
+                var infowindow = new google.maps.InfoWindow({
+                                     content: this.get('remarks'),
+                                     position: e.latLng
+                                     });
+                // infoWindow表示
+                infowindow.open(map);
+              });
+            }
+          }
+        });
+      }
+    }
+  }
+
   /**
    * マーカー作成メソッド
    */

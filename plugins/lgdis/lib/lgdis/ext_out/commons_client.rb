@@ -9,12 +9,6 @@ require 'soap/rpc/driver'
 require 'soap/wsdlDriver'
 require 'savon'
 
-# 処理内容
-# ==== Args
-# __ :: 
-# ==== Return
-# __ ::
-# ==== Raise
 class CommonsClient
   # soap element prefixes(namespaces)
   ENV_PREFIX = 'S'                # prefix for soap envelope
@@ -37,9 +31,10 @@ class CommonsClient
 
   # 処理内容
   # ==== Args
-  # __ :: 
+  # _wdsl_ :: 
+  # _endpoint_ :: 
+  # _namespace_ :: 
   # ==== Return
-  # __ ::
   # ==== Raise
   def initialize(wsdl, endpoint, namespace)
     @wsdl_uri = wsdl
@@ -49,20 +44,19 @@ class CommonsClient
 
   # 処理内容
   # ==== Args
-  # __ :: 
+  # _username_ :: 
+  # __essword_ :: 
   # ==== Return
-  # __ ::
   # ==== Raise
   def set_auth(username, password)
     @username = username
     @password = password
   end
 
-  # 処理内容
+  # SOAP形式メッセージを送信する
   # ==== Args
-  # __ :: 
+  # _data_ :: 
   # ==== Return
-  # __ ::
   # ==== Raise
   def send(data)
     wsdl_uri = @wsdl_uri
@@ -74,10 +68,20 @@ class CommonsClient
       wsdl wsdl_uri
       endpoint endpoint_uri
       namespace namespace_uri
-#       ssl_verify_mode :none 
-#       ssl_ca_cert_file "/root/work/ruby-1.9.3-p194/test/rubygems/ca_cert.pem"
-#       ssl_cert_key_file "/root/work/ruby-1.9.3-p194/test/rubygems/data/gem-private_key.pem"
-#       ssl_cert_file "/root/work/ruby-1.9.3-p194/test/rubygems/data/gem-private_key.pem"
+      #クライアントに配置した認証局証明書ファイルの場所 
+      #片側認証方式ではこれがあればよい
+      if endpoint_uri =~ /https/ 
+        if $0 == "script/rails"
+          # Rails/Redmineから呼ばれた場合は設定ファイルの証明書を読む
+          ssl_ca_cert_file DST_LIST['commons_ssl_ca_cert']
+        else
+          ssl_ca_cert_file "/opt/fix/SOAPdev/etc/pki/CA/cacert.pem"
+        end
+      end
+      #以下2行はカギ情報伝送方式(例:X509認証)で必要になる
+      #公開･プライベートカギ情報へのファイルパス･
+        #ssl_cert_file "
+        #ssl_cert_key_file "
     end
 
     doc = create_soap_document(data)
@@ -90,9 +94,8 @@ class CommonsClient
 private
   # 処理内容
   # ==== Args
-  # __ :: 
+  # _data_ :: 
   # ==== Return
-  # __ ::
   # ==== Raise
   def create_soap_document(data)
     doc = REXML::Document.new
@@ -115,9 +118,7 @@ p doc.to_s
 
   # 処理内容
   # ==== Args
-  # __ :: 
   # ==== Return
-  # __ ::
   # ==== Raise
   def create_wsse_header
     wsse_username = @username
@@ -126,7 +127,7 @@ p doc.to_s
     wssePassword = Base64.encode64(Digest::SHA1.digest(Base64.decode64(wsse_nonce) + wsse_created + @password)).chomp
     # security
     security_element = REXML::Element.new WS_SECURITY_PREFIX + ':Security'
-    security_element.add_attribute ENV_PREFIX + ':mustUnderstand', '1'
+#     security_element.add_attribute ENV_PREFIX + ':mustUnderstand', '1'
     security_element.add_namespace WS_SECURITY_PREFIX, WSE_NAMESPACE_URI
 
     # usernameToken
@@ -163,9 +164,7 @@ p doc.to_s
 
   # 処理内容
   # ==== Args
-  # __ :: 
   # ==== Return
-  # __ ::
   # ==== Raise
   def create_soap_header
     # soap header
@@ -176,9 +175,8 @@ p doc.to_s
 
   # 処理内容
   # ==== Args
-  # __ :: 
+  # _data_ :: 
   # ==== Return
-  # __ ::
   # ==== Raise
   def create_soap_body(data)
     # soap body

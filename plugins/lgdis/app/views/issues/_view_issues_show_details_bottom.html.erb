@@ -132,16 +132,6 @@
       <% end %>
     <% end %>
   <% end %>
-<%
-=begin
-         render :partial => 'issues/request_delivery_form',
-                  :locals => {:issue => @issue}
-         if check_permissions(@issue)
-         render :partial => 'issues/allow_delivery_form',
-                    :locals => {:status => @status}
-         end
-=end
-%>
     </nobr>
 </fieldset>
 <hr />

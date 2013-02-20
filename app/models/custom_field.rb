@@ -318,9 +318,7 @@ class CustomField < ActiveRecord::Base
       when 'date'
         errs << ::I18n.t('activerecord.errors.messages.not_a_date') unless value =~ /^\d{4}-\d{2}-\d{2}$/ && begin; value.to_date; rescue; false end
       when 'list'
-        unless [CF_CONNECT].flatten.include?(self.id)
-          errs << ::I18n.t('activerecord.errors.messages.inclusion') unless possible_values.include?(value)
-        end
+        errs << ::I18n.t('activerecord.errors.messages.inclusion') unless possible_values.include?(value)
       end
     end
     errs
