@@ -12,6 +12,10 @@ module Lgdis
         has_many :issue_geographies, :dependent => :destroy
         has_many :delivery_histories
 
+        attr_accessible :mail_subject, :summary, :type_update, :description_cancel, :published_date, :published_hm,
+                        :delivered_area, :opened_date, :opened_hm, :closed_date, :closed_hm,
+                        :as => :issue
+
         validates :xml_control_status, :length => {:maximum => 12}
         validates :xml_control_editorialoffice, :length => {:maximum => 50}
         validates :xml_control_publishingoffice, :length => {:maximum => 100}
@@ -63,6 +67,51 @@ module Lgdis
                       '2' => 'Update',
                       '3' => 'Cancel'
                     }.freeze
+
+      # 日時フィールドに対して、日付、時刻フィールドに分割したアクセサを定義します。
+      # 例) create_at ⇒ create_date, create_hm
+      # ==== Args
+      # _attrs_ :: attrs
+      # ==== Return
+      # ==== Raise
+      def self.attr_accessor_separate_datetime(*attrs)
+        attrs.each do |attr|
+          prefix = attr.to_s.gsub("_at","")
+          define_method("#{prefix}_date") do
+            val = eval("@#{prefix}_date")
+            base_value = eval("self.#{attr}")
+            # timezoneの考慮が必要
+            # see:Redmine::I18n#format_time
+            zone = User.current.time_zone
+            base_value &&= zone ? base_value.in_time_zone(zone) : (base_value.utc? ? base_value.localtime : base_value)
+            base_value &&= base_value.to_date
+            val || base_value
+          end
+
+          define_method("#{prefix}_date=") do |val|
+            instance_variable_set("@#{prefix}_date", val)
+            set_date_time_attr("#{attr}", val, eval("#{prefix}_hm"))
+          end
+
+          define_method("#{prefix}_hm") do
+            val = eval("@#{prefix}_hm")
+            base_value = eval("self.#{attr}")
+            # timezoneの考慮が必要
+            # see:Redmine::I18n#format_time
+            zone = User.current.time_zone
+            base_value &&= zone ? base_value.in_time_zone(zone) : (base_value.utc? ? base_value.localtime : base_value)
+            base_value &&= base_value.strftime("%H:%M")
+            val || base_value
+          end
+
+          define_method("#{prefix}_hm=") do |val|
+            instance_variable_set("@#{prefix}_hm", val)
+            set_date_time_attr("#{attr}", eval("#{prefix}_date"), val)
+          end
+        end
+      end
+
+      attr_accessor_separate_datetime :published_at, :opened_at, :closed_at
 
       # チケット情報のコピー
       # チケット位置情報もコピーするように処理追加
@@ -151,7 +200,6 @@ module Lgdis
       # _doc_ :: 配信内容
       # ==== Raise
       def create_commons_msg
-
         # テンプレートの読み込み
         commons_xml = DST_LIST['commons_xml'][self.tracker_id]
         file = File.new("#{Rails.root}/plugins/lgdis/files/xml/#{commons_xml}")
@@ -163,15 +211,13 @@ module Lgdis
         start_element = DST_LIST['commons_xml_field']['namespace_start_tag']
         end_element   = DST_LIST['commons_xml_field']['namespace_end_tag']
         xml_body = start_element + self.xml_body + end_element
-        xml_body  = REXML::Document.new(xml_body).elements["//pcx_ev:EvacuationOrder"] 
-
+        xml_body  = REXML::Document.new(xml_body).elements["//pcx_ev:EvacuationOrder"]
 
         # tracker_id に紐付く標題を設定
         title  = DST_LIST['tracker_title'][self.tracker_id]
 
-        edition_mng = EditionManagement.find_by_project_id_and_tracker_id(self.project_id, self.tracker_id)
-
         # status(更新種別), uuid, edition_num(版番号)を設定
+        edition_mng = EditionManagement.find_by_project_id_and_tracker_id(self.project_id, self.tracker_id)
         edition_fields_map = set_edition_mng_field(edition_mng)
 
         # 運用種別フラグ
@@ -193,7 +239,8 @@ module Lgdis
 
         # 配信対象地域
         str=''
-        self.delivered_area.split(",").each do |s|
+        self.delivered_area='1'
+        self.delivered_area.split(',').each do |s|
           str << Constant.hash_for_table(Issue.table_name)['delivered_area'][s] + ','
         end
         delivered_area = str.split(//u)[0..-2].join

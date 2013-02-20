@@ -1,8 +1,9 @@
-<fieldset class="collapsible collapsed">
+<div style="display:none;"></div><%# IE8のバグで、fieldsetがうまく描画されないため、ダミーで要素追加 %>
+<fieldset class="collapsible">
   <legend onclick="toggleFieldset(this);"><%= l(:ext_out_field) %></legend>
+  <div>
   <%= form_tag("/deliver_issues/request_delivery") do %>
     <div>
-      <nobr>
         <p><strong><label><%= l(:delivery_place) %>:</label></strong></p>
         <%= hidden_field_tag :issue_id, @issue.id %>
         <%= hidden_field_tag :current_user, User.current %>
@@ -10,9 +11,10 @@
 
         <% unless @destination_list.blank? %>
           <% @destination_list.each do |dest|%>
-            <%= check_box_tag "ext_out_target[]", dest['target_num'] %><label><%= dest['name'] %></label>
+            <label style="display: block;float: left;"><%= check_box_tag "ext_out_target[]", dest['target_num'] %><%= dest['name'] %></label>
           <% end %>
         <% end %>
+        <div style="clear:both;"></div>
     </div>
 
     <p><strong><label><%= l(:control_plane_settings) %>:</label></strong></p>
@@ -56,8 +58,8 @@
         <div class="splitcontentleft">
           <p>
             <label>情報の発表日時</label>
-            <%= text_field_tag "issue_published_at", @issue.published_at, :size=>'10' %><%= calendar_for("issue_published_at") %>
-            <%= text_field_tag "issue_published_at_time", '', :size=>'10' %>
+            <%= text_field_tag "issue[published_date]", @issue.published_date, :size=>'10' %><%= calendar_for("issue_published_date") %>
+            <%= text_field_tag "issue[published_hm]",   @issue.published_hm,   :size=>'10' %>
           </p>
         </div>
         <div class="splitcontentright">
@@ -76,15 +78,15 @@
         <div class="splitcontentleft">
           <p>
             <label>情報の公開開始日時</label>
-            <%= text_field_tag "issue_opened_at", @issue.opened_at, :size=>'10' %><%= calendar_for("issue_opened_at") %>
-            <%= text_field_tag "issue_opened_at_time", @issue.opened_at, :size=>'10' %>
+            <%= text_field_tag "issue[opened_date]", @issue.opened_date, :size=>'10' %><%= calendar_for("issue_opened_date") %>
+            <%= text_field_tag "issue[opened_hm]",   @issue.opened_hm,   :size=>'10' %>
           </p>
         </div>
         <div class="splitcontentright">
           <p>
             <label>情報の公開終了日時</label>
-            <%= text_field_tag "issue_closed_at", @issue.closed_at, :size=>'10' %><%= calendar_for("issue_closed_at") %>
-            <%= text_field_tag "issue_closed_at_time", @issue.closed_at, :size=>'10' %>
+            <%= text_field_tag "issue[closed_date]", @issue.closed_date, :size=>'10' %><%= calendar_for("issue_closed_date") %>
+            <%= text_field_tag "issue[closed_hm]",   @issue.closed_hm,   :size=>'10' %>
           </p>
         </div>
       </div>
@@ -132,6 +134,6 @@
       <% end %>
     <% end %>
   <% end %>
-    </nobr>
+  <hr />
+  </div>
 </fieldset>
-<hr />

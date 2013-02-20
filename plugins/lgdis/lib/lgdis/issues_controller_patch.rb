@@ -94,8 +94,8 @@ module Lgdis
           polygons = set_polygons(issue_geographies)
           locations = set_locations(issue_geographies)
         end
-        @locations = locations
-        @points   = points
+        @locations = locations.blank? ? [] : locations
+        @points   = points.blank? ? [] : points
         @lines    = lines.blank? ? [] : lines
         @polygons = polygons.blank? ? [] : polygons
       end

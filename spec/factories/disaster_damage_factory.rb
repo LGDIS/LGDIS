@@ -51,8 +51,20 @@ FactoryGirl.define do
     damaged_harbors_count 1
     damaged_sand_control_count 1
     damaged_cleaning_facilities_count 1
+    landslides_count 1
+    closed_lines_count 1
+    damaged_ships_count 1
+    water_failure_houses_count 1
     dead_telephone_lines_count 1
+    blackout_houses_count 1
+    gas_supply_stopped_houses_count 1
     damaged_concrete_block_walls_count 1
+    sufferer_houses_count 1
+    sufferer_people_count 1
+    fire_occurred_buildings_count 1
+    fire_occurred_dangerous_substances_count 1
+    fire_occurred_others_count 1
+    public_educational_buildings_losses_amount 1
     agriculture_forestry_and_fisheries_buildings_losses_amount 1
     public_civil_buildings_losses_amount 1
     other_public_buildings_losses_amount 1
