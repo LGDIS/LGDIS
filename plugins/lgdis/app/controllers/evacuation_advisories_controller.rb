@@ -16,16 +16,16 @@ class EvacuationAdvisoriesController < ApplicationController
   # 避難勧告･指示一覧検索画面
   # 初期表示処理
   # 押下されたボタンにより処理を分岐
-  # ==== Args
-  # _params[:search]_ :: 検索条件
-  # _params[:commit_kind]_ :: ボタン種別
-  # ==== Return
   # 検索ボタンが押下された場合、検索条件を元に検索を行い結果を表示する
   # クリアボタンが押下された場合、検索条件が未指定の状態で検索を行い結果を表示する
   # 新規登録ボタンが押下された場合、避難勧告･指示登録画面に遷移する
   # 更新ボタンが押下された場合、避難勧告･指示情報の一括更新を行う
   # チケット登録ボタンが押下された場合、全ての避難勧告･指示情報をXML化しチケットに登録する
   # 集計ボタンが押下された場合、LGDPMから避難者集計情報を取得し避難勧告･指示情報に登録する
+  # ==== Args
+  # _params[:search]_ :: 検索条件
+  # _params[:commit_kind]_ :: ボタン種別
+  # ==== Return
   # ==== Raise
   def index
     case params["commit_kind"]
@@ -94,8 +94,8 @@ class EvacuationAdvisoriesController < ApplicationController
   # ==== Return
   # ==== Raise
   def ticket
-    # 避難所情報が存在しない場合、処理しない
-    if EvacuationAdvisory.where(:project_id => @project.id).present?
+    # 避難勧告･指示情報が存在しない場合、処理しない
+    if EvacuationAdvisory.limit(1).present?
       begin
         issues = EvacuationAdvisory.create_issues(@project)
         links = []
@@ -219,8 +219,8 @@ class EvacuationAdvisoriesController < ApplicationController
   def create
     @evacuation_advisory = EvacuationAdvisory.new()
     @evacuation_advisory.assign_attributes(params[:evacuation_advisory], :as => :evacuation_advisory)
-    @evacuation_advisory.project_id = @project.id
-    @evacuation_advisory.disaster_code = @project.identifier
+		@evacuation_advisory.project_id = @project.id
+#     @evacuation_advisory.disaster_code = @project.identifier
 
     if @evacuation_advisory.save
       flash[:notice] = l(:notice_evacuation_advisory_successful_create, :id => "##{@evacuation_advisory.id} #{@evacuation_advisory.full_name}")
