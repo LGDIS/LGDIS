@@ -25,15 +25,19 @@ class DeliverIssuesController < ApplicationController
     user_name   = params[:current_user]
     ext_out_ary = params[:ext_out_target]
 
+    issue = Issue.find_by_id issue_id.to_i
+
     unless ext_out_ary.blank?
       ext_out_ary.each do |e|
         histry_obj = DeliveryHistory.new(
                        :issue_id          => issue_id,
+                       :project_id        => User.current.id,
                        :delivery_place_id => e.to_i,
                        :request_user      => user_name,
                        :status            => 'request',
                        :process_date      => Time.now)
-        if histry_obj.save
+
+        if histry_obj.save && issue.update_attributes(params[:issue])
           flash[:notice] = l(:notice_delivery_request_successful)
         else
           flash[:notice] = l(:notice_delivery_request_failed)
@@ -133,7 +137,7 @@ class DeliverIssuesController < ApplicationController
     str = "issue." + DST_LIST['create_msg_msd'][exit_out_id]
 
     # TODO
-    # Atom, 公共情報コモンズのデータ作成方法未決
+    # Atom
 
     # 配信先に合わせ配信内容作成処理
     summary = eval(str)
