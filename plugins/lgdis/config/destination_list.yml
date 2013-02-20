@@ -10,189 +10,321 @@
 commons: &commons
   target_num: 1
   name: 公共情報コモンズ
-smtp: &smtp
+smtp_auth: &smtp
   target_num: 2
   name: 自治体職員向けメール
-smtp_auth: &smtp_auth
+smtp: &smtp_part0
   target_num: 3
+  name: 自治体職員向けメール（０号配備）
+smtp: &smtp_part1
+  target_num: 4
+  name: 自治体職員向けメール（１号配備）
+smtp: &smtp_part2
+  target_num: 5
+  name: 自治体職員向けメール（２号配備）
+smtp: &smtp_part3
+  target_num: 6
+  name: 自治体職員向けメール（３号配備）
+smtp: &smtp_auth
+  target_num: 7
   name: まちcomi向けメール
 twitter: &twitter
-  target_num: 4
+  target_num: 8
   name: Twitter
 facebook: &facebook
-  target_num: 5
+  target_num: 9
   name: Facebook
 atom: &atom
-  target_num: 6
+  target_num: 10
   name: 災害情報ポータル
-urgent_mail: &urgent_mail
-  target_num: 7
-  name: 緊急速報メール
+urgent_mail: &urgent_mail_docomo
+  target_num: 11
+  name: 緊急速報メール（NTTDocomo）
+urgent_mail: &urgent_mail_au
+  target_num: 12
+  name: 緊急速報メール（KDDI）
+urgent_mail: &urgent_mail_sb
+  target_num: 13
+  name: 緊急速報メール（ソフトバンク）
 
 destination:
   1: # Non member
     1: # 避難勧告指示・指示情報(公共コモンズ配信用)
       - <<: *commons
       - <<: *smtp
+      - <<: *smtp_part0
+      - <<: *smtp_part1
+      - <<: *smtp_part2
+      - <<: *smtp_part3
       - <<: *smtp_auth
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
-      - <<: *urgent_mail
+      - <<: *urgent_mail_docomo
+      - <<: *urgent_mail_au
+      - <<: *urgent_mail_sb
     4: # JMA（警報・注意報）
       - <<: *commons
       - <<: *smtp
+      - <<: *smtp_part0
+      - <<: *smtp_part1
+      - <<: *smtp_part2
+      - <<: *smtp_part3
       - <<: *smtp_auth
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
-      - <<: *urgent_mail
+      - <<: *urgent_mail_docomo
+      - <<: *urgent_mail_au
+      - <<: *urgent_mail_sb
   2: # Anonymous
     1: # 避難勧告指示・指示情報(公共コモンズ配信用)
       - <<: *commons
       - <<: *smtp
+      - <<: *smtp_part0
+      - <<: *smtp_part1
+      - <<: *smtp_part2
+      - <<: *smtp_part3
       - <<: *smtp_auth
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
-      - <<: *urgent_mail
+      - <<: *urgent_mail_docomo
+      - <<: *urgent_mail_au
+      - <<: *urgent_mail_sb
     4: # JMA（警報・注意報）
       - <<: *commons
       - <<: *smtp
+      - <<: *smtp_part0
+      - <<: *smtp_part1
+      - <<: *smtp_part2
+      - <<: *smtp_part3
       - <<: *smtp_auth
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
-      - <<: *urgent_mail
+      - <<: *urgent_mail_docomo
+      - <<: *urgent_mail_au
+      - <<: *urgent_mail_sb
   3: # 管理者(プロトタイプ環境 admin)
     1: # 避難勧告指示・指示情報(公共コモンズ配信用)
       - <<: *commons
       - <<: *smtp
+      - <<: *smtp_part0
+      - <<: *smtp_part1
+      - <<: *smtp_part2
+      - <<: *smtp_part3
       - <<: *smtp_auth
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
-      - <<: *urgent_mail
+      - <<: *urgent_mail_docomo
+      - <<: *urgent_mail_au
+      - <<: *urgent_mail_sb
     4: # 気象情報（警報・注意報）
       - <<: *commons
       - <<: *smtp
+      - <<: *smtp_part0
+      - <<: *smtp_part1
+      - <<: *smtp_part2
+      - <<: *smtp_part3
       - <<: *smtp_auth
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
-      - <<: *urgent_mail
+      - <<: *urgent_mail_docomo
+      - <<: *urgent_mail_au
+      - <<: *urgent_mail_sb
   6: # モデレータ
     1: # 避難勧告指示・指示情報(公共コモンズ配信用)
       - <<: *commons
       - <<: *smtp
+      - <<: *smtp_part0
+      - <<: *smtp_part1
+      - <<: *smtp_part2
+      - <<: *smtp_part3
       - <<: *smtp_auth
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
-      - <<: *urgent_mail
+      - <<: *urgent_mail_docomo
+      - <<: *urgent_mail_au
+      - <<: *urgent_mail_sb
     4: # JMA（警報・注意報）
       - <<: *commons
       - <<: *smtp
+      - <<: *smtp_part0
+      - <<: *smtp_part1
+      - <<: *smtp_part2
+      - <<: *smtp_part3
       - <<: *smtp_auth
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
-      - <<: *urgent_mail
+      - <<: *urgent_mail_docomo
+      - <<: *urgent_mail_au
+      - <<: *urgent_mail_sb
   7: # エリアマネージャ
     1: # 避難勧告指示・指示情報(公共コモンズ配信用)
       - <<: *commons
       - <<: *smtp
+      - <<: *smtp_part0
+      - <<: *smtp_part1
+      - <<: *smtp_part2
+      - <<: *smtp_part3
       - <<: *smtp_auth
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
-      - <<: *urgent_mail
+      - <<: *urgent_mail_docomo
+      - <<: *urgent_mail_au
+      - <<: *urgent_mail_sb
     4: # JMA（警報・注意報）
       - <<: *commons
       - <<: *smtp
+      - <<: *smtp_part0
+      - <<: *smtp_part1
+      - <<: *smtp_part2
+      - <<: *smtp_part3
       - <<: *smtp_auth
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
-      - <<: *urgent_mail
+      - <<: *urgent_mail_docomo
+      - <<: *urgent_mail_au
+      - <<: *urgent_mail_sb
   8: # 市役所内一般入力者
     1: # 避難勧告指示・指示情報(公共コモンズ配信用)
       - <<: *commons
       - <<: *smtp
+      - <<: *smtp_part0
+      - <<: *smtp_part1
+      - <<: *smtp_part2
+      - <<: *smtp_part3
       - <<: *smtp_auth
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
-      - <<: *urgent_mail
+      - <<: *urgent_mail_docomo
+      - <<: *urgent_mail_au
+      - <<: *urgent_mail_sb
     4: # JMA（警報・注意報）
       - <<: *commons
       - <<: *smtp
+      - <<: *smtp_part0
+      - <<: *smtp_part1
+      - <<: *smtp_part2
+      - <<: *smtp_part3
       - <<: *smtp_auth
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
-      - <<: *urgent_mail
+      - <<: *urgent_mail_docomo
+      - <<: *urgent_mail_au
+      - <<: *urgent_mail_sb
   9: # 外部入力者
     1: # 避難勧告指示・指示情報(公共コモンズ配信用)
       - <<: *commons
       - <<: *smtp
+      - <<: *smtp_part0
+      - <<: *smtp_part1
+      - <<: *smtp_part2
+      - <<: *smtp_part3
       - <<: *smtp_auth
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
-      - <<: *urgent_mail
+      - <<: *urgent_mail_docomo
+      - <<: *urgent_mail_au
+      - <<: *urgent_mail_sb
     4: # JMA（警報・注意報）
       - <<: *commons
       - <<: *smtp
+      - <<: *smtp_part0
+      - <<: *smtp_part1
+      - <<: *smtp_part2
+      - <<: *smtp_part3
       - <<: *smtp_auth
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
-      - <<: *urgent_mail
+      - <<: *urgent_mail_docomo
+      - <<: *urgent_mail_au
+      - <<: *urgent_mail_sb
   10: # 閲覧者
     1: # 避難勧告指示・指示情報(公共コモンズ配信用)
       - <<: *commons
       - <<: *smtp
+      - <<: *smtp_part0
+      - <<: *smtp_part1
+      - <<: *smtp_part2
+      - <<: *smtp_part3
       - <<: *smtp_auth
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
-      - <<: *urgent_mail
+      - <<: *urgent_mail_docomo
+      - <<: *urgent_mail_au
+      - <<: *urgent_mail_sb
     4: # JMA（警報・注意報）
       - <<: *commons
       - <<: *smtp
+      - <<: *smtp_part0
+      - <<: *smtp_part1
+      - <<: *smtp_part2
+      - <<: *smtp_part3
       - <<: *smtp_auth
       - <<: *twitter
       - <<: *facebook
       - <<: *atom
-      - <<: *urgent_mail
+      - <<: *urgent_mail_docomo
+      - <<: *urgent_mail_au
+      - <<: *urgent_mail_sb
 
 delivery_job_map:
   1: SoapKjCommonsRequestJob
   2: SmtpJichiShokuinRequestJob
-  3: SmtpAuthRequestJob
-  4: TwitterRequestJob
-  5: FacebookRequestJob
-  6: AtomDigiSignageRequestJob
-  7: SoapKjCommonsRequestJob
+  3: SmtpJichiShokuinRequestJob
+  4: SmtpJichiShokuinRequestJob
+  5: SmtpJichiShokuinRequestJob
+  6: SmtpJichiShokuinRequestJob
+  7: SmtpAuthRequestJob
+  8: TwitterRequestJob
+  9: FacebookRequestJob
+  10: AtomDigiSignageRequestJob
+  11: SoapKjCommonsRequestJob
+  12: SoapKjCommonsRequestJob
+  13: SoapKjCommonsRequestJob
 
 destination_name:
   1: 公共情報コモンズ
   2: 自治体職員向けメール
-  3: まちcomi向けメール
-  4: Twitter
-  5: Facebook
-  6: 災害情報ポータル
-  7: 緊急速報メール
+  3: 自治体職員向けメール（０号配備）
+  4: 自治体職員向けメール（１号配備）
+  5: 自治体職員向けメール（２号配備）
+  6: 自治体職員向けメール（３号配備）
+  7: まちcomi向けメール
+  8: Twitter
+  9: Facebook
+  10: 災害情報ポータル
+  11: 緊急速報メール（NTTDocomo）
+  12: 緊急速報メール（KDDI）
+  13: 緊急速報メール（ソフトバンク）
 
 create_msg_msd:
   1: create_commons_msg
   2: create_smtp_msg
   3: create_smtp_msg
-  4: create_twitter_msg
-  5: create_facebook_msg
-  6: create_atom_msg
-  7: create_commons_msg
+  4: create_smtp_msg
+  5: create_smtp_msg
+  6: create_smtp_msg
+  7: create_smtp_msg
+  8: create_twitter_msg
+  9: create_facebook_msg
+  10: create_atom_msg
+  11: create_commons_msg
+  12: create_commons_msg
+  13: create_commons_msg
 
 commons_xml:
   0: commons_urgent_mail.xml                     # 緊急速報メール
