@@ -89,31 +89,4 @@ class DeliverIssuesController < ApplicationController
     @project = Project.find(params[:project_id])
   end
 
-  # 配信先判定、配信内容振り分け処理
-  # 災害訓練の判断処理
-  # ==== Args
-  # _issue_ :: チケット情報
-  # _delivery_history_ :: 配信情報
-  # ==== Return
-  # _summary_ :: 配信内容
-  # ==== Raise
-  def create_summary(issue, delivery_history)
-    exit_out_id = delivery_history.delivery_place_id
-    str = "issue." + DST_LIST['create_msg_msd'][exit_out_id]
-
-    # TODO
-    # Atom
-
-    # 配信先に合わせ配信内容作成処理
-    summary = eval(str)
-
-    # Twitter, Facebook, の本文へ適宜URL, 災害訓練モード設定
-    check_ary = [DST_LIST['twitter']['target_num'],
-                 DST_LIST['facebook']['target_num']]
-    if check_ary.include?(exit_out_id)
-      summary = issue.add_url_and_training(summary, exit_out_id)
-    end
-
-    return summary
-  end
 end

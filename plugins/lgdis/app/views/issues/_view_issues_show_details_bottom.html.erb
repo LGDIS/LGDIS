@@ -11,7 +11,7 @@
 
         <% unless @destination_list.blank? %>
           <% @destination_list.each do |dest|%>
-            <label style="display: block;float: left;"><%= check_box_tag "ext_out_target[]", dest['target_num'] %><%= dest['name'] %></label>
+            <label style="display: block;float: left;"><%= check_box_tag "ext_out_target[]", dest['id'] %><%= dest['name'] %></label>
           <% end %>
         <% end %>
         <div style="clear:both;"></div>
