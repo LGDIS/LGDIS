@@ -11,6 +11,7 @@ class EvacuationAdvisoriesController < ApplicationController
   # ==== Raise
   def init
     @evacuation_advisory_const = Constant::hash_for_table(EvacuationAdvisory.table_name)
+    @area = get_cache("area")
   end
   
   # 避難勧告･指示一覧検索画面
@@ -63,20 +64,11 @@ class EvacuationAdvisoriesController < ApplicationController
       eva_id = params[:evacuation_advisories].keys
       @search    = EvacuationAdvisory.search(:id_in => eva_id)
       @evacuation_advisories  = @search.paginate(:page => params[:page], :per_page => 30).order("identifier ASC")
-      begin
-        # TODO: 不要であれば、削除のこと
-        EvacuationAdvisory.skip_callback(:save, :after, :execute_release_all_data)
-        ActiveRecord::Base.transaction do
-          @evacuation_advisories.each do |eva|
-            eva.assign_attributes(params[:evacuation_advisories]["#{eva.id}"])
-            eva.save
-          end
-          # TODO: 不要であれば、削除のこと
-          EvacuationAdvisory.release_all_data
+      ActiveRecord::Base.transaction do
+        @evacuation_advisories.each do |eva|
+          eva.assign_attributes(params[:evacuation_advisories]["#{eva.id}"])
+          eva.save
         end
-      ensure
-        # TODO: 不要であれば、削除のこと
-          EvacuationAdvisory.set_callback(:save, :after, :execute_release_all_data)
       end
     else
       @search   = EvacuationAdvisory.search(params[:search])

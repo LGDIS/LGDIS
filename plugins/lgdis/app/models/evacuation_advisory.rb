@@ -2,7 +2,7 @@
 class EvacuationAdvisory < ActiveRecord::Base
   unloadable
 
-  attr_accessible :advisory_type,:sort_criteria,:issue_or_lift,:area,
+  attr_accessible :advisory_type,:sort_criteria,:issueorlift,:area,
                   :area_kana,:district,:issued_date,:issued_hm,:issued_hm,:changed_date,
                   :changed_hm,:lifted_date,:lifted_hm,:address,:category,:cause,
                   :staff_no,:full_name,:alias,:headline,:message,
@@ -30,13 +30,11 @@ class EvacuationAdvisory < ActiveRecord::Base
                 :inclusion => {:in => CONST[:advisory_type.to_s].keys, :allow_blank => true}
   validates :sort_criteria, :presence => true,
                 :inclusion => {:in => CONST[:sort_criteria.to_s].keys, :allow_blank => true}
-  validates :issue_or_lift,
-                :inclusion => {:in => CONST[:issue_or_lift.to_s].keys, :allow_blank => true}
+  validates :issueorlift,
+                :inclusion => {:in => CONST[:issueorlift.to_s].keys, :allow_blank => true}
   validates :area, :presence => true,
                 :length => {:maximum => 100}
   validates_uniqueness_of_without_deleted :area
-  validates :district,
-                :inclusion => {:in => CONST[:district.to_s].keys, :allow_blank => true}
 
   #そのほかの項目チェック:DB定義順
   validates :households,
@@ -223,7 +221,7 @@ class EvacuationAdvisory < ActiveRecord::Base
         # 発令区分
         node_detail.add_element("pcx_ev:Sort").add_text(CONST["sort_criteria"]["#{eva.sort_criteria}"]) if eva.sort_criteria.present?
         # 発令･解除区分
-        node_detail.add_element("pcx_ev:IssueOrLift").add_text(CONST["issue_or_lift"]["#{eva.issue_or_lift}"]) if eva.issue_or_lift.present?
+        node_detail.add_element("pcx_ev:IssueOrLift").add_text(CONST["issueorlift"]["#{eva.issueorlift}"]) if eva.issueorlift.present?
         node_obj = node_detail.add_element("pcx_ev:Object")
           node_obj.add_element("pcx_ev:Households", {"pcx_ev:unit" => "世帯"}).add_text("#{eva.households}") #if eva.households_subtotal.present?
           node_obj.add_element("pcx_ev:HeadCount").add_text("#{eva.head_count}") #if eva.head_count_subtotal.present?
@@ -234,7 +232,7 @@ class EvacuationAdvisory < ActiveRecord::Base
             node_location.add_element("commons:areaName").add_text("#{eva.area}") if eva.area.present?
             node_location.add_element("commons:areaNameKana").add_text("#{eva.area_kana}") if eva.area_kana.present?
           # 日時
-          case eva.issue_or_lift
+          case eva.issueorlift
           when "1" # 発令
             date = eva.issued_at.xmlschema if eva.issued_at.present?
           when "0" # 解除
@@ -260,55 +258,6 @@ class EvacuationAdvisory < ActiveRecord::Base
     issue.save!
     
     return issue
-  end
-  
-  # TODO: 不要であれば、削除のこと
-  # 全データ公開処理を行います。
-  # cacheデータと、JSONファイルを上書きします。
-  # ==== Args
-  # ==== Return
-  # ==== Raise
-  def self.release_all_data
-    write_cache
-    create_json_file
-  end
-  
-  # TODO: 不要であれば、削除のこと
-  # cacheデータを上書きします。
-  # ==== Args
-  # _shelters_ :: Shelterオブジェクト配列
-  # ==== Return
-  # ==== Raise
-  def self.write_cache
-    h = {}
-    Shelter.all.each do |s|
-      h[s.shelter_code] = {"name" => s.name, "area" => s.area}
-    end
-#     Rails.cache.write("shelter", h)
-  end
-  
-  # TODO: 不要であれば、削除のこと
-  # JSONファイルを上書きします。
-  # ==== Args
-  # _shelters_ :: Shelterオブジェクト配列
-  # ==== Return
-  # ==== Raise
-  def self.create_json_file
-    h = {}
-    Shelter.all.each do |s|
-      h[s.shelter_code] = s.name
-    end
-    File.open(File.join(Rails.root,"public","shelter.json"), "w:utf-8") do |f|
-      f.write(JSON.generate(h))
-    end
-  end
-  
-  # 全データ公開処理を呼び出します。（コールバック向け）
-  # ==== Args
-  # ==== Return
-  # ==== Raise
-  def execute_release_all_data
-    self.class.release_all_data
   end
 
   private

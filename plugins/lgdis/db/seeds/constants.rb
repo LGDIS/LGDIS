@@ -27,16 +27,8 @@ Constant.create(kind1: 'TD', kind2: 'shelters', kind3: 'openable_flag', text: '�
 
 # 避難勧告･指示モデル' 
 # 発令・解除区分 
-Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'issue_or_lift', text: '発令',      value: '1', _order: '1')
-Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'issue_or_lift', text: '解除',      value: '0', _order: '2')
-# 地区（大分類）
-Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'district', text: '石巻地区',   value: '1', _order: '1')
-Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'district', text: '河北地区',   value: '2', _order: '2')
-Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'district', text: '雄勝地区',   value: '3', _order: '3')
-Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'district', text: '河南地区',   value: '4', _order: '4')
-Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'district', text: '桃生地区',   value: '5', _order: '5')
-Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'district', text: '北上地区',   value: '6', _order: '6')
-Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'district', text: '牡鹿地区',   value: '7', _order: '7')
+Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'issueorlift', text: '発令',      value: '1', _order: '1')
+Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'issueorlift', text: '解除',      value: '0', _order: '2')
 # COMMONSむけ発令区分
 Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'sort_criteria', text: '指示等なし', value: '1', _order: '1')
 Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'sort_criteria', text: '避難準備',   value: '2', _order: '2')
@@ -92,6 +84,14 @@ Constant.create(kind1: 'TD', kind2: 'disaster_damages', kind3: 'municipal_antidi
 Constant.create(kind1: 'TD', kind2: 'disaster_damages', kind3: 'municipal_antidisaster_headquarter_status', text: '設置', value: '2', _order: '2')
 
 # コントロールプレーン部
+# 要因
+Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'xml_control_cause', text: '正規', value: '0', _order: '1')
+Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'xml_control_cause', text: '訂正', value: '1', _order: '2')
+Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'xml_control_cause', text: '訓練', value: '2', _order: '3')
+Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'xml_control_cause', text: '削除', value: '3', _order: '4')
+# 承認
+Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'xml_control_apply', text: '未', value: '0', _order: '1')
+Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'xml_control_apply', text: '済', value: '1', _order: '2')
 # 情報の更新種別
 Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'type_update', text: '新規', value: '1', _order: '1')
 Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'type_update', text: '更新', value: '2', _order: '2')

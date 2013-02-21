@@ -22,7 +22,7 @@
           <%= select_tag "evacuation_advisories[#{evacuation_advisory.id}][sort_criteria]", options_for_select(@evacuation_advisory_const["sort_criteria"].invert, evacuation_advisory.sort_criteria), {:include_blank => true, :disabled => @disabled} %>
         </td>
         <td style="text-align: center;">
-          <%= select_tag "evacuation_advisories[#{evacuation_advisory.id}][issue_or_lift]", options_for_select(@evacuation_advisory_const["issue_or_lift"].invert, evacuation_advisory.issue_or_lift), {:include_blank => true, :disabled => @disabled} %>
+          <%= select_tag "evacuation_advisories[#{evacuation_advisory.id}][issueorlift]", options_for_select(@evacuation_advisory_const["issueorlift"].invert, evacuation_advisory.issueorlift), {:include_blank => true, :disabled => @disabled} %>
         </td>
         <td style="text-align: center;" nowrap>
           <%= text_field_tag "evacuation_advisories[#{evacuation_advisory.id}][issued_date]", evacuation_advisory.issued_date, :size => "10", :disabled => @disabled %>

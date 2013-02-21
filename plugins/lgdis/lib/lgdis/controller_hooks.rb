@@ -64,7 +64,7 @@ module Lgdis
     # ==== Raise
     def deliver_issue(context={})
       issue = context[:issue]
-      raise "配備番号が未設定です" if (auto_target = context[:params][:issue][:auto_target]).blank?
+      raise "配備番号が未設定です" if (auto_target = context[:params][:issue][:send_target]).blank?
 
       # TODO
       # redis が起動されている必要がある
