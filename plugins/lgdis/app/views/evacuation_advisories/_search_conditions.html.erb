@@ -4,9 +4,9 @@
     <%= f.select("#{key}_eq", options_for_select(@evacuation_advisory_const[key.to_s].invert, @search.sort_criteria_eq),:include_blank => true) %>
   <% end %>
   
-  <%= field_for :issue_or_lift do |key, label| %>
+  <%= field_for :issueorlift do |key, label| %>
     <%= label_tag{label} %>
-    <%= f.select("advisory_type_eq", options_for_select(@evacuation_advisory_const[key.to_s].invert, @search.advisory_type_eq),:include_blank => true) %>
+    <%= f.select("#{key}_eq", options_for_select(@evacuation_advisory_const[key.to_s].invert, @search.issueorlift_eq),:include_blank => true) %>
   <% end %>
   
   <%= field_for :district  do |key, label| %>

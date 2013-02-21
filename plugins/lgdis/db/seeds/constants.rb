@@ -27,8 +27,8 @@ Constant.create(kind1: 'TD', kind2: 'shelters', kind3: 'openable_flag', text: '�
 
 # 避難勧告･指示モデル' 
 # 発令・解除区分 
-Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'issue_or_lift', text: '発令',      value: '1', _order: '1')
-Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'issue_or_lift', text: '解除',      value: '0', _order: '2')
+Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'issueorlift', text: '発令',      value: '1', _order: '1')
+Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'issueorlift', text: '解除',      value: '0', _order: '2')
 # 地区（大分類）
 Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'district', text: '石巻地区',   value: '1', _order: '1')
 Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'district', text: '河北地区',   value: '2', _order: '2')

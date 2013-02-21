@@ -64,19 +64,13 @@ class EvacuationAdvisoriesController < ApplicationController
       @search    = EvacuationAdvisory.search(:id_in => eva_id)
       @evacuation_advisories  = @search.paginate(:page => params[:page], :per_page => 30).order("identifier ASC")
       begin
-        # TODO: 不要であれば、削除のこと
-        EvacuationAdvisory.skip_callback(:save, :after, :execute_release_all_data)
         ActiveRecord::Base.transaction do
           @evacuation_advisories.each do |eva|
             eva.assign_attributes(params[:evacuation_advisories]["#{eva.id}"])
             eva.save
           end
-          # TODO: 不要であれば、削除のこと
-          EvacuationAdvisory.release_all_data
         end
       ensure
-        # TODO: 不要であれば、削除のこと
-          EvacuationAdvisory.set_callback(:save, :after, :execute_release_all_data)
       end
     else
       @search   = EvacuationAdvisory.search(params[:search])

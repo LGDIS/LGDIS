@@ -181,7 +181,7 @@ ja:
     field_advisory_type: 避難勧告･指示種別
     field_disaster_code: 災害コード
     field_sort_criteria: 発令区分
-    field_issue_or_lift: 発令・解除区分
+    field_issueorlift: 発令・解除区分
     field_area: 発令・解除地区名称
     field_area_kana: 発令・解除地区名称かな
     field_district: 地区（大分類）
