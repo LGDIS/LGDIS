@@ -269,7 +269,7 @@ class Shelter < ActiveRecord::Base
     
     # 避難人数、避難世帯数の集計値および避難所件数の取得
     summary  = Shelter.select("SUM(head_count) AS head_count_sum, SUM(head_count_voluntary) AS head_count_voluntary_sum,
-      SUM(households) AS households_sum, SUM(households_voluntary) AS households_voluntary_sum, COUNT(*) AS count").first
+      SUM(households) AS households_sum, SUM(households_voluntary) AS households_voluntary_sum, COUNT(*) AS count").where(:shelter_sort => ["2","5"]).first
     
     # Shelter要素の追加
     node_shelter = doc.add_element("pcx_sh:Shelter") # Root
@@ -304,7 +304,9 @@ class Shelter < ActiveRecord::Base
       
       # 子要素がすべてブランクの場合、親要素を生成しない
       if shelter.name.present? || shelter.name_kana.present? ||
-        shelter.phone.present? || shelter.address.present?
+        shelter.phone.present? || shelter.address.present? ||
+        shelter.fax.present? || shelter.e_mail.present? ||
+        shelter.person_responsible.present?
         # 親要素の追加
         node_location = node_information.add_element("pcx_sh:Location")
         # 所在地（緯度・経度）
@@ -315,6 +317,12 @@ class Shelter < ActiveRecord::Base
         node_location.add_element("commons:areaNameKana").add_text("#{shelter.name_kana}") if shelter.name_kana.present?
         # 避難所連絡先
         node_location.add_element("pcx_eb:ContactInfo", {"pcx_eb:contactType" => "phone"}).add_text("#{shelter.phone}") if shelter.phone.present?
+        # 避難所のFAX番号
+        node_location.add_element("pcx_eb:ContactInfo", {"pcx_eb:contactType" => "fax"}).add_text("#{shelter.fax}") if shelter.fax.present?
+        # 避難所のメールアドレス
+        node_location.add_element("pcx_eb:ContactInfo", {"pcx_eb:contactType" => "e-mail"}).add_text("#{shelter.e_mail}") if shelter.e_mail.present?
+        # 避難所の担当者名
+        node_location.add_element("pcx_eb:ContactInfo", {"pcx_eb:contactType" => "personResponsible"}).add_text("#{shelter.person_responsible}") if shelter.person_responsible.present?
         # 所在地
         node_location.add_element("pcx_sh:Address").add_text("#{shelter.address}") if shelter.address.present?
       end
@@ -323,6 +331,8 @@ class Shelter < ActiveRecord::Base
       node_information.add_element("pcx_sh:Type").add_text(CONST["shelter_type"]["#{shelter.shelter_type}"]) if shelter.shelter_type.present?
       # 避難所区分 "未開設","開設","閉鎖","不明","常設"
       node_information.add_element("pcx_sh:Sort").add_text(CONST["shelter_sort"]["#{shelter.shelter_sort}"]) if shelter.shelter_sort.present?
+      # 避難所種別で表現しきれない情報
+      node_information.add_element("pcx_sh:TypeDetail").add_text("#{shelter.shelter_type_detail}") if shelter.shelter_type_detail.present?
       
       # 開設・閉鎖日時
       case shelter.shelter_sort
