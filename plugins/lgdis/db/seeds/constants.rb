@@ -6,7 +6,7 @@ Constant.delete_all # 全件削除
 Constant.create(kind1: 'TD', kind2: 'shelters', kind3: 'shelter_type', text: '避難所',                    value: '1', _order: '1')
 Constant.create(kind1: 'TD', kind2: 'shelters', kind3: 'shelter_type', text: '臨時避難所',                value: '2', _order: '2')
 Constant.create(kind1: 'TD', kind2: 'shelters', kind3: 'shelter_type', text: '広域避難所：開設措置なし',  value: '3', _order: '3')
-Constant.create(kind1: 'TD', kind2: 'shelters', kind3: 'shelter_type', text: '一次避難所：開設措置なし',  value: '4', _order: '4')
+Constant.create(kind1: 'TD', kind2: 'shelters', kind3: 'shelter_type', text: '一時避難所：開設措置なし',  value: '4', _order: '4')
 # 避難所区分
 Constant.create(kind1: 'TD', kind2: 'shelters', kind3: 'shelter_sort', text: '未開設', value: '1', _order: '1')
 Constant.create(kind1: 'TD', kind2: 'shelters', kind3: 'shelter_sort', text: '開設',   value: '2', _order: '2')
@@ -29,14 +29,6 @@ Constant.create(kind1: 'TD', kind2: 'shelters', kind3: 'openable_flag', text: '�
 # 発令・解除区分 
 Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'issueorlift', text: '発令',      value: '1', _order: '1')
 Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'issueorlift', text: '解除',      value: '0', _order: '2')
-# 地区（大分類）
-Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'district', text: '石巻地区',   value: '1', _order: '1')
-Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'district', text: '河北地区',   value: '2', _order: '2')
-Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'district', text: '雄勝地区',   value: '3', _order: '3')
-Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'district', text: '河南地区',   value: '4', _order: '4')
-Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'district', text: '桃生地区',   value: '5', _order: '5')
-Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'district', text: '北上地区',   value: '6', _order: '6')
-Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'district', text: '牡鹿地区',   value: '7', _order: '7')
 # COMMONSむけ発令区分
 Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'sort_criteria', text: '指示等なし', value: '1', _order: '1')
 Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'sort_criteria', text: '避難準備',   value: '2', _order: '2')

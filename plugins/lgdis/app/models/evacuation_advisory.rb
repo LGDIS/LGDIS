@@ -2,7 +2,6 @@
 class EvacuationAdvisory < ActiveRecord::Base
   unloadable
 
-  
   attr_accessible :advisory_type,:sort_criteria,:issueorlift,:area,
                   :area_kana,:district,:issued_date,:issued_hm,:issued_hm,:changed_date,
                   :changed_hm,:lifted_date,:lifted_hm,:address,:category,:cause,
@@ -10,7 +9,7 @@ class EvacuationAdvisory < ActiveRecord::Base
                   :emergency_hq_needed_prefecture,:emergency_hq_needed_city,
                   :alert,:alerting_area,:siren_area,:evacuation_order,
                   :evacuate_from,:evacuate_to,:evacuation_steps_by_authorities,:remarks, 
-                  :households,:head_count,
+                  :households,:head_count
 
   ##正の整数チェック用オプションハッシュ値
   POSITIVE_INTEGER = {:only_integer => true,
@@ -39,28 +38,6 @@ class EvacuationAdvisory < ActiveRecord::Base
 
   validates :district,
                 :inclusion => {:in => CONST[:district.to_s].keys, :allow_blank => true}
-
-  #日付チェック
-  validates :issued_date,
-                :custom_format => {:type => :date}
-  validates :issued_date, :presence => true, :unless => "issued_hm.blank?"
-  validates :issued_hm,
-                :custom_format => {:type => :time}
-  validates :issued_hm, :presence => true, :unless => "issued_date.blank?"
-
-  validates :changed_date,
-                :custom_format => {:type => :date}
-  validates :changed_date, :presence => true, :unless => "changed_hm.blank?"
-  validates :changed_hm,
-                :custom_format => {:type => :time}
-  validates :changed_hm, :presence => true, :unless => "changed_date.blank?"
-
-  validates :lifted_date,
-                :custom_format => {:type => :date}
-  validates :lifted_date, :presence => true, :unless => "lifted_hm.blank?"
-  validates :lifted_hm,
-                :custom_format => {:type => :time}
-  validates :lifted_hm, :presence => true, :unless => "lifted_date.blank?"
 
   #そのほかの項目チェック:DB定義順
   validates :households,
@@ -292,15 +269,6 @@ class EvacuationAdvisory < ActiveRecord::Base
     issue.save!
     
     return issue
-  end
-  
-  
-  # 全データ公開処理を呼び出します。（コールバック向け）
-  # ==== Args
-  # ==== Return
-  # ==== Raise
-  def execute_release_all_data
-    self.class.release_all_data
   end
 
   private
