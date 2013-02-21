@@ -2,10 +2,15 @@
 class EvacuationAdvisory < ActiveRecord::Base
   unloadable
 
-  acts_as_paranoid
-  validates_as_paranoid
   
   attr_accessible :advisory_type,:sort_criteria,:issueorlift,:area,
+                  :area_kana,:district,:issued_date,:issued_hm,:issued_hm,:changed_date,
+                  :changed_hm,:lifted_date,:lifted_hm,:address,:category,:cause,
+                  :staff_no,:full_name,:alias,:headline,:message,
+                  :emergency_hq_needed_prefecture,:emergency_hq_needed_city,
+                  :alert,:alerting_area,:siren_area,:evacuation_order,
+                  :evacuate_from,:evacuate_to,:evacuation_steps_by_authorities,:remarks, 
+                  :households,:head_count,
 
   ##正の整数チェック用オプションハッシュ値
   POSITIVE_INTEGER = {:only_integer => true,
@@ -30,9 +35,7 @@ class EvacuationAdvisory < ActiveRecord::Base
                 :inclusion => {:in => CONST[:issueorlift.to_s].keys, :allow_blank => true}
   validates :area, :presence => true,
                 :length => {:maximum => 100}
-#TODO:下の---uniqueness---行の効果と妥当性を林氏に連絡相談｡現状では以下のvalidation errorが表示される
-#｢避難勧告_指示識別情報"04202E00000000000034"の発令・解除地区名称 はすでに存在します。｣
-#   validates_uniqueness_of_without_deleted :area
+  validates_uniqueness_of_without_deleted :area
 
   validates :district,
                 :inclusion => {:in => CONST[:district.to_s].keys, :allow_blank => true}
@@ -153,6 +156,9 @@ class EvacuationAdvisory < ActiveRecord::Base
     
     #避難勧告･指示を取得しXMLを生成する
     evacuation_advisories = EvacuationAdvisory.all
+
+
+
     evacuation_advisories.each do |eva|
       node_eva = doc.root.add_element("_避難勧告･指示情報")
       node_eva.add_element("災害識別情報").add_text("#{project.disaster_code}")
@@ -164,7 +170,7 @@ class EvacuationAdvisory < ActiveRecord::Base
       node_manager.add_element("職員番号").add_text("#{eva.staff_no}")
       node_name = node_manager.add_element("氏名")
       node_name.add_element("外字氏名").add_text("")
-      
+
       node_issued = node_eva.add_element("発令日時")
       node_issued_date = node_issued.add_element("日付")
       node_issued_date.add_element("年").add_text("#{eva.issued_at.try(:year)}")
@@ -240,36 +246,41 @@ class EvacuationAdvisory < ActiveRecord::Base
     
 #     EvacuationAdvisory.all.each do |eva|
     evas.each do |eva|
-      node_detail = node_evas.add_element("pcx_ev:Detail")
-        # 発令区分
-        node_detail.add_element("pcx_ev:Sort").add_text(CONST["sort_criteria"]["#{eva.sort_criteria}"]) if eva.sort_criteria.present?
-        # 発令･解除区分
-        node_detail.add_element("pcx_ev:IssueOrLift").add_text(CONST["issueorlift"]["#{eva.issueorlift}"]) if eva.issueorlift.present?
-        node_obj = node_detail.add_element("pcx_ev:Object")
-          node_obj.add_element("pcx_ev:Households", {"pcx_ev:unit" => "世帯"}).add_text("#{eva.households}") #if eva.households_subtotal.present?
-          node_obj.add_element("pcx_ev:HeadCount").add_text("#{eva.head_count}") #if eva.head_count_subtotal.present?
-        node_areas = node_detail.add_element("pcx_ev:Areas")
-        node_area  = node_areas.add_element("pcx_ev:Area")
-          node_location = node_area.add_element("pcx_eb:Location")
-        # 発令・解除地区名称
-            node_location.add_element("commons:areaName").add_text("#{eva.area}") if eva.area.present?
-            node_location.add_element("commons:areaNameKana").add_text("#{eva.area_kana}") if eva.area_kana.present?
-          # 日時
-          case eva.issueorlift
-          when "1" # 発令
-            date = eva.issued_at.xmlschema if eva.issued_at.present?
-          when "0" # 解除
-            date = eva.lifted_at.xmlschema if eva.lifted_at.present?
-          else
-            date = nil
-          end
-          node_area.add_element("pcx_ev:DateTime").add_text("#{Time.now.xmlschema}") if date.present?
-      
-          node_obj = node_area.add_element("pcx_ev:Object")
-            # 対象人数と対象世帯数 自主避難人数を含む。不明の場合は要素を省略。
-            node_obj.add_element("pcx_ev:Households", {"pcx_ev:unit" => "世帯"}).add_text("#{eva.households}") if eva.households.present?
-            node_obj.add_element("pcx_ev:HeadCount").add_text("#{eva.head_count}") if eva.head_count.present?
-      
+
+      # XML出力対象の存在チェック
+      # 発令　解除
+        # 避難準備 # 避難勧告 # 避難指示 # 警戒区域
+      if eva.sort_criteria != "1" and CONST["sort_criteria"].has_key?(eva.sort_criteria) and CONST["issueorlift"].has_key?(eva.issueorlift) 
+        node_detail = node_evas.add_element("pcx_ev:Detail")
+          # 発令区分
+          node_detail.add_element("pcx_ev:Sort").add_text(CONST["sort_criteria"]["#{eva.sort_criteria}"]) if eva.sort_criteria.present?
+          # 発令･解除区分
+          node_detail.add_element("pcx_ev:IssueOrLift").add_text(CONST["issueorlift"]["#{eva.issueorlift}"]) if eva.issueorlift.present?
+          node_obj = node_detail.add_element("pcx_ev:Object")
+            node_obj.add_element("pcx_ev:Households", {"pcx_ev:unit" => "世帯"}).add_text("#{eva.households}") #if eva.households_subtotal.present?
+            node_obj.add_element("pcx_ev:HeadCount").add_text("#{eva.head_count}") #if eva.head_count_subtotal.present?
+          node_areas = node_detail.add_element("pcx_ev:Areas")
+          node_area  = node_areas.add_element("pcx_ev:Area")
+            node_location = node_area.add_element("pcx_eb:Location")
+          # 発令・解除地区名称
+              node_location.add_element("commons:areaName").add_text("#{eva.area}") if eva.area.present?
+              node_location.add_element("commons:areaNameKana").add_text("#{eva.area_kana}") if eva.area_kana.present?
+            # 日時
+            case eva.issueorlift
+            when "1" # 発令
+              date = eva.issued_at.xmlschema if eva.issued_at.present?
+            when "0" # 解除
+              date = eva.lifted_at.xmlschema if eva.lifted_at.present?
+            else
+              date = nil
+            end
+            node_area.add_element("pcx_ev:DateTime").add_text(date.to_s) if date.present?
+        
+            node_obj = node_area.add_element("pcx_ev:Object")
+              # 対象人数と対象世帯数 自主避難人数を含む。不明の場合は要素を省略。
+              node_obj.add_element("pcx_ev:Households", {"pcx_ev:unit" => "世帯"}).add_text("#{eva.households}") if eva.households.present?
+              node_obj.add_element("pcx_ev:HeadCount").add_text("#{eva.head_count}") if eva.head_count.present?
+      end
     end
     
     issue = Issue.new

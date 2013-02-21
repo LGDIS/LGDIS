@@ -19,7 +19,7 @@ class Lgdis::ExtOut::AtomDigiSignage  < ActiveRecord::Base
       if test_flg.blank?
         # 配信管理画面で生成されたATOM形式simple-geoRSSファイルを
         # Rails.root/public/atom/*.rdf として出力する｡
-        status = SetupXML.arrange_and_put(msg,inil, draft_flg)
+        status = SetupXML.arrange_and_put(msg,nil, draft_flg)
       end
       #TODO: アーカイブ出力に関して、課題検討中? 現在はlogger で対応
       Rails.logger.info("#{o.create_log_time(msg,modulename)}")
