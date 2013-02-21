@@ -92,6 +92,14 @@ Constant.create(kind1: 'TD', kind2: 'disaster_damages', kind3: 'municipal_antidi
 Constant.create(kind1: 'TD', kind2: 'disaster_damages', kind3: 'municipal_antidisaster_headquarter_status', text: '設置', value: '2', _order: '2')
 
 # コントロールプレーン部
+# 要因
+Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'xml_control_cause', text: '正規', value: '0', _order: '1')
+Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'xml_control_cause', text: '訂正', value: '1', _order: '2')
+Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'xml_control_cause', text: '訓練', value: '2', _order: '3')
+Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'xml_control_cause', text: '削除', value: '3', _order: '4')
+# 承認
+Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'xml_control_apply', text: '未', value: '0', _order: '1')
+Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'xml_control_apply', text: '済', value: '1', _order: '2')
 # 情報の更新種別
 Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'type_update', text: '新規', value: '1', _order: '1')
 Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'type_update', text: '更新', value: '2', _order: '2')
