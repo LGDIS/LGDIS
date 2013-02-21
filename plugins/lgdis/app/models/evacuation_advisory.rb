@@ -35,8 +35,6 @@ class EvacuationAdvisory < ActiveRecord::Base
   validates :area, :presence => true,
                 :length => {:maximum => 100}
   validates_uniqueness_of_without_deleted :area
-  validates :district,
-                :inclusion => {:in => CONST[:district.to_s].keys, :allow_blank => true}
 
   #そのほかの項目チェック:DB定義順
   validates :households,
