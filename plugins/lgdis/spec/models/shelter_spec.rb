@@ -82,6 +82,17 @@ describe Shelter do
         @shelter.save.should be_false
       end
     end
+    describe "Validation name uniqueness" do
+      before do
+        @shelter_clone = @shelter.clone
+        @shelter.name       = "NAME"
+        @shelter_clone.name = "NAME"
+        @shelter_clone.save!
+      end
+      it "save failure" do
+        @shelter.save.should be_false
+      end
+    end
     describe "Validation name_kana length 60 over" do
       before do
         @shelter.name_kana = "K"*61

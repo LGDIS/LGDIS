@@ -36,12 +36,12 @@ describe SheltersController do
     before do
      @shelter_search_ary =[]
       1.upto(35) do |num|
-        shelter = FactoryGirl.build(:shelter1, :shelter_code => format("%4d", num))
+        shelter = FactoryGirl.build(:shelter1, :shelter_code => format("%4d", num), :name =>"避難所名"+"#{num}")
         shelter.save!
       end
 
       36.upto(70) do |num|
-        shelter = FactoryGirl.build(:shelter1, :shelter_code => format("%4d", num), :shelter_type => "2")
+        shelter = FactoryGirl.build(:shelter1, :shelter_code => format("%4d", num), :name =>"避難所名"+"#{num}", :shelter_type => "2")
         shelter.save!
         @shelter_search_ary << shelter if @shelter_search_ary.size < 30
       end
@@ -94,10 +94,10 @@ describe SheltersController do
 
   describe "#index clear" do
     before do
-      Shelter.delete_all # Projectデータ作成の際に、Shelterのデータも作成されるので一旦削除する
+      Shelter.delete_all! # Projectデータ作成の際に、Shelterのデータも作成されるので一旦削除する
       @shelter_clear_ary =[]
       1.upto(35) do |num|
-        shelter = FactoryGirl.build(:shelter1, :shelter_code => format("%4d", num))
+        shelter = FactoryGirl.build(:shelter1, :shelter_code => format("%4d", num), :name =>"避難所名"+"#{num}")
         shelter.save!
         @shelter_clear_ary << shelter if @shelter_clear_ary.size < 30
       end
@@ -155,10 +155,10 @@ describe SheltersController do
 
   describe "#index else" do
     before do
-      Shelter.delete_all
+      Shelter.delete_all!
       @shelter_clear_ary =[]
       1.upto(35) do |num|
-        shelter = FactoryGirl.build(:shelter1, :shelter_code => format("%4d", num))
+        shelter = FactoryGirl.build(:shelter1, :shelter_code => format("%4d", num), :name =>"避難所名"+"#{num}")
         shelter.save!
         @shelter_clear_ary << shelter if @shelter_clear_ary.size < 30
       end
@@ -183,7 +183,7 @@ describe SheltersController do
         @shelter_update_ary=[]
         @param_shelters_hash={}
         1.upto(35) do |num|
-          shelter = FactoryGirl.build(:shelter1, :shelter_code => format("%4d", num))
+          shelter = FactoryGirl.build(:shelter1, :shelter_code => format("%4d", num), :name =>"避難所名"+"#{num}")
           shelter.save!
           @shelter_update_ary << shelter if @shelter_update_ary.size < 30
           
@@ -212,12 +212,12 @@ describe SheltersController do
       before do
         @shelter_not_update_ary=[]
         1.upto(35) do |num|
-          shelter = FactoryGirl.build(:shelter1, :shelter_code => format("%4d", num))
+          shelter = FactoryGirl.build(:shelter1, :shelter_code => format("%4d", num), :name =>"避難所名"+"#{num}")
           shelter.save!
         end
 
         36.upto(70) do |num|
-          shelter = FactoryGirl.build(:shelter1, :shelter_code =>format("%4d", num), :shelter_type => "2")
+          shelter = FactoryGirl.build(:shelter1, :shelter_code =>format("%4d", num), :name =>"避難所名"+"#{num}", :shelter_type => "2")
           shelter.save!
           @shelter_not_update_ary << shelter if @shelter_not_update_ary.size < 30
         end
@@ -277,7 +277,7 @@ describe SheltersController do
     end
     describe "if shelter not present" do
       before do
-        Shelter.delete_all
+        Shelter.delete_all!
       end
       it "set flash " do
         post :ticket, { "commit_kind"=>"ticket",  "project_id"=>project_id}
@@ -322,7 +322,7 @@ describe SheltersController do
 
   describe "#create " do
     before do
-      Shelter.delete_all
+      Shelter.delete_all!
       @shelter_param = {
         :area         => '地区名',
         :name         => '名前',
