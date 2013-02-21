@@ -23,7 +23,7 @@ CF_ADDRESS  = YAML.load_file("#{Rails.root}/plugins/lgdis/config/custom_field_co
 
 # library, plugin
 require_dependency 'lgdis/acts/acts_as_datetime_separable'
-require_dependency 'lgdis/acts_as_customizable_patch'
+require_dependency 'lgdis/acts/acts_as_customizable_patch'
 
 # helper
 require_dependency 'lgdis/issues_helper_patch' # issues_controller_patch より先にload する必要あり
