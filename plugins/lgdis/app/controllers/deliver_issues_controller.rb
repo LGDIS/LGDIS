@@ -36,9 +36,9 @@ class DeliverIssuesController < ApplicationController
       flash[:notice] = l(:notice_delivery_request_successful)
     end
   rescue ActiveRecord::RecordInvalid
-    flash[:notice] = l(:notice_delivery_request_failed)
+    flash[:error] = l(:notice_delivery_request_failed)
   rescue ParamsException => e
-    flash[:notice] = e
+    flash[:error] = e.message
   ensure
     redirect_back_or_default({:controller => 'issues',
                               :action     => 'show',
@@ -66,7 +66,7 @@ class DeliverIssuesController < ApplicationController
     when 'reject'
       flash[:notice] = l(:notice_delivery_request_reject)
     when 'failed'
-      flash[:notice] = l(:notice_delivery_failed)
+      flash[:error] = l(:notice_delivery_failed)
     else
       flash[:notice] = l(:notice_delivery_successful)
     end

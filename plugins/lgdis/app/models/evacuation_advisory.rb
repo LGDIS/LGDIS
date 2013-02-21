@@ -2,9 +2,6 @@
 class EvacuationAdvisory < ActiveRecord::Base
   unloadable
 
-  acts_as_paranoid
-  validates_as_paranoid
-  
   attr_accessible :advisory_type,:sort_criteria,:issue_or_lift,:area,
                   :area_kana,:district,:issued_date,:issued_hm,:issued_hm,:changed_date,
                   :changed_hm,:lifted_date,:lifted_hm,:address,:category,:cause,
@@ -22,7 +19,12 @@ class EvacuationAdvisory < ActiveRecord::Base
   
   ##コンスタント存在チェック用
   CONST = Constant::hash_for_table(self.table_name).freeze
-  
+
+  acts_as_paranoid
+  validates_as_paranoid
+
+  acts_as_datetime_separable :issued_at,:lifted_at,:changed_at
+
   #Data base NOT-NULL項目validations
   validates :advisory_type, 
                 :inclusion => {:in => CONST[:advisory_type.to_s].keys, :allow_blank => true}
@@ -35,28 +37,6 @@ class EvacuationAdvisory < ActiveRecord::Base
   validates_uniqueness_of_without_deleted :area
   validates :district,
                 :inclusion => {:in => CONST[:district.to_s].keys, :allow_blank => true}
-
-  #日付チェック
-  validates :issued_date,
-                :custom_format => {:type => :date}
-  validates :issued_date, :presence => true, :unless => "issued_hm.blank?"
-  validates :issued_hm,
-                :custom_format => {:type => :time}
-  validates :issued_hm, :presence => true, :unless => "issued_date.blank?"
-
-  validates :changed_date,
-                :custom_format => {:type => :date}
-  validates :changed_date, :presence => true, :unless => "changed_hm.blank?"
-  validates :changed_hm,
-                :custom_format => {:type => :time}
-  validates :changed_hm, :presence => true, :unless => "changed_date.blank?"
-
-  validates :lifted_date,
-                :custom_format => {:type => :date}
-  validates :lifted_date, :presence => true, :unless => "lifted_hm.blank?"
-  validates :lifted_hm,
-                :custom_format => {:type => :time}
-  validates :lifted_hm, :presence => true, :unless => "lifted_date.blank?"
 
   #そのほかの項目チェック:DB定義順
   validates :households,
@@ -123,51 +103,6 @@ class EvacuationAdvisory < ActiveRecord::Base
     localized ||= l("field_#{name.underscore.gsub('/', '_')}_#{attr}",
                     :default => ["field_#{attr}".to_sym, attr])
   end
-  
-  # 日時フィールドに対して、日付、時刻フィールドに分割したアクセサを定義します。
-  # 例) create_at ⇒ create_date, create_hm
-  # ==== Args
-  # _attrs_ :: attrs
-  # ==== Return
-  # ==== Raise
-  def self.attr_accessor_separate_datetime(*attrs)
-    attrs.each do |attr|
-      prefix = attr.to_s.gsub("_at","")
-      define_method("#{prefix}_date") do
-        val = eval("@#{prefix}_date")
-        base_value = eval("self.#{attr}")
-        # timezoneの考慮が必要
-        # see:Redmine::I18n#format_time
-        zone = User.current.time_zone
-        base_value &&= zone ? base_value.in_time_zone(zone) : (base_value.utc? ? base_value.localtime : base_value)
-        base_value &&= base_value.to_date
-        val || base_value
-      end
-      
-      define_method("#{prefix}_date=") do |val|
-        instance_variable_set("@#{prefix}_date", val)
-        set_date_time_attr("#{attr}", val, eval("#{prefix}_hm"))
-      end
-      
-      define_method("#{prefix}_hm") do
-        val = eval("@#{prefix}_hm")
-        base_value = eval("self.#{attr}")
-        # timezoneの考慮が必要
-        # see:Redmine::I18n#format_time
-        zone = User.current.time_zone
-        base_value &&= zone ? base_value.in_time_zone(zone) : (base_value.utc? ? base_value.localtime : base_value)
-        base_value &&= base_value.strftime("%H:%M")
-        val || base_value
-      end
-      
-      define_method("#{prefix}_hm=") do |val|
-        instance_variable_set("@#{prefix}_hm", val)
-        set_date_time_attr("#{attr}", eval("#{prefix}_date"), val)
-      end
-    end
-  end
-  
-  attr_accessor_separate_datetime :issued_at,:lifted_at,:changed_at
   
   # チケット登録処理
   # ==== Args
@@ -377,29 +312,6 @@ class EvacuationAdvisory < ActiveRecord::Base
   end
 
   private
-  # 日付、時刻から、attrを設定します。
-  # 不正な引数の場合は、nilを設定します。
-  # ==== Args
-  # _attr_ :: attr
-  # _date_ :: 日付（Dateもしくは文字列）
-  # _hm_ :: 時刻（文字列）
-  # ==== Return
-  # ==== Raise
-  def set_date_time_attr(attr, date, hm)
-    begin
-      date = Date.strptime(date.to_s, "%Y-%m-%d") unless date.is_a?(Date)
-    rescue
-      write_attribute(attr, nil)
-      return
-    end
-    year, month, day = date.year, date.month, date.day
-    unless /^(0?[0-9]|1[0-9]|2[0-3]):([0-5]?[0-9])$/ =~ hm
-      write_attribute(attr, nil)
-      return
-    end
-    hour,min = $1, $2
-    write_attribute(attr, Time.local(year, month, day, hour, min))
-  end
   
   # 避難勧告･指示識別番号を設定します。
   # ==== Args
