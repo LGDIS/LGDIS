@@ -524,7 +524,7 @@ describe Shelter do
     it "return localize field name" do
       Shelter.human_attribute_name(:field_disaster_code).should == "災害コード"
       Shelter.human_attribute_name(:field_name).should == "避難所名"
-      Shelter.human_attribute_name(:field_name_kana).should == "避難所名カナ"
+      Shelter.human_attribute_name(:field_name_kana).should == "避難所名かな"
       Shelter.human_attribute_name(:field_area).should == "地区名"
       Shelter.human_attribute_name(:field_address).should == "住所"
       Shelter.human_attribute_name(:field_phone).should == "電話番号"

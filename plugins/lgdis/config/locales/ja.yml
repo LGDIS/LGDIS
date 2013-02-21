@@ -65,7 +65,7 @@ ja:
   shelters:
     field_disaster_code: 災害コード
     field_name: 避難所名
-    field_name_kana: 避難所名カナ
+    field_name_kana: 避難所名かな
     field_area: 地区名
     field_address: 住所
     field_phone: 電話番号
