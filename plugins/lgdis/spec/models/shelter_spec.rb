@@ -221,74 +221,6 @@ describe Shelter do
         @shelter.save.should be_false
       end
     end
-    describe "Validation opened_date date format" do
-      before do
-        @shelter.opened_date = "2013-13-33"
-      end
-      it "save failure" do
-        @shelter.save.should be_false
-      end
-    end
-    describe "Validation opened_date presence unress opened_hm.blank?" do
-      before do
-        @shelter.opened_date = nil
-        @shelter.opened_hm = "12:12"
-      end
-      it "save failure" do
-        @shelter.save.should be_false
-      end
-    end
-    describe "Validation opened_hm time format" do
-      before do
-        @shelter.opened_hm = "25:60"
-      end
-      it "save failure" do
-        @shelter.save.should be_false
-      end
-    end
-    describe "Validation opened_hm presence unress opened_date.blank?" do
-      before do
-        @shelter.opened_hm = nil
-        @shelter.opened_date = "2012-12-12" 
-      end
-      it "save failure" do
-        @shelter.save.should be_false
-      end
-    end
-    describe "Validation closed_date date format" do
-      before do
-        @shelter.closed_date = "2013-13-33"
-      end
-      it "save failure" do
-        @shelter.save.should be_false
-      end
-    end
-    describe "Validation closed_date presence unress closed_hm.blank?" do
-      before do
-        @shelter.closed_date = nil
-        @shelter.closed_hm = "12:12"
-      end
-      it "save failure" do
-        @shelter.save.should be_false
-      end
-    end
-    describe "Validation closed_hm time format" do
-      before do
-        @shelter.closed_hm = "25:60"
-      end
-      it "save failure" do
-        @shelter.save.should be_false
-      end
-    end
-    describe "Validation closed_hm presence unress closed_date.blank?" do
-      before do
-        @shelter.closed_hm = nil
-        @shelter.closed_date = "2012-12-12" 
-      end
-      it "save failure" do
-        @shelter.save.should be_false
-      end
-    end
     describe "Validation capacity not POSITIVE_INTEGER over value" do
       before do
         @shelter.capacity = 2147483647 +1
@@ -377,40 +309,6 @@ describe Shelter do
         @shelter.save.should be_false
       end
     end
-    describe "Validation checked_date date format" do
-      before do
-        @shelter.checked_date = "2013-13-33"
-      end
-      it "save failure" do
-        @shelter.save.should be_false
-      end
-    end
-    describe "Validation checked_date presence unress checked_hm.blank?" do
-      before do
-        @shelter.checked_date = nil
-        @shelter.checked_hm = "12:12"
-      end
-      it "save failure" do
-        @shelter.save.should be_false
-      end
-    end
-    describe "Validation checked_hm time format" do
-      before do
-        @shelter.checked_hm = "25:60"
-      end
-      it "save failure" do
-        @shelter.save.should be_false
-      end
-    end
-    describe "Validation checked_hm presence unress checked_date.blank?" do
-      before do
-        @shelter.checked_hm = nil
-        @shelter.checked_date = "2012-12-12" 
-      end
-      it "save failure" do
-        @shelter.save.should be_false
-      end
-    end
     describe "Validation manager_code length 10 over" do
       before do
         @shelter.manager_code = "M"*11
@@ -430,40 +328,6 @@ describe Shelter do
     describe "Validation manager_another_name length 100 over" do
       before do
         @shelter.manager_another_name = "A"*101
-      end
-      it "save failure" do
-        @shelter.save.should be_false
-      end
-    end
-    describe "Validation reported_date date format" do
-      before do
-        @shelter.reported_date = "2013-13-33"
-      end
-      it "save failure" do
-        @shelter.save.should be_false
-      end
-    end
-    describe "Validation reported_date presence unress reported_hm.blank?" do
-      before do
-        @shelter.reported_date = nil
-        @shelter.reported_hm = "12:12"
-      end
-      it "save failure" do
-        @shelter.save.should be_false
-      end
-    end
-    describe "Validation reported_hm time format" do
-      before do
-        @shelter.reported_hm = "25:60"
-      end
-      it "save failure" do
-        @shelter.save.should be_false
-      end
-    end
-    describe "Validation reported_hm presence unress reported_date.blank?" do
-      before do
-        @shelter.reported_hm = nil
-        @shelter.reported_date = "2012-12-12" 
       end
       it "save failure" do
         @shelter.save.should be_false
@@ -713,138 +577,6 @@ describe Shelter do
       Shelter.human_attribute_name(:field_address_city).should == "市区町村"
       Shelter.human_attribute_name(:field_address_street).should == "町名"
       Shelter.human_attribute_name(:field_address_number).should == "番地"
-    end
-  end
-
-  # opened_at系のみ確認する
-  describe "#attr_accessor_separate_datetime" do
-    describe "#opened_date" do
-      describe "opened_at:nil opened_date:nil" do
-        before do
-          @new_shelter = Shelter.new
-        end
-        it "return nil" do
-          @new_shelter.opened_date.should be_nil
-        end
-      end
-      describe "opened_at:not nil opened_date:not nil" do
-        before do
-          @new_shelter = Shelter.new
-          @new_shelter.opened_date = "2010-11-12"
-          
-        end
-        it "return opened_date" do
-          @new_shelter.opened_date.should == "2010-11-12"
-        end
-      end
-      describe "opened_at:not nil opened_date:nil User.current.time_zone present" do
-        before do
-          @new_shelter = Shelter.new
-          User.current.stub(:time_zone) {"EET"}
-          @new_shelter.opened_at = "2010-11-12 03:14:15"
-          
-        end
-        it "return opened_at in current user's zone time" do
-          @new_shelter.opened_date.strftime("%Y-%m-%d").should == "2010-11-11" # EET(UTC+2:00)との時差で日付が前日になる
-          
-        end
-      end
-      describe "opened_at:utc time opened_date:nil User.current.time_zone nil" do
-        before do
-          @new_shelter = Shelter.new
-          @new_shelter.opened_at = Time.parse("2010-11-12 03:14:15").utc # 2010-11-11 18:14:15 UTC
-        end
-        it "return opened_at in localtime" do
-#          @new_shelter.opened_date.strftime("%Y-%m-%d").should == "2010-11-12" # localtmeでJSTの日付に戻る
-          pending("DBのカラムがtimestamp without time zoneの為、値をセット時にローカルタイムゾーンであるJSTに変換されてしまい、UTCで無くなる")
-        end
-      end
-      describe "opened_at:not nil opened_date:nil User.current.time_zone nil" do
-        before do
-          @new_shelter = Shelter.new
-          @new_shelter.opened_at = Time.parse("2010-11-12 03:14:15")
-        end
-        it "return opened_at in localtime" do
-          @new_shelter.opened_date.strftime("%Y-%m-%d").should == "2010-11-12" # opended_atそのままの値
-        end
-      end
-    end
-    
-    
-    describe "#opened_date=" do
-      before do
-        @new_shelter = Shelter.new
-        Shelter.any_instance.should_receive(:set_date_time_attr)
-      end
-      it "set opened_date" do
-        @new_shelter.opened_date = "2010-11-11"
-        @new_shelter.opened_date.should == "2010-11-11"
-      end
-    end
-
-
-    describe "#opened_hm" do
-      describe "opened_at:nil opened_hm:nil" do
-        before do
-          @new_shelter = Shelter.new
-        end
-        it "return nil" do
-          @new_shelter.opened_hm.should be_nil
-        end
-      end
-      describe "opened_at:not nil opened_hm:not nil" do
-        before do
-          @new_shelter = Shelter.new
-          @new_shelter.opened_hm = "13:14"
-          
-        end
-        it "return opened_hm" do
-          @new_shelter.opened_hm.should == "13:14"
-        end
-      end
-      describe "opened_at:not nil opened_hm:nil User.current.time_zone present" do
-        before do
-          @new_shelter = Shelter.new
-          User.current.stub(:time_zone) {"EET"}
-          @new_shelter.opened_at = "2010-11-12 03:14:15"
-          
-        end
-        it "return opened_at in current user's zone time" do
-          @new_shelter.opened_hm.should == "20:14" # EET(UTC+2:00)との時差で日付が前日になる
-          
-        end
-      end
-      describe "opened_at:utc time opened_hm:nil User.current.time_zone nil" do
-        before do
-          @new_shelter = Shelter.new
-          @new_shelter.opened_at = Time.parse("2010-11-12 03:14:15").utc # 2010-11-11 18:14:15 UTC
-        end
-        it "return opened_at in localtime" do
-#          @new_shelter.opened_hm..should == "03:14" # localtmeでJSTの日付に戻る
-          pending("DBのカラムがtimestamp without time zoneの為、値をセット時にローカルタイムゾーンであるJSTに変換されてしまい、UTCで無くなる")
-        end
-      end
-      describe "opened_at:not nil opened_hm:nil User.current.time_zone nil" do
-        before do
-          @new_shelter = Shelter.new
-          @new_shelter.opened_at = Time.parse("2010-11-12 03:14:15")
-        end
-        it "return opened_at in localtime" do
-          @new_shelter.opened_hm.should == "03:14" # opended_atそのままの値
-        end
-      end
-    end
-    
-    
-    describe "#opened_hm=" do
-      before do
-        @new_shelter = Shelter.new
-        Shelter.any_instance.should_receive(:set_date_time_attr)
-      end
-      it "set opened_hm" do
-        @new_shelter.opened_hm = "12:13"
-        @new_shelter.opened_hm.should == "12:13"
-      end
     end
   end
 
@@ -1102,37 +834,6 @@ describe Shelter do
     end
     it "call release_all_data" do
       @shelter.execute_release_all_data
-    end
-  end
-
-
-  describe "#set_date_time_attr" do
-    describe "set date, hm" do
-      before do
-        @attr = nil
-        Shelter.any_instance.should_receive(:write_attribute).with(@attr, Time.local("2012", "12", "13", "14", "15"))
-      end
-      it "set datetime" do
-        @shelter.__send__(:set_date_time_attr, @attr, "2012-12-13", "14:15")
-      end
-    end
-    describe "set invalid date" do
-      before do
-        @attr = nil
-        Shelter.any_instance.should_receive(:write_attribute).with(@attr, nil)
-      end
-      it "set nil" do
-        @shelter.__send__(:set_date_time_attr, @attr, "2012-15-13", "14:15")
-      end
-    end
-    describe "set invalid hm" do
-      before do
-        @attr = nil
-        Shelter.any_instance.should_receive(:write_attribute).with(@attr, nil)
-      end
-      it "set nil" do
-        @shelter.__send__(:set_date_time_attr, @attr, "2012-12-13", "54:15")
-      end
     end
   end
 
