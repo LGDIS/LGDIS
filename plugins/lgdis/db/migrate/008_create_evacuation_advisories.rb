@@ -7,11 +7,6 @@
 class CreateEvacuationAdvisories < ActiveRecord::Migration
   def change
     create_table :evacuation_advisories do |t|
-      #Redmine-app独自のデータ項目
-#       t.references :project, :null => false
-      #COMMONS定義が自由なためAPPLICを参考にするデータ項目
-#       t.string     :disaster_code, :limit => 20, :null => false
-
       #COMMONS基準のデータ項目
       t.string     :sort_criteria, :limit => 10
       t.string     :issueorlift, :limit => 100
@@ -61,7 +56,6 @@ class CreateEvacuationAdvisories < ActiveRecord::Migration
 #     SQL
 
     set_table_comment(:evacuation_advisories, "避難勧告・指示情報")
-#     set_column_comment(:evacuation_advisories, :disaster_code, "災害コード")
     set_column_comment(:evacuation_advisories, :sort_criteria, "発令区分")
     set_column_comment(:evacuation_advisories, :issueorlift, "発令・解除区分")
     set_column_comment(:evacuation_advisories, :area, "発令・解除地区名称")
