@@ -11,7 +11,7 @@
   
   <%= field_for :district  do |key, label| %>
     <%= label_tag{label} %>
-    <%= f.select("#{key}_eq", options_for_select(@evacuation_advisory_const[key.to_s].invert, @search.district_eq),:include_blank => true) %>
+    <%= f.select("#{key}_eq", options_for_select(@area.invert, @search.district_eq),:include_blank => true) %>
   <% end %>
   
   <%= field_for :area do |key, label| %>

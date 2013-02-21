@@ -11,15 +11,13 @@ class DisasterDamage < ActiveRecord::Base
   # コンスタント存在チェック用
   CONST = Constant::hash_for_table(self.table_name).freeze
   
+  acts_as_datetime_separable :disaster_occurred_at, :general_prefectural_antidisaster_headquarter_status_at,
+                             :general_municipal_antidisaster_headquarter_status_at, :prefectural_antidisaster_headquarter_status_at,
+                             :municipal_antidisaster_headquarter_status_at, :disaster_relief_act_applied_at
+  
   validates :disaster_occurred_location,
                 :length => {:maximum => 100}
   # validates :disaster_occurred_at
-  validates :disaster_occurred_date,
-                :custom_format => {:type => :date}
-  validates :disaster_occurred_date, :presence => true, :unless => "disaster_occurred_hm.blank?"
-  validates :disaster_occurred_hm,
-                :custom_format => {:type => :time}
-  validates :disaster_occurred_hm, :presence => true, :unless => "disaster_occurred_date.blank?"
   validates :general_disaster_situation,
                 :length => {:maximum => 4000}
   validates :general_dead_count,
@@ -41,23 +39,11 @@ class DisasterDamage < ActiveRecord::Base
   validates :general_prefectural_antidisaster_headquarter_status,
                 :length => {:maximum => 4000}
   # validates :general_prefectural_antidisaster_headquarter_status_at
-  validates :general_prefectural_antidisaster_headquarter_status_date,
-                :custom_format => {:type => :date}
-  validates :general_prefectural_antidisaster_headquarter_status_date, :presence => true, :unless => "general_prefectural_antidisaster_headquarter_status_hm.blank?"
-  validates :general_prefectural_antidisaster_headquarter_status_hm,
-                :custom_format => {:type => :time}
-  validates :general_prefectural_antidisaster_headquarter_status_hm, :presence => true, :unless => "general_prefectural_antidisaster_headquarter_status_date.blank?"
   validates :general_municipal_antidisaster_headquarter_of,
                 :length => {:maximum => 12}
   validates :general_municipal_antidisaster_headquarter_status,
                 :length => {:maximum => 4000}
   # validates :general_municipal_antidisaster_headquarter_status_at
-  validates :general_municipal_antidisaster_headquarter_status_date,
-                :custom_format => {:type => :date}
-  validates :general_municipal_antidisaster_headquarter_status_date, :presence => true, :unless => "general_municipal_antidisaster_headquarter_status_hm.blank?"
-  validates :general_municipal_antidisaster_headquarter_status_hm,
-                :custom_format => {:type => :time}
-  validates :general_municipal_antidisaster_headquarter_status_hm, :presence => true, :unless => "general_municipal_antidisaster_headquarter_status_date.blank?"
   validates :emergency_measures_status,
                 :length => {:maximum => 4000}
   validates :dead_count,
@@ -177,12 +163,6 @@ class DisasterDamage < ActiveRecord::Base
   validates :prefectural_antidisaster_headquarter_status,
                 :length => {:maximum => 4000}
   # validates :prefectural_antidisaster_headquarter_status_at
-  validates :prefectural_antidisaster_headquarter_status_date,
-                :custom_format => {:type => :date}
-  validates :prefectural_antidisaster_headquarter_status_date, :presence => true, :unless => "prefectural_antidisaster_headquarter_status_hm.blank?"
-  validates :prefectural_antidisaster_headquarter_status_hm,
-                :custom_format => {:type => :time}
-  validates :prefectural_antidisaster_headquarter_status_hm, :presence => true, :unless => "prefectural_antidisaster_headquarter_status_date.blank?"
   validates :municipal_antidisaster_headquarter_of,
                 :length => {:maximum => 12}
   validates :municipal_antidisaster_headquarter_type,
@@ -190,21 +170,9 @@ class DisasterDamage < ActiveRecord::Base
   validates :municipal_antidisaster_headquarter_status,
                 :inclusion => {:in => CONST[:municipal_antidisaster_headquarter_status.to_s].keys, :allow_blank => true}
   # validates :municipal_antidisaster_headquarter_status_at
-  validates :municipal_antidisaster_headquarter_status_date,
-                :custom_format => {:type => :date}
-  validates :municipal_antidisaster_headquarter_status_date, :presence => true, :unless => "municipal_antidisaster_headquarter_status_hm.blank?"
-  validates :municipal_antidisaster_headquarter_status_hm,
-                :custom_format => {:type => :time}
-  validates :municipal_antidisaster_headquarter_status_hm, :presence => true, :unless => "municipal_antidisaster_headquarter_status_date.blank?"
   validates :disaster_relief_act_applied_of,
                 :length => {:maximum => 12}
   # validates :disaster_relief_act_applied_at
-  validates :disaster_relief_act_applied_date,
-                :custom_format => {:type => :date}
-  validates :disaster_relief_act_applied_date, :presence => true, :unless => "disaster_relief_act_applied_hm.blank?"
-  validates :disaster_relief_act_applied_hm,
-                :custom_format => {:type => :time}
-  validates :disaster_relief_act_applied_hm, :presence => true, :unless => "disaster_relief_act_applied_date.blank?"
   validates :disaster_relief_act_applied_municipalities_count,
                 :numericality => POSITIVE_INTEGER
   validates :turnout_fire_station_firefighter_count,
@@ -251,53 +219,6 @@ class DisasterDamage < ActiveRecord::Base
     localized ||= l("field_#{name.underscore.gsub('/', '_')}_#{attr}",
                     :default => ["field_#{attr}".to_sym, attr])
   end
-  
-  # 日時フィールドに対して、日付、時刻フィールドに分割したアクセサを定義します。
-  # 例) create_at ⇒ create_date, create_hm
-  # ==== Args
-  # _attrs_ :: attrs
-  # ==== Return
-  # ==== Raise
-  def self.attr_accessor_separate_datetime(*attrs)
-    attrs.each do |attr|
-      prefix = attr.to_s.gsub("_at","")
-      define_method("#{prefix}_date") do
-        val = eval("@#{prefix}_date")
-        base_value = eval("self.#{attr}")
-        # timezoneの考慮が必要
-        # see:Redmine::I18n#format_time
-        zone = User.current.time_zone
-        base_value &&= zone ? base_value.in_time_zone(zone) : (base_value.utc? ? base_value.localtime : base_value)
-        base_value &&= base_value.to_date
-        val || base_value
-      end
-      
-      define_method("#{prefix}_date=") do |val|
-        instance_variable_set("@#{prefix}_date", val)
-        set_date_time_attr("#{attr}", val, eval("#{prefix}_hm"))
-      end
-      
-      define_method("#{prefix}_hm") do
-        val = eval("@#{prefix}_hm")
-        base_value = eval("self.#{attr}")
-        # timezoneの考慮が必要
-        # see:Redmine::I18n#format_time
-        zone = User.current.time_zone
-        base_value &&= zone ? base_value.in_time_zone(zone) : (base_value.utc? ? base_value.localtime : base_value)
-        base_value &&= base_value.strftime("%H:%M")
-        val || base_value
-      end
-      
-      define_method("#{prefix}_hm=") do |val|
-        instance_variable_set("@#{prefix}_hm", val)
-        set_date_time_attr("#{attr}", eval("#{prefix}_date"), val)
-      end
-    end
-  end
-  
-  attr_accessor_separate_datetime :disaster_occurred_at, :general_prefectural_antidisaster_headquarter_status_at,
-                                  :general_municipal_antidisaster_headquarter_status_at, :prefectural_antidisaster_headquarter_status_at,
-                                  :municipal_antidisaster_headquarter_status_at, :disaster_relief_act_applied_at
   
   # チケット登録処理
   # ==== Args
@@ -891,30 +812,6 @@ class DisasterDamage < ActiveRecord::Base
       total = (total || 0) + arg.to_i if arg.present?
     end
     return total
-  end
-  
-  # 日付、時刻から、attrを設定します。
-  # 不正な引数の場合は、nilを設定します。
-  # ==== Args
-  # _attr_ :: attr
-  # _date_ :: 日付（Dateもしくは文字列）
-  # _hm_ :: 時刻（文字列）
-  # ==== Return
-  # ==== Raise
-  def set_date_time_attr(attr, date, hm)
-    begin
-      date = Date.strptime(date.to_s, "%Y-%m-%d") unless date.is_a?(Date)
-    rescue
-      write_attribute(attr, nil)
-      return
-    end
-    year, month, day = date.year, date.month, date.day
-    unless /^(0?[0-9]|1[0-9]|2[0-3]):([0-5]?[0-9])$/ =~ hm
-      write_attribute(attr, nil)
-      return
-    end
-    hour,min = $1, $2
-    write_attribute(attr, Time.local(year, month, day, hour, min))
   end
   
 end

@@ -3,9 +3,6 @@ require 'csv'
 class Shelter < ActiveRecord::Base
   unloadable
   
-  acts_as_paranoid
-  validates_as_paranoid
-  
   attr_accessible :name,:name_kana,:area,:address,:phone,:fax,:e_mail,:person_responsible,
                   :shelter_type,:shelter_type_detail,:shelter_sort,:opened_date,:opened_hm,
                   :closed_date, :closed_hm,:capacity,:status,:head_count_voluntary,
@@ -34,6 +31,11 @@ class Shelter < ActiveRecord::Base
   # コンスタント存在チェック用
   CONST = Constant::hash_for_table(self.table_name).freeze
   
+  acts_as_paranoid
+  validates_as_paranoid
+  
+  acts_as_datetime_separable :opened_at,:closed_at,:checked_at,:reported_at
+  
   validates :name, :presence => true,
                 :length => {:maximum => 30}
   validates_uniqueness_of_without_deleted :name
@@ -60,19 +62,7 @@ class Shelter < ActiveRecord::Base
   validates :shelter_sort, :presence => true,
                 :inclusion => {:in => CONST[:shelter_sort.to_s].keys, :allow_blank => true}
   # validates :opened_at
-  validates :opened_date,
-                :custom_format => {:type => :date}
-  validates :opened_date, :presence => true, :unless => "opened_hm.blank?"
-  validates :opened_hm,
-                :custom_format => {:type => :time}
-  validates :opened_hm, :presence => true, :unless => "opened_date.blank?"
   # validates :closed_at
-  validates :closed_date,
-                :custom_format => {:type => :date}
-  validates :closed_date, :presence => true, :unless => "closed_hm.blank?"
-  validates :closed_hm,
-                :custom_format => {:type => :time}
-  validates :closed_hm, :presence => true, :unless => "closed_date.blank?"
   validates :capacity,
                 :numericality => POSITIVE_INTEGER
   validates :status,
@@ -86,12 +76,6 @@ class Shelter < ActiveRecord::Base
   validates :households_voluntary,
                 :numericality => POSITIVE_INTEGER
   # validates :checked_at
-  validates :checked_date,
-                :custom_format => {:type => :date}
-  validates :checked_date, :presence => true, :unless => "checked_hm.blank?"
-  validates :checked_hm,
-                :custom_format => {:type => :time}
-  validates :checked_hm, :presence => true, :unless => "checked_date.blank?"
   validates :manager_code,
                 :length => {:maximum => 10}
   validates :manager_name,
@@ -99,12 +83,6 @@ class Shelter < ActiveRecord::Base
   validates :manager_another_name,
                 :length => {:maximum => 100}
   # validates :reported_at
-  validates :reported_date,
-                :custom_format => {:type => :date}
-  validates :reported_date, :presence => true, :unless => "reported_hm.blank?"
-  validates :reported_hm,
-                :custom_format => {:type => :time}
-  validates :reported_hm, :presence => true, :unless => "reported_date.blank?"
   validates :building_damage_info,
                 :length => {:maximum => 4000}
   validates :electric_infra_damage_info,
@@ -165,51 +143,6 @@ class Shelter < ActiveRecord::Base
     localized ||= l("field_#{name.underscore.gsub('/', '_')}_#{attr}",
                     :default => ["field_#{attr}".to_sym, attr])
   end
-  
-  # 日時フィールドに対して、日付、時刻フィールドに分割したアクセサを定義します。
-  # 例) create_at ⇒ create_date, create_hm
-  # ==== Args
-  # _attrs_ :: attrs
-  # ==== Return
-  # ==== Raise
-  def self.attr_accessor_separate_datetime(*attrs)
-    attrs.each do |attr|
-      prefix = attr.to_s.gsub("_at","")
-      define_method("#{prefix}_date") do
-        val = eval("@#{prefix}_date")
-        base_value = eval("self.#{attr}")
-        # timezoneの考慮が必要
-        # see:Redmine::I18n#format_time
-        zone = User.current.time_zone
-        base_value &&= zone ? base_value.in_time_zone(zone) : (base_value.utc? ? base_value.localtime : base_value)
-        base_value &&= base_value.to_date
-        val || base_value
-      end
-      
-      define_method("#{prefix}_date=") do |val|
-        instance_variable_set("@#{prefix}_date", val)
-        set_date_time_attr("#{attr}", val, eval("#{prefix}_hm"))
-      end
-      
-      define_method("#{prefix}_hm") do
-        val = eval("@#{prefix}_hm")
-        base_value = eval("self.#{attr}")
-        # timezoneの考慮が必要
-        # see:Redmine::I18n#format_time
-        zone = User.current.time_zone
-        base_value &&= zone ? base_value.in_time_zone(zone) : (base_value.utc? ? base_value.localtime : base_value)
-        base_value &&= base_value.strftime("%H:%M")
-        val || base_value
-      end
-      
-      define_method("#{prefix}_hm=") do |val|
-        instance_variable_set("@#{prefix}_hm", val)
-        set_date_time_attr("#{attr}", eval("#{prefix}_date"), val)
-      end
-    end
-  end
-  
-  attr_accessor_separate_datetime :opened_at,:closed_at,:checked_at,:reported_at
   
   # チケット登録処理
   # ==== Args
@@ -489,29 +422,6 @@ class Shelter < ActiveRecord::Base
   end
   
   private
-  # 日付、時刻から、attrを設定します。
-  # 不正な引数の場合は、nilを設定します。
-  # ==== Args
-  # _attr_ :: attr
-  # _date_ :: 日付（Dateもしくは文字列）
-  # _hm_ :: 時刻（文字列）
-  # ==== Return
-  # ==== Raise
-  def set_date_time_attr(attr, date, hm)
-    begin
-      date = Date.strptime(date.to_s, "%Y-%m-%d") unless date.is_a?(Date)
-    rescue
-      write_attribute(attr, nil)
-      return
-    end
-    year, month, day = date.year, date.month, date.day
-    unless /^(0?[0-9]|1[0-9]|2[0-3]):([0-5]?[0-9])$/ =~ hm
-      write_attribute(attr, nil)
-      return
-    end
-    hour,min = $1, $2
-    write_attribute(attr, Time.local(year, month, day, hour, min))
-  end
   
   # 避難所識別番号を設定します。
   # ==== Args

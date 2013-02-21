@@ -11,6 +11,7 @@ class EvacuationAdvisoriesController < ApplicationController
   # ==== Raise
   def init
     @evacuation_advisory_const = Constant::hash_for_table(EvacuationAdvisory.table_name)
+    @area = get_cache("area")
   end
   
   # 避難勧告･指示一覧検索画面
