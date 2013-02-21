@@ -6,7 +6,7 @@ Constant.delete_all # 全件削除
 Constant.create(kind1: 'TD', kind2: 'shelters', kind3: 'shelter_type', text: '避難所',                    value: '1', _order: '1')
 Constant.create(kind1: 'TD', kind2: 'shelters', kind3: 'shelter_type', text: '臨時避難所',                value: '2', _order: '2')
 Constant.create(kind1: 'TD', kind2: 'shelters', kind3: 'shelter_type', text: '広域避難所：開設措置なし',  value: '3', _order: '3')
-Constant.create(kind1: 'TD', kind2: 'shelters', kind3: 'shelter_type', text: '一次避難所：開設措置なし',  value: '4', _order: '4')
+Constant.create(kind1: 'TD', kind2: 'shelters', kind3: 'shelter_type', text: '一時避難所：開設措置なし',  value: '4', _order: '4')
 # 避難所区分
 Constant.create(kind1: 'TD', kind2: 'shelters', kind3: 'shelter_sort', text: '未開設', value: '1', _order: '1')
 Constant.create(kind1: 'TD', kind2: 'shelters', kind3: 'shelter_sort', text: '開設',   value: '2', _order: '2')
