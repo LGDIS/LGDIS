@@ -34,9 +34,7 @@ class EvacuationAdvisory < ActiveRecord::Base
                 :inclusion => {:in => CONST[:issueorlift.to_s].keys, :allow_blank => true}
   validates :area, :presence => true,
                 :length => {:maximum => 100}
-#TODO:下の---uniqueness---行の効果と妥当性を林氏に連絡相談｡現状では以下のvalidation errorが表示される
-#｢避難勧告_指示識別情報"04202E00000000000034"の発令・解除地区名称 はすでに存在します。｣
-#   validates_uniqueness_of_without_deleted :area
+  validates_uniqueness_of_without_deleted :area
 
   #そのほかの項目チェック:DB定義順
   validates :households,
