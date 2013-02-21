@@ -2,21 +2,10 @@
 class EvacuationAdvisory < ActiveRecord::Base
   unloadable
 
-<<<<<<< HEAD
   acts_as_paranoid
   validates_as_paranoid
   
   attr_accessible :advisory_type,:sort_criteria,:issueorlift,:area,
-=======
-  attr_accessible :advisory_type,:sort_criteria,:issue_or_lift,:area,
->>>>>>> 5c01eca28b2c7d1f2367ed97d4db79c49a75f0ae
-                  :area_kana,:district,:issued_date,:issued_hm,:issued_hm,:changed_date,
-                  :changed_hm,:lifted_date,:lifted_hm,:address,:category,:cause,
-                  :staff_no,:full_name,:alias,:headline,:message,
-                  :emergency_hq_needed_prefecture,:emergency_hq_needed_city,
-                  :alert,:alerting_area,:siren_area,:evacuation_order,
-                  :evacuate_from,:evacuate_to,:evacuation_steps_by_authorities,:remarks, 
-                  :households,:head_count
 
   ##正の整数チェック用オプションハッシュ値
   POSITIVE_INTEGER = {:only_integer => true,
