@@ -64,14 +64,11 @@ class EvacuationAdvisoriesController < ApplicationController
       eva_id = params[:evacuation_advisories].keys
       @search    = EvacuationAdvisory.search(:id_in => eva_id)
       @evacuation_advisories  = @search.paginate(:page => params[:page], :per_page => 30).order("identifier ASC")
-      begin
-        ActiveRecord::Base.transaction do
-          @evacuation_advisories.each do |eva|
-            eva.assign_attributes(params[:evacuation_advisories]["#{eva.id}"])
-            eva.save
-          end
+      ActiveRecord::Base.transaction do
+        @evacuation_advisories.each do |eva|
+          eva.assign_attributes(params[:evacuation_advisories]["#{eva.id}"])
+          eva.save
         end
-      ensure
       end
     else
       @search   = EvacuationAdvisory.search(params[:search])
