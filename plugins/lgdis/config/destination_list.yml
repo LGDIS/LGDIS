@@ -117,7 +117,7 @@ destination:
       - *urgent_mail_docomo
       - *urgent_mail_au
       - *urgent_mail_sb
-    4: # JMA（警報・注意報）
+    2: # 避難所情報
       - *commons
       - *smtp_0
       - *smtp_1
@@ -144,7 +144,7 @@ destination:
       - *urgent_mail_docomo
       - *urgent_mail_au
       - *urgent_mail_sb
-    4: # JMA（警報・注意報）
+    2: # 避難所情報
       - *commons
       - *smtp_0
       - *smtp_1
@@ -171,7 +171,72 @@ destination:
       - *urgent_mail_docomo
       - *urgent_mail_au
       - *urgent_mail_sb
-    4: # 気象情報（警報・注意報）
+    2: # 避難所情報
+      - *commons
+      - *smtp_0
+      - *smtp_1
+      - *smtp_2
+      - *smtp_3
+      - *smtp_auth
+      - *twitter
+      - *facebook
+      - *atom
+      - *urgent_mail_docomo
+      - *urgent_mail_au
+      - *urgent_mail_sb
+    3: # 気象環境変化
+      - *commons
+      - *smtp_0
+      - *smtp_1
+      - *smtp_2
+      - *smtp_3
+      - *smtp_auth
+      - *twitter
+      - *facebook
+      - *atom
+      - *urgent_mail_docomo
+      - *urgent_mail_au
+      - *urgent_mail_sb
+    16: # 災害対策本部設置報告
+      - *commons
+      - *smtp_0
+      - *smtp_1
+      - *smtp_2
+      - *smtp_3
+      - *smtp_auth
+      - *twitter
+      - *facebook
+      - *atom
+      - *urgent_mail_docomo
+      - *urgent_mail_au
+      - *urgent_mail_sb
+    17: # 被害者要約報告(概況)
+      - *commons
+      - *smtp_0
+      - *smtp_1
+      - *smtp_2
+      - *smtp_3
+      - *smtp_auth
+      - *twitter
+      - *facebook
+      - *atom
+      - *urgent_mail_docomo
+      - *urgent_mail_au
+      - *urgent_mail_sb
+    18: # 被害者要約報告(状況)
+      - *commons
+      - *smtp_0
+      - *smtp_1
+      - *smtp_2
+      - *smtp_3
+      - *smtp_auth
+      - *twitter
+      - *facebook
+      - *atom
+      - *urgent_mail_docomo
+      - *urgent_mail_au
+      - *urgent_mail_sb
+    20: # 道路交通規制に関する情報
       - *commons
       - *smtp_0
       - *smtp_1
@@ -198,7 +263,7 @@ destination:
       - *urgent_mail_docomo
       - *urgent_mail_au
       - *urgent_mail_sb
-    4: # JMA（警報・注意報）
+    2: # 避難所情報
       - *commons
       - *smtp_0
       - *smtp_1
@@ -225,7 +290,7 @@ destination:
       - *urgent_mail_docomo
       - *urgent_mail_au
       - *urgent_mail_sb
-    4: # JMA（警報・注意報）
+    2: # 避難所情報
       - *commons
       - *smtp_0
       - *smtp_1
@@ -252,7 +317,7 @@ destination:
       - *urgent_mail_docomo
       - *urgent_mail_au
       - *urgent_mail_sb
-    4: # JMA（警報・注意報）
+    2: # 避難所情報
       - *commons
       - *smtp_0
       - *smtp_1
@@ -279,7 +344,7 @@ destination:
       - *urgent_mail_docomo
       - *urgent_mail_au
       - *urgent_mail_sb
-    4: # JMA（警報・注意報）
+    2: # 避難所情報
       - *commons
       - *smtp_0
       - *smtp_1
@@ -306,7 +371,7 @@ destination:
       - *urgent_mail_docomo
       - *urgent_mail_au
       - *urgent_mail_sb
-    4: # JMA（警報・注意報）
+    2: # 避難所情報
       - *commons
       - *smtp_0
       - *smtp_1
