@@ -65,8 +65,9 @@
         <div class="splitcontentright">
           <p>
             <label>情報の配信対象地域</label>
-            <%= select_tag 'issue[type_update]',
-              options_for_select(@issue_const["type_update"].invert, @issue.type_update) %>
+            <%= select_tag 'issue[delivered_area]',
+              options_for_select(@issue_const["delivered_area"].invert, @issue.delivered_area),
+              {:multiple => true, :size =>3} %>
 
           </p>
         </div>
