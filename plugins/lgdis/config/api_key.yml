@@ -1,9 +1,9 @@
 # Twitter API Key
 twitter:
-  consumer_key: "bf53oh7A7XvTQUZ0fTjF7w"
-  consumer_secret: "Bdn1vI6yZceRZM8rS671au4lpfr6MVaEz9lMfeL7ss"
-  oauth_token: "1206633080-Egzh7YbQPMXHGnki5rAjpAvZ0FD9bfVXdPhOgLV"
-  oauth_token_secret: "kchrHeBiLUKSTwS4ElSGQ7cCKaZWlvxyWTTNj7wchc"
+  consumer_key: "0589uckPdTLluGRNxZpFA"
+  consumer_secret: "ICf1lBDhhMBF3l5tqYspxYDGI63ooA5AsMcT0ctajtA"
+  oauth_token: "897045534-OQw3IgS2IRQQg4nXsH1R6qVtQZwU0jbvrnUXOTKp"
+  oauth_token_secret: "w8xRfds4iFPU8hsBSpRIZuREAQAUpmrG0Yj1KLeq4"
 
 # Facebook API Key
 facebook:
