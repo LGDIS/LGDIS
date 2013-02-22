@@ -105,6 +105,7 @@ module Lgdis
           summary = create_summary(delivery_place_id)
           delivery_job_class = eval(DST_LIST['delivery_place'][delivery_place_id]['delivery_job_class'])
           test_flag = DST_LIST['test_prj'][self.project_id]
+          delivery_history.update_attribute(:status, 'runtime')
           Resque.enqueue(delivery_job_class, summary, test_flag, self, delivery_history)
           # アーカイブの為、チケットに登録
           msg = summary['message'].blank? ? summary : summary['message']
@@ -119,9 +120,9 @@ module Lgdis
           # TODO
           # log 出力
           p $!
-          status_to = 'failed'
+          delivery_history.update_attribute(:status, 'failed')
         ensure
-          delivery_history.update_attribute(:status, status_to)
+          
         end
         return delivery_history
       end
