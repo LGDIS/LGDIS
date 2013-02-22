@@ -14,7 +14,6 @@ module Lgdis
         before_filter :get_delivery_histories, :only => [:show]
         before_filter :get_destination_list, :only => [:show]
         before_filter :set_issue_geography_data, :only => [:show]
-        before_filter :get_constant_data, :only => [:show]
       end
     end
 
@@ -189,14 +188,6 @@ module Lgdis
         return map
       end
 
-      # 各種コンスタントデータを取得します
-      # ==== Args
-      # ==== Return
-      # ==== Raise
-      def get_constant_data
-        @waring_const_cause = get_cache("River【XMLSchema_C】.WaringConstCause")
-        @waring_const_apply = get_cache("River【XMLSchema_C】.WaringConstApply")
-      end
     end
   end
 end

@@ -3,9 +3,6 @@ require 'csv'
 class Shelter < ActiveRecord::Base
   unloadable
   
-  acts_as_paranoid
-  validates_as_paranoid
-  
   attr_accessible :name,:name_kana,:area,:address,:phone,:fax,:e_mail,:person_responsible,
                   :shelter_type,:shelter_type_detail,:shelter_sort,:opened_date,:opened_hm,
                   :closed_date, :closed_hm,:capacity,:status,:head_count_voluntary,
@@ -34,6 +31,11 @@ class Shelter < ActiveRecord::Base
   # コンスタント存在チェック用
   CONST = Constant::hash_for_table(self.table_name).freeze
   
+  acts_as_paranoid
+  validates_as_paranoid
+  
+  acts_as_datetime_separable :opened_at,:closed_at,:checked_at,:reported_at
+  
   validates :name, :presence => true,
                 :length => {:maximum => 30}
   validates_uniqueness_of_without_deleted :name
@@ -60,19 +62,7 @@ class Shelter < ActiveRecord::Base
   validates :shelter_sort, :presence => true,
                 :inclusion => {:in => CONST[:shelter_sort.to_s].keys, :allow_blank => true}
   # validates :opened_at
-  validates :opened_date,
-                :custom_format => {:type => :date}
-  validates :opened_date, :presence => true, :unless => "opened_hm.blank?"
-  validates :opened_hm,
-                :custom_format => {:type => :time}
-  validates :opened_hm, :presence => true, :unless => "opened_date.blank?"
   # validates :closed_at
-  validates :closed_date,
-                :custom_format => {:type => :date}
-  validates :closed_date, :presence => true, :unless => "closed_hm.blank?"
-  validates :closed_hm,
-                :custom_format => {:type => :time}
-  validates :closed_hm, :presence => true, :unless => "closed_date.blank?"
   validates :capacity,
                 :numericality => POSITIVE_INTEGER
   validates :status,
@@ -86,12 +76,6 @@ class Shelter < ActiveRecord::Base
   validates :households_voluntary,
                 :numericality => POSITIVE_INTEGER
   # validates :checked_at
-  validates :checked_date,
-                :custom_format => {:type => :date}
-  validates :checked_date, :presence => true, :unless => "checked_hm.blank?"
-  validates :checked_hm,
-                :custom_format => {:type => :time}
-  validates :checked_hm, :presence => true, :unless => "checked_date.blank?"
   validates :manager_code,
                 :length => {:maximum => 10}
   validates :manager_name,
@@ -99,12 +83,6 @@ class Shelter < ActiveRecord::Base
   validates :manager_another_name,
                 :length => {:maximum => 100}
   # validates :reported_at
-  validates :reported_date,
-                :custom_format => {:type => :date}
-  validates :reported_date, :presence => true, :unless => "reported_hm.blank?"
-  validates :reported_hm,
-                :custom_format => {:type => :time}
-  validates :reported_hm, :presence => true, :unless => "reported_date.blank?"
   validates :building_damage_info,
                 :length => {:maximum => 4000}
   validates :electric_infra_damage_info,
@@ -165,51 +143,6 @@ class Shelter < ActiveRecord::Base
     localized ||= l("field_#{name.underscore.gsub('/', '_')}_#{attr}",
                     :default => ["field_#{attr}".to_sym, attr])
   end
-  
-  # 日時フィールドに対して、日付、時刻フィールドに分割したアクセサを定義します。
-  # 例) create_at ⇒ create_date, create_hm
-  # ==== Args
-  # _attrs_ :: attrs
-  # ==== Return
-  # ==== Raise
-  def self.attr_accessor_separate_datetime(*attrs)
-    attrs.each do |attr|
-      prefix = attr.to_s.gsub("_at","")
-      define_method("#{prefix}_date") do
-        val = eval("@#{prefix}_date")
-        base_value = eval("self.#{attr}")
-        # timezoneの考慮が必要
-        # see:Redmine::I18n#format_time
-        zone = User.current.time_zone
-        base_value &&= zone ? base_value.in_time_zone(zone) : (base_value.utc? ? base_value.localtime : base_value)
-        base_value &&= base_value.to_date
-        val || base_value
-      end
-      
-      define_method("#{prefix}_date=") do |val|
-        instance_variable_set("@#{prefix}_date", val)
-        set_date_time_attr("#{attr}", val, eval("#{prefix}_hm"))
-      end
-      
-      define_method("#{prefix}_hm") do
-        val = eval("@#{prefix}_hm")
-        base_value = eval("self.#{attr}")
-        # timezoneの考慮が必要
-        # see:Redmine::I18n#format_time
-        zone = User.current.time_zone
-        base_value &&= zone ? base_value.in_time_zone(zone) : (base_value.utc? ? base_value.localtime : base_value)
-        base_value &&= base_value.strftime("%H:%M")
-        val || base_value
-      end
-      
-      define_method("#{prefix}_hm=") do |val|
-        instance_variable_set("@#{prefix}_hm", val)
-        set_date_time_attr("#{attr}", eval("#{prefix}_date"), val)
-      end
-    end
-  end
-  
-  attr_accessor_separate_datetime :opened_at,:closed_at,:checked_at,:reported_at
   
   # チケット登録処理
   # ==== Args
@@ -336,7 +269,7 @@ class Shelter < ActiveRecord::Base
     
     # 避難人数、避難世帯数の集計値および避難所件数の取得
     summary  = Shelter.select("SUM(head_count) AS head_count_sum, SUM(head_count_voluntary) AS head_count_voluntary_sum,
-      SUM(households) AS households_sum, SUM(households_voluntary) AS households_voluntary_sum, COUNT(*) AS count").first
+      SUM(households) AS households_sum, SUM(households_voluntary) AS households_voluntary_sum, COUNT(*) AS count").where(:shelter_sort => ["2","5"]).first
     
     # Shelter要素の追加
     node_shelter = doc.add_element("pcx_sh:Shelter") # Root
@@ -371,7 +304,9 @@ class Shelter < ActiveRecord::Base
       
       # 子要素がすべてブランクの場合、親要素を生成しない
       if shelter.name.present? || shelter.name_kana.present? ||
-        shelter.phone.present? || shelter.address.present?
+        shelter.phone.present? || shelter.address.present? ||
+        shelter.fax.present? || shelter.e_mail.present? ||
+        shelter.person_responsible.present?
         # 親要素の追加
         node_location = node_information.add_element("pcx_sh:Location")
         # 所在地（緯度・経度）
@@ -382,6 +317,12 @@ class Shelter < ActiveRecord::Base
         node_location.add_element("commons:areaNameKana").add_text("#{shelter.name_kana}") if shelter.name_kana.present?
         # 避難所連絡先
         node_location.add_element("pcx_eb:ContactInfo", {"pcx_eb:contactType" => "phone"}).add_text("#{shelter.phone}") if shelter.phone.present?
+        # 避難所のFAX番号
+        node_location.add_element("pcx_eb:ContactInfo", {"pcx_eb:contactType" => "fax"}).add_text("#{shelter.fax}") if shelter.fax.present?
+        # 避難所のメールアドレス
+        node_location.add_element("pcx_eb:ContactInfo", {"pcx_eb:contactType" => "e-mail"}).add_text("#{shelter.e_mail}") if shelter.e_mail.present?
+        # 避難所の担当者名
+        node_location.add_element("pcx_eb:ContactInfo", {"pcx_eb:contactType" => "personResponsible"}).add_text("#{shelter.person_responsible}") if shelter.person_responsible.present?
         # 所在地
         node_location.add_element("pcx_sh:Address").add_text("#{shelter.address}") if shelter.address.present?
       end
@@ -390,6 +331,8 @@ class Shelter < ActiveRecord::Base
       node_information.add_element("pcx_sh:Type").add_text(CONST["shelter_type"]["#{shelter.shelter_type}"]) if shelter.shelter_type.present?
       # 避難所区分 "未開設","開設","閉鎖","不明","常設"
       node_information.add_element("pcx_sh:Sort").add_text(CONST["shelter_sort"]["#{shelter.shelter_sort}"]) if shelter.shelter_sort.present?
+      # 避難所種別で表現しきれない情報
+      node_information.add_element("pcx_sh:TypeDetail").add_text("#{shelter.shelter_type_detail}") if shelter.shelter_type_detail.present?
       
       # 開設・閉鎖日時
       case shelter.shelter_sort
@@ -489,29 +432,6 @@ class Shelter < ActiveRecord::Base
   end
   
   private
-  # 日付、時刻から、attrを設定します。
-  # 不正な引数の場合は、nilを設定します。
-  # ==== Args
-  # _attr_ :: attr
-  # _date_ :: 日付（Dateもしくは文字列）
-  # _hm_ :: 時刻（文字列）
-  # ==== Return
-  # ==== Raise
-  def set_date_time_attr(attr, date, hm)
-    begin
-      date = Date.strptime(date.to_s, "%Y-%m-%d") unless date.is_a?(Date)
-    rescue
-      write_attribute(attr, nil)
-      return
-    end
-    year, month, day = date.year, date.month, date.day
-    unless /^(0?[0-9]|1[0-9]|2[0-3]):([0-5]?[0-9])$/ =~ hm
-      write_attribute(attr, nil)
-      return
-    end
-    hour,min = $1, $2
-    write_attribute(attr, Time.local(year, month, day, hour, min))
-  end
   
   # 避難所識別番号を設定します。
   # ==== Args

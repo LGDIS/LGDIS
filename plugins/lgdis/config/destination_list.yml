@@ -1,81 +1,107 @@
+create_msg_method:
+  - &create_msg_method_1 create_commons_msg
+  - &create_msg_method_2 create_smtp_msg
+  - &create_msg_method_3 create_twitter_msg
+  - &create_msg_method_4 create_facebook_msg
+  - &create_msg_method_5 create_atom_msg
+  
+delivery_job_class:
+  - &delivery_job_class_1 SoapKjCommonsRequestJob
+  - &delivery_job_class_2 SmtpJichiShokuinRequestJob
+  - &delivery_job_class_3 SmtpAuthRequestJob
+  - &delivery_job_class_4 TwitterRequestJob
+  - &delivery_job_class_5 FacebookRequestJob
+  - &delivery_job_class_6 AtomDigiSignageRequestJob
+
+add_url_type:
+  - &add_url_type_1 disaster_portal
+  - &add_url_type_2 lgdsf
+
+to: # メールアドレス、メーリングリスト
+  - &to_1 root@localhost.localdomain  # 自治体職員向けメール（０号配備）
+  - &to_2 apl@localhost.localdomain   # 自治体職員向けメール（１号配備）
+  - &to_3 root@localhost.localdomain  # 自治体職員向けメール（２号配備）
+  - &to_4 root@localhost.localdomain  # 自治体職員向けメール（３号配備）
+  - &to_5 root@localhost.localdomain  # まちcomi向けメール
+
 delivery_place:
-  &commons_id 1: &commons
-    id: *commons_id
+  &id 1: &commons
+    id: *id
     name: 公共情報コモンズ
-    create_msg_method: create_commons_msg
-    delivery_job_class: SoapKjCommonsRequestJob
-    add_url_type: disaster_portal
-  &smtp_0_id 2: &smtp_0
-    id: *smtp_0_id
+    create_msg_method:  *create_msg_method_1
+    delivery_job_class: *delivery_job_class_1
+    add_url_type:       *add_url_type_1
+  &id 2: &smtp_0
+    id: *id
     name: 自治体職員向けメール（０号配備）
-    create_msg_method: create_smtp_msg
-    delivery_job_class: SmtpJichiShokuinRequestJob
-    to: root@localhost.localdomain
-    add_url_type: lgdsf
-  &smtp_1_id 3: &smtp_1
-    id: *smtp_1_id
+    create_msg_method:  *create_msg_method_2
+    delivery_job_class: *delivery_job_class_2
+    add_url_type:       *add_url_type_2
+    to:                 *to_1
+  &id 3: &smtp_1
+    id: *id
     name: 自治体職員向けメール（１号配備）
-    create_msg_method: create_smtp_msg
-    delivery_job_class: SmtpJichiShokuinRequestJob
-    to: apl@localhost.localdomain
-    add_url_type: lgdsf
-  &smtp_2_id 4: &smtp_2
-    id: *smtp_2_id
+    create_msg_method:  *create_msg_method_2
+    delivery_job_class: *delivery_job_class_2
+    add_url_type:       *add_url_type_2
+    to:                 *to_2
+  &id 4: &smtp_2
+    id: *id
     name: 自治体職員向けメール（２号配備）
-    create_msg_method: create_smtp_msg
-    delivery_job_class: SmtpJichiShokuinRequestJob
-    to: root@localhost.localdomain
-    add_url_type: lgdsf
-  &smtp_3_id 5: &smtp_3
-    id: *smtp_3_id
+    create_msg_method:  *create_msg_method_2
+    delivery_job_class: *delivery_job_class_2
+    add_url_type:       *add_url_type_2
+    to:                 *to_3
+  &id 5: &smtp_3
+    id: *id
     name: 自治体職員向けメール（３号配備）
-    create_msg_method: create_smtp_msg
-    delivery_job_class: SmtpJichiShokuinRequestJob
-    to: root@localhost.localdomain
-    add_url_type: lgdsf
-  &smtp_auth_id 6: &smtp_auth
-    id: *smtp_auth_id
+    create_msg_method:  *create_msg_method_2
+    delivery_job_class: *delivery_job_class_2
+    add_url_type:       *add_url_type_2
+    to:                 *to_4
+  &id 6: &smtp_auth
+    id: *id
     name: まちcomi向けメール
-    create_msg_method: create_smtp_msg
-    delivery_job_class: SmtpAuthRequestJob
-    to: root@localhost.localdomain
-    add_url_type: disaster_portal
-  &twitter_id 7: &twitter
-    id: *twitter_id
+    create_msg_method:  *create_msg_method_2
+    delivery_job_class: *delivery_job_class_3
+    add_url_type:       *add_url_type_1
+    to:                 *to_5
+  &id 7: &twitter
+    id: *id
     name: Twitter
-    create_msg_method: create_twitter_msg
-    delivery_job_class: TwitterRequestJob
-    add_url_type: disaster_portal
-  &facebook_id 8: &facebook
-    id: *facebook_id
+    create_msg_method:  *create_msg_method_3
+    delivery_job_class: *delivery_job_class_4
+    add_url_type:       *add_url_type_1
+  &id 8: &facebook
+    id: *id
     name: Facebook
-    create_msg_method: create_facebook_msg
-    delivery_job_class: FacebookRequestJob
-    add_url_type: disaster_portal
-  &atom_id 9: &atom
-    id: *atom_id
+    create_msg_method:  *create_msg_method_4
+    delivery_job_class: *delivery_job_class_5
+    add_url_type:       *add_url_type_1
+  &id 9: &atom
+    id: *id
     name: 災害情報ポータル
-    create_msg_method: create_atom_msg
-    delivery_job_class: AtomDigiSignageRequestJob
-    add_url_type: disaster_portal
-  &urgent_mail_docomo_id 10: &urgent_mail_docomo
-    id: *urgent_mail_docomo_id
+    create_msg_method:  *create_msg_method_5
+    delivery_job_class: *delivery_job_class_6
+    add_url_type:       *add_url_type_1
+  &id 10: &urgent_mail_docomo
+    id: *id
     name: 緊急速報メール（NTTDocomo）
-    create_msg_method: create_commons_msg
-    delivery_job_class: SoapKjCommonsRequestJob
-    add_url_type: disaster_portal
-  &urgent_mail_au_id 11: &urgent_mail_au
-    id: *urgent_mail_au_id
+    create_msg_method:  *create_msg_method_1
+    delivery_job_class: *delivery_job_class_1
+    add_url_type:       *add_url_type_1
+  &id 11: &urgent_mail_au
+    id: *id
     name: 緊急速報メール（KDDI）
-    create_msg_method: create_commons_msg
-    delivery_job_class: SoapKjCommonsRequestJob
-    add_url_type: disaster_portal
-  &urgent_mail_sb_id 12: &urgent_mail_sb
-    id: *urgent_mail_sb_id
+    create_msg_method:  *create_msg_method_1
+    delivery_job_class: *delivery_job_class_1
+    add_url_type:       *add_url_type_1
+  &id 12: &urgent_mail_sb
+    id: *id
     name: 緊急速報メール（ソフトバンク）
-    create_msg_method: create_commons_msg
-    delivery_job_class: SoapKjCommonsRequestJob
-    add_url_type: disaster_portal
+    create_msg_method:  *create_msg_method_1
+    delivery_job_class: *delivery_job_class_1
+    add_url_type:       *add_url_type_1
 
 # 記載例
 # auto_destination:

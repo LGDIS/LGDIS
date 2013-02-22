@@ -10,8 +10,6 @@ class Batches::MemcacheStore
     p " #{Time.now.to_s} ===== START ===== "
     
     store("area")
-    store("River【XMLSchema_C】.WaringConstApply")
-    store("River【XMLSchema_C】.WaringConstCause")
     
     p " #{Time.now.to_s} =====  END  ===== "
   end

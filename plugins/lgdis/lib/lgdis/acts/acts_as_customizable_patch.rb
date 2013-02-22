@@ -2,7 +2,7 @@
 require_dependency 'acts_as_customizable'
 
 module Lgdis
-  module ActsAsCustomizablePatch
+  module Acts::CustomizablePatch
     def self.included(base)
       base::InstanceMethods.send(:include, InstanceMethods)
 
@@ -76,4 +76,4 @@ module Lgdis
   end
 end
 
-Redmine::Acts::Customizable.send(:include, Lgdis::ActsAsCustomizablePatch)
+Redmine::Acts::Customizable.send(:include, Lgdis::Acts::CustomizablePatch)

@@ -2,19 +2,14 @@
 
 #TODO:将来的には発令・解除区分のデータ型をRDBMSで対応しているENUM型にする可能性がある｡
   #assumption: svn checkout svn://rubyforge.org/var/svn/enum-column/plugins/enum-column
-  #例)       t.enum       :issue_or_lift, :limit => [:a, :b, :c, :d, :e] 
+  #例)       t.enum       :issueorlift, :limit => [:a, :b, :c, :d, :e] 
 
 class CreateEvacuationAdvisories < ActiveRecord::Migration
   def change
     create_table :evacuation_advisories do |t|
-      #Redmine-app独自のデータ項目
-#       t.references :project, :null => false
-      #COMMONS定義が自由なためAPPLICを参考にするデータ項目
-#       t.string     :disaster_code, :limit => 20, :null => false
-
       #COMMONS基準のデータ項目
       t.string     :sort_criteria, :limit => 10
-      t.string     :issue_or_lift, :limit => 100
+      t.string     :issueorlift, :limit => 100
       t.string     :area, :limit => 100
       t.string     :area_kana,  :limit => 100
       t.string     :district,  :limit => 10
@@ -61,9 +56,8 @@ class CreateEvacuationAdvisories < ActiveRecord::Migration
 #     SQL
 
     set_table_comment(:evacuation_advisories, "避難勧告・指示情報")
-#     set_column_comment(:evacuation_advisories, :disaster_code, "災害コード")
     set_column_comment(:evacuation_advisories, :sort_criteria, "発令区分")
-    set_column_comment(:evacuation_advisories, :issue_or_lift, "発令・解除区分")
+    set_column_comment(:evacuation_advisories, :issueorlift, "発令・解除区分")
     set_column_comment(:evacuation_advisories, :area, "発令・解除地区名称")
     set_column_comment(:evacuation_advisories, :area_kana, "発令・解除地区名称かな")
     set_column_comment(:evacuation_advisories, :district, "地区（大分類）")

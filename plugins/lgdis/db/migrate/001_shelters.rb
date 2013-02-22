@@ -53,7 +53,7 @@ class Shelters < ActiveRecord::Migration
     
     set_table_comment(:shelters, "避難所情報")
     set_column_comment(:shelters, :name, "避難所名")
-    set_column_comment(:shelters, :name_kana, "避難所名カナ")
+    set_column_comment(:shelters, :name_kana, "避難所名かな")
     set_column_comment(:shelters, :area, "避難所の地区")
     set_column_comment(:shelters, :address, "避難所の住所")
     set_column_comment(:shelters, :phone, "避難所の電話番号")

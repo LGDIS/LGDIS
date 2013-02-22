@@ -46,6 +46,20 @@ describe Lgdis::ControllerHooks do
   end
   
   
+  describe "#view_account_login_bottom " do
+    before do
+      @controller = SheltersController.new
+      @context = {:controller=>@controller}
+      
+      @controller.should_receive(:render_to_string).with({:partial => "account/view_account_login_bottom", :locals => @context})
+      
+    end
+    it "call controller's render_to_string" do
+      @hooks.__send__(:view_account_login_bottom, @context)
+    end
+  end
+  
+  
   describe "#create_project " do
     before do
       @context = {:issue=>mock_model(Issue)}
@@ -102,11 +116,31 @@ describe Lgdis::ControllerHooks do
   
   
   describe "#deliver_issue " do
-    before do
-      @context = {:issue=>mock_model(Issue)}
+    describe "target is not blank " do
+      before do
+        dh_test = "deliveryhistory"
+        @issue = mock_model(Issue)
+        @issue.stub(:id).and_return("1")
+        @issue.stub(:project_id).and_return("5")
+        @issue.should_receive(:deliver).with(dh_test, 'runtime').and_return("OK")
+        @context = {:issue=>@issue, :params=>{:issue=>{:send_target=>"send_target_exist"}}}
+        DeliveryHistory.should_receive(:create!).and_return(dh_test)
+      end
+      it "call deliver_issue" do
+        lambda{@hooks.__send__(:deliver_issue, @context)}.should_not raise_error
+      end
     end
-    it "call deliver_issue" do
-      pending("TODO多数の為保留") # TODO: 
+    describe "raise error " do
+      before do
+        dh_test = "deliveryhistory"
+        @issue = mock_model(Issue)
+        @issue.stub(:id).and_return("1")
+        @issue.stub(:project_id).and_return("5")
+        @context = {:issue=>@issue, :params=>{:issue=>{:send_target=>nil}}}
+      end
+      it "raise error" do
+        lambda{@hooks.__send__(:deliver_issue, @context)}.should raise_error("配備番号が未設定です")
+      end
     end
   end
   
