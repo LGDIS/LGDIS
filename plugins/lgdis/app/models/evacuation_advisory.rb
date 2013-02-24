@@ -28,6 +28,8 @@ class EvacuationAdvisory < ActiveRecord::Base
   #Data base NOT-NULL項目validations
   validates :advisory_type, 
                 :inclusion => {:in => CONST[:advisory_type.to_s].keys, :allow_blank => true}
+
+  #そのほかの項目チェック:DB定義順
   validates :sort_criteria, :presence => true,
                 :inclusion => {:in => CONST[:sort_criteria.to_s].keys, :allow_blank => true}
   validates :issueorlift,
@@ -36,7 +38,6 @@ class EvacuationAdvisory < ActiveRecord::Base
                 :length => {:maximum => 100}
   validates_uniqueness_of_without_deleted :area
 
-  #そのほかの項目チェック:DB定義順
   validates :households,
                  :numericality => POSITIVE_INTEGER
   validates :head_count,
@@ -79,6 +80,9 @@ class EvacuationAdvisory < ActiveRecord::Base
                  :length => {:maximum => 4000}
 
   before_create :number_evacuation_advisory_code , :if => Proc.new { |evacuation_advisory| evacuation_advisory.identifier.nil? }
+  validates :issued_at, :presence => true, :if => Proc.new { |evacuation_advisory| evacuation_advisory.issueorlift == '1' }
+  validates :lifted_at, :presence => true, :if => Proc.new { |evacuation_advisory| evacuation_advisory.issueorlift == '0' }
+
   
   # 属性のローカライズ名取得
   # validateエラー時のメッセージに使用されます。
@@ -198,62 +202,74 @@ class EvacuationAdvisory < ActiveRecord::Base
   def self.create_commons_issue(project)
     # Xmlドキュメントの生成
     doc  = REXML::Document.new
-    # Projectに紐付く避難勧告･指示を取得しXMLを生成する
-    evas = EvacuationAdvisory.all
 
-    # 避難人数、避難世帯数の集計値および避難勧告･指示件数の取得
-     summary  = EvacuationAdvisory.select("SUM(head_count) AS head_count_sum, SUM(households) AS households_sum, COUNT(*) AS count").first
+    # XML出力対象をしぼって出力順にコレクションとして準備 
+    # 明確に避難準備/避難勧告/避難指示/警戒区域として発令または解除された情報に限定
+    evas=[]
+    cond1 = "AND households > 0 AND head_count > 0"
+    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '1' AND sort_criteria ='5' #{cond1.to_s}")
+    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '1' AND sort_criteria ='4' #{cond1.to_s}")
+    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '1' AND sort_criteria ='3' #{cond1.to_s}")
+    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '1' AND sort_criteria ='2' #{cond1.to_s}")
+    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '0' AND sort_criteria ='5' #{cond1.to_s}")
+    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '0' AND sort_criteria ='4' #{cond1.to_s}")
+    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '0' AND sort_criteria ='3' #{cond1.to_s}")
+    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '0' AND sort_criteria ='2' #{cond1.to_s}")
 
     # EvacuationAdvisory要素の取得
     node_evas = doc.add_element("pcx_ev:EvacuationOrder") 
     node_header = node_evas.add_element("pcx_eb:Disaster")
       node_header.add_element("pcx_eb:DisasterName").add_text("#{project.name}")
     node_evas.add_element("pcx_ev:ComplementaryInfo")
-    # 避難勧告指示の総数
-    if summary.head_count_sum.present? || summary.households_sum.present? 
+
+    # 避難人数、避難世帯数の合計値処理
+    summary = connection.select_rows(" 
+      select SUM(households), SUM(head_count) from evacuation_advisories 
+      where issueorlift >= '0' AND sort_criteria > '1'
+    ").first
+    if summary[0].present? || summaryi[1].present? 
       node_total_number = node_evas.add_element("pcx_ev:TotalNumber")
         # 総世帯数
-        node_total_number.add_element("pcx_ev:Households", {"pcx_ev:unit" => "世帯"}).add_text("#{summary.households_sum}") if summary.households_sum.present?
+        node_total_number.add_element("pcx_ev:Households", {"pcx_ev:unit" => "世帯"}).add_text("#{summary[0]}") if summary[0].present?
         # 避難総人数 自主避難人数を含む。
-        node_total_number.add_element("pcx_ev:HeadCount").add_text("#{summary.head_count_sum}") if summary.head_count_sum.present?
+        node_total_number.add_element("pcx_ev:HeadCount").add_text("#{summary[1]}") if summary[1].present?
     end
     
-#     EvacuationAdvisory.all.each do |eva|
-    evas.each do |eva|
+    evas.each do |evas2|
+      next if evas2.blank?
+      node_detail = node_evas.add_element("pcx_ev:Detail")
+      e20 = evas2[0]
+      # 発令区分
+      node_detail.add_element("pcx_ev:Sort").add_text(CONST["sort_criteria"]["#{e20.sort_criteria}"]) if e20.sort_criteria.present?
+      # 発令･解除区分
+      node_detail.add_element("pcx_ev:IssueOrLift").add_text(CONST["issueorlift"]["#{e20.issueorlift}"]) if e20.issueorlift.present?
+      node_obj = node_detail.add_element("pcx_ev:Object")
+        st = subtotal(e20.issueorlift , e20.sort_criteria)
+        node_obj.add_element("pcx_ev:Households", {"pcx_ev:unit" => "世帯"}).add_text(st[0])
+        node_obj.add_element("pcx_ev:HeadCount").add_text(st[1]) 
+      node_areas = node_detail.add_element("pcx_ev:Areas")
 
-      # XML出力対象の存在チェック
-      # 発令　解除
-        # 避難準備 # 避難勧告 # 避難指示 # 警戒区域
-      if eva.sort_criteria != "1" and CONST["sort_criteria"].has_key?(eva.sort_criteria) and CONST["issueorlift"].has_key?(eva.issueorlift) 
-        node_detail = node_evas.add_element("pcx_ev:Detail")
-          # 発令区分
-          node_detail.add_element("pcx_ev:Sort").add_text(CONST["sort_criteria"]["#{eva.sort_criteria}"]) if eva.sort_criteria.present?
-          # 発令･解除区分
-          node_detail.add_element("pcx_ev:IssueOrLift").add_text(CONST["issueorlift"]["#{eva.issueorlift}"]) if eva.issueorlift.present?
-          node_obj = node_detail.add_element("pcx_ev:Object")
-            node_obj.add_element("pcx_ev:Households", {"pcx_ev:unit" => "世帯"}).add_text("#{eva.households}") #if eva.households_subtotal.present?
-            node_obj.add_element("pcx_ev:HeadCount").add_text("#{eva.head_count}") #if eva.head_count_subtotal.present?
-          node_areas = node_detail.add_element("pcx_ev:Areas")
-          node_area  = node_areas.add_element("pcx_ev:Area")
-            node_location = node_area.add_element("pcx_eb:Location")
-          # 発令・解除地区名称
-              node_location.add_element("commons:areaName").add_text("#{eva.area}") if eva.area.present?
-              node_location.add_element("commons:areaNameKana").add_text("#{eva.area_kana}") if eva.area_kana.present?
-            # 日時
-            case eva.issueorlift
-            when "1" # 発令
-              date = eva.issued_at.xmlschema if eva.issued_at.present?
-            when "0" # 解除
-              date = eva.lifted_at.xmlschema if eva.lifted_at.present?
-            else
-              date = nil
-            end
-            node_area.add_element("pcx_ev:DateTime").add_text(date.to_s) if date.present?
-        
-            node_obj = node_area.add_element("pcx_ev:Object")
-              # 対象人数と対象世帯数 自主避難人数を含む。不明の場合は要素を省略。
-              node_obj.add_element("pcx_ev:Households", {"pcx_ev:unit" => "世帯"}).add_text("#{eva.households}") if eva.households.present?
-              node_obj.add_element("pcx_ev:HeadCount").add_text("#{eva.head_count}") if eva.head_count.present?
+      evas2.each do |eva|
+        node_area  = node_areas.add_element("pcx_ev:Area")
+          node_location = node_area.add_element("pcx_eb:Location")
+            # 発令・解除地区名称
+            node_location.add_element("commons:areaName").add_text("#{eva.area}") if eva.area.present?
+            node_location.add_element("commons:areaNameKana").add_text("#{eva.area_kana}") if eva.area_kana.present?
+          # 日時
+          case eva.issueorlift
+          when "1" # 発令
+            date = eva.issued_at.xmlschema if eva.issued_at.present?
+          when "0" # 解除
+            date = eva.lifted_at.xmlschema if eva.lifted_at.present?
+          else
+            date = nil
+          end
+          node_area.add_element("pcx_ev:DateTime").add_text(date.to_s) if date.present?
+      
+          node_obj = node_area.add_element("pcx_ev:Object")
+            # 対象人数と対象世帯数 自主避難人数を含む。不明の場合は要素を省略。
+            node_obj.add_element("pcx_ev:Households", {"pcx_ev:unit" => "世帯"}).add_text("#{eva.households}") if eva.households.present?
+            node_obj.add_element("pcx_ev:HeadCount").add_text("#{eva.head_count}") if eva.head_count.present?
       end
     end
     
@@ -262,14 +278,14 @@ class EvacuationAdvisory < ActiveRecord::Base
     issue.project_id = project.id
     issue.subject    = "避難勧告･指示 #{Time.now.xmlschema}"
     issue.author_id  = User.current.id
-    issue.xml_body   = doc.to_s
+    fmtdoc = "\n" + doc.to_s.gsub(/></,">\n<").gsub("<pcx_ev:De","\n\n<pcx_ev:De")
+      fmtdoc = fmtdoc.gsub("<commons:areaName>","\n<commons:areaName>")
+    issue.xml_body   = fmtdoc
     issue.save!
     
     return issue
   end
 
-  private
-  
   # 避難勧告･指示識別番号を設定します。
   # ==== Args
   # ==== Return
@@ -279,4 +295,21 @@ class EvacuationAdvisory < ActiveRecord::Base
     self.identifier = "04202E#{format("%014d", seq)}"
   end
 
+  private
+
+  # 発令解除区分ごとの世帯数と対象人数の小計を求めて配列に代入
+  # ==== Args
+  # _str_digit_issueorlift_ :: 発令解除区分値文字列｡constants.rbで定義｡
+  # ==== Return
+  # _[tmp.issueorlift_hcsum, tmp.issueorlift_hhsum]_ :: 発令解除区分ごとの対象人数と世帯数 小計の配列
+  # ==== Raise
+  def self.subtotal(issueorlift, sort_criteria)
+    subtotals =[]
+    subtotals = connection.select_rows("
+      select SUM(households), SUM(head_count) from evacuation_advisories 
+      where issueorlift = '#{issueorlift}' AND sort_criteria = '#{sort_criteria}'
+    ").first
+    return subtotals
+  end
+  
 end
