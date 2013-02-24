@@ -22,7 +22,7 @@ class Lgdis::ExtOut::Mailer < ActionMailer::Base
       mta_fqdn = DST_LIST['smtp_server2']['mta_fqdn']
       domain = DST_LIST['smtp_server2']['domain']
         fromname = "root@localhost.localdomain" if fromname.blank? 
-        charset = "root@localhost.localdomain" if charset.blank? 
+        charset = "utf-8" if charset.blank? 
         port = 25 if port.blank?  
         mta_fqdn = 'localhost.localdomain' if mta_fqdn.blank?  
         domain = "localdomain" if domain.blank?  
@@ -34,14 +34,14 @@ class Lgdis::ExtOut::Mailer < ActionMailer::Base
         :port           => port,
         :domain         => domain
       }
+
       mail(
         :from     => fromname,
         :to       => mailing_list_name.to_s , 
         :subject  => title.to_s,
         :body     => message.to_s ,
-        :charset  => 'utf-8'
+        :charset  => charset
       )
-
       Rails.logger.info("{#{str}");print("#{str}")
       status = true
       return mail(:subject => title.to_s)
@@ -74,7 +74,7 @@ class Lgdis::ExtOut::Mailer < ActionMailer::Base
       account = DST_LIST['smtp_server2']['account']
       pw = DST_LIST['smtp_server2']['password']
         fromname = "root@localhost.localdomain" if fromname.blank? 
-        charset = "root@localhost.localdomain" if charset.blank? 
+        charset = "utf-8" if charset.blank? 
         port = 25 if port.blank?  
         mta_fqdn = 'localhost.localdomain' if mta_fqdn.blank?  
         domain = "localdomain" if domain.blank?  
@@ -114,12 +114,3 @@ class Lgdis::ExtOut::Mailer < ActionMailer::Base
 end
 
 
-
-#予備コード
-#       mail.body.charset = 'iso-2022-jp' 
-#       mail.body = mail.body.raw_source.encode('ISO-2022-JP', :invalid => :replace, :undef => :replace).encode('UTF-8')
-#irb/コンソールからの呼び出しコマンド例: 
-# @mail=Lgdis::ExtOut::Mailer.setup_auth( "root@localhost.localdomain","SMTP-AUTH引数0", "SMTP-AUTH引数1").deliver
-# @mail=Lgdis::ExtOut::Mailer.setup_auth( "apl@localhost.localdomain","SMTP-AUTH引数0", "SMTP-AUTH引数1").deliver
-# @mail=Lgdis::ExtOut::Mailer.setup( "apl@localhost.localdomain","SMTP-AUTH引数0", "SMTP-AUTH引数1").deliver
-# Lgdis::ExtOut::SMTP_Auth.send_message({"mailing_list_name" => "apl@localhost.localdomain", "title" => "TEST3iAUTH", "message" => "sss漢字"}, false)
