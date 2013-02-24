@@ -73,3 +73,5 @@ load_settings:  # 読込設定詳細
   226:  [CauseInterruptionOfTheCommunicationNetwork.csv, [0, 1], 2]   # 電話等不通の原因要素
   310:  [DisasterWeakRelatedFacilities.csv, [0, 1], 2]                # 災害弱者関連施設の種類
   422:  [TheMetropolisAndDistricts.csv, [0, 1], 2]                    # 事象の発生都道府県
+  432:  [APPLIC_Sex.csv, [0, 1], 2]                                   # 対象者の性別
+  197:  [CauseElementOfTheBlackout.csv, [0, 1], 2]                    # 停電の原因要素

@@ -27,12 +27,12 @@ class DeliverIssuesController < ApplicationController
     user_name   = params[:current_user]
     ext_out_ary = params[:ext_out_target]
 
-    issue = Issue.find_by_id issue_id.to_i
+    @issue = Issue.find_by_id issue_id.to_i
     raise ParamsException, l(:notice_delivery_unselected) if ext_out_ary.blank?
 
     ActiveRecord::Base.transaction do
-      issue.update_attributes!(params[:issue])
-      DeliveryHistory.create_for_history(issue, ext_out_ary)
+      @issue.update_attributes!(params[:issue])
+      DeliveryHistory.create_for_history(@issue, ext_out_ary)
       flash[:notice] = l(:notice_delivery_request_successful)
     end
   rescue ActiveRecord::RecordInvalid
