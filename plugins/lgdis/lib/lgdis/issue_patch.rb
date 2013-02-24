@@ -106,7 +106,7 @@ module Lgdis
           delivery_job_class = eval(DST_LIST['delivery_place'][delivery_place_id]['delivery_job_class'])
           test_flag = DST_LIST['test_prj'][self.project_id]
           delivery_history.update_attribute(:status, 'runtime')
-          Resque.enqueue(delivery_job_class, summary, test_flag, self, delivery_history)
+          Resque.enqueue(delivery_job_class, delivery_history.id, summary, test_flag)
           # アーカイブの為、チケットに登録
           msg = summary['message'].blank? ? summary : summary['message']
           journal = self.init_journal(User.current, msg)
@@ -184,11 +184,7 @@ module Lgdis
       # 配信内容
       # ==== Raise
       def create_atom_msg(delivery_place_id)
-=begin
-        obj = SetupXML.arrange_and_put(self)
-        summary = obj.show
-        return summary
-=end
+        #TODO:Atom with GeoRSS作成処理の実装
       end
 
       # 災害訓練,URL 追加処理

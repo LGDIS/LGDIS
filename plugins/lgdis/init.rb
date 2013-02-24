@@ -6,9 +6,8 @@ require 'redmine'
 require "#{Rails.root}/plugins/lgdis/config/initializers/omniauth"
 
 # 非同期処理
-ActiveSupport::Dependencies.autoload_paths += %W(#{Rails.root}/plugins/lgdis/config/initializers)
-ActiveSupport::Dependencies.autoload_paths += %W(#{Rails.root}/plugins/lgdis/lib/tasks)
 ActiveSupport::Dependencies.autoload_paths += %W(#{Rails.root}/plugins/lgdis/app/workers)
+require "#{Rails.root}/plugins/lgdis/config/initializers/resque"
 
 # カスタムバリデータ
 ActiveSupport::Dependencies.autoload_paths += %W(#{Rails.root}/plugins/lgdis/lib/validators)
@@ -42,20 +41,6 @@ require_dependency 'lgdis/controller_hooks'
 # view
 require_dependency 'lgdis/view_hooks'
 #require_dependency 'lgdis/show_view_hooks' # Viewホックポイントの確認用
-
-# 外部出力関連
-require_dependency 'lgdis/ext_out/twitter'
-require_dependency 'lgdis/ext_out/facebook'
-require_dependency 'lgdis/ext_out/smtp_jichi_shokuin'
-require_dependency 'lgdis/ext_out/smtp_auth.rb'
-require_dependency 'lgdis/ext_out/mailer.rb'
-require_dependency 'lgdis/ext_out/mailer_extra.rb'
-require_dependency 'lgdis/ext_out/atom_digi_signage.rb'
-require_dependency 'lgdis/ext_out/feeder.rb'
-require_dependency 'lgdis/ext_out/datum_conv.rb'
-require_dependency 'lgdis/ext_out/soap_kj_commons.rb'
-require_dependency 'lgdis/ext_out/commons_client.rb'
-require_dependency 'lgdis/ext_out/if_common.rb'
 
 Redmine::Plugin.register :lgdis do
   name 'LGDIS (Local Government Disaster Information System) plugin'
