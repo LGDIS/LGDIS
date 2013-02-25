@@ -6,7 +6,7 @@ module ExtOut
     # クライアントクラス名
     @@client_class = "Lgdis::ExtOut::Atom"
     # ログ出力項目
-    @@output_log_fields += [:output_file]
+    @@output_log_fields += [:output_dir, :output_file_name]
     # アーカイブ出力項目
     @@output_archive_fields += [
         :output_dir,
