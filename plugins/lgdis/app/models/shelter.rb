@@ -155,7 +155,7 @@ class Shelter < ActiveRecord::Base
     ### 公共コモンズ用チケット登録
     issues << self.create_commons_issue(project)
     ### Applic用チケット登録
-    issues << self.create_applic_issue(project)
+#     issues << self.create_applic_issue(project)
     return issues
   end
   

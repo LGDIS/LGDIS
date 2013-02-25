@@ -64,7 +64,6 @@ module Lgdis
         endpoint_uri = @endpoint_uri
         namespace_uri = @namespace_uri
 
-        #Savon property でSSHオプションをつけたい｡
         client = Savon.client do
           wsdl wsdl_uri
           endpoint endpoint_uri
@@ -80,7 +79,7 @@ module Lgdis
             end
           end
           #以下2行はカギ情報伝送方式(例:X509認証)で必要になる
-          #公開･プライベートカギ情報へのファイルパス･
+          #公開･プライベートカギ情報へのファイルパス
             #ssl_cert_file "
             #ssl_cert_key_file "
         end

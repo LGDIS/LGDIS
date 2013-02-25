@@ -80,8 +80,9 @@ class EvacuationAdvisory < ActiveRecord::Base
                  :length => {:maximum => 4000}
 
   before_create :number_evacuation_advisory_code , :if => Proc.new { |evacuation_advisory| evacuation_advisory.identifier.nil? }
-  validates :issued_at, :presence => true, :if => Proc.new { |evacuation_advisory| evacuation_advisory.issueorlift == '1' }
-  validates :lifted_at, :presence => true, :if => Proc.new { |evacuation_advisory| evacuation_advisory.issueorlift == '0' }
+# 2013年  2月 25日: 日時未入力の避難勧告指示データを暫定的にXML出力除外｡有効にしたくば以下の2行でバリデーションするとよい｡
+#   validates :issued_at, :presence => true, :if => Proc.new { |evacuation_advisory| evacuation_advisory.issueorlift == '1' }
+#   validates :lifted_at, :presence => true, :if => Proc.new { |evacuation_advisory| evacuation_advisory.issueorlift == '0' }
 
   
   # 属性のローカライズ名取得
@@ -117,7 +118,7 @@ class EvacuationAdvisory < ActiveRecord::Base
     ### 公共コモンズ用チケット登録
     issues << self.create_commons_issue(project)
     ### Applic用チケット登録
-    issues << self.create_applic_issue(project)
+#     issues << self.create_applic_issue(project)
     return issues
   end
   
@@ -207,14 +208,15 @@ class EvacuationAdvisory < ActiveRecord::Base
     # 明確に避難準備/避難勧告/避難指示/警戒区域として発令または解除された情報に限定
     evas=[]
     cond1 = "AND households > 0 AND head_count > 0"
-    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '1' AND sort_criteria ='5' #{cond1.to_s}")
-    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '1' AND sort_criteria ='4' #{cond1.to_s}")
-    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '1' AND sort_criteria ='3' #{cond1.to_s}")
-    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '1' AND sort_criteria ='2' #{cond1.to_s}")
-    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '0' AND sort_criteria ='5' #{cond1.to_s}")
-    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '0' AND sort_criteria ='4' #{cond1.to_s}")
-    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '0' AND sort_criteria ='3' #{cond1.to_s}")
-    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '0' AND sort_criteria ='2' #{cond1.to_s}")
+    cond2 = "AND ((issueorlift = '1' AND NOT issued_at IS NULL) OR (issueorlift = '0' AND NOT lifted_at IS NULL))"
+    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '1' AND sort_criteria ='5' #{cond1.to_s} #{cond2.to_s}")
+    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '1' AND sort_criteria ='4' #{cond1.to_s} #{cond2.to_s}")
+    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '1' AND sort_criteria ='3' #{cond1.to_s} #{cond2.to_s}")
+    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '1' AND sort_criteria ='2' #{cond1.to_s} #{cond2.to_s}")
+    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '0' AND sort_criteria ='5' #{cond1.to_s} #{cond2.to_s}")
+    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '0' AND sort_criteria ='4' #{cond1.to_s} #{cond2.to_s}")
+    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '0' AND sort_criteria ='3' #{cond1.to_s} #{cond2.to_s}")
+    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '0' AND sort_criteria ='2' #{cond1.to_s} #{cond2.to_s}")
 
     # EvacuationAdvisory要素の取得
     node_evas = doc.add_element("pcx_ev:EvacuationOrder") 
