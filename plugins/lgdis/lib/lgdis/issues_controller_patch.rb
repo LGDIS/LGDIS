@@ -13,7 +13,6 @@ module Lgdis
         before_filter :init, :only => [:show]
         before_filter :get_delivery_histories, :only => [:show]
         before_filter :get_destination_list, :only => [:show]
-        before_filter :set_issue_geography_data, :only => [:show]
       end
     end
 
@@ -75,117 +74,6 @@ module Lgdis
           # error 処理
           p $!
         end
-      end
-
-      # google map 表示用のチケット地理データをインスタンス変数に格納します
-      # ==== Args
-      # ==== Return
-      # ==== Raise
-      def set_issue_geography_data
-        issue_geographies =
-          IssueGeography.find(:all,
-                              :conditions=>["issue_id=?",params[:id].to_i])
-        if issue_geographies.blank?
-          points = [{"points" => [MAP_VALUES['ishi_lat'], MAP_VALUES['ishi_lon']],  "remarks" => MAP_VALUES['ishi_addr']}]
-        else
-          points = set_points(issue_geographies)
-          lines  = set_lines(issue_geographies)
-          polygons = set_polygons(issue_geographies)
-          locations = set_locations(issue_geographies)
-        end
-        @locations = locations.blank? ? [] : locations
-        @points   = points.blank? ? [] : points
-        @lines    = lines.blank? ? [] : lines
-        @polygons = polygons.blank? ? [] : polygons
-      end
-
-      # google map 表示用のチケット地理データ(地名)を返却します
-      # ==== Args
-      # ==== Return
-      # ==== Raise
-      def set_locations(issue_geographies)
-        locations=[]
-        issue_geographies.each do |geo|
-          unless geo.location.blank?
-            hash = {}
-            hash.store('location', geo.location)
-            hash.store('remarks', geo.remarks)
-            locations.push hash
-          end
-        end
-        return locations
-      end
-
-      # google map 表示用のチケット地理データ(位置座標)を返却します
-      # ==== Args
-      # ==== Return
-      # ==== Raise
-      def set_points(issue_geographies)
-        points=[]
-        issue_geographies.each do |geo|
-          unless geo.point.blank?
-            ary = geo.point.gsub(/[()]/,"").split(',').map(&:to_f).reverse
-            points.push set_geo(geo, ary, true)
-          end
-        end
-        return points
-      end
-
-      # google map 表示用のチケット地理データ(線形座標)を返却します
-      # ==== Args
-      # ==== Return
-      # ==== Raise
-      def set_lines(issue_geographies)
-        lines=[]
-        issue_geographies.each do |geo|
-          unless geo.line.blank?
-            ary = geo.line.gsub(/[()]/,"").split(',').map(&:to_f).reverse
-            lines.push set_geo(geo, ary)
-          end
-        end
-        return lines
-      end
-
-      # google map 表示用のチケット地理データ(多角形座標)を返却します
-      # ==== Args
-      # ==== Return
-      # ==== Raise
-      def set_polygons(issue_geographies)
-        polygons=[]
-        issue_geographies.each do |geo|
-          unless geo.polygon.blank?
-            ary = geo.polygon.gsub(/[()]/,"").split(',').map(&:to_f).reverse
-            polygons.push set_geo(geo, ary)
-          end
-        end
-        return polygons
-      end
-
-      # google map 表示用のチケット地理データを返却します
-      # 共通処理
-      # ==== Args
-      # ==== Return
-      # ==== Raise
-      def set_geo(geo, geo_ary, point_flag=nil)
-        ary = Array.new
-        map = Hash.new
-
-        # polyline, polygon 共通処理
-        if point_flag.blank?
-          num=0
-          geo_ary.length.to_i.times do
-            break if geo_ary[num].blank?
-            ary.push [geo_ary[num], geo_ary[num+1]]
-            num+=2
-          end
-        else
-          # point 表示処理
-          ary=geo_ary
-        end
-        map.store('points',ary)
-        map.store('remarks',geo.remarks)
-
-        return map
       end
 
     end

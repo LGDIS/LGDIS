@@ -307,6 +307,73 @@ module Lgdis
         return doc
       end
 
+      # map表示向けの場所（locaton）ハッシュ配列を返却します
+      # ==== Args
+      # ==== Return
+      # map表示向けのハッシュ配列 ※空の場合は[]
+      # * "locaton" :: 場所文字列
+      # * "remarks" :: 備考
+      # ==== Raise
+      def locations_for_map
+        locations = []
+        self.issue_geographies.each do |ig|
+          next if ig.location.blank?
+          locations << ig.location_for_map
+        end
+        return locations
+      end
+
+      # map表示向けの経緯度（point）ハッシュ配列を返却します
+      # ==== Args
+      # _to_datum_ :: 必要な測地系 ※未指定の場合は世界測地系
+      # ==== Return
+      # map表示向けのハッシュ配列 ※空の場合は[]
+      # * "points"  :: 座標
+      # * "remarks" :: 備考
+      # ==== Raise
+      def points_for_map(to_datum = IssueGeography::DATUM_JGD)
+        points = []
+        self.issue_geographies.each do |ig|
+          next if ig.point.blank?
+          points << ig.point_for_map(to_datum)
+        end
+        return points
+      end
+
+      # map表示向けの線（line）ハッシュ配列を返却します
+      # ==== Args
+      # _to_datum_ :: 必要な測地系 ※未指定の場合は世界測地系
+      # ==== Return
+      # map表示向けのハッシュ配列 ※空の場合は[]
+      # * "points"  :: 座標
+      # * "remarks" :: 備考
+      # ==== Raise
+      def lines_for_map(to_datum = IssueGeography::DATUM_JGD)
+        lines = []
+        self.issue_geographies.each do |ig|
+          next if ig.line.blank?
+          lines << ig.line_for_map(to_datum)
+        end
+        return lines
+      end
+
+      # map表示向けの多角形（polygon）ハッシュ配列を返却します
+      # ==== Args
+      # _to_datum_ :: 必要な測地系 ※未指定の場合は世界測地系
+      # ==== Return
+      # map表示向けのハッシュ配列 ※空の場合は[]
+      # * "points"  :: 座標
+      # * "remarks" :: 備考
+      # ==== Raise
+      def polygons_for_map(to_datum = IssueGeography::DATUM_JGD)
+        polygons = []
+        self.issue_geographies.each do |ig|
+          next if ig.polygon.blank?
+          polygons << ig.polygon_for_map(to_datum)
+        end
+        return polygons
+      end
+
       private
 
       # 公共コモンズ用XML 作成処理(エリアメールBody部)
