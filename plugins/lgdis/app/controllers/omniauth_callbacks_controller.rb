@@ -53,6 +53,15 @@ class OmniauthCallbacksController < AccountController
     redirect_to_result(user)
   end
 
+  # OpenAMによる認可結果リダイレクトアクション
+  # ==== Args
+  # ==== Return
+  # ==== Raise
+  def openam
+    user = User.find_for_saml(request.env["omniauth.auth"])
+    redirect_to_result(user)
+  end
+
   # 共通ログイン・リダイレクト処理
   # ==== Args
   # _user_ :: ログインユーザ(User)

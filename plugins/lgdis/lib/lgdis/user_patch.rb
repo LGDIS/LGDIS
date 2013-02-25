@@ -14,6 +14,7 @@ module Lgdis
       GOOGLE_IDENTIFIER = 'google'
       TWITTER_IDENTIFIER = 'twitter'
       FACEBOOK_IDENTIFIER = 'facebook'
+      OPENAM_IDENTIFIER = 'openam'
 
       class InvalidAuthProvider < StandardError; end
       class ExternalAuthDisabled < StandardError; end
@@ -63,6 +64,21 @@ module Lgdis
         raise InvalidAuthProvider, "illegal authorizer: #{access_token.provider}"
       end
 
+      # SAMLで認可されたユーザを取得する
+      # ==== Args
+      # _access_token_ :: アクセストークン
+      # _signed_in_resource_ :: RESERVED
+      # ==== Return
+      # Userオブジェクト ※新規ユーザの場合は未save
+      # ==== Raise
+      # InvalidAuthProvider :: 想定しないプロバイダによる認可のとき
+      # ExternalAuthDisabled :: プラグイン設定で機能が無効化されているとき
+      def find_for_saml(access_token, signed_in_resource=nil)
+        raise "illegal authorizer: #{access_token.provider}" unless access_token.provider == 'openam'
+        user = self.find_or_initialize_by_provider_and_uid(OPENAM_IDENTIFIER, access_token.uid)
+        user.login = access_token.uid
+        return user
+      end
     end
 
     module InstanceMethods
