@@ -184,7 +184,71 @@ module Lgdis
       # 配信内容
       # ==== Raise
       def create_atom_msg(delivery_place_id)
-        #TODO:Atom with GeoRSS作成処理の実装
+        # テンプレートの読み込み
+        file = File.new("#{Rails.root}/plugins/lgdis/files/xml/atom_with_georss.xml")
+        # Xmlドキュメントの生成
+        doc  = REXML::Document.new(file)
+
+        feed = doc.elements["feed"]
+        feed.elements["title"].text = self.project.name
+
+        #CGI off-line mode回避用ダミーコード:最後にコントロールDを入れる作業を回避
+        ARGV.replace(%w(abc=001 def=002))
+        cgi = CGI.new
+        feed.elements["link"].attributes["href"] += "#{cgi.server_name}/r/feed/"
+
+        time = Time.now
+        feed.elements["updated"].text = time.xmlschema
+
+        author = feed.elements["author"]
+        author.elements["name"].text = self.author.name
+        author.elements["email"].text = self.author.mail
+
+        feed.elements["id"].text += UUIDTools::UUID.random_create.to_s
+
+        entry = feed.elements["entry"]
+        entry.elements["title"].text = "#{self.tracker.name} ##{self.id}: #{self.subject}"
+        entry.elements["id"].text += UUIDTools::UUID.random_create.to_s
+        entry.elements["updated"].text = time.xmlschema
+        entry.elements["summary"].text = self.description.to_s[0,140]
+
+        cnt = 0
+        self.points_for_map.each do |point|
+          cnt += 1
+          REXML::Comment.new("-------- 本件についての地理情報 No." + cnt.to_s + " --------", entry)
+          entry.add_element("georss:point").text = point["points"].join(" ")
+          entry.add_element("georss:relationshipTag").text = "iconfile=#{rand(16)}-dot.png"
+        end
+
+        self.lines_for_map.each do |line|
+          cnt += 1
+          REXML::Comment.new("-------- 本件についての地理情報 No." + cnt.to_s + " --------", entry)
+          entry.add_element("georss:line").text = line["points"].flatten.join(" ")
+          entry.add_element("georss:relationshipTag").text = "iconfile=#{rand(16)}-dot.png"
+        end
+
+        self.polygons_for_map.each do |polygon|
+          cnt += 1
+          REXML::Comment.new("-------- 本件についての地理情報 No." + cnt.to_s + " --------", entry)
+          entry.add_element("georss:polygon").text = polygon["points"].flatten.join(" ")
+          entry.add_element("georss:relationshipTag").text = "iconfile=#{rand(16)}-dot.png"
+        end
+
+        self.polygons_for_map.each do |polygon|
+          cnt += 1
+          REXML::Comment.new("-------- 本件についての地理情報 No." + cnt.to_s + " --------", entry)
+          entry.add_element("georss:polygon").text = polygon["points"].flatten.join(" ")
+          entry.add_element("georss:relationshipTag").text = "iconfile=#{rand(16)}-dot.png"
+        end
+
+        self.locations_for_map.each do |location|
+          cnt += 1
+          REXML::Comment.new("-------- 本件についての地理情報 No." + cnt.to_s + " --------", entry)
+          entry.add_element("georss:featureTypeTag").text = location["locaton"]
+          entry.add_element("georss:relationshipTag").text = "iconfile=#{rand(16)}-dot.png"
+        end
+
+        return doc.to_s
       end
 
       # 災害訓練,URL 追加処理
@@ -304,14 +368,14 @@ module Lgdis
         doc.elements["//commons:contentObject/commons:documentRevision"].add_text("#{edition_fields_map['edition_num']}")
         doc.elements["//commons:contentObject/commons:documentID"].add_text(edition_fields_map['uuid'])
 
-        return doc
+        return doc.to_s
       end
 
-      # map表示向けの場所（locaton）ハッシュ配列を返却します
+      # map表示向けの場所（location）ハッシュ配列を返却します
       # ==== Args
       # ==== Return
       # map表示向けのハッシュ配列 ※空の場合は[]
-      # * "locaton" :: 場所文字列
+      # * "location" :: 場所文字列
       # * "remarks" :: 備考
       # ==== Raise
       def locations_for_map

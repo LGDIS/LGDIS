@@ -47,12 +47,12 @@ class IssueGeography < ActiveRecord::Base
   # ==== Args
   # ==== Return
   # map表示向けのハッシュ
-  # * "locaton" :: 場所文字列
+  # * "location" :: 場所文字列
   # * "remarks" :: 備考
   # ==== Raise
   def location_for_map
-    return nil if locaton.blank?
-    return {"location" => locaton, "remarks" => remarks}
+    return nil if location.blank?
+    return {"location" => location, "remarks" => remarks}
   end
 
   # map表示向けの経緯度（point）ハッシュを返却します
