@@ -174,7 +174,7 @@ ja:
   
   notice_evacuation_advisory_successful_create: 避難勧告･指示 %{id} が作成されました。
   text_evacuation_advisory_destroy_confirmation: '本当に削除しますか？'
-  error_not_exists_evacuation_advisories: 避難所情報が存在しません。
+  error_not_exists_evacuation_advisories: 避難勧告･指示情報が存在しません。
   
   # 避難勧告･指示機能 項目名
   evacuation_advisories:

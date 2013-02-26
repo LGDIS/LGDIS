@@ -130,7 +130,7 @@ class EvacuationAdvisoriesController < ApplicationController
     @evacuation_advisory.assign_attributes(params[:evacuation_advisory])
 
     if @evacuation_advisory.save
-      flash[:notice] = l(:notice_evacuation_advisory_successful_create, :id => "##{@evacuation_advisory.id} #{@evacuation_advisory.full_name}")
+      flash[:notice] = l(:notice_evacuation_advisory_successful_create, :id => "##{@evacuation_advisory.id} #{@evacuation_advisory.headline}")
       redirect_to :action  => :edit, :id => @evacuation_advisory.id
     else
       render :action  => :new
