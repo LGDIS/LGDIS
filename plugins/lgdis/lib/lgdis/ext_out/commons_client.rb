@@ -70,7 +70,7 @@ module Lgdis
           namespace namespace_uri
           #クライアントに配置した認証局証明書ファイルの場所
           #片側認証方式ではこれがあればよい
-          if endpoint_uri =~ /https/
+          unless (endpoint_uri =~ /https/).blank?
             if $0 == "script/rails"
               # Rails/Redmineから呼ばれた場合は設定ファイルの証明書を読む
               ssl_ca_cert_file DST_LIST['commons_connection']['ssl_ca_cert']
@@ -83,7 +83,6 @@ module Lgdis
             #ssl_cert_file "
             #ssl_cert_key_file "
         end
-
         doc = create_soap_document(data)
         response = client.call(:publish) do
           xml doc
