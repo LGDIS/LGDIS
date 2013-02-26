@@ -161,7 +161,7 @@ ja:
   notice_delivery_unselected: 配信先が選択されていません。
   notice_delivery_failed: 配信に失敗しました。
 
-  ####
+  ####  
   # 避難勧告･指示機能
   #
   project_module_evacuation_advisories: 避難勧告･指示機能

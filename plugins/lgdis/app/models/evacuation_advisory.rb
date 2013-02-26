@@ -35,7 +35,7 @@ class EvacuationAdvisory < ActiveRecord::Base
   validates :issueorlift,
                 :inclusion => {:in => CONST[:issueorlift.to_s].keys, :allow_blank => true} ,
                 :presence => true, :if => Proc.new {|evacuation_advisory| evacuation_advisory.sort_criteria > '1'}
-
+  
   validates :area, :presence => true,
                 :length => {:maximum => 100}
   validates_uniqueness_of_without_deleted :area

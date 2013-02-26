@@ -1,7 +1,7 @@
 # encoding: utf-8
 class EvacuationAdvisoriesController < ApplicationController
   unloadable
-
+   
   before_filter :find_project, :authorize
   before_filter :init
 
