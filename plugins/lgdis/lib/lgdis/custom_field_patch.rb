@@ -11,6 +11,7 @@ module Lgdis
         unloadable
         serialize :default_value  # 初期値をシリアライズ化して格納
         alias_method_chain :validate_field_value, :connect
+        alias_method_chain :validate_field_value_format, :datetime
       end
     end
     
@@ -63,6 +64,24 @@ module Lgdis
         return [] if [CF_CONNECT].flatten.include?(self.id)
         return validate_field_value_without_connect(value)
       end
+
+      # カスタムフィールドの型毎のバリデーション
+      # 日付フォーマットで、時刻入力指定がある場合は、
+      # 既存の日付チェックを行わず、日時チェックを行うように変更
+      # ==== Args
+      # _value_ :: 入力値
+      # ==== Return
+      # エラー配列
+      # ==== Raise
+      def validate_field_value_format_with_datetime(value)
+        if value.present? && field_format == "date" && include_time?
+          err = []
+          err << ::I18n.t('activerecord.errors.messages.not_a_datetime') unless value =~ /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/ && begin; value.to_datetime; rescue; false end
+          return err
+        end
+        return validate_field_value_format_without_datetime(value)
+      end
+
     end
   end
 end
