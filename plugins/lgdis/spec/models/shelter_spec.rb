@@ -3,7 +3,6 @@ require 'spec_helper'
 
 describe Shelter do
   CONST = Constant::hash_for_table(Shelter.table_name).freeze
-  I18n.locale = "ja"
   before do
     User.current = nil # 一度設定されたcurrent_userが保持されるのでここでnilに設定
     @project = FactoryGirl.build(:project1, :id => 5)

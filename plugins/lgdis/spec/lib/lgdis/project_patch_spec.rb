@@ -2,7 +2,6 @@
 require 'spec_helper'
 describe Lgdis::ProjectPatch do
   before do
-    I18n.locale = "ja"
     @project = FactoryGirl.build(:project1, :id => 5)
   end
   describe "Validation identifier validates_presence_of " do
