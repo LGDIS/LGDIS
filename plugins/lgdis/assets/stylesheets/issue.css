@@ -33,3 +33,9 @@ div.map_field {
 .ui-timepicker-div td { font-size: 90%; }
 .ui-tpicker-grid-label { background: none; border: none; margin: 0; padding: 0; }
 #ui-datepicker-div { font-size: 12px; }
+
+tr.like_hr td{
+  height: 1px;
+  padding: 0;
+  background-color: rgb(204,204,204);
+}
