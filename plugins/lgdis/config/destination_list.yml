@@ -523,6 +523,98 @@ tracker_title:
   74: イベント・お知らせ   # 船舶路の運行に関する情報
   75: イベント・お知らせ   # その他公共交通の運行に関する情報
 
+tracker_grouping:
+  20: # 道路通行規制に関する情報
+    - 交通
+    - 道路
+  21: # 道路渋滞に関する情報
+    - 交通
+    - 道路
+  25: # 道路工事に関する情報
+    - 交通
+    - 道路
+  27: # 道路路面状況に関する情報
+    - 交通
+    - 道路
+  42: # 鉄道の運行に関する情報
+    - 交通
+    - 鉄道
+  43: # 上水道に関する情報
+    - ライフライン
+    - 水道
+  44: # 下水道に関する情報
+    - ライフライン
+    - 水道
+  45: # ガスに関する情報
+    - ライフライン
+    - ガス
+  46: # 通信網に関する情報
+    - ライフライン
+    - 通信
+  50: # 電気に関する情報
+    - ライフライン
+    - 電気
+  51: # 臨時災害放送に関する情報
+    - ライフライン
+    - 放送
+  52: # 行政手続きに関する情報
+    - 生活情報
+    - 行政手続き
+  53: # その他の被災者支援に関する情報
+    - 生活情報
+    - 被災者支援
+  54: # 学校・幼稚園・保育所に関する情報
+    - 生活情報
+    - 福祉・教育・保育所
+  55: # 給水に関する情報
+    - ライフライン
+    - 給水
+  56: # 健康・福祉・介護に関する情報
+    - 生活情報
+    - 福祉・教育・保育所
+  57: # 環境に関する情報
+    - 生活情報
+    - 環境
+  58: # 防犯に関する情報
+    - 生活情報
+    - 防犯
+  59: # 医療に関する情報
+    - 生活情報
+    - 医療
+  60: # 炊き出し・物資配布に関する情報
+    - 生活情報
+    - 被災者支援
+  61: # 入浴サービスに関する情報
+    - 生活情報
+    - 被災者支援
+  62: # 安置所に関する情報
+    - 生活情報
+    - 被災者支援
+  63: # 災害習得物に関する情報
+    - 生活情報
+    - 被災者支援
+  64: # ボランティアの支援を受けたい方への情報
+    - 生活情報
+    - 被災者支援
+  65: # ボランティア活動をしたい方への情報
+    - 生活情報
+    - 被災者支援
+  66: # 営業店舗に関する情報
+    - 生活情報
+    - 被災者支援
+  72: # バスの運行に関する情報
+    - 交通
+    - バス
+  73: # 航空路の運行に関する情報
+    - 交通
+    - 航空
+  74: # 船舶路の運行に関する情報
+    - 交通
+    - 船舶
+  75: # その他公共交通の運行に関する情報
+    - 交通
+    - その他
+
 commons_xml_field:
   namespace_start_tag: <body_namespace xmlns:pcx_di="http://xml.publiccommons.ne.jp/pcxml1/body/DamageInformation3" xmlns:pcx_en="http://xml.publiccommons.ne.jp/pcxml1/body/event3" xmlns:pcx_sh="http://xml.publiccommons.ne.jp/pcxml1/body/shelter3" xmlns:pcx_um="http://xml.publiccommons.ne.jp/pcxml1/body/UrgentMail3" xmlns:pcx_ev="http://xml.publiccommons.ne.jp/pcxml1/body/evacuation3" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:edxlde="urn:oasis:names:tc:emergency:EDXL:DE:1.0" xmlns:commons="http://xml.publiccommons.ne.jp/xml/edxl/" xmlns:pcxml="http://xml.publiccommons.ne.jp/pcxml1/3" xmlns:pcx_eb="http://xml.publiccommons.ne.jp/pcxml1/elementBasis3/" xmlns:pcx_ib="http://xml.publiccommons.ne.jp/pcxml1/informationBasis3/">
   namespace_end_tag: </body_namespace>
