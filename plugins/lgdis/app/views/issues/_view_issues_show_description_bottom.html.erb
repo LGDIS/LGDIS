@@ -105,19 +105,19 @@ end %>
   // ------------------------------------------------
   // ポイントデータ作成
   // DBにポイントデータが複数存在する可能性があるため配列で全てのポイントデータを保持
-  var global_points = <%== @points.to_json %>
+  var global_points = <%== issue.points_for_map.to_json %>
 
   // ラインデータ作成
   // DBにラインデータが複数存在する可能性があるため配列で全てのラインデータを保持
-  var global_lines = <%== @lines.to_json %>
+  var global_lines = <%== issue.lines_for_map.to_json %>
 
   // ポリゴンデータ作成
   // DBにポリゴンデータが複数存在する可能性があるため配列で全てのポリゴンデータを作成
-  var global_polygons = <%== @polygons.to_json %>
+  var global_polygons = <%== issue.polygons_for_map.to_json %>
 
   // ロケーションデータ作成
   // DBにロケーションデータが複数存在する可能性があるため配列で全てのロケーションデータを作成
-  var global_locations = <%== @locations.to_json %>
+  var global_locations = <%== issue.locations_for_map.to_json %>
   // ------------------------------------------------
   // グローバル変数
   var map;

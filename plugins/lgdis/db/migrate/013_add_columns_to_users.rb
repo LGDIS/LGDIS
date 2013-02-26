@@ -8,7 +8,7 @@ class AddColumnsToUsers < ActiveRecord::Migration
     set_column_comment(:users, :uid, "認可プロバイダのユーザ識別子")
 
     #remove_index :users, :column => :login
-    #add_index :users, [:login, :provider, :uid], :unique => true
+    add_index :users, [:login, :provider, :uid], :unique => true, :name => "index_users_on_uniqueuser"
   end
 end
 

@@ -9,8 +9,6 @@ describe IssuesController do
     login_required.save!
 
     ApplicationController.any_instance.stub(:get_cache).with("area").and_return({"area1" =>"地区名1"})
-    ApplicationController.any_instance.stub(:get_cache).with("River【XMLSchema_C】.WaringConstCause").and_return("ret_waring_const_cause")
-    ApplicationController.any_instance.stub(:get_cache).with("River【XMLSchema_C】.WaringConstApply").and_return("ret_waring_const_apply")
 
     @project = FactoryGirl.build(:project1, :id => 5)
     @project.save!
@@ -168,20 +166,5 @@ describe IssuesController do
       end
     end
   end
-
-
-  describe "#get_constant_data " do
-    before do
-      Issue.any_instance.stub(:visible?) {true}
-      @issue = FactoryGirl.create(:issue1, :project_id=>project_id)
-    end
-    it "get @waring_const_cause, @waring_const_apply from cache" do
-      get :show, {:id=> @issue.id}
-      
-      assigns[:waring_const_cause].should == "ret_waring_const_cause"
-      assigns[:waring_const_apply].should == "ret_waring_const_apply"
-    end
-  end
-
 
 end

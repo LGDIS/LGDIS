@@ -106,7 +106,7 @@ module Lgdis
           delivery_job_class = eval(DST_LIST['delivery_place'][delivery_place_id]['delivery_job_class'])
           test_flag = DST_LIST['test_prj'][self.project_id]
           delivery_history.update_attribute(:status, 'runtime')
-          Resque.enqueue(delivery_job_class, summary, test_flag, self, delivery_history)
+          Resque.enqueue(delivery_job_class, delivery_history.id, summary, test_flag)
           # アーカイブの為、チケットに登録
           msg = summary['message'].blank? ? summary : summary['message']
           journal = self.init_journal(User.current, msg)
@@ -184,11 +184,71 @@ module Lgdis
       # 配信内容
       # ==== Raise
       def create_atom_msg(delivery_place_id)
-=begin
-        obj = SetupXML.arrange_and_put(self)
-        summary = obj.show
-        return summary
-=end
+        # テンプレートの読み込み
+        file = File.new("#{Rails.root}/plugins/lgdis/files/xml/atom_with_georss.xml")
+        # Xmlドキュメントの生成
+        doc  = REXML::Document.new(file)
+
+        feed = doc.elements["feed"]
+        feed.elements["title"].text = self.project.name
+
+        #CGI off-line mode回避用ダミーコード:最後にコントロールDを入れる作業を回避
+        ARGV.replace(%w(abc=001 def=002))
+        cgi = CGI.new
+        feed.elements["link"].attributes["href"] += "#{cgi.server_name}/r/feed/"
+
+        time = Time.now
+        feed.elements["updated"].text = time.xmlschema
+
+        author = feed.elements["author"]
+        author.elements["name"].text = self.author.name
+        author.elements["email"].text = self.author.mail
+
+        feed.elements["id"].text += UUIDTools::UUID.random_create.to_s
+
+        entry = feed.elements["entry"]
+        entry.elements["title"].text = "#{self.tracker.name} ##{self.id}: #{self.subject}"
+        entry.elements["id"].text += UUIDTools::UUID.random_create.to_s
+        entry.elements["updated"].text = time.xmlschema
+        entry.elements["summary"].text = self.description.to_s[0,140]
+
+        cnt = 0
+        self.points_for_map.each do |point|
+          cnt += 1
+          REXML::Comment.new("-------- 本件についての地理情報 No." + cnt.to_s + " --------", entry)
+          entry.add_element("georss:point").text = point["points"].join(" ")
+          entry.add_element("georss:relationshipTag").text = "iconfile=#{rand(16)}-dot.png"
+        end
+
+        self.lines_for_map.each do |line|
+          cnt += 1
+          REXML::Comment.new("-------- 本件についての地理情報 No." + cnt.to_s + " --------", entry)
+          entry.add_element("georss:line").text = line["points"].flatten.join(" ")
+          entry.add_element("georss:relationshipTag").text = "iconfile=#{rand(16)}-dot.png"
+        end
+
+        self.polygons_for_map.each do |polygon|
+          cnt += 1
+          REXML::Comment.new("-------- 本件についての地理情報 No." + cnt.to_s + " --------", entry)
+          entry.add_element("georss:polygon").text = polygon["points"].flatten.join(" ")
+          entry.add_element("georss:relationshipTag").text = "iconfile=#{rand(16)}-dot.png"
+        end
+
+        self.polygons_for_map.each do |polygon|
+          cnt += 1
+          REXML::Comment.new("-------- 本件についての地理情報 No." + cnt.to_s + " --------", entry)
+          entry.add_element("georss:polygon").text = polygon["points"].flatten.join(" ")
+          entry.add_element("georss:relationshipTag").text = "iconfile=#{rand(16)}-dot.png"
+        end
+
+        self.locations_for_map.each do |location|
+          cnt += 1
+          REXML::Comment.new("-------- 本件についての地理情報 No." + cnt.to_s + " --------", entry)
+          entry.add_element("georss:featureTypeTag").text = location["locaton"]
+          entry.add_element("georss:relationshipTag").text = "iconfile=#{rand(16)}-dot.png"
+        end
+
+        return doc.to_s
       end
 
       # 災害訓練,URL 追加処理
@@ -308,7 +368,74 @@ module Lgdis
         doc.elements["//commons:contentObject/commons:documentRevision"].add_text("#{edition_fields_map['edition_num']}")
         doc.elements["//commons:contentObject/commons:documentID"].add_text(edition_fields_map['uuid'])
 
-        return doc
+        return doc.to_s
+      end
+
+      # map表示向けの場所（location）ハッシュ配列を返却します
+      # ==== Args
+      # ==== Return
+      # map表示向けのハッシュ配列 ※空の場合は[]
+      # * "location" :: 場所文字列
+      # * "remarks" :: 備考
+      # ==== Raise
+      def locations_for_map
+        locations = []
+        self.issue_geographies.each do |ig|
+          next if ig.location.blank?
+          locations << ig.location_for_map
+        end
+        return locations
+      end
+
+      # map表示向けの経緯度（point）ハッシュ配列を返却します
+      # ==== Args
+      # _to_datum_ :: 必要な測地系 ※未指定の場合は世界測地系
+      # ==== Return
+      # map表示向けのハッシュ配列 ※空の場合は[]
+      # * "points"  :: 座標
+      # * "remarks" :: 備考
+      # ==== Raise
+      def points_for_map(to_datum = IssueGeography::DATUM_JGD)
+        points = []
+        self.issue_geographies.each do |ig|
+          next if ig.point.blank?
+          points << ig.point_for_map(to_datum)
+        end
+        return points
+      end
+
+      # map表示向けの線（line）ハッシュ配列を返却します
+      # ==== Args
+      # _to_datum_ :: 必要な測地系 ※未指定の場合は世界測地系
+      # ==== Return
+      # map表示向けのハッシュ配列 ※空の場合は[]
+      # * "points"  :: 座標
+      # * "remarks" :: 備考
+      # ==== Raise
+      def lines_for_map(to_datum = IssueGeography::DATUM_JGD)
+        lines = []
+        self.issue_geographies.each do |ig|
+          next if ig.line.blank?
+          lines << ig.line_for_map(to_datum)
+        end
+        return lines
+      end
+
+      # map表示向けの多角形（polygon）ハッシュ配列を返却します
+      # ==== Args
+      # _to_datum_ :: 必要な測地系 ※未指定の場合は世界測地系
+      # ==== Return
+      # map表示向けのハッシュ配列 ※空の場合は[]
+      # * "points"  :: 座標
+      # * "remarks" :: 備考
+      # ==== Raise
+      def polygons_for_map(to_datum = IssueGeography::DATUM_JGD)
+        polygons = []
+        self.issue_geographies.each do |ig|
+          next if ig.polygon.blank?
+          polygons << ig.polygon_for_map(to_datum)
+        end
+        return polygons
       end
 
       private

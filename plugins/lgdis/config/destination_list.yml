@@ -6,23 +6,47 @@ create_msg_method:
   - &create_msg_method_5 create_atom_msg
   
 delivery_job_class:
-  - &delivery_job_class_1 SoapKjCommonsRequestJob
-  - &delivery_job_class_2 SmtpJichiShokuinRequestJob
-  - &delivery_job_class_3 SmtpAuthRequestJob
-  - &delivery_job_class_4 TwitterRequestJob
-  - &delivery_job_class_5 FacebookRequestJob
-  - &delivery_job_class_6 AtomDigiSignageRequestJob
+  - &delivery_job_class_1 "ExtOut::CommonsRequestJob"
+  - &delivery_job_class_2 "ExtOut::SmtpRequestJob"
+  - &delivery_job_class_3 "ExtOut::TwitterRequestJob"
+  - &delivery_job_class_4 "ExtOut::FacebookRequestJob"
+  - &delivery_job_class_5 "ExtOut::AtomRequestJob"
 
 add_url_type:
   - &add_url_type_1 disaster_portal
   - &add_url_type_2 lgdsf
 
-to: # メールアドレス、メーリングリスト
-  - &to_1 root@localhost.localdomain  # 自治体職員向けメール（０号配備）
-  - &to_2 apl@localhost.localdomain   # 自治体職員向けメール（１号配備）
-  - &to_3 root@localhost.localdomain  # 自治体職員向けメール（２号配備）
-  - &to_4 root@localhost.localdomain  # 自治体職員向けメール（３号配備）
-  - &to_5 root@localhost.localdomain  # まちcomi向けメール
+to: # 配送先メールアドレス、メーリングリスト
+  - &to_err apl@localhost.localdomain # Resqueジョブエラー通知
+  - &to_1   apl@localhost.localdomain # 自治体職員向けメール（０号配備）
+  - &to_2   to2@localhost.localdomain # 自治体職員向けメール（１号配備）
+  - &to_3   to3@localhost.localdomain # 自治体職員向けメール（２号配備）
+  - &to_4   to4@localhost.localdomain # 自治体職員向けメール（３号配備）
+  - &to_5   to5@localhost.localdomain # まちcomi向けメール
+
+from: # 送信元メールアドレス、メーリングリスト
+  - &from_err frome@localhost.localdomain # Resqueジョブエラー通知
+  - &from_1   from1@localhost.localdomain # 自治体職員向けメール
+  - &from_2   from2@localhost.localdomain # まちcomi向けメール
+
+smtp_server: # SMTPサーバー
+  - &smtp_server_err  # Resqueジョブエラー通知
+    mta_fqdn: localhost.localdomain
+    port:     25
+    domain:   localdomain
+    charset:  utf-8
+  - &smtp_server_1 # 自治体職員向けメール
+    mta_fqdn: localhost.localdomain
+    port:     25
+    domain:   localdomain
+    charset:  utf-8
+  - &smtp_server_2 # まちcomi向けメール
+    mta_fqdn:   localhost.localdomain
+    port:       25
+    domain:     localdomain
+    user_name:  apl
+    password:   JBC03142
+    charset:    utf-8
 
 delivery_place:
   &id 1: &commons
@@ -38,6 +62,8 @@ delivery_place:
     delivery_job_class: *delivery_job_class_2
     add_url_type:       *add_url_type_2
     to:                 *to_1
+    from:               *from_1
+    smtp_server:        *smtp_server_1
   &id 3: &smtp_1
     id: *id
     name: 自治体職員向けメール（１号配備）
@@ -45,6 +71,8 @@ delivery_place:
     delivery_job_class: *delivery_job_class_2
     add_url_type:       *add_url_type_2
     to:                 *to_2
+    from:               *from_1
+    smtp_server:        *smtp_server_1
   &id 4: &smtp_2
     id: *id
     name: 自治体職員向けメール（２号配備）
@@ -52,6 +80,8 @@ delivery_place:
     delivery_job_class: *delivery_job_class_2
     add_url_type:       *add_url_type_2
     to:                 *to_3
+    from:               *from_1
+    smtp_server:        *smtp_server_1
   &id 5: &smtp_3
     id: *id
     name: 自治体職員向けメール（３号配備）
@@ -59,30 +89,34 @@ delivery_place:
     delivery_job_class: *delivery_job_class_2
     add_url_type:       *add_url_type_2
     to:                 *to_4
+    from:               *from_1
+    smtp_server:        *smtp_server_1
   &id 6: &smtp_auth
     id: *id
     name: まちcomi向けメール
     create_msg_method:  *create_msg_method_2
-    delivery_job_class: *delivery_job_class_3
+    delivery_job_class: *delivery_job_class_2
     add_url_type:       *add_url_type_1
     to:                 *to_5
+    from:               *from_2
+    smtp_server:        *smtp_server_2
   &id 7: &twitter
     id: *id
     name: Twitter
     create_msg_method:  *create_msg_method_3
-    delivery_job_class: *delivery_job_class_4
+    delivery_job_class: *delivery_job_class_3
     add_url_type:       *add_url_type_1
   &id 8: &facebook
     id: *id
     name: Facebook
     create_msg_method:  *create_msg_method_4
-    delivery_job_class: *delivery_job_class_5
+    delivery_job_class: *delivery_job_class_4
     add_url_type:       *add_url_type_1
   &id 9: &atom
     id: *id
     name: 災害情報ポータル
     create_msg_method:  *create_msg_method_5
-    delivery_job_class: *delivery_job_class_6
+    delivery_job_class: *delivery_job_class_5
     add_url_type:       *add_url_type_1
   &id 10: &urgent_mail_docomo
     id: *id
@@ -663,14 +697,18 @@ test_prj:
  # In other word, IP address of non-router (including virtualizer router).
 #ie commons_endpoint: http://192.168.43.186/commons/subscriber/soap/testservice.example.com/
 #sha 
-commons_endpoint: http://192.168.11.7/commons/subscriber/soap/testservice.example.com/
-#sha centos_ssh: commons_endpoint: https://localhost:443/commons/subscriber/soap/testservice.example.com/
-commons_user: user1@example.com
-commons_pw: password
-commons_wsdl: /opt/fix/LGDIS/plugins/lgdis/lib/lgdis/ext_out/wsdl/MQService.wsdl
-commons_namespace: http://soap.publiccommons.ne.jp/
-commons_ssl_ca_cert: /opt/fix/SOAPdev/etc/pki/CA/cacert.pem
+commons_connection:
+  endpoint: http://192.168.11.7/commons/subscriber/soap/testservice.example.com/
+  #sha centos_ssh: commons_endpoint: https://localhost:443/commons/subscriber/soap/testservice.example.com/
+  username: user1@example.com
+  password: password
+  wsdl: /opt/fix/LGDIS/plugins/lgdis/lib/lgdis/ext_out/wsdl/MQService.wsdl
+  namespace: http://soap.publiccommons.ne.jp/
+  ssl_ca_cert: /opt/fix/SOAPdev/etc/pki/CA/cacert.pem
 
+# Atom出力先
+atom:
+  output_dir: ./public/atom
 
 # 災害情報ポータルURL
 disaster_portal_url: http://www.jice.or.jp/sinsai/sinsai_result.php
@@ -678,42 +716,13 @@ disaster_portal_url: http://www.jice.or.jp/sinsai/sinsai_result.php
 # LGDSF URL
 lgdsf_url: http://203.138.187.88/lgdsf/staffs/send/
 
-# 外部出力送信失敗時のメール通知パラメーター
-disruption_alert_mailto: apl@localhost.localdomain
-disruption_alert_title_prefix: "[石巻市Redmine外部配信ERROR] "
-disruption_alert_msg: ""
-
-#SMTPサーバー設定1:認証なしSMTP専用(自治体職員向け)
-smtp_server1:
-  port: 25
-  mta_fqdn: localhost.localdomain
-  domain: localdomain
-  fromname: root@localhost.localdomain 
-  charset: utf-8
-
-#SMTPサーバー設定2:SMTP-AUTH   専用(まち.comi向け)
-smtp_server2:
-  port: 25
-  mta_fqdn: localhost.localdomain
-  domain: localdomain
-  account: apl
-  password: JBC03142
-#   account: disastertraining2013
-#   password: disastertraining
-  fromname: root@localhost.localdomain 
-  charset: utf-8
-#   tls: = false
-
-#SMTPサーバー設定3:現状では認証なし設定(外部出力エラー検知通報を想定)
-#サーバー接続accountまたはpasswordのどれかに値があり､コメントインされていれば
-#SMTP-AUTH設定と見なす｡認証なしにしたければ､それらをコメントアウトすること｡
-smtp_server3:
-  port: 25
-  mta_fqdn: localhost.localdomain
-  domain: localdomain
-#   account: apl
-#   password: JBC03142
-  fromname: root@localhost.localdomain 
-  charset: utf-8
-#   tls: = false
-
+# 外部出力
+ext_out:
+  archives_dir: ./log/ext_out  # アーカイブ出力先ディレクトリ
+  job_failure_notification:
+    smtp_server: *smtp_server_err
+    to: *to_err
+    from: *from_err
+    test_flag: false
+    title_prefix: "[LGDIS]外部出力ジョブエラー "
+    alert_msg: "外部出力ジョブエラーが発生しました。"
