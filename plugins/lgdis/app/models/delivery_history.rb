@@ -12,6 +12,8 @@ class DeliveryHistory < ActiveRecord::Base
 
   acts_as_datetime_separable :published_at, :opened_at, :closed_at
 
+  validate :for_commons
+
   def self.create_for_history(issue, ary)
     ary.each do |e|
       self.create!(
@@ -38,12 +40,35 @@ class DeliveryHistory < ActiveRecord::Base
   private
 
   def for_commons
-    if self.mail_subject.blank?
-      errors.add(:mail_subject, "は必須項目です")
+    if (self.delivery_place_id == 2  || self.delivery_place_id == 3  ||
+        self.delivery_place_id == 4  || self.delivery_place_id == 5  ||
+        self.delivery_place_id == 6  || self.delivery_place_id == 10 ||
+        self.delivery_place_id == 11 || self.delivery_place_id == 12 ||
+        self.delivery_place_id == 9) && self.mail_subject.blank?
+      errors.add(:mail_subject, "を入力して下さい")
     end
 
-    if self.delivery_place_id == 1 && mail_subject.blank?
-      errors.add(:mail_subject, "は必須項目です")
+    if (self.delivery_place_id == 2  || self.delivery_place_id == 3  ||
+        self.delivery_place_id == 4  || self.delivery_place_id == 5  ||
+        self.delivery_place_id == 6  || self.delivery_place_id == 7  ||
+        self.delivery_place_id == 8  || self.delivery_place_id == 10 ||
+        self.delivery_place_id == 11 || self.delivery_place_id == 12 ||
+        self.delivery_place_id == 9) && self.summary.blank?
+      errors.add(:summary, "を入力して下さい")
+    end
+
+    if (self.delivery_place_id == 7 || self.delivery_place_id == 9) && self.summary.size >= 142
+      errors.add(:mail_subject, "は142文字以上入力できません")
+    end
+
+    if (self.delivery_place_id == 10 || self.delivery_place_id == 11 ||
+        self.delivery_place_id == 12) && self.mail_subject.size > 15
+      errors.add(:mail_subject, "は16文字以上入力できません")
+    end
+
+    if (self.delivery_place_id == 10 || self.delivery_place_id == 11 ||
+        self.delivery_place_id == 12) && self.summary.size > 171
+      errors.add(:mail_subject, "は172文字以上入力できません")
     end
   end
 end

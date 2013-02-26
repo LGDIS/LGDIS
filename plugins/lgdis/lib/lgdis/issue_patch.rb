@@ -1,5 +1,6 @@
 # encoding: utf-8
 require_dependency 'issue'
+require "#{Rails.root}/plugins/lgdis/app/models/constant"
 
 module Lgdis
   module IssuePatch
@@ -77,6 +78,8 @@ module Lgdis
                       '3' => 'Cancel'
                     }.freeze
 
+      CONST = Constant.hash_for_table(Issue.table_name).freeze
+
       # チケット情報のコピー
       # チケット位置情報もコピーするように処理追加
       # ==== Args
@@ -144,7 +147,7 @@ module Lgdis
       # 配信内容文字列
       # ==== Raise
       def create_twitter_msg(delivery_place_id)
-        summary = self.add_url_and_training(self.name_in_custom_field_value(DST_LIST['custom_field_delivery']['summary']), delivery_place_id)
+        summary = self.add_url_and_training(self.summary, delivery_place_id)
         return summary
       end
 
@@ -155,7 +158,7 @@ module Lgdis
       # 配信内容文字列
       # ==== Raise
       def create_facebook_msg(delivery_place_id)
-        summary = self.add_url_and_training(self.description, delivery_place_id)
+        summary = self.add_url_and_training(self.summary, delivery_place_id)
         return summary
       end
 
@@ -207,6 +210,11 @@ module Lgdis
         feed.elements["id"].text += UUIDTools::UUID.random_create.to_s
 
         entry = feed.elements["entry"]
+        # TODO
+        # コントロールプレーン部の対応で作成内容(参照情報)が
+        # 変更になった可能性があり、確認必要
+        # entry.elements["title"].text = "#{self.mail_subject}"
+        # entry.elements["summary"].text = self.summary.to_s[0,140]
         entry.elements["title"].text = "#{self.tracker.name} ##{self.id}: #{self.subject}"
         entry.elements["id"].text += UUIDTools::UUID.random_create.to_s
         entry.elements["updated"].text = time.xmlschema
@@ -278,7 +286,7 @@ module Lgdis
       # ==== Args
       # _delivery_place_id_ :: 外部配信先ID
       # ==== Return
-      # 配信内容
+      # _doc_ :: 配信内容
       # ==== Raise
       def create_commons_msg(delivery_place_id)
         # テンプレートの読み込み
@@ -291,8 +299,17 @@ module Lgdis
         # XML 生成時に名前空間を明示的に指定しないとエラーとなる為準備
         start_element = DST_LIST['commons_xml_field']['namespace_start_tag']
         end_element   = DST_LIST['commons_xml_field']['namespace_end_tag']
-        xml_body = start_element + self.xml_body + end_element
-        xml_body  = REXML::Document.new(xml_body).elements["//pcx_ev:EvacuationOrder"]
+
+        if DST_LIST['ugent_mail_ids'].include? delivery_place_id
+          xml_body = create_commmons_area_mail_body
+          element  = 'pcx_um:UrgentMail'
+        else
+          xml_body = self.xml_body
+          element  = destination_xpath[self.tracker_id]
+        end
+        xml_body = start_element + xml_body + end_element
+        xml_body  = REXML::Document.new(xml_body).elements["//#{element}"]
+
 
         # tracker_id に紐付く標題を設定
         title  = DST_LIST['tracker_title'][self.tracker_id]
@@ -322,7 +339,7 @@ module Lgdis
         str=''
         self.delivered_area='1'
         self.delivered_area.split(',').each do |s|
-          str << Constant.hash_for_table(Issue.table_name)['delivered_area'][s] + ','
+          str << CONST['delivered_area'][s] + ','
         end
         delivered_area = str.split(//u)[0..-2].join
 
@@ -334,8 +351,8 @@ module Lgdis
         doc.elements["//edxlde:combinedConfidentiality"].add_text(DST_LIST['commons_xml_field']['confidential_message'])
         doc.elements["//commons:targetArea/commons:areaName"].add_text(delivered_area)
         doc.elements["//edxlde:contentDescription"].add_text(name_in_custom_field_value(DST_LIST['custom_field_delivery']['summary']))
-        doc.elements["//edxlde:consumerRole/edxlde:valueListUrn"].add_text('publicCommons:media:urgentmail:carrier') # TODO 緊急速報メールの場合
-        doc.elements["//edxlde:consumerRole/edxlde:value"].add_text(DST_LIST['commons_xml_field']['carrier'][1]) # TODO 緊急速報メールの場合
+        doc.elements["//edxlde:consumerRole/edxlde:valueListUrn"].add_text('publicCommons:media:urgentmail:carrier') if DST_LIST['ugent_mail_ids'].include? delivery_place_id # 緊急速報メールの場合のみ
+        doc.elements["//edxlde:consumerRole/edxlde:value"].add_text(DST_LIST['commons_xml_field']['carrier'][delivery_place_id]) if DST_LIST['ugent_mail_ids'].include? delivery_place_id # 緊急速報メールの場合のみ
 
         # Control 部要素追加
         doc.elements["//edxlde:distributionStatus"].add_text(operation_flg)
@@ -445,6 +462,36 @@ module Lgdis
       # ==== Return
       # ==== Raise
       def create_commmons_area_mail_body
+        doc =  REXML::Document.new
+        doc << REXML::XMLDecl.new('1.0', 'UTF-8')
+        doc.add_element("pcx_um:UrgentMail").add_attribute("xmlns:pcx_um", "http://xml.publiccommons.ne.jp/pcxml1/body/UrgentMail3") # root
+        doc.elements["//pcx_um:UrgentMail"].add_element("pcx_um:Information")
+
+        doc.elements["//pcx_um:Information"].add_element("pcx_um:Title").add_text("#{self.mail_subject}")
+        doc.elements["//pcx_um:Information"].add_element("pcx_um:Message").add_text("#{self.summary}")
+
+        return doc
+      end
+
+      # 公共コモンズ用XML 作成処理(イベント・お知らせBody部)
+      # ==== Args
+      # ==== Return
+      # _doc_ :: REXML::Document
+      # ==== Raise
+      def create_commmons_event_body
+        doc =  REXML::Document.new
+        doc << REXML::XMLDecl.new('1.0', 'UTF-8')
+        doc.add_element("pcx_gi:GeneralInformation").add_attribute("xmlns:pcx_gi", "http://xml.publiccommons.ne.jp/pcxml1/body/GeneralInformation3") # root
+
+        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:DisasterInformationType").add_text("#{CONST['type_update'][self.type_update]}")
+        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_eb:Disaster").add_element("pcx_eb:DisasterName").add_text("#{self.project.name}")
+        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:pcx_gi:Category").add_text("#{DST_LIST["tracker_grouping"][self.tracker_id][0]}")
+        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:pcx_gi:subCategory").add_text("#{DST_LIST["tracker_grouping"][self.tracker_id][1]}")
+        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:Title").add_text("#{self.mail_subject}")
+        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:Description").add_text("#{self.summary}")
+        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:URL").add_text("#{name_in_custom_field_value(37)}") # 関連するホームページ
+
+        return doc
       end
 
       # 版番号管理テーブル用フィールド設定処理

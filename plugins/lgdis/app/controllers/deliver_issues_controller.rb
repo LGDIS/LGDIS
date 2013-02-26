@@ -31,7 +31,13 @@ class DeliverIssuesController < ApplicationController
     raise ParamsException, l(:notice_delivery_unselected) if ext_out_ary.blank?
 
     ActiveRecord::Base.transaction do
-      @issue.update_attributes!(params[:issue])
+      issue_map = params[:issue]
+      # イベント・お知らせ のxml_body 部を生成
+      if DST_LIST['general_info_ids'].include? @issue.tracker_id
+        issue_map.invert('xml_body', @issue.create_commmons_event_body)
+      end
+
+      @issue.update_attributes!(issue_map)
       DeliveryHistory.create_for_history(@issue, ext_out_ary)
       flash[:notice] = l(:notice_delivery_request_successful)
     end
@@ -53,9 +59,9 @@ class DeliverIssuesController < ApplicationController
   # ==== Return
   # ==== Raise
   def allow_delivery
-    id       = params[:id].to_i
-    status_to   = params[:allow].blank? ? 'reject' : 'runtime'
-    issue_id = params[:issue_id].to_i
+    id        = params[:id].to_i
+    status_to = params[:allow].blank? ? 'reject' : 'runtime'
+    issue_id  = params[:issue_id].to_i
 
     delivery_history = DeliveryHistory.find_by_id(id)
     issue = Issue.find_by_id(issue_id)
