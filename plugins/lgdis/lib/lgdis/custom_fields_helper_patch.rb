@@ -32,7 +32,7 @@ module Lgdis
       def format_value_with_time(value, field_format)
         format = Redmine::CustomFieldFormat.find_by_name(field_format)
         if !value.is_a?(Array) && format.try(:edit_as) == "date" && value =~ /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/
-          return begin; format_datetime(value.to_datetime); rescue; value end
+          return begin; format_time(Time.zone.parse(value)); rescue; value end
         end
         return format_value_without_time(value, field_format)
       end
