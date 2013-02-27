@@ -44,11 +44,9 @@ module Lgdis
         html   = ""
         errors = nil
         objects.each do |object|
-          errors = object.map do |o|
-            o.errors.full_messages.map do |m|
-              "#{m}"
-            end
-          end.flatten
+          errors = object.errors.full_messages.map do |m|
+            "#{m}"
+          end
         end
         if errors.any?
           html << "<div id='errorExplanation'><ul>\n"

@@ -557,14 +557,198 @@ tracker_title:
   74: イベント・お知らせ   # 船舶路の運行に関する情報
   75: イベント・お知らせ   # その他公共交通の運行に関する情報
 
+tracker_grouping:
+  20: # 道路通行規制に関する情報
+    - 交通
+    - 道路
+  21: # 道路渋滞に関する情報
+    - 交通
+    - 道路
+  25: # 道路工事に関する情報
+    - 交通
+    - 道路
+  27: # 道路路面状況に関する情報
+    - 交通
+    - 道路
+  42: # 鉄道の運行に関する情報
+    - 交通
+    - 鉄道
+  43: # 上水道に関する情報
+    - ライフライン
+    - 水道
+  44: # 下水道に関する情報
+    - ライフライン
+    - 水道
+  45: # ガスに関する情報
+    - ライフライン
+    - ガス
+  46: # 通信網に関する情報
+    - ライフライン
+    - 通信
+  50: # 電気に関する情報
+    - ライフライン
+    - 電気
+  51: # 臨時災害放送に関する情報
+    - ライフライン
+    - 放送
+  52: # 行政手続きに関する情報
+    - 生活情報
+    - 行政手続き
+  53: # その他の被災者支援に関する情報
+    - 生活情報
+    - 被災者支援
+  54: # 学校・幼稚園・保育所に関する情報
+    - 生活情報
+    - 福祉・教育・保育所
+  55: # 給水に関する情報
+    - ライフライン
+    - 給水
+  56: # 健康・福祉・介護に関する情報
+    - 生活情報
+    - 福祉・教育・保育所
+  57: # 環境に関する情報
+    - 生活情報
+    - 環境
+  58: # 防犯に関する情報
+    - 生活情報
+    - 防犯
+  59: # 医療に関する情報
+    - 生活情報
+    - 医療
+  60: # 炊き出し・物資配布に関する情報
+    - 生活情報
+    - 被災者支援
+  61: # 入浴サービスに関する情報
+    - 生活情報
+    - 被災者支援
+  62: # 安置所に関する情報
+    - 生活情報
+    - 被災者支援
+  63: # 災害習得物に関する情報
+    - 生活情報
+    - 被災者支援
+  64: # ボランティアの支援を受けたい方への情報
+    - 生活情報
+    - 被災者支援
+  65: # ボランティア活動をしたい方への情報
+    - 生活情報
+    - 被災者支援
+  66: # 営業店舗に関する情報
+    - 生活情報
+    - 被災者支援
+  72: # バスの運行に関する情報
+    - 交通
+    - バス
+  73: # 航空路の運行に関する情報
+    - 交通
+    - 航空
+  74: # 船舶路の運行に関する情報
+    - 交通
+    - 船舶
+  75: # その他公共交通の運行に関する情報
+    - 交通
+    - その他
+
+# 緊急速報メール判定用配列
+ugent_mail_ids:
+  - 10
+  - 11
+  - 12
+general_info_ids:
+  - 20 # 道路通行規制に関する情報
+  - 21 # 道路渋滞に関する情報
+  - 25 # 道路工事に関する情報
+  - 27 # 道路路面状況に関する情報
+  - 42 # 鉄道の運行に関する情報
+  - 43 # 上水道に関する情報
+  - 44 # 下水道に関する情報
+  - 45 # ガスに関する情報
+  - 46 # 通信網に関する情報
+  - 50 # 電気に関する情報
+  - 51 # 臨時災害放送に関する情報
+  - 52 # 行政手続きに関する情報
+  - 53 # その他の被災者支援に関する情報
+  - 54 # 学校・幼稚園・保育所に関する情報
+  - 55 # 給水に関する情報
+  - 56 # 健康・福祉・介護に関する情報
+  - 57 # 環境に関する情報
+  - 58 # 防犯に関する情報
+  - 59 # 医療に関する情報
+  - 60 # 炊き出し・物資配布に関する情報
+  - 61 # 入浴サービスに関する情報
+  - 62 # 安置所に関する情報
+  - 63 # 災害習得物に関する情報
+  - 64 # ボランティアの支援を受けたい方への情報
+  - 65 # ボランティア活動をしたい方への情報
+  - 66 # 営業店舗に関する情報
+  - 72 # バスの運行に関する情報
+  - 73 # 航空路の運行に関する情報
+  - 74 # 船舶路の運行に関する情報
+  - 75 # その他公共交通の運行に関する情報
+
+destination_xpath:
+  1: 'pcx_ev:EvacuationOrder'          # 避難勧告・指示
+  2: 'pcx_sh:Shelter'                  # 避難所情報
+  7: 'pcx_di:DamageInformation'        # 人的被害報告
+  8: 'pcx_di:DamageInformation'        # 住家建物被害報告
+  9: 'pcx_di:DamageInformation'        # 道路被害報告
+  10: 'pcx_di:DamageInformation'       # 橋梁被害報告
+  11: 'pcx_di:DamageInformation'       # 上水道被害報告
+  12: 'pcx_di:DamageInformation'       # 下水道被害報告
+  13: 'pcx_di:DamageInformation'       # ガス設備被害報告
+  14: 'pcx_di:DamageInformation'       # 通信網被害報告
+  15: 'pcx_di:DamageInformation'       # その他被害報告
+  33: 'pcx_di:DamageInformation'       # 非住家建物被害報告
+  34: 'pcx_di:DamageInformation'       # 高等学校被害報告
+  35: 'pcx_di:DamageInformation'       # 中学校被害報告
+  36: 'pcx_di:DamageInformation'       # 小学校被害報告
+  37: 'pcx_di:DamageInformation'       # 幼稚園被害報告
+  38: 'pcx_di:DamageInformation'       # 保育所被害報告
+  39: 'pcx_di:DamageInformation'       # 災害弱者関連施設被害報告
+  40: 'pcx_di:DamageInformation'       # 医療施設被害報告
+  41: 'pcx_di:DamageInformation'       # 災害重要施設被害報告
+  16: 'pcx_ah:AntidisasterHeadquarter' # 災害対策本部設置報告
+  17: 'pcx_ah:AntidisasterHeadquarter' # 被害要約報告(概況)
+  18: 'pcx_ah:AntidisasterHeadquarter' # 被害要約報告(状況)
+  20: 'pcx_gi:GeneralInformation'      # 道路通行規制に関する情報
+  21: 'pcx_gi:GeneralInformation'      # 道路渋滞に関する情報
+  25: 'pcx_gi:GeneralInformation'      # 道路工事に関する情報
+  27: 'pcx_gi:GeneralInformation'      # 道路路面状況に関する情報
+  42: 'pcx_gi:GeneralInformation'      # 鉄道の運行に関する情報
+  72: 'pcx_gi:GeneralInformation'      # バスの運行に関する情報
+  73: 'pcx_gi:GeneralInformation'      # 航空路の運行に関する情報
+  74: 'pcx_gi:GeneralInformation'      # 船舶路の運行に関する情報
+  75: 'pcx_gi:GeneralInformation'      # その他公共交通の運行に関する情報
+  50: 'pcx_gi:GeneralInformation'      # 電気に関する情報
+  55: 'pcx_gi:GeneralInformation'      # 給水に関する情報
+  43: 'pcx_gi:GeneralInformation'      # 上水道に関する情報
+  44: 'pcx_gi:GeneralInformation'      # 下水道に関する情報
+  45: 'pcx_gi:GeneralInformation'      # ガスに関する情報
+  46: 'pcx_gi:GeneralInformation'      # 通信網に関する情報
+  51: 'pcx_gi:GeneralInformation'      # 臨時災害放送に関する情報
+  52: 'pcx_gi:GeneralInformation'      # 行政手続きに関する情報
+  53: 'pcx_gi:GeneralInformation'      # その他の被災者支援に関する情報
+  54: 'pcx_gi:GeneralInformation'      # 学校・幼稚園・保育所に関する情報
+  56: 'pcx_gi:GeneralInformation'      # 健康・福祉・介護に関する情報
+  57: 'pcx_gi:GeneralInformation'      # 環境に関する情報
+  58: 'pcx_gi:GeneralInformation'      # 防犯に関する情報
+  59: 'pcx_gi:GeneralInformation'      # 医療に関する情報
+  60: 'pcx_gi:GeneralInformation'      # 炊き出し・物資配布に関する情報
+  61: 'pcx_gi:GeneralInformation'      # 入浴サービスに関する情報
+  62: 'pcx_gi:GeneralInformation'      # 安置所に関する情報
+  63: 'pcx_gi:GeneralInformation'      # 災害習得物に関する情報
+  64: 'pcx_gi:GeneralInformation'      # ボランティアの支援を受けたい方への情報
+  65: 'pcx_gi:GeneralInformation'      # ボランティア活動をしたい方への情報
+  66: 'pcx_gi:GeneralInformation'      # 営業店舗に関する情報
+
 commons_xml_field:
   namespace_start_tag: <body_namespace xmlns:pcx_di="http://xml.publiccommons.ne.jp/pcxml1/body/DamageInformation3" xmlns:pcx_en="http://xml.publiccommons.ne.jp/pcxml1/body/event3" xmlns:pcx_sh="http://xml.publiccommons.ne.jp/pcxml1/body/shelter3" xmlns:pcx_um="http://xml.publiccommons.ne.jp/pcxml1/body/UrgentMail3" xmlns:pcx_ev="http://xml.publiccommons.ne.jp/pcxml1/body/evacuation3" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:edxlde="urn:oasis:names:tc:emergency:EDXL:DE:1.0" xmlns:commons="http://xml.publiccommons.ne.jp/xml/edxl/" xmlns:pcxml="http://xml.publiccommons.ne.jp/pcxml1/3" xmlns:pcx_eb="http://xml.publiccommons.ne.jp/pcxml1/elementBasis3/" xmlns:pcx_ib="http://xml.publiccommons.ne.jp/pcxml1/informationBasis3/">
   namespace_end_tag: </body_namespace>
   confidential_message: UNCLASSIFIED AND NOTSENSITIVE # メッセージの機密性
   carrier:      # 受信媒体(キャリア)
-    1: UMC1     # NTTDocomo
-    2: UMC2     # KDDI
-    3: UMC3     # SoftBank
+    10: UMC1     # NTTDocomo
+    11: UMC2     # KDDI
+    12: UMC3     # SoftBank
   edxl_status:  # 運用種別
     2: System   # 通信試験モード
     6: Exercise # 災害訓練モード
