@@ -766,13 +766,15 @@ status:
 
 # 配信内容にあたるカスタムフィールドID
 custom_field_delivery:
-  corrected: 2 # 情報の取消時又は訂正時の説明文
-  summary: 4   # 見出し文(要約)
-  target_date: 10 # 情報の公開開始日時(日付)
-  target_time: 11 # 情報の公開開始日時(時間)
-  valid_date: 12  # 情報の公開終了日時(日付)
-  valid_time: 13  # 情報の公開終了日時(時間)
-  type_update: 25 # 更新種別
+  corrected: 2      # 情報の取消時又は訂正時の説明文
+  summary: 4        # 見出し文(要約)
+  published_date: 8 # 情報の発表日時（日付）
+  published_time: 9 # 情報の発表日時（時間）
+  target_date: 10   # 情報の公開開始日時(日付)
+  target_time: 11   # 情報の公開開始日時(時間)
+  valid_date: 12    # 情報の公開終了日時(日付)
+  valid_time: 13    # 情報の公開終了日時(時間)
+  type_update: 25   # 更新種別
 
 # 災害訓練モードプロジェクトID
 training_prj:

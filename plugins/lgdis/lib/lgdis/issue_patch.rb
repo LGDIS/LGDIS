@@ -322,6 +322,11 @@ module Lgdis
         operation_flg = DST_LIST['commons_xml_field']['edxl_status'][self.project_id]
         operation_flg = operation_flg.blank? ? 'Actual' : operation_flg
 
+        # 情報の発表日時
+        published_date = name_in_custom_field_value(DST_LIST['custom_field_delivery']['published_date'])
+        published_time = name_in_custom_field_value(DST_LIST['custom_field_delivery']['published_time'])
+        published_datetime = published_date.blank? || published_time.blank? ? nil : published_date + ' ' + published_time
+
         # 希望公開開始日時
         target_date = name_in_custom_field_value(DST_LIST['custom_field_delivery']['target_date'])
         target_time = name_in_custom_field_value(DST_LIST['custom_field_delivery']['target_time'])
@@ -366,7 +371,7 @@ module Lgdis
         doc.elements["//pcx_ib:Title"].add_text(I18n.t('target_municipality') + ' ' + self.project.name + ' ' +  (title.present? ? title : '緊急速報メール'))
         doc.elements["//pcx_ib:CreateDateTime"].add_text(self.created_on.xmlschema)
         doc.elements["//pcx_ib:FirstCreateDateTime"].add_text(self.created_on.xmlschema)
-        doc.elements["//pcx_ib:ReportDateTime"].add_text(self.published_at)
+        doc.elements["//pcx_ib:ReportDateTime"].add_text(published_datetime)
         doc.elements["//pcx_ib:TargetDateTime"].add_text(target_datetime.to_datetime.xmlschema) unless target_datetime.blank?
         doc.elements["//pcx_ib:ValidDateTime"].add_text(valid_datetime.to_datetime.xmlschema) unless valid_datetime.blank?
         doc.elements["//edxlde:distributionID"].add_text(edition_fields_map['uuid'])
@@ -377,7 +382,7 @@ module Lgdis
         doc.elements["//pcx_ib:Areas/pcx_ib:Area/commons:areaName"].add_text(DST_LIST['custom_field_delivery']['area_name'])
 
         # Body 部
-        doc.elements["//pcx_ib:Head"].next_sibling = REXML::Element.new(xml_body.to_s)
+        doc.elements["//pcx_ib:Head"].next_sibling = xml_body
 
         # Edxl 部要素追加
         doc.elements["//commons:publishingOfficeName"].add_text(DST_LIST['custom_field_delivery']['pulishing_office'])
