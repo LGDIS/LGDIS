@@ -2,6 +2,7 @@
 class SheltersController < ApplicationController
   unloadable
   
+  accept_api_auth :index, :update
   before_filter :find_project, :authorize
   before_filter :init
   
@@ -47,9 +48,16 @@ class SheltersController < ApplicationController
     when "summary"
       summary
     else
-      @search   = Shelter.search(params[:search])
-      @shelters = @search.paginate(:page => params[:page], :per_page => 30).order("shelter_code ASC")
-      render :action => :index
+      respond_to do |format|
+        format.html {
+          @search   = Shelter.search(params[:search])
+          @shelters = @search.paginate(:page => params[:page], :per_page => 30).order("shelter_code ASC")
+          render :action => :index
+        }
+        format.api  {
+          render :xml => Shelter.all.to_xml
+        }
+      end
     end
   end
   
@@ -237,9 +245,15 @@ class SheltersController < ApplicationController
     @shelter.assign_attributes(params[:shelter], :as => :shelter)
     if @shelter.save
       flash[:notice] = l(:notice_successful_update)
-      redirect_to :action  => :edit
+      respond_to do |format|
+        format.html { redirect_to :action => :edit }
+        format.api { render :xml => @shelter.to_xml }
+      end
     else
-      render :action  => :edit
+      respond_to do |format|
+        format.html { render :action  => :edit }
+        format.api { render :xml => @shelter.errors.to_xml }
+      end
     end
   end
   

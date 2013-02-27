@@ -8,7 +8,7 @@ RedmineApp::Application.routes.draw do
     match '/shelters/bulk_update' => 'shelters#bulk_update', :via => :post
     match '/shelters/ticket'      => 'shelters#ticket',      :via => :post
     match '/shelters/summary'     => 'shelters#summary',     :via => :post
-    resources :shelters, :except => [:show, :index]
+    resources :shelters, :except => [:show]
 
   # 避難勧告･指示
     match '/evacuation_advisories/:id/delete'  => 'evacuation_advisories#destroy',     :via => :get
