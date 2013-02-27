@@ -34,7 +34,7 @@ class EvacuationAdvisory < ActiveRecord::Base
                 :inclusion => {:in => CONST[:sort_criteria.to_s].keys, :allow_blank => true}
   validates :issueorlift,
                 :inclusion => {:in => CONST[:issueorlift.to_s].keys, :allow_blank => true} ,
-                :presence => true, :if => Proc.new {|evacuation_advisory| evacuation_advisory.sort_criteria > '1'}
+                :presence => true, :if => Proc.new {|evacuation_advisory| evacuation_advisory.sort_criteria.to_i > 1}
   
   validates :area, :presence => true,
                 :length => {:maximum => 100}
@@ -83,8 +83,8 @@ class EvacuationAdvisory < ActiveRecord::Base
 
   before_create :number_evacuation_advisory_code , :if => Proc.new { |evacuation_advisory| evacuation_advisory.identifier.nil? }
 # 2013年  2月 25日: 日時未入力の避難勧告指示データを暫定的にXML出力除外｡有効にしたくば以下の2行でバリデーションするとよい｡
-#   validates :issued_at, :presence => true, :if => Proc.new {|evacuation_advisory| evacuation_advisory.issueorlift == '1'}
-#   validates :lifted_at, :presence => true, :if => Proc.new {|evacuation_advisory| evacuation_advisory.issueorlift == '0'}
+#   validates :issued_at, :presence => true, :if => Proc.new {|evacuation_advisory| evacuation_advisory.issueorlift.to_i == 1}
+#   validates :lifted_at, :presence => true, :if => Proc.new {|evacuation_advisory| evacuation_advisory.issueorlift.to_i == 0}
 
   
   # 属性のローカライズ名取得
