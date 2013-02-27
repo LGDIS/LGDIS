@@ -221,7 +221,8 @@ class EvacuationAdvisory < ActiveRecord::Base
     evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '0' AND sort_criteria ='2' #{cond1.to_s} #{cond2.to_s}")
 
     # EvacuationAdvisory要素の取得
-    node_evas = doc.add_element("pcx_ev:EvacuationOrder") 
+    node_evas = doc.add_element("pcx_ev:EvacuationOrder",{"xmlns:pcx_ev" => 
+      "http://xml.publiccommons.ne.jp/pcxml1/body/evacuation3"}).add_text('')
     node_header = node_evas.add_element("pcx_eb:Disaster")
       node_header.add_element("pcx_eb:DisasterName").add_text("#{project.name}")
     node_evas.add_element("pcx_ev:ComplementaryInfo")
@@ -231,7 +232,7 @@ class EvacuationAdvisory < ActiveRecord::Base
       select SUM(households), SUM(head_count) from evacuation_advisories 
       where issueorlift >= '0' AND sort_criteria > '1'
     ").first
-    if summary[0].present? || summaryi[1].present? 
+    if summary[0].present? || summary[1].present? 
       node_total_number = node_evas.add_element("pcx_ev:TotalNumber")
         # 総世帯数
         node_total_number.add_element("pcx_ev:Households", {"pcx_ev:unit" => "世帯"}).add_text("#{summary[0]}") if summary[0].present?
