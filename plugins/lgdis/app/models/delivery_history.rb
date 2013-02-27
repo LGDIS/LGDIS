@@ -22,7 +22,6 @@ class DeliveryHistory < ActiveRecord::Base
         :delivery_place_id => e.to_i,
         :request_user      => User.current.login,
         :status            => 'request',
-        :process_date      => Time.now,
         :mail_subject      => issue[:mail_subject],
         :summary           => issue[:summary],
         :type_update       => issue[:type_update],

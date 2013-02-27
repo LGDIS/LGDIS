@@ -73,7 +73,7 @@ module Lgdis
       end
 
       def tm_fmt(time)
-        time.strftime("%Y年%m月%d日 %H時%M分%S秒")
+        time.strftime("%Y年%m月%d日 %H時%M分%S秒") if time.present?
       end
 
       # XML型フィールドの画面表示部生成

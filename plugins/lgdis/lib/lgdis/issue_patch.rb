@@ -108,7 +108,7 @@ module Lgdis
           summary = create_summary(delivery_place_id)
           delivery_job_class = eval(DST_LIST['delivery_place'][delivery_place_id]['delivery_job_class'])
           test_flag = DST_LIST['test_prj'][self.project_id]
-          delivery_history.update_attribute(:status, 'runtime')
+          delivery_history.update_attribute({:status => 'runtime', :respond_user => User.current.login, :process_date => Time.now})
           Resque.enqueue(delivery_job_class, delivery_history.id, summary, test_flag)
           # アーカイブの為、チケットに登録
           msg = summary['message'].blank? ? summary : summary['message']
@@ -301,7 +301,7 @@ module Lgdis
         end_element   = DST_LIST['commons_xml_field']['namespace_end_tag']
 
         if DST_LIST['ugent_mail_ids'].include? delivery_place_id
-          xml_body = create_commmons_area_mail_body
+          xml_body = create_commons_area_mail_body
           element  = 'pcx_um:UrgentMail'
         else
           xml_body = self.xml_body
@@ -466,7 +466,7 @@ module Lgdis
       # ==== Args
       # ==== Return
       # ==== Raise
-      def create_commmons_area_mail_body
+      def create_commons_area_mail_body
         doc =  REXML::Document.new
         doc << REXML::XMLDecl.new('1.0', 'UTF-8')
         doc.add_element("pcx_um:UrgentMail").add_attribute("xmlns:pcx_um", "http://xml.publiccommons.ne.jp/pcxml1/body/UrgentMail3") # root
@@ -483,7 +483,7 @@ module Lgdis
       # ==== Return
       # _doc_ :: REXML::Document
       # ==== Raise
-      def create_commmons_event_body
+      def create_commons_event_body
         doc =  REXML::Document.new
         doc << REXML::XMLDecl.new('1.0', 'UTF-8')
         doc.add_element("pcx_gi:GeneralInformation").add_attribute("xmlns:pcx_gi", "http://xml.publiccommons.ne.jp/pcxml1/body/GeneralInformation3") # root
