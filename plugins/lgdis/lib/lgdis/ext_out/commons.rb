@@ -12,6 +12,16 @@ module Lgdis
           :message
         )
 
+      # message セッター
+      # 引数がREXML::Document以外の場合は、REXML::Documentにパース
+      # ==== Args
+      # _value_ :: 設定値
+      # ==== Return
+      # ==== Raise
+      def message=(value)
+        @message = value.is_a?(REXML::Document) ? value : REXML::Document.new(value.to_s)
+      end
+
       # Lgdis 公共情報コモンズ I/F 送信処理
       # ==== Args
       # ==== Return

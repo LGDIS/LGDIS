@@ -1,3 +1,7 @@
+<% if custom_field.format_in? 'date' %>
+<p><%= form.check_box :include_time, :disabled => @custom_field.include_time && !@custom_field.new_record? %></p>
+<% end %>
+
 <% if custom_field.format_in? 'list' %>
 <p>
   <%= form.text_area :default_value, :value => custom_field.default_value.to_a.join("\n"), :rows => 15, :id => "custom_field_default_value_multiple", :style => "width:99%;" %>

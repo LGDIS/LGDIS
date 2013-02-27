@@ -14,6 +14,15 @@ ja:
     errors:
       messages:
         not_an_integer: は整数で入力してください
+        not_a_datetime: "は日時を入力してください。"
+  
+  field_include_time: 時刻を含む
+  datetimepicker:
+    time: 時刻
+    hour: 時
+    minute: 分
+    current: 現在日時
+    close: 閉じる
   
   ####
   # 課題管理機能

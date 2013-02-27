@@ -377,7 +377,7 @@ module Lgdis
         doc.elements["//pcx_ib:Areas/pcx_ib:Area/commons:areaName"].add_text(DST_LIST['custom_field_delivery']['area_name'])
 
         # Body 部
-        doc.elements["//pcx_ib:Head"].next_sibling = xml_body
+        doc.elements["//pcx_ib:Head"].next_sibling = REXML::Element.new(xml_body.to_s)
 
         # Edxl 部要素追加
         doc.elements["//commons:publishingOfficeName"].add_text(DST_LIST['custom_field_delivery']['pulishing_office'])

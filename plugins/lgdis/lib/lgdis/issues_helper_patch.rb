@@ -12,6 +12,7 @@ module Lgdis
 
       base.class_eval do
         require_dependency 'nokogiri'
+        alias_method_chain :render_custom_fields_rows, :hr
       end
     end
 
@@ -19,6 +20,20 @@ module Lgdis
     end
 
     module InstanceMethods
+      # チケット照会画面カスタムフィールド表示処理
+      # 罫線(tableレイアウトのため、tdの背景色指定)を追加するように変更（カスタムフィールドが存在する場合のみ）
+      # ==== Args
+      # _issue_ :: Issueオブジェクト
+      # ==== Return
+      # html
+      # ==== Raise
+      def render_custom_fields_rows_with_hr(issue)
+        return if issue.custom_field_values.empty?
+        s = "<tr class='like_hr'><td colspan=4></td></tr>\n"
+        s += render_custom_fields_rows_without_hr(issue)
+        s.html_safe
+      end
+
       # チケット照会画面一括更新用エラーメッセージ作成処理
       # ==== Args
       # _objects_ :: チケット情報配列

@@ -25,6 +25,7 @@ require_dependency 'lgdis/acts/acts_as_datetime_separable'
 require_dependency 'lgdis/acts/acts_as_customizable_patch'
 
 # helper
+require_dependency 'lgdis/custom_fields_helper_patch'
 require_dependency 'lgdis/issues_helper_patch' # issues_controller_patch より先にload する必要あり
 
 # model
