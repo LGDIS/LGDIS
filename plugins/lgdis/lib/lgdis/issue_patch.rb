@@ -305,7 +305,7 @@ module Lgdis
           element  = 'pcx_um:UrgentMail'
         else
           xml_body = self.xml_body
-          element  = destination_xpath[self.tracker_id]
+          element  = DST_LIST['destination_xpath'][self.tracker_id]
         end
         xml_body = start_element + xml_body + end_element
         xml_body  = REXML::Document.new(xml_body).elements["//#{element}"]
