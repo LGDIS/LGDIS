@@ -33,8 +33,8 @@ class DeliverIssuesController < ApplicationController
     ActiveRecord::Base.transaction do
       issue_map = params[:issue]
       # イベント・お知らせ のxml_body 部を生成
-      if DST_LIST['general_info_ids'].include? @issue.tracker_id &&
-         ext_out_ary.include? DST_LIST['delivery_place'][1]['id']
+      if DST_LIST['general_info_ids'].include?(@issue.tracker_id) &&
+         ext_out_ary.include?(DST_LIST['delivery_place'][1]['id'].to_s)
         issue_map.invert('xml_body', @issue.create_commons_event_body)
       end
 
