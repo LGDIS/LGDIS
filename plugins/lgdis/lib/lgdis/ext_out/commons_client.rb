@@ -112,6 +112,7 @@ module Lgdis
         envelope.add soap_body
 
         doc.add envelope
+        return doc.to_s
       end
 
       # 処理内容
