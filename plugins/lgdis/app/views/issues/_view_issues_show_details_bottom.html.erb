@@ -107,7 +107,7 @@
     <% unless @delivery_histories.blank? %>
       <% @delivery_histories.each do | d_h | %>
           <div class="table_border">
-          <label><%= tm_fmt(d_h.process_date) %></label>
+          <label><%= tm_fmt(d_h.updated_at) %></label>
           <label style="position:absolute; left:240px;">
             <%= DST_LIST['delivery_place'][d_h.delivery_place_id]['name'] %>
           </label>
