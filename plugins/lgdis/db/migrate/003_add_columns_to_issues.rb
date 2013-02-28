@@ -21,7 +21,7 @@ class AddColumnsToIssues < ActiveRecord::Migration
     add_column :issues, :xml_head_infokindversion, :string, :limit => 12
     add_column :issues, :xml_head_text, :string, :limit => 500
     add_column :issues, :xml_body, :xml
-    add_column :issues, :mail_subject,       :string, :limit => 15
+    add_column :issues, :mail_subject,       :string
     add_column :issues, :summary,            :text
     add_column :issues, :type_update,        :string
     add_column :issues, :description_cancel, :text

@@ -103,31 +103,33 @@ module Lgdis
       # ==== Raise
       def deliver(delivery_history, status_to)
         begin
-        if status_to == 'runtime'
-          delivery_place_id = delivery_history.delivery_place_id
-          summary = create_summary(delivery_place_id)
-          delivery_job_class = eval(DST_LIST['delivery_place'][delivery_place_id]['delivery_job_class'])
-          test_flag = DST_LIST['test_prj'][self.project_id]
-          delivery_history.update_attributes({:status => 'runtime', :respond_user => User.current.login, :process_date => Time.now})
-          Resque.enqueue(delivery_job_class, delivery_history.id, summary, test_flag)
-          # アーカイブの為、チケットに登録
-          msg = summary['message'].blank? ? summary : summary['message']
-          journal = self.init_journal(User.current, msg)
-          unless self.save
-           # TODO
-           # log 出力内容
-           # Rails.logger.error
+          if status_to == 'runtime'
+            delivery_place_id = delivery_history.delivery_place_id
+            summary = create_summary(delivery_place_id)
+            delivery_job_class = eval(DST_LIST['delivery_place'][delivery_place_id]['delivery_job_class'])
+            test_flag = DST_LIST['test_prj'][self.project_id]
+            delivery_history.update_attributes({:status => status_to, :respond_user => User.current.login, :process_date => Time.now})
+            Resque.enqueue(delivery_job_class, delivery_history.id, summary, test_flag)
+            # アーカイブの為、チケットに登録
+            msg = summary['message'].blank? ? summary : summary['message']
+            journal = self.init_journal(User.current, msg)
+            unless self.save
+             # TODO
+             # log 出力内容
+             # Rails.logger.error
+            end
+          elsif status_to == 'reject'
+            delivery_history.update_attributes({:status => status_to, :respond_user => User.current.login, :process_date => Time.now})
           end
-        end
         rescue
           # TODO
           # log 出力
           p $!
-          delivery_history.update_attribute(:status, 'failed')
+          status_to = 'failed'
+          delivery_history.update_attribute(:status, status_to)
         ensure
-          
+          return status_to
         end
-        return delivery_history
       end
 
       # 配信内容作成処理
@@ -307,8 +309,10 @@ module Lgdis
           xml_body = self.xml_body
           element  = DST_LIST['destination_xpath'][self.tracker_id]
         end
-        xml_body = start_element + xml_body + end_element
-        xml_body  = REXML::Document.new(xml_body).elements["//#{element}"]
+        if xml_body.present?
+          xml_body = start_element + xml_body + end_element
+          xml_body = REXML::Document.new(xml_body).elements["//#{element}"]
+        end
 
 
         # tracker_id に紐付く標題を設定
@@ -382,7 +386,7 @@ module Lgdis
         doc.elements["//pcx_ib:Areas/pcx_ib:Area/commons:areaName"].add_text(DST_LIST['custom_field_delivery']['area_name'])
 
         # Body 部
-        doc.elements["//pcx_ib:Head"].next_sibling = xml_body
+        doc.elements["//pcx_ib:Head"].next_sibling = xml_body if xml_body.present?
 
         # Edxl 部要素追加
         doc.elements["//commons:publishingOfficeName"].add_text(DST_LIST['custom_field_delivery']['pulishing_office'])
@@ -460,6 +464,26 @@ module Lgdis
         return polygons
       end
 
+      # 公共コモンズ用XML 作成処理(イベント・お知らせBody部)
+      # ==== Args
+      # ==== Return
+      # _doc_ :: REXML::Document
+      # ==== Raise
+      def create_commons_event_body
+        doc =  REXML::Document.new
+        doc.add_element("pcx_gi:GeneralInformation") # root
+
+        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:DisasterInformationType").add_text("#{CONST['type_update'][self.type_update]}")
+        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_eb:Disaster").add_element("pcx_eb:DisasterName").add_text("#{self.project.name}")
+        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:Category").add_text("#{DST_LIST["tracker_grouping"][self.tracker_id][0]}")
+        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:subCategory").add_text("#{DST_LIST["tracker_grouping"][self.tracker_id][1]}")
+        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:Title").add_text("#{self.mail_subject}")
+        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:Description").add_text("#{self.summary}")
+        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:URL").add_text("#{name_in_custom_field_value(37)}") # 関連するホームページ
+
+        return doc.to_s
+      end
+
       private
 
       # 公共コモンズ用XML 作成処理(エリアメールBody部)
@@ -468,35 +492,13 @@ module Lgdis
       # ==== Raise
       def create_commons_area_mail_body
         doc =  REXML::Document.new
-        doc << REXML::XMLDecl.new('1.0', 'UTF-8')
-        doc.add_element("pcx_um:UrgentMail").add_attribute("xmlns:pcx_um", "http://xml.publiccommons.ne.jp/pcxml1/body/UrgentMail3") # root
+        doc.add_element("pcx_um:UrgentMail") # root
         doc.elements["//pcx_um:UrgentMail"].add_element("pcx_um:Information")
 
         doc.elements["//pcx_um:Information"].add_element("pcx_um:Title").add_text("#{self.mail_subject}")
         doc.elements["//pcx_um:Information"].add_element("pcx_um:Message").add_text("#{self.summary}")
 
-        return doc
-      end
-
-      # 公共コモンズ用XML 作成処理(イベント・お知らせBody部)
-      # ==== Args
-      # ==== Return
-      # _doc_ :: REXML::Document
-      # ==== Raise
-      def create_commons_event_body
-        doc =  REXML::Document.new
-        doc << REXML::XMLDecl.new('1.0', 'UTF-8')
-        doc.add_element("pcx_gi:GeneralInformation").add_attribute("xmlns:pcx_gi", "http://xml.publiccommons.ne.jp/pcxml1/body/GeneralInformation3") # root
-
-        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:DisasterInformationType").add_text("#{CONST['type_update'][self.type_update]}")
-        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_eb:Disaster").add_element("pcx_eb:DisasterName").add_text("#{self.project.name}")
-        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:pcx_gi:Category").add_text("#{DST_LIST["tracker_grouping"][self.tracker_id][0]}")
-        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:pcx_gi:subCategory").add_text("#{DST_LIST["tracker_grouping"][self.tracker_id][1]}")
-        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:Title").add_text("#{self.mail_subject}")
-        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:Description").add_text("#{self.summary}")
-        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:URL").add_text("#{name_in_custom_field_value(37)}") # 関連するホームページ
-
-        return doc
+        return doc.to_s
       end
 
       # 版番号管理テーブル用フィールド設定処理
