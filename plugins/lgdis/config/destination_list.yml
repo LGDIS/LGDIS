@@ -947,6 +947,19 @@ destination:
       - *urgent_mail_docomo
       - *urgent_mail_au
       - *urgent_mail_sb
+    44: # 下水道に関する情報
+      - *commons
+      - *smtp_0
+      - *smtp_1
+      - *smtp_2
+      - *smtp_3
+      - *smtp_auth
+      - *twitter
+      - *facebook
+      - *atom
+      - *urgent_mail_docomo
+      - *urgent_mail_au
+      - *urgent_mail_sb
   7: # エリアマネージャ
     1: # 避難勧告指示・指示情報(公共コモンズ配信用)
       - *commons
@@ -1353,7 +1366,7 @@ destination_xpath:
   66: 'pcx_gi:GeneralInformation'      # 営業店舗に関する情報
 
 commons_xml_field:
-  namespace_start_tag: <body_namespace xmlns:pcx_di="http://xml.publiccommons.ne.jp/pcxml1/body/DamageInformation3" xmlns:pcx_en="http://xml.publiccommons.ne.jp/pcxml1/body/event3" xmlns:pcx_sh="http://xml.publiccommons.ne.jp/pcxml1/body/shelter3" xmlns:pcx_um="http://xml.publiccommons.ne.jp/pcxml1/body/UrgentMail3" xmlns:pcx_ev="http://xml.publiccommons.ne.jp/pcxml1/body/evacuation3" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:edxlde="urn:oasis:names:tc:emergency:EDXL:DE:1.0" xmlns:commons="http://xml.publiccommons.ne.jp/xml/edxl/" xmlns:pcxml="http://xml.publiccommons.ne.jp/pcxml1/3" xmlns:pcx_eb="http://xml.publiccommons.ne.jp/pcxml1/elementBasis3/" xmlns:pcx_ib="http://xml.publiccommons.ne.jp/pcxml1/informationBasis3/">
+  namespace_start_tag: <body_namespace xmlns:pcx_di="http://xml.publiccommons.ne.jp/pcxml1/body/DamageInformation3" xmlns:pcx_en="http://xml.publiccommons.ne.jp/pcxml1/body/event3" xmlns:pcx_sh="http://xml.publiccommons.ne.jp/pcxml1/body/shelter3" xmlns:pcx_um="http://xml.publiccommons.ne.jp/pcxml1/body/UrgentMail3" xmlns:pcx_ev="http://xml.publiccommons.ne.jp/pcxml1/body/evacuation3" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:edxlde="urn:oasis:names:tc:emergency:EDXL:DE:1.0" xmlns:commons="http://xml.publiccommons.ne.jp/xml/edxl/" xmlns:pcxml="http://xml.publiccommons.ne.jp/pcxml1/3" xmlns:pcx_eb="http://xml.publiccommons.ne.jp/pcxml1/elementBasis3/" xmlns:pcx_ib="http://xml.publiccommons.ne.jp/pcxml1/informationBasis3/" xmlns:pcx_gi="http://xml.publiccommons.ne.jp/pcxml1/body/GeneralInformation3">
   namespace_end_tag: </body_namespace>
   confidential_message: UNCLASSIFIED AND NOTSENSITIVE # メッセージの機密性
   carrier:      # 受信媒体(キャリア)

@@ -71,14 +71,6 @@
 							</pcx_ib:Areas>
 						</pcx_ib:Headline>
 					</pcx_ib:Head>
-					
-					<!-- Body 部-->
-					<pcx_gi:DisasterInformationType></pcx_gi:DisasterInformationType>
-					<pcx_eb:Disaster>
-						<pcx_eb:DisasterName></pcx_eb:DisasterName>
-					</pcx_eb:Disaster>
-					<pcx_gi:Category><pcx_gi:Category>
-					<pcx_gi:subCategory></pcx_gi:subCategory>
 				</Report>
 			</edxlde:embeddedXMLContent>
 		</edxlde:xmlContent>
