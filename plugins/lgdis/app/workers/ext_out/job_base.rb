@@ -47,7 +47,7 @@ module ExtOut
         yield(delivery_history, delivery_place, client)
 
         # 文書改版管理処理
-        register_edition(delivery_history)
+        register_edition(delivery_history) if DST_LIST['commons_delivery_ids'].include?(delivery_history.delivery_place_id)
 
         success = true
         return

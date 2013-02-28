@@ -1310,6 +1310,12 @@ general_info_ids:
   - 74 # 船舶路の運行に関する情報
   - 75 # その他公共交通の運行に関する情報
 
+commons_delivery_ids:
+  - 1  # 公共情報コモンズ
+  - 10 # 緊急速報メール（NTTDocomo）
+  - 11 # 緊急速報メール（KDDI）
+  - 12 # 緊急速報メール（ソフトバンク）
+
 destination_xpath:
   1: 'pcx_ev:EvacuationOrder'          # 避難勧告・指示
   2: 'pcx_sh:Shelter'                  # 避難所情報

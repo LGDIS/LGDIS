@@ -69,7 +69,7 @@ class DeliverIssuesController < ApplicationController
 
     return if delivery_history.blank? || issue.blank?
 
-    case issue.deliver(delivery_history, status_to).status
+    case issue.deliver(delivery_history, status_to)
     when 'reject'
       flash[:notice] = l(:notice_delivery_request_reject)
     when 'failed'
