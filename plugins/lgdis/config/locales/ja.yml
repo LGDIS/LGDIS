@@ -68,7 +68,6 @@ ja:
   notice_shelter_successful_create: 避難所 %{id} が作成されました。
   text_shelter_destroy_confirmation: '本当に削除しますか？'
   error_not_exists_shelters: 避難所情報が存在しません。
-  error_connection_refused: 接続を拒否されました。
   
   # 項目名
   shelters:
