@@ -947,6 +947,19 @@ destination:
       - *urgent_mail_docomo
       - *urgent_mail_au
       - *urgent_mail_sb
+    18: # 【システム】被害要約（状況）
+      - *commons
+      - *smtp_0
+      - *smtp_1
+      - *smtp_2
+      - *smtp_3
+      - *smtp_auth
+      - *twitter
+      - *facebook
+      - *atom
+      - *urgent_mail_docomo
+      - *urgent_mail_au
+      - *urgent_mail_sb
     44: # 下水道に関する情報
       - *commons
       - *smtp_0
@@ -1328,6 +1341,8 @@ destination_xpath:
   13: 'pcx_di:DamageInformation'       # ガス設備被害報告
   14: 'pcx_di:DamageInformation'       # 通信網被害報告
   15: 'pcx_di:DamageInformation'       # その他被害報告
+  17: 'pcx_di:DamageInformation'       # 被害要約報告(概況)
+  18: 'pcx_di:DamageInformation'       # 被害要約報告(状況)
   33: 'pcx_di:DamageInformation'       # 非住家建物被害報告
   34: 'pcx_di:DamageInformation'       # 高等学校被害報告
   35: 'pcx_di:DamageInformation'       # 中学校被害報告
@@ -1338,8 +1353,6 @@ destination_xpath:
   40: 'pcx_di:DamageInformation'       # 医療施設被害報告
   41: 'pcx_di:DamageInformation'       # 災害重要施設被害報告
   16: 'pcx_ah:AntidisasterHeadquarter' # 災害対策本部設置報告
-  17: 'pcx_ah:AntidisasterHeadquarter' # 被害要約報告(概況)
-  18: 'pcx_ah:AntidisasterHeadquarter' # 被害要約報告(状況)
   20: 'pcx_gi:GeneralInformation'      # 道路通行規制に関する情報
   21: 'pcx_gi:GeneralInformation'      # 道路渋滞に関する情報
   25: 'pcx_gi:GeneralInformation'      # 道路工事に関する情報
