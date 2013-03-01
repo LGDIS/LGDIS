@@ -35,7 +35,7 @@ class DeliverIssuesController < ApplicationController
       # イベント・お知らせ のxml_body 部を生成
       if DST_LIST['general_info_ids'].include?(@issue.tracker_id) &&
          ext_out_ary.include?(DST_LIST['delivery_place'][1]['id'].to_s)
-        issue_map.invert('xml_body', @issue.create_commons_event_body)
+        issue_map.store('xml_body', @issue.create_commons_event_body)
       end
 
       @issue.update_attributes!(issue_map)
@@ -69,7 +69,7 @@ class DeliverIssuesController < ApplicationController
 
     return if delivery_history.blank? || issue.blank?
 
-    case issue.deliver(delivery_history, status_to).status
+    case issue.deliver(delivery_history, status_to)
     when 'reject'
       flash[:notice] = l(:notice_delivery_request_reject)
     when 'failed'

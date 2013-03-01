@@ -61,22 +61,22 @@ describe EvacuationAdvisory do
         @eva.save.should be_false
       end
     end
-    describe "Validation name_kana length 100 over" do
-      before do
-        @eva.area_kana = "K"*101
-      end
-      it "save failure" do
-        @eva.save.should be_false
-      end
-    end
-    describe "Validation advisory_type presence" do
-      before do
-        @eva.advisory_type = nil
-      end
-      it "save failure" do
-        @eva.save.should be_false
-      end
-    end
+#     describe "Validation name_kana length 100 over" do
+#       before do
+#         @eva.area_kana = "K"*101
+#       end
+#       it "save failure" do
+#         @eva.save.should be_false
+#       end
+#     end
+#     describe "Validation advisory_type presence" do
+#       before do
+#         @eva.advisory_type = nil
+#       end
+#       it "save failure" do
+#         @eva.save.should be_false
+#       end
+#     end
     describe "Validation advisory_type not specified value" do
       before do
         @eva.advisory_type = "A"
@@ -232,43 +232,43 @@ describe EvacuationAdvisory do
 #       @issue.author_id.should == User.find_by_type("AnonymousUser").id
 #       
 #       evacuation_advisory_key = "_避難勧告･指示 > _避難勧告･指示情報 > "
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"災害識別情報").first.text.should      ==  @project.disaster_code.to_s
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"災害名").first.text.should            ==  @project.name.to_s
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"都道府県").first.text.should          ==  ""
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"避難勧告･指示識別情報").first.text.should    ==  @eva.identifier.to_s
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"避難勧告･指示名").first.text.should          ==  @eva.area.to_s
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"災害識別情報").first.text.should      ==  @project.disaster_code.to_s
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"災害名").first.text.should            ==  @project.name.to_s
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"都道府県").first.text.should          ==  ""
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"避難勧告･指示識別情報").first.text.should    ==  @eva.identifier.to_s
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"避難勧告･指示名").first.text.should          ==  @eva.area.to_s
 #       
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"管理者 > 職員番号").first.text.should == @eva.staff_no.to_s
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"管理者 > 氏名 > 外字氏名").first.text.should == ""
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"管理者 > 氏名 > フリガナ").first.text.should == ""
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"管理者 > 職員別名称 > 外字氏名").first.text.should == ""
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"管理者 > 職員別名称 > フリガナ").first.text.should == ""
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"管理者 > 職員番号").first.text.should == @eva.staff_no.to_s
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"管理者 > 氏名 > 外字氏名").first.text.should == ""
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"管理者 > 氏名 > フリガナ").first.text.should == ""
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"管理者 > 職員別名称 > 外字氏名").first.text.should == ""
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"管理者 > 職員別名称 > フリガナ").first.text.should == ""
 #       
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"報告日時 > 日付 > 年").first.text.should == @eva.changed_at.try(:year).to_s
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"報告日時 > 日付 > 月").first.text.should == @eva.changed_at.try(:month).to_s
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"報告日時 > 日付 > 日").first.text.should == @eva.changed_at.try(:day).to_s
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"報告日時 > 時").first.text.should == @eva.changed_at.try(:hour).to_s
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"報告日時 > 分").first.text.should == @eva.changed_at.try(:min).to_s
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"報告日時 > 秒").first.text.should == @eva.changed_at.try(:sec).to_s
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"報告日時 > 日付 > 年").first.text.should == @eva.changed_at.try(:year).to_s
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"報告日時 > 日付 > 月").first.text.should == @eva.changed_at.try(:month).to_s
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"報告日時 > 日付 > 日").first.text.should == @eva.changed_at.try(:day).to_s
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"報告日時 > 時").first.text.should == @eva.changed_at.try(:hour).to_s
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"報告日時 > 分").first.text.should == @eva.changed_at.try(:min).to_s
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"報告日時 > 秒").first.text.should == @eva.changed_at.try(:sec).to_s
 #       
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"開設日時 > 日付 > 年").first.text.should == @eva.issued_at.try(:year).to_s
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"開設日時 > 日付 > 月").first.text.should == @eva.issued_at.try(:month).to_s
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"開設日時 > 日付 > 日").first.text.should == @eva.issued_at.try(:day).to_s
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"開設日時 > 時").first.text.should == @eva.issued_at.try(:hour).to_s
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"開設日時 > 分").first.text.should == @eva.issued_at.try(:min).to_s
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"開設日時 > 秒").first.text.should == @eva.issued_at.try(:sec).to_s
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"開設日時 > 日付 > 年").first.text.should == @eva.issued_at.try(:year).to_s
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"開設日時 > 日付 > 月").first.text.should == @eva.issued_at.try(:month).to_s
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"開設日時 > 日付 > 日").first.text.should == @eva.issued_at.try(:day).to_s
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"開設日時 > 時").first.text.should == @eva.issued_at.try(:hour).to_s
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"開設日時 > 分").first.text.should == @eva.issued_at.try(:min).to_s
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"開設日時 > 秒").first.text.should == @eva.issued_at.try(:sec).to_s
 #       
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"閉鎖日時 > 日付 > 年").first.text.should == @eva.lifted_at.try(:year).to_s
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"閉鎖日時 > 日付 > 月").first.text.should == @eva.lifted_at.try(:month).to_s
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"閉鎖日時 > 日付 > 日").first.text.should == @eva.lifted_at.try(:day).to_s
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"閉鎖日時 > 時").first.text.should == @eva.lifted_at.try(:hour).to_s
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"閉鎖日時 > 分").first.text.should == @eva.lifted_at.try(:min).to_s
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"閉鎖日時 > 秒").first.text.should == @eva.lifted_at.try(:sec).to_s
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"閉鎖日時 > 日付 > 年").first.text.should == @eva.lifted_at.try(:year).to_s
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"閉鎖日時 > 日付 > 月").first.text.should == @eva.lifted_at.try(:month).to_s
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"閉鎖日時 > 日付 > 日").first.text.should == @eva.lifted_at.try(:day).to_s
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"閉鎖日時 > 時").first.text.should == @eva.lifted_at.try(:hour).to_s
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"閉鎖日時 > 分").first.text.should == @eva.lifted_at.try(:min).to_s
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"閉鎖日時 > 秒").first.text.should == @eva.lifted_at.try(:sec).to_s
 #       
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"避難者数").first.text.should   == @eva.head_count.to_s
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"避難世帯数").first.text.should == @eva.households.to_s
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"避難者数").first.text.should   == @eva.head_count.to_s
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"避難世帯数").first.text.should == @eva.households.to_s
 #       
-#       Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"備考").first.text.should == @eva.remarks.to_s
+#       Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"備考").first.text.should == @eva.remarks.to_s
 
 #     end
 #   end
@@ -286,31 +286,28 @@ describe EvacuationAdvisory do
         @issue.subject.should =~ /^避難勧告･指示 / ##{@issue.published_at.xmlschema.to_s}/ 
         @issue.author_id.should == User.find_by_type("AnonymousUser").id
         
-debugger
-        root_key = "EvacuationAdvisory > "
-#         Nokogiri::XML(@issue.xml_body).css(root_key+"Disaster > DisasterName").first.text.should == @project.name.to_s
-#         Nokogiri::XML(@issue.xml_body).css(root_key+"ComplementaryInfo").first.text.should == ""
+        root_key = "/pcx_ev:EvacuationOrder"
+        Nokogiri::XML(@issue.xml_body).xpath(root_key+"/Disaster/DisasterName").first.text.should == @project.name.to_s
+        Nokogiri::XML(@issue.xml_body).xpath(root_key+"/pcx_ev:ComplementaryInfo").first.text.should == ""
+         
+        Nokogiri::XML(@issue.xml_body).xpath(root_key+"/pcx_ev:TotalNumber/pcx_ev:HeadCount").first.text.should           == @summary.head_count_sum.to_s
+        Nokogiri::XML(@issue.xml_body).xpath(root_key+"/pcx_ev:TotalNumber/pcx_ev:Households").first.text.should          == @summary.households_sum.to_s
         
-#         Nokogiri::XML(@issue.xml_body).css(root_key+"TotalNumber > HeadCount").first.text.should           == @summary.head_count_sum.to_s
-        Nokogiri::XML(@issue.xml_body).css(root_key+"TotalNumber > Households").first.text.should          == @summary.households_sum.to_s
-        
-#         Nokogiri::XML(@issue.xml_body).css(root_key+"TotalNumberOfEvacuationAdvisory").first.text.should == @summary.count.to_s
-        
-        evacuation_advisory_key = root_key + "Informations > Information > "
-        Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"Location > areaName").first.text.should == @eva.area.to_s
-        Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"Location > areaNameKana").first.text.should == @eva.area_kana.to_s
-        
-        Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"Type").first.text.should == CONST["advisory_type"]["#{@eva.advisory_type}"].to_s
-        Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"Sort").first.text.should == CONST["sort_criteria"]["#{@eva.sort_criteria}"].to_s
-        
-        Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"DateTime").first.text.should == @eva.lifted_at.xmlschema.to_s # 閉鎖の場合
-        Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"issueorlift").first.text.should == CONST['issueorlift'][@eva.issueorlift].to_s
-        
-        Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"NumberOf > HeadCount").first.text.should           == @eva.head_count.to_s
-        Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"NumberOf > Households").first.text.should          == @eva.households.to_s
-        
-        Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"CheckedDateTime").first.text.should == @eva.changed_at.xmlschema.to_s
-        
+        evacuation_advisory_key = root_key + "/pcx_ev:Informations/pcx_ev:Information"
+        Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"/pcx_eb:Location/commons:areaName").first.text.should == @eva.area.to_s
+
+        Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"/pcx_eb:Location/commons:areaNameKana").first.text.should == @eva.area_kana.to_s
+         
+        Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"/pcx_ev:Type").first.text.should == CONST["advisory_type"]["#{@eva.advisory_type}"].to_s
+        Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"/pcx_ev:Sort").first.text.should == CONST["sort_criteria"]["#{@eva.sort_criteria}"].to_s
+         
+        Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"/pcx_ev:DateTime").first.text.should == @eva.lifted_at.xmlschema.to_s # 閉鎖の場合
+        Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"/pcx_ev:issueorlift").first.text.should == CONST['issueorlift'][@eva.issueorlift].to_s
+         
+        Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"/pcx_ev:NumberOf/pcx_ev:HeadCount").first.text.should           == @eva.head_count.to_s
+        Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"/pcx_ev:NumberOf/pcx_ev:Households").first.text.should          == @eva.households.to_s
+         
+        Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"/pcx_ev:CheckedDateTime").first.text.should == @eva.changed_at.xmlschema.to_s
         
       end
     end
@@ -336,31 +333,30 @@ debugger
         @issue.subject.should =~ /^避難勧告･指示 / #(19|20)[0-9]{2}\-(0[1-9]|1[0-2])\-(0[1-9]|[12][0-9]|3[01])T(0?[0-9]|1[0-9]|2[0-3]):([0-5]?[0-9]):([0-5]?[0-9])\+09:00$/
         @issue.author_id.should == User.find_by_type("AnonymousUser").id
         
-        root_key = "EvacuationAdvisory > "
-# debugger
-#         Nokogiri::XML(@issue.xml_body).css(root_key+"Disaster > DisasterName").first.text.should == @project.name.to_s
-#         Nokogiri::XML(@issue.xml_body).css(root_key+"ComplementaryInfo").first.text.should == ""
-        Nokogiri::XML(@issue.xml_body).css(root_key+"TotalNumber").first.should                       be_blank
-        Nokogiri::XML(@issue.xml_body).css(root_key+"TotalNumber > HeadCount").first.should           be_blank
-        Nokogiri::XML(@issue.xml_body).css(root_key+"TotalNumber > Households").first.should          be_blank
+        root_key = "/pcx_ev:EvacuationOrder"
+        Nokogiri::XML(@issue.xml_body).xpath(root_key+"/Disaster/DisasterName").first.text.should == @project.name.to_s
+        Nokogiri::XML(@issue.xml_body).xpath(root_key+"/pcx_ev:ComplementaryInfo").first.text.should == ""
+
+
+        Nokogiri::XML(@issue.xml_body).xpath(root_key+"/pcx_ev:TotalNumber").first.should be_blank
+        Nokogiri::XML(@issue.xml_body).xpath(root_key+"/pcx_ev:TotalNumber/pcx_ev:HeadCount").first.should be_blank
+        Nokogiri::XML(@issue.xml_body).xpath(root_key+"/pcx_ev:TotalNumber/pcx_ev:Households").first.should be_blank
         
-#         Nokogiri::XML(@issue.xml_body).css(root_key+"TotalNumberOfEvacuationAdvisory").first.text.should == @summary.count.to_s
+        evacuation_advisory_key = root_key + "/pcx_ev:Informations/pcx_ev:Information"
+
+        Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"/pcx_eb:Location/commons:areaName").first.text.should == @eva.area.to_s
+        Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"/pcx_eb:Location/commons:areaNameKana").first.should  be_blank
+  
+        Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"/Type").first.text.should == CONST["advisory_type"]["#{@eva.advisory_type}"].to_s
+        Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"/Sort").first.text.should == CONST["sort_criteria"]["#{@eva.sort_criteria}"].to_s
         
-        evacuation_advisory_key = root_key + "Informations > Information > "
-        Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"Location > areaName").first.text.should == @eva.area.to_s
-        Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"Location > areaNameKana").first.should  be_blank
+        Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"/pcx_ev:DateTime").first.should be_blank # 常設の場合
+        Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"/pcx_ev:issueorlift").first.should   be_blank
+        Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"/pcx_ev:NumberOf").first.should be_blank
+        Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"/pcx_ev:NumberOf/pcx_ev:HeadCount").first.should be_blank
+        Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"/pcx_ev:NumberOf/pcx_ev:Households").first.should be_blank
         
-        Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"Type").first.text.should == CONST["advisory_type"]["#{@eva.advisory_type}"].to_s
-        Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"Sort").first.text.should == CONST["sort_criteria"]["#{@eva.sort_criteria}"].to_s
-        
-        Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"DateTime").first.should be_blank # 常設の場合
-        Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"issueorlift").first.should   be_blank
-        
-        Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"NumberOf").first.should                       be_blank
-        Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"NumberOf > HeadCount").first.should           be_blank
-        Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"NumberOf > Households").first.should          be_blank
-        
-        Nokogiri::XML(@issue.xml_body).css(evacuation_advisory_key+"CheckedDateTime").first.should be_blank
+        Nokogiri::XML(@issue.xml_body).xpath(evacuation_advisory_key+"/pcx_ev:CheckedDateTime").first.should be_blank
       end
     end
   end
