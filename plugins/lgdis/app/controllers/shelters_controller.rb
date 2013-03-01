@@ -12,7 +12,7 @@ class SheltersController < ApplicationController
   # ==== Raise
   def init
     @shelter_const = Constant::hash_for_table(Shelter.table_name)
-    @area = get_cache("area")
+    @areas = Area.all
   end
   
   # 避難所一覧検索画面

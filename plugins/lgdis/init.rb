@@ -34,7 +34,6 @@ require_dependency 'lgdis/user_patch'
 require_dependency 'lgdis/issue_patch'
 
 # controller
-require_dependency 'lgdis/application_controller_patch'
 require_dependency 'lgdis/issues_controller_patch'
 require_dependency 'lgdis/controller_hooks'
 
