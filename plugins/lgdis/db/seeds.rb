@@ -7,6 +7,9 @@ seeds_dir_path="#{Rails.root}/plugins/lgdis/db/seeds"
 # コンスタントテーブル
 load("#{seeds_dir_path}/constants.rb")
 
+# 地区
+load("#{seeds_dir_path}/areas.rb")
+
 # カスタムフィールド
 load("#{seeds_dir_path}/custom_fields.rb")
 load("#{seeds_dir_path}/custom_field_list_items.rb")
