@@ -359,7 +359,7 @@ ja:
 
   # 認証
   external_auth:
-    field_enable: 'OpenID(Google)/OAuth(Twitter,facebook)を有効にする'
+    field_enable: 'OpenID(Google)/OAuth(Twitter,facebook)/SAMLを有効にする'
     sign_in_via: '%{kind}アカウントでログイン'
     result:
       success: '%{kind} アカウントによる個人認証に成功しました。'
