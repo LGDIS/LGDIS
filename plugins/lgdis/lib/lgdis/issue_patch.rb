@@ -1,6 +1,5 @@
 # encoding: utf-8
 require_dependency 'issue'
-require "#{Rails.root}/plugins/lgdis/app/models/constant"
 
 module Lgdis
   module IssuePatch
@@ -77,8 +76,6 @@ module Lgdis
                       '2' => 'Update',
                       '3' => 'Cancel'
                     }.freeze
-
-      CONST = Constant.hash_for_table(Issue.table_name).freeze
 
       # チケット情報のコピー
       # チケット位置情報もコピーするように処理追加
@@ -291,6 +288,7 @@ module Lgdis
       # _doc_ :: 配信内容
       # ==== Raise
       def create_commons_msg(delivery_place_id)
+        @issue_const = Constant::hash_for_table(Issue.table_name)
         # テンプレートの読み込み
         commons_xml = DST_LIST['commons_xml'][self.tracker_id]
         file = File.new("#{Rails.root}/plugins/lgdis/files/xml/#{commons_xml}")
@@ -348,7 +346,7 @@ module Lgdis
         str=''
         self.delivered_area='1'
         self.delivered_area.split(',').each do |s|
-          str << CONST['delivered_area'][s] + ','
+          str << @issue_const['delivered_area'][s] + ','
         end
         delivered_area = str.split(//u)[0..-2].join
 
@@ -470,10 +468,11 @@ module Lgdis
       # _doc_ :: REXML::Document
       # ==== Raise
       def create_commons_event_body
+        @issue_const = Constant::hash_for_table(Issue.table_name)
         doc =  REXML::Document.new
         doc.add_element("pcx_gi:GeneralInformation") # root
 
-        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:DisasterInformationType").add_text("#{CONST['type_update'][self.type_update]}")
+        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:DisasterInformationType").add_text("#{@issue_const['type_update'][self.type_update]}")
         doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_eb:Disaster").add_element("pcx_eb:DisasterName").add_text("#{self.project.name}")
         doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:Category").add_text("#{DST_LIST["tracker_grouping"][self.tracker_id][0]}")
         doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:subCategory").add_text("#{DST_LIST["tracker_grouping"][self.tracker_id][1]}")
