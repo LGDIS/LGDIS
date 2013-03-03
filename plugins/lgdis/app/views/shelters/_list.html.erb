@@ -1,13 +1,12 @@
 <table class="list">
   <thead>
     <tr>
-      <th style="text-align: center;">避難所識別番号</th>
       <th style="text-align: center;">避難所名</th>
       <th style="text-align: center;">避難所種別</th>
       <th style="text-align: center;">地区名</th>
       <th style="text-align: center;">TEL</th>
       <th style="text-align: center;">管理者</th>
-      <th style="text-align: center;">避難所区分</th>
+      <th style="text-align: center;">開設状況</th>
       <th style="text-align: center;">開設日時</th>
       <th style="text-align: center;">閉鎖日時</th>
       <th style="text-align: center;">収容人数</th>
@@ -20,11 +19,6 @@
     <% shelters.each do |shelter| %>
       <tr class="<%= cycle("even", "odd") -%>">
         <%= hidden_field_tag "shelters[#{shelter.id}][updated_by]", User.current.login %>
-        <td style="text-align: center;">
-          <a href=<%= edit_project_shelter_path(@project, shelter) %> >
-            <%= shelter.shelter_code %>
-          </a>
-        </td>
         <td style="text-align: center;">
           <a href=<%= edit_project_shelter_path(@project, shelter) %> >
             <%= shelter.name %>

@@ -62,7 +62,7 @@ class Shelters < ActiveRecord::Migration
     set_column_comment(:shelters, :person_responsible, "避難所の担当者名")
     set_column_comment(:shelters, :shelter_type, "避難所種別")
     set_column_comment(:shelters, :shelter_type_detail, "避難所種別では表現しきれない情報")
-    set_column_comment(:shelters, :shelter_sort, "避難所区分")
+    set_column_comment(:shelters, :shelter_sort, "開設状況")
     set_column_comment(:shelters, :opened_at, "開設日時")
     set_column_comment(:shelters, :closed_at, "閉鎖日時")
     set_column_comment(:shelters, :capacity, "最大の収容人数")

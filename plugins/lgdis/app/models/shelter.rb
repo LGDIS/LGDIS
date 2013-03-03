@@ -329,7 +329,7 @@ class Shelter < ActiveRecord::Base
       
       # 避難所種別 "避難所","臨時避難所","広域避難場所","一時避難場所"
       node_information.add_element("pcx_sh:Type").add_text(CONST["shelter_type"]["#{shelter.shelter_type}"]) if shelter.shelter_type.present?
-      # 避難所区分 "未開設","開設","閉鎖","不明","常設"
+      # 開設状況 "未開設","開設","閉鎖","不明","常設"
       node_information.add_element("pcx_sh:Sort").add_text(CONST["shelter_sort"]["#{shelter.shelter_sort}"]) if shelter.shelter_sort.present?
       # 避難所種別で表現しきれない情報
       node_information.add_element("pcx_sh:TypeDetail").add_text("#{shelter.shelter_type_detail}") if shelter.shelter_type_detail.present?

@@ -532,7 +532,7 @@ describe Shelter do
       Shelter.human_attribute_name(:field_person_responsible).should == "担当者名"
       Shelter.human_attribute_name(:field_shelter_type).should == "避難所種別"
       Shelter.human_attribute_name(:field_shelter_type_detail).should == "避難所種別の補足情報"
-      Shelter.human_attribute_name(:field_shelter_sort).should == "避難所区分"
+      Shelter.human_attribute_name(:field_shelter_sort).should == "開設状況"
       Shelter.human_attribute_name(:field_opened_at).should == "開設日時"
       Shelter.human_attribute_name(:field_closed_at).should == "閉鎖日時"
       Shelter.human_attribute_name(:field_capacity).should == "最大の収容人数"

@@ -9,25 +9,25 @@
   <%= hidden_field_tag "commit_kind" %>
   
   <fieldset class="collapsible">
-    <legend onclick="toggleFieldset(this);">
+    <legend id="shelter_search_conditions" onclick="toggleFieldset(this);">
       <%= l(:label_search_condition_plural) %>
     </legend>
     <div class="search_condition tabular">
       <%= render :partial => 'search_conditions', :locals => {:f => f, :project => @project} %>
+      <%= submit_tag l(:label_search), :kind => "search" %>
+      <%= submit_tag l(:button_clear), :kind => "clear" %>
     </div>
   </fieldset>
   
   <div class="splitcontent">
     <div class="splitcontentleft">
-      <%= submit_tag l(:label_search), :kind => "search" %>
-      <%= submit_tag l(:button_clear), :kind => "clear" %>
-      <% if authorize_for(:shelters, :new) # 権限判定 %>
-        <%= submit_tag l(:button_new), :kind => "new" %>
-      <% end %>
     </div>
     
     <div class="splitcontentright">
       <p style="text-align: right;">
+        <% if authorize_for(:shelters, :new) # 権限判定 %>
+          <%= submit_tag l(:button_new), :kind => "new" %>
+        <% end %>
         <% if authorize_for(:shelters, :bulk_update) # 権限判定 %>
           <%= submit_tag l(:button_bulk_update), :kind => "bulk_update" %>
         <% end %>
@@ -50,11 +50,13 @@
 <% end %>
 
 <%= javascript_tag do %>
-  // Submitボタン切り替え
   $(document).ready(function() {
+    // Submitボタン切り替え
     $(":submit").bind("click", function() {
       $("#commit_kind").val($(this).attr("kind"));
     });
+    // 検索条件を初期表示時に非表示にする
+    $("#shelter_search_conditions").click();
   });
   
   // 避難所一覧行リンククリック処理

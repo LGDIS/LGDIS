@@ -52,7 +52,7 @@ module SheltersHelper
     objects.each do |object|
       errors = object.map do |o|
         o.errors.full_messages.map do |m|
-          "#{l('shelters.field_shelter_code')}\"#{o.shelter_code}\"の#{m}"
+          "#{l('shelters.field_name')}\"#{o.name}\"の#{m}"
         end
       end.flatten
     end

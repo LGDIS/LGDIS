@@ -82,7 +82,7 @@ ja:
     field_person_responsible: 担当者名
     field_shelter_type: 避難所種別
     field_shelter_type_detail: 避難所種別の補足情報
-    field_shelter_sort: 避難所区分
+    field_shelter_sort: 開設状況
     field_opened_at: 開設日時
     field_closed_at: 閉鎖日時
     field_capacity: 最大の収容人数
@@ -156,7 +156,7 @@ ja:
   ext_out_field: 外部出力
   delivery_place: 配信先
   delivery_status: 配信状況
-  control_plane_settings: コントロールプレーン部 設定内容
+  control_plane_settings: 配信内容の入力
   commons: 公共情報コモンズ
   machicomi: まちcomi
   twitter: Twitter
