@@ -1,0 +1,10 @@
+<%= stylesheet_link_tag params[:controller], :plugin => 'lgdis' %>
+<p>
+  <label><%= l('external_auth.field_enable') %>:</label>
+  <%= check_box_tag("settings[enable_external_auth]", true, (@settings.present? && @settings[:enable_external_auth])) %>
+</p>
+<p>
+  <label><%= l('auto_launch_project.field_term') %>:</label>
+  <%= text_field_tag("settings[term_auto_launch_project]", @settings[:term_auto_launch_project]) %>
+  <em class="info"><%= l('auto_launch_project.text_term_description') %> </em>
+</p>

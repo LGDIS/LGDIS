@@ -92,6 +92,6 @@ Redmine::Plugin.register :lgdis do
   # プラグイン設定
   settings :default => {
     :enable_external_auth => true,
-  }, :partial => 'settings/external_auth'
-
+    :term_auto_launch_project => 7
+  }, :partial => 'settings/lgdis'
 end
