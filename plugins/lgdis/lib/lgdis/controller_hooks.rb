@@ -74,7 +74,7 @@ module Lgdis
                             :project_id        => issue.project_id,
                             :delivery_place_id => destination['id'],
                             :request_user      => User.current.login,
-                            :status            => 'request',
+                            :status            => 'runtime',
                             :process_date      => Time.now)
         issue.deliver(deliveryhistory, 'runtime')
       end

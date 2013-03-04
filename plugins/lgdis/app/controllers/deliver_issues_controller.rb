@@ -16,6 +16,7 @@ class DeliverIssuesController < ApplicationController
   end
 
   class ParamsException < StandardError; end
+  class RecordInvalid < StandardError; end
 
   # 外部配信要求処理(手動配信)
   # 外部配信要求受付け処理を行います
@@ -38,12 +39,14 @@ class DeliverIssuesController < ApplicationController
         issue_map.store('xml_body', @issue.create_commons_event_body)
       end
 
-      @issue.update_attributes!(issue_map)
-      DeliveryHistory.create_for_history(@issue, ext_out_ary)
+      @issue.update_attributes(issue_map)
+      deliver_historires =  DeliveryHistory.create_for_history(@issue, ext_out_ary)
+      error_messages = error_messages_for_issues(deliver_historires)
+      raise RecordInvalid, error_messages if error_messages.present?
       flash[:notice] = l(:notice_delivery_request_successful)
     end
-  rescue ActiveRecord::RecordInvalid
-    flash[:error] = l(:notice_delivery_request_failed)
+  rescue RecordInvalid => e
+    flash[:error] = e.message.gsub(/\r\n|\r|\n/, "<br />")
   rescue ParamsException => e
     flash[:error] = e.message
   ensure
@@ -96,4 +99,27 @@ class DeliverIssuesController < ApplicationController
     @project = Project.find(params[:project_id])
   end
 
+  # チケット照会画面一括更新用エラーメッセージ作成処理
+  # ==== Args
+  # _objects_ :: 配信履歴配列
+  # ==== Return
+  # エラーメッセージ
+  # ==== Raise
+  def error_messages_for_issues(*objects)
+    messages = ""
+    errors   = nil
+    objects.each do |object|
+      errors = object.map do |o|
+        o.errors.full_messages.map do |m|
+          "#{l('delivery_place')}が\"#{DST_LIST['delivery_place'][o.delivery_place_id]['name']}\"の場合は、#{m}"
+        end
+      end.flatten
+    end
+    if errors.any?
+      errors.each do |error|
+        messages << "#{error}\n"
+      end
+    end
+    return messages
+  end
 end

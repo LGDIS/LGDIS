@@ -267,16 +267,14 @@ module Lgdis
       # ==== Raise
       def add_url_and_training(contents, delivery_place_id)
         url = ''
-        case DST_LIST['delivery_place'][delivery_place_id]['add_url_type']
-        when 'disaster_portal'
-          url = DST_LIST['disaster_portal_url']
-        when 'lgdsf'
-          url = DST_LIST['lgdsf_url']
+        if DST_LIST['email_deployed'][delivery_place_id].present?
+          url = DST_LIST['lgdsf_url'] + '?' + Time.now.strftime("%Y%m%d%H%M%S")
         end
 
         # 災害訓練モード判定
         DST_LIST['training_prj'][self.project_id] ? \
-          '【災害訓練】' + "\n" + url.to_s + "\n" + contents.to_s : url.to_s + "\n" + contents.to_s
+          '【災害訓練】' + "\n" + DST_LIST['disaster_portal_url'] + url.to_s + "\n" + contents.to_s : \
+          DST_LIST['disaster_portal_url'] + url.to_s + "\n" + contents.to_s
       end
 
       # 公共コモンズ用XML 作成処理
