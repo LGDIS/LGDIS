@@ -11,11 +11,9 @@ module Lgdis
     # ==== Raise
     def controller_issues_new_after_save(context={})
       param_issue = context[:params][:issue]
-      # TODO
       # params に関してはparse と調整済
-      create_project(context) if AUTO_FLAG[param_issue[:auto_launch]]
+      create_project(context) if AUTO_FLAG[param_issue[:auto_launch]] && auto_launchable?
 
-      # TODO
       # params に関してはparse と調整済
       deliver_issue(context) if AUTO_FLAG[param_issue[:auto_send]]
     end
@@ -25,6 +23,18 @@ module Lgdis
     end
 
     private
+
+    # プロジェクト自動作成判定処理
+    # ==== Args
+    # ==== Return
+    # 判定結果（true: 可、false: 不可）
+    # ==== Raise
+    def auto_launchable?
+      raise "プラグイン設定[プロジェクト自動作成における猶予期間[日]]が存在しません。" if !(Setting.plugin_lgdis.present? && Setting.plugin_lgdis[:term_auto_launch_project])
+      raise "プラグイン設定[プロジェクト自動作成における猶予期間[日]]が不正です。" if !(Setting.plugin_lgdis[:term_auto_launch_project].to_s =~ /\d+/)
+      return true unless last_auto_launched_prj = Project.where(auto_launched: true).order("created_on desc").first
+      return last_auto_launched_prj.created_on.to_date + Setting.plugin_lgdis[:term_auto_launch_project].to_i.days <= Date.today
+    end
 
     # プロジェクト自動作成処理
     # ==== Args
@@ -36,6 +46,8 @@ module Lgdis
       new_project = Project.new
       # プロジェクト名
       new_project.name = new_project_name(issue)
+      # 自動作成フラグ
+      new_project.auto_launched = true
       # プロジェクト識別子は、自動採番
       new_project.save!
     end
