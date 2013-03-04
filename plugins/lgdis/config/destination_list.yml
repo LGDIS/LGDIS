@@ -12,6 +12,10 @@ delivery_job_class:
   - &delivery_job_class_4 "ExtOut::FacebookRequestJob"
   - &delivery_job_class_5 "ExtOut::AtomRequestJob"
 
+add_url_type:
+  - &add_url_type_1 disaster_portal
+  - &add_url_type_2 lgdsf
+
 to: # 配送先メールアドレス、メーリングリスト
   - &to_err apl@localhost.localdomain # Resqueジョブエラー通知
   - &to_1   apl@localhost.localdomain # 自治体職員向けメール（０号配備）
@@ -2807,10 +2811,10 @@ atom:
   output_dir: ./public/atom
 
 # 災害情報ポータルURL
-disaster_portal_url: '下記リンクより、災害情報を確認して下さい。' + "\n" + http://www.jice.or.jp/sinsai/sinsai_result.php
+disaster_portal_url: "下記リンクより、災害情報を確認して下さい。\n http://www.jice.or.jp/sinsai/sinsai_result.php"
 
 # LGDSF URL
-lgdsf_url: '下記リンクより、位置情報、参集場所の報告を行ってください。' + "\n" + http://203.138.187.89/LGDSF/staffs/send
+lgdsf_url: "下記リンクより、位置情報、参集場所の報告を行ってください。\n http://203.138.187.89/LGDSF/staffs/send"
 
 # 外部出力
 ext_out:
