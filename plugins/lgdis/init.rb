@@ -34,6 +34,7 @@ require_dependency 'lgdis/user_patch'
 require_dependency 'lgdis/issue_patch'
 
 # controller
+require_dependency 'lgdis/welcome_controller_patch'
 require_dependency 'lgdis/issues_controller_patch'
 require_dependency 'lgdis/controller_hooks'
 
@@ -46,6 +47,20 @@ Redmine::Plugin.register :lgdis do
   author '作成者XXX'
   description '災害発生時における地方公共団体向けの包括的メッセージング:LGDIS (Local Government Disaster Information System) をRedmineに追加するプラグインです。'
   version '0.0.1'
+
+  # トップメニュー/ホームの削除
+  Redmine::MenuManager.map :top_menu do |menu|
+    menu.delete :home
+  end
+
+  # プロジェクトメニュー/チケット・新しいチケットを先頭に配置
+  Redmine::MenuManager.map :project_menu do |menu|
+    menu.delete :issues
+    menu.delete :new_issue
+    menu.push :issues, { :controller => 'issues', :action => 'index' }, :param => :project_id, :caption => :label_issue_plural, :first => true
+    menu.push :new_issue, { :controller => 'issues', :action => 'new' }, :param => :project_id, :caption => :label_issue_new,
+                :html => { :accesskey => Redmine::AccessKeys.key_for(:new_issue) }, :after => :issues
+  end
 
   # 避難勧告・指示
   project_module :evacuation_advisories do
