@@ -75,23 +75,26 @@ describe Lgdis::ControllerHooks do
   describe "#new_project_name " do
     describe "issue.xml_head_reportdatetime present, issue.xml_head_title present " do
       before do
+        @rep_time = Time.parse("2013/02/02 12:12:12")
+        @cre_time = Time.parse("2013/02/03 13:13:13")
         @issue = mock_model(Issue)
-        @issue.stub(:xml_head_reportdatetime) {"2013/02/02 12:12:12"}
+        @issue.stub(:xml_head_reportdatetime) {@rep_time}
         @issue.stub(:xml_head_title) {"xml_head_title"}
-        @issue.stub(:created_on) {"2013/02/03 13:13:13"}
+        @issue.stub(:created_on) {@cre_time}
         @context = {:issue=>@issue}
       end
       it "return xml_head_reportdatetime, xml_head_title" do
         return_name = @hooks.__send__(:new_project_name, @issue)
-        return_name.should == "02/02/2013 09:12 pm xml_head_title"
+        return_name.should == @rep_time.strftime("%Y/%m/%d %H:%M") + " xml_head_title"
       end
     end
     describe "issue.xml_head_reportdatetime not present, issue.xml_head_title present " do
       before do
+        @cre_time = Time.parse("2013/02/03 13:13:13")
         @issue = mock_model(Issue)
         @issue.stub(:xml_head_reportdatetime) {nil}
         @issue.stub(:xml_head_title) {"xml_head_title"}
-        @issue.stub(:created_on) {"2013/02/03 13:13:13"}
+        @issue.stub(:created_on) {@cre_time}
         @context = {:issue=>@issue}
       end
       it "return xml_head_title only" do
@@ -101,15 +104,16 @@ describe Lgdis::ControllerHooks do
     end
     describe "issue.xml_head_reportdatetime not present, issue.xml_head_title not present " do
       before do
+        @cre_time = Time.parse("2013/02/03 13:13:13")
         @issue = mock_model(Issue)
         @issue.stub(:xml_head_reportdatetime) {nil}
         @issue.stub(:xml_head_title) {nil}
-        @issue.stub(:created_on) {"2013/02/03 13:13:13"}
+        @issue.stub(:created_on) {@cre_time}
         @context = {:issue=>@issue}
       end
-      it "call create_project" do
+      it "return created_on" do
         return_name = @hooks.__send__(:new_project_name, @issue)
-        return_name.should == "02/03/2013 10:13 pm"
+        return_name.should == @cre_time.strftime("%Y/%m/%d %H:%M")
       end
     end
   end
