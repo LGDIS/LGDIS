@@ -161,39 +161,42 @@ end %>
       var location = locations[i].location;
       var remarks = locations[i].remarks;
       if (location) {
-        geocoder.geocode({'address': location}, callback(remarks));
+        geocoder.geocode({'address': location}, callback_geocode(remarks));
       }
     }
   }
-
-  function callback(remarks) {
-
+  
+  /**
+   * geocode関数のコールバック処理
+   */
+  function callback_geocode(remarks) {
     return function(results, status) {
-          if (status == google.maps.GeocoderStatus.OK) {
-            // Goecoding成功の場合のみ処理
-            var marker = new google.maps.Marker({
-              position: results[0].geometry.location,
-              map: map
-            });
-
-            if (remarks) {
-              // マーカーオブジェクトに備考文字を設定
-              // クリックイベント中にオブジェクトから文字列を取得する必要があるため
-              marker.set('remarks', remarks);
-
-              // クリックイベント時の処理
-              google.maps.event.addListener(marker, 'click', function(e){
-                var infowindow = new google.maps.InfoWindow({
-                                     content: this.get('remarks'),
-                                     position: e.latLng
-                                     });
-                // infoWindow表示
-                infowindow.open(map);
-              });
-            }
-          }
-}
-}
+      if (status == google.maps.GeocoderStatus.OK) {
+        // Goecoding成功の場合のみ処理
+        var marker = new google.maps.Marker({
+          position: results[0].geometry.location,
+          map: map
+        });
+        
+        if (remarks) {
+          // マーカーオブジェクトに備考文字を設定
+          // クリックイベント中にオブジェクトから文字列を取得する必要があるため
+          marker.set('remarks', remarks);
+          
+          // クリックイベント時の処理
+          google.maps.event.addListener(marker, 'click', function(e){
+            var infowindow = new google.maps.InfoWindow({
+                                 content: this.get('remarks'),
+                                 position: e.latLng
+                                 });
+            // infoWindow表示
+            infowindow.open(map);
+          });
+        }
+      }
+    }
+  }
+  
   /**
    * マーカー作成メソッド
    */

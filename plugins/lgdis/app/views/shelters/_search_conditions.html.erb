@@ -5,9 +5,9 @@
       <%= f.select("#{key}_eq", options_for_select(@shelter_const[key.to_s].invert, @search.shelter_type_eq),:include_blank => true) %>
     <% end %>
     
-    <%= field_for :area do |key, label| %>
+    <%= field_for :openable_flag do |key, label| %>
       <%= label_tag{label} %>
-      <%= f.select("#{key}_eq", options_for_select(@areas.map{|v| [v.name,v.area_code]}, @search.area_eq),:include_blank => true) %>
+      <%= f.select("#{key}_eq", options_for_select(@shelter_const[key.to_s].invert, @search.openable_flag_eq),:include_blank => true) %>
     <% end %>
     
     <%= field_for :usable_flag do |key, label| %>
@@ -15,111 +15,24 @@
       <%= f.select("#{key}_eq", options_for_select(@shelter_const[key.to_s].invert, @search.usable_flag_eq),:include_blank => true) %>
     <% end %>
     
-    <%= field_for :opened_at do |key, label| %>
+    <%= field_for :shelter_sort do |key, label| %>
       <%= label_tag{label} %>
-      <%= f.text_field "#{key}_gte", :value => @search.opened_at_gte, :size=>'10' %><%= calendar_for("search_#{key}_gte") %>
-      ～
-      <%= f.text_field "#{key}_lte", :value => @search.opened_at_lte, :size=>'10' %><%= calendar_for("search_#{key}_lte") %>
-    <% end %>
-  </div>
-  
-  <div class="splitcontentright">
-    <%= field_for :name do |key, label| %>
-      <%= label_tag{label} %>
-      <%= f.text_field "#{key}_like", :value => @search.name_like %>
+      <%= f.select("#{key}_eq", options_for_select(@shelter_const[key.to_s].invert, @search.shelter_sort_eq),:include_blank => true) %>
     <% end %>
     
-    <%= field_for :openable_flag do |key, label| %>
-      <%= label_tag{label} %>
-      <%= f.select("#{key}_eq", options_for_select(@shelter_const[key.to_s].invert, @search.openable_flag_eq),:include_blank => true) %>
-    <% end %>
-    
-    <%= field_for :closed_at do |key, label| %>
-      <%= label_tag{label} %>
-      <%= f.text_field "#{key}_gte", :value => @search.closed_at_gte, :size=>'10' %><%= calendar_for("search_#{key}_gte") %>
-      ～
-      <%= f.text_field "#{key}_lte", :value => @search.closed_at_lte, :size=>'10' %><%= calendar_for("search_#{key}_lte") %>
-    <% end %>
     <%= field_for :status do |key, label| %>
       <%= label_tag{label} %>
       <%= f.select("#{key}_eq", options_for_select(@shelter_const[key.to_s].invert, @search.status_eq),:include_blank => true) %>
     <% end %>
   </div>
-</div>
-
-<div class="splitcontent">
-  <div class="split3contentleft">
-    <%= field_for :households do |key, label| %>
-      <%= label_tag{label} %>
-      ＞
-      <%= f.text_field "#{key}_gte", :value => @search.households_gte, :size=>'10' %>
-    <% end %>
-    
-    <%= field_for :upper_care_level_three_count do |key, label| %>
-      <%= label_tag{label} %>
-      ＞
-      <%= f.text_field "#{key}_gte", :value => @search.upper_care_level_three_count_gte, :size=>'10' %>
-    <% end %>
-    
-    <%= field_for :bedridden_elderly_count do |key, label| %>
-      <%= label_tag{label} %>
-      ＞
-      <%= f.text_field "#{key}_gte", :value => @search.bedridden_elderly_count_gte, :size=>'10' %>
-    <% end %>
-    
-    <%= field_for :physical_disability_certificate_count do |key, label| %>
-      <%= label_tag{label} %>
-      ＞
-      <%= f.text_field "#{key}_gte", :value => @search.physical_disability_certificate_count_gte, :size=>'10' %>
-    <% end %>
-  </div>
   
-  <div class="split3contentcenter">
-    <%= field_for :head_count do |key, label| %>
+  <div class="splitcontentright">
+    <%= field_for :area do |key, label| %>
       <%= label_tag{label} %>
-      ＞
-      <%= f.text_field "#{key}_gte", :value => @search.head_count_gte, :size=>'10' %>
-    <% end %>
-    
-    <%= field_for :elderly_alone_count do |key, label| %>
-      <%= label_tag{label} %>
-      ＞
-      <%= f.text_field "#{key}_gte", :value => @search.elderly_alone_count_gte, :size=>'10' %>
-    <% end %>
-    
-    <%= field_for :elderly_dementia_count do |key, label| %>
-      <%= label_tag{label} %>
-      ＞
-      <%= f.text_field "#{key}_gte", :value => @search.elderly_dementia_count_gte, :size=>'10' %>
+      <%= f.select("#{key}_in", options_for_select(@areas.map{|v| [v.name,v.area_code]},
+        (@search.area_in.blank? ? @areas.map{|v| [v.area_code]}.flatten : @search.area_in)), {}, {:multiple => true, :size => @areas.size}) %>
     <% end %>
   </div>
-  
-  <div class="split3contentright">
-    <%= field_for :injury_count do |key, label| %>
-      <%= label_tag{label} %>
-      ＞
-      <%= f.text_field "#{key}_gte", :value => @search.injury_count_gte, :size=>'10' %>
-    <% end %>
-    
-    <%= field_for :elderly_couple_count do |key, label| %>
-      <%= label_tag{label} %>
-      ＞
-      <%= f.text_field "#{key}_gte", :value => @search.elderly_couple_count_gte, :size=>'10' %>
-    <% end %>
-    
-    <%= field_for :rehabilitation_certificate_count do |key, label| %>
-      <%= label_tag{label} %>
-      ＞
-      <%= f.text_field "#{key}_gte", :value => @search.rehabilitation_certificate_count_gte, :size=>'10' %>
-    <% end %>
-  </div>
-</div>
-
-<div class="nonsplitcontent">
-  <%= field_for :note do |key, label| %>
-    <%= label_tag{label} %>
-    <%= f.text_field "#{key}_like", :value => @search.note_like, :size=>'50' %>
-  <% end %>
 </div>
 
 <% include_calendar_headers_tags %>
