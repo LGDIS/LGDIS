@@ -82,10 +82,13 @@ class EvacuationAdvisory < ActiveRecord::Base
                  :length => {:maximum => 4000}
 
   before_create :number_evacuation_advisory_code , :if => Proc.new { |evacuation_advisory| evacuation_advisory.identifier.nil? }
-# 2013年  2月 25日: 日時未入力の避難勧告指示データを暫定的にXML出力除外｡有効にしたくば以下の2行でバリデーションするとよい｡
-#   validates :issued_at, :presence => true, :if => Proc.new {|evacuation_advisory| evacuation_advisory.issueorlift.to_i == 1}
-#   validates :lifted_at, :presence => true, :if => Proc.new {|evacuation_advisory| evacuation_advisory.issueorlift.to_i == 0}
-
+  
+  # 発令・解除区分
+  ISSUEORLIFT_ISSUE = "1" # 発令
+  ISSUEORLIFT_LIFT  = "0" # 解除
+  
+  validates :issued_at, :presence => true, :if => "self.issueorlift == '#{ISSUEORLIFT_ISSUE}'"
+  validates :lifted_at, :presence => true, :if => "self.issueorlift == '#{ISSUEORLIFT_LIFT}'"
   
   # 属性のローカライズ名取得
   # validateエラー時のメッセージに使用されます。
