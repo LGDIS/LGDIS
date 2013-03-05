@@ -15,7 +15,7 @@ module Lgdis
       def acts_as_datetime_separable(*columns)
         return if self.included_modules.include?(Lgdis::Acts::DatetimeSeparable::InstanceMethods)
     
-        if columns.nil?
+        if columns.blank?
           raise '分割する日時フィールドの指定がありません。'
         elsif !columns.is_a?(Array)
           columns = [] << columns

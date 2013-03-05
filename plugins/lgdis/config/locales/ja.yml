@@ -49,6 +49,8 @@ ja:
   field_xml_head_text: 見出し文
   field_xml_body: XMLBody部
   button_xml_view_sampling: 石巻市関連情報のみ
+  button_ticket_update: チケットの更新
+  button_ticket_delete: チケットの削除
   
   ####
   # 避難所開設機能
@@ -305,7 +307,7 @@ ja:
     field_damaged_educational_facilities_count: その２（被害状況即報） / その他 / 文教施設（箇所）
     field_damaged_hospitals_count: その２（被害状況即報） / その他 / 病院（箇所）
     field_damaged_roads_count: その２（被害状況即報） / その他 / 道路（箇所）
-    field_damaged_bridges_count: そその２（被害状況即報） / その他 / 橋りょう（箇所）
+    field_damaged_bridges_count: その２（被害状況即報） / その他 / 橋りょう（箇所）
     field_damaged_rivers_count: その２（被害状況即報） / その他 / 河川（箇所）
     field_damaged_harbors_count: その２（被害状況即報） / その他 / 港湾（箇所）
     field_damaged_sand_control_count: その２（被害状況即報） / その他 / 砂防（箇所）

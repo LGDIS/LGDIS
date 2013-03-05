@@ -241,17 +241,10 @@ module Lgdis
           entry.add_element("georss:relationshipTag").text = "iconfile=#{rand(16)}-dot.png"
         end
 
-        self.polygons_for_map.each do |polygon|
-          cnt += 1
-          REXML::Comment.new("-------- 本件についての地理情報 No." + cnt.to_s + " --------", entry)
-          entry.add_element("georss:polygon").text = polygon["points"].flatten.join(" ")
-          entry.add_element("georss:relationshipTag").text = "iconfile=#{rand(16)}-dot.png"
-        end
-
         self.locations_for_map.each do |location|
           cnt += 1
           REXML::Comment.new("-------- 本件についての地理情報 No." + cnt.to_s + " --------", entry)
-          entry.add_element("georss:featureTypeTag").text = location["locaton"]
+          entry.add_element("georss:featureTypeTag").text = location["location"]
           entry.add_element("georss:relationshipTag").text = "iconfile=#{rand(16)}-dot.png"
         end
 
