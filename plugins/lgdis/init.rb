@@ -53,12 +53,10 @@ Redmine::Plugin.register :lgdis do
     menu.delete :home
   end
 
-  # プロジェクトメニュー/チケット・新しいチケットを先頭に配置
+  # プロジェクトメニュー/チケット・新しいチケットを概要の次に配置
   Redmine::MenuManager.map :project_menu do |menu|
-    menu.delete :overview
     menu.delete :issues
     menu.delete :new_issue
-    menu.push :overview, { :controller=>"projects", :action=>"show" }, :param => :id, :caption => :label_overview, :first => true
     menu.push :issues, { :controller => 'issues', :action => 'index' }, :param => :project_id, :caption => :label_issue_plural, :after => :overview
     menu.push :new_issue, { :controller => 'issues', :action => 'new' }, :param => :project_id, :caption => :label_issue_new,
                 :html => { :accesskey => Redmine::AccessKeys.key_for(:new_issue) }, :after => :issues
