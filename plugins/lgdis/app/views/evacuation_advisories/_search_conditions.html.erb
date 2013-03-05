@@ -1,42 +1,28 @@
-<div class="nonsplitcontent">
-  <%= field_for :sort_criteria do |key, label| %>
-    <%= label_tag{label} %>
-    <%= f.select("#{key}_eq", options_for_select(@evacuation_advisory_const[key.to_s].invert, @search.sort_criteria_eq),:include_blank => true) %>
-  <% end %>
+<div class="splitcontent">
+  <div class="splitcontentleft">
+    <%= field_for :sort_criteria do |key, label| %>
+      <%= label_tag{label} %>
+      <%= f.select("#{key}_eq", options_for_select(@evacuation_advisory_const[key.to_s].invert, @search.sort_criteria_eq),:include_blank => true) %>
+    <% end %>
+    
+    <%= field_for :issueorlift do |key, label| %>
+      <%= label_tag{label} %>
+      <%= f.select("#{key}_eq", options_for_select(@evacuation_advisory_const[key.to_s].invert, @search.issueorlift_eq),:include_blank => true) %>
+    <% end %>
+    
+    <%= field_for :area do |key, label| %>
+      <%= label_tag{label} %>
+      <%= f.text_field "#{key}_like", :value => @search.area_like, :size=>'50' %>
+    <% end %>
+  </div>
   
-  <%= field_for :issueorlift do |key, label| %>
-    <%= label_tag{label} %>
-    <%= f.select("#{key}_eq", options_for_select(@evacuation_advisory_const[key.to_s].invert, @search.issueorlift_eq),:include_blank => true) %>
-  <% end %>
-  
-  <%= field_for :district  do |key, label| %>
-    <%= label_tag{label} %>
-    <%= f.select("#{key}_eq", options_for_select(@areas.map{|v| [v.name,v.area_code]}, @search.district_eq),:include_blank => true) %>
-  <% end %>
-  
-  <%= field_for :area do |key, label| %>
-    <%= label_tag{label} %>
-    <%= f.text_field "#{key}_like", :value => @search.area_like, :size=>'50' %>
-  <% end %>
-  
-  <%= field_for :issued_at do |key, label| %>
-    <%= label_tag{label} %>
-    <%= f.text_field "#{key}_gte", :value => @search.issued_at_gte, :size=>'10' %> <%= calendar_for("search_#{key}_gte") %>
-    ～
-    <%= f.text_field "#{key}_lte", :value => @search.issued_at_lte, :size=>'10' %> <%= calendar_for("search_#{key}_lte") %>
-  <% end %>
-  
-  <%= field_for :lifted_at do |key, label| %>
-    <%= label_tag{label} %>
-    <%= f.text_field "#{key}_gte", :value => @search.lifted_at_gte, :size=>'10' %><%= calendar_for("search_#{key}_gte") %>
-    ～
-    <%= f.text_field "#{key}_lte", :value => @search.lifted_at_lte, :size=>'10' %><%= calendar_for("search_#{key}_lte") %>
-  <% end %>
-  
-  <%= field_for :remarks do |key, label| %>
-    <%= label_tag{label} %>
-    <%= f.text_field "#{key}_like", :value => @search.remarks_like, :size=>'50' %>
-  <% end %>
+  <div class="splitcontentright">
+    <%= field_for :district  do |key, label| %>
+      <%= label_tag{label} %>
+      <%= f.select("#{key}_in", options_for_select(@areas.map{|v| [v.name,v.area_code]},
+        (@search.district_in.blank? ? @areas.map{|v| [v.area_code]}.flatten : @search.district_in)), {}, {:multiple => true, :size => @areas.size}) %>
+    <% end %>
+  </div>
 </div>
 
 <% include_calendar_headers_tags %>

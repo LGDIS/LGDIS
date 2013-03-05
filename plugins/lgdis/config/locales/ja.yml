@@ -69,6 +69,7 @@ ja:
   
   notice_shelter_successful_create: 避難所 %{id} が作成されました。
   text_shelter_destroy_confirmation: '本当に削除しますか？'
+  text_shelter_update_confirmation: '更新してよろしいですか？'
   error_not_exists_shelters: 避難所情報が存在しません。
   
   # 項目名
@@ -184,6 +185,7 @@ ja:
   
   notice_evacuation_advisory_successful_create: 避難勧告･指示 %{id} が作成されました。
   text_evacuation_advisory_destroy_confirmation: '本当に削除しますか？'
+  text_evacuation_advisory_update_confirmation: '更新してよろしいですか？'
   error_not_exists_evacuation_advisories: 避難勧告･指示情報が存在しません。
 
   # 配信履歴 項目名
