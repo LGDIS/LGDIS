@@ -49,6 +49,8 @@ ja:
   field_xml_head_text: 見出し文
   field_xml_body: XMLBody部
   button_xml_view_sampling: 石巻市関連情報のみ
+  button_ticket_update: チケットの更新
+  button_ticket_delete: チケットの削除
   
   ####
   # 避難所開設機能
