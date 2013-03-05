@@ -58,7 +58,7 @@ Redmine::Plugin.register :lgdis do
     menu.delete :overview
     menu.delete :issues
     menu.delete :new_issue
-    menu.push :overview, { :controller=>"projects", :action=>"show" }, :param => :id, :first => true
+    menu.push :overview, { :controller=>"projects", :action=>"show" }, :param => :id, :caption => :label_overview, :first => true
     menu.push :issues, { :controller => 'issues', :action => 'index' }, :param => :project_id, :caption => :label_issue_plural, :after => :overview
     menu.push :new_issue, { :controller => 'issues', :action => 'new' }, :param => :project_id, :caption => :label_issue_new,
                 :html => { :accesskey => Redmine::AccessKeys.key_for(:new_issue) }, :after => :issues
