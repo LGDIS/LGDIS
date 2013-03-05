@@ -257,6 +257,32 @@ destination:
       - *urgent_mail_docomo
       - *urgent_mail_au
       - *urgent_mail_sb
+    5: # 
+      - *commons
+      - *smtp_0
+      - *smtp_1
+      - *smtp_2
+      - *smtp_3
+      - *smtp_auth
+      - *twitter
+      - *facebook
+      - *atom
+      - *urgent_mail_docomo
+      - *urgent_mail_au
+      - *urgent_mail_sb
+    6: # 
+      - *commons
+      - *smtp_0
+      - *smtp_1
+      - *smtp_2
+      - *smtp_3
+      - *smtp_auth
+      - *twitter
+      - *facebook
+      - *atom
+      - *urgent_mail_docomo
+      - *urgent_mail_au
+      - *urgent_mail_sb
     7: # 人的被害報告
       - *commons
       - *smtp_0
@@ -453,6 +479,32 @@ destination:
       - *urgent_mail_au
       - *urgent_mail_sb
     27: # 道路路面状況に関する情報
+      - *commons
+      - *smtp_0
+      - *smtp_1
+      - *smtp_2
+      - *smtp_3
+      - *smtp_auth
+      - *twitter
+      - *facebook
+      - *atom
+      - *urgent_mail_docomo
+      - *urgent_mail_au
+      - *urgent_mail_sb
+    28: #
+      - *commons
+      - *smtp_0
+      - *smtp_1
+      - *smtp_2
+      - *smtp_3
+      - *smtp_auth
+      - *twitter
+      - *facebook
+      - *atom
+      - *urgent_mail_docomo
+      - *urgent_mail_au
+      - *urgent_mail_sb
+    29: #
       - *commons
       - *smtp_0
       - *smtp_1
@@ -868,6 +920,71 @@ destination:
       - *urgent_mail_docomo
       - *urgent_mail_au
       - *urgent_mail_sb
+    67: # 
+      - *commons
+      - *smtp_0
+      - *smtp_1
+      - *smtp_2
+      - *smtp_3
+      - *smtp_auth
+      - *twitter
+      - *facebook
+      - *atom
+      - *urgent_mail_docomo
+      - *urgent_mail_au
+      - *urgent_mail_sb
+    68: # 
+      - *commons
+      - *smtp_0
+      - *smtp_1
+      - *smtp_2
+      - *smtp_3
+      - *smtp_auth
+      - *twitter
+      - *facebook
+      - *atom
+      - *urgent_mail_docomo
+      - *urgent_mail_au
+      - *urgent_mail_sb
+    69: # 
+      - *commons
+      - *smtp_0
+      - *smtp_1
+      - *smtp_2
+      - *smtp_3
+      - *smtp_auth
+      - *twitter
+      - *facebook
+      - *atom
+      - *urgent_mail_docomo
+      - *urgent_mail_au
+      - *urgent_mail_sb
+    70: # 
+      - *commons
+      - *smtp_0
+      - *smtp_1
+      - *smtp_2
+      - *smtp_3
+      - *smtp_auth
+      - *twitter
+      - *facebook
+      - *atom
+      - *urgent_mail_docomo
+      - *urgent_mail_au
+      - *urgent_mail_sb
+    71: # 
+      - *commons
+      - *smtp_0
+      - *smtp_1
+      - *smtp_2
+      - *smtp_3
+      - *smtp_auth
+      - *twitter
+      - *facebook
+      - *atom
+      - *urgent_mail_docomo
+      - *urgent_mail_au
+      - *urgent_mail_sb
     72: # バスの運行に関する情報
       - *commons
       - *smtp_0
@@ -908,6 +1025,32 @@ destination:
       - *urgent_mail_au
       - *urgent_mail_sb
     75: # その他公共交通の運行に関する情報
+      - *commons
+      - *smtp_0
+      - *smtp_1
+      - *smtp_2
+      - *smtp_3
+      - *smtp_auth
+      - *twitter
+      - *facebook
+      - *atom
+      - *urgent_mail_docomo
+      - *urgent_mail_au
+      - *urgent_mail_sb
+    77: # 
+      - *commons
+      - *smtp_0
+      - *smtp_1
+      - *smtp_2
+      - *smtp_3
+      - *smtp_auth
+      - *twitter
+      - *facebook
+      - *atom
+      - *urgent_mail_docomo
+      - *urgent_mail_au
+      - *urgent_mail_sb
+    78: # 
       - *commons
       - *smtp_0
       - *smtp_1

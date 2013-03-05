@@ -266,8 +266,8 @@ module Lgdis
 
         # 災害訓練モード判定
         DST_LIST['training_prj'][self.project_id] ? \
-          '【災害訓練】' + "\n" + DST_LIST['disaster_portal_url'] + url.to_s + "\n" + contents.to_s : \
-          DST_LIST['disaster_portal_url'] + url.to_s + "\n" + contents.to_s
+          '【災害訓練】' + "\n" + DST_LIST['disaster_portal_url'] + "\n" + url.to_s + "\n" + contents.to_s : \
+          DST_LIST['disaster_portal_url'] + "\n" + url.to_s + "\n" + contents.to_s
       end
 
       # 公共コモンズ用XML 作成処理
@@ -303,32 +303,16 @@ module Lgdis
           xml_body = REXML::Document.new(xml_body).elements["//#{element}"]
         end
 
-
         # tracker_id に紐付く標題を設定
         title  = DST_LIST['tracker_title'][self.tracker_id]
 
         # status(更新種別), uuid, edition_num(版番号)を設定
-        edition_mng = EditionManagement.find_by_project_id_and_tracker_id(self.project_id, self.tracker_id)
+        edition_mng = find_edition_mng(delivery_place_id)
         edition_fields_map = set_edition_mng_field(edition_mng)
 
         # 運用種別フラグ
         operation_flg = DST_LIST['commons_xml_field']['edxl_status'][self.project_id]
         operation_flg = operation_flg.blank? ? 'Actual' : operation_flg
-
-        # 情報の発表日時
-        published_date = name_in_custom_field_value(DST_LIST['custom_field_delivery']['published_date'])
-        published_time = name_in_custom_field_value(DST_LIST['custom_field_delivery']['published_time'])
-        published_datetime = published_date.blank? || published_time.blank? ? nil : published_date + ' ' + published_time
-
-        # 希望公開開始日時
-        target_date = name_in_custom_field_value(DST_LIST['custom_field_delivery']['target_date'])
-        target_time = name_in_custom_field_value(DST_LIST['custom_field_delivery']['target_time'])
-        target_datetime = target_date.blank? || target_time.blank? ? nil : target_date + ' ' + target_time
-
-        # 希望公開終了日時
-        valid_date = name_in_custom_field_value(DST_LIST['custom_field_delivery']['valid_date'])
-        valid_time = name_in_custom_field_value(DST_LIST['custom_field_delivery']['valid_time'])
-        valid_datetime = valid_date.blank? || valid_time.blank? ? nil : valid_date + ' ' + valid_time
 
         # 更新種別設定処理
         type_update = TYPE_UPDATE[self.type_update]
@@ -345,10 +329,10 @@ module Lgdis
         doc.elements["//edxlde:distributionID"].add_text(edition_fields_map['uuid'])
         doc.elements["//edxlde:dateTimeSent"].add_text(Time.now.xmlschema)
         doc.elements["//edxlde:distributionStatus"].add_text(operation_flg)
-        doc.elements["//edxlde:distributionType"].add_text(type_update)
+        doc.elements["//edxlde:EDXLDistribution/edxlde:distributionType"].add_text(type_update)
         doc.elements["//edxlde:combinedConfidentiality"].add_text(DST_LIST['commons_xml_field']['confidential_message'])
         doc.elements["//commons:targetArea/commons:areaName"].add_text(delivered_area)
-        doc.elements["//edxlde:contentDescription"].add_text(name_in_custom_field_value(DST_LIST['custom_field_delivery']['summary']))
+        doc.elements["//edxlde:contentDescription"].add_text(self.summary)
         doc.elements["//edxlde:consumerRole/edxlde:valueListUrn"].add_text('publicCommons:media:urgentmail:carrier') if DST_LIST['ugent_mail_ids'].include? delivery_place_id # 緊急速報メールの場合のみ
         doc.elements["//edxlde:consumerRole/edxlde:value"].add_text(DST_LIST['commons_xml_field']['carrier'][delivery_place_id]) if DST_LIST['ugent_mail_ids'].include? delivery_place_id # 緊急速報メールの場合のみ
 
@@ -364,23 +348,24 @@ module Lgdis
         doc.elements["//pcx_ib:Title"].add_text(I18n.t('target_municipality') + ' ' + self.project.name + ' ' +  (title.present? ? title : '緊急速報メール'))
         doc.elements["//pcx_ib:CreateDateTime"].add_text(self.created_on.xmlschema)
         doc.elements["//pcx_ib:FirstCreateDateTime"].add_text(self.created_on.xmlschema)
-        doc.elements["//pcx_ib:ReportDateTime"].add_text(published_datetime)
-        doc.elements["//pcx_ib:TargetDateTime"].add_text(target_datetime.to_datetime.xmlschema) unless target_datetime.blank?
-        doc.elements["//pcx_ib:ValidDateTime"].add_text(valid_datetime.to_datetime.xmlschema) unless valid_datetime.blank?
+        doc.elements["//pcx_ib:ReportDateTime"].add_text(self.published_at.xmlschema) unless self.published_at.blank?
+        doc.elements["//pcx_ib:TargetDateTime"].add_text(self.opened_at.xmlschema) unless self.opened_at.blank?
+        doc.elements["//pcx_ib:ValidDateTime"].add_text(self.closed_at.xmlschema) unless self.closed_at.blank?
         doc.elements["//edxlde:distributionID"].add_text(edition_fields_map['uuid'])
-        doc.elements["//edxlde:distributionType"].add_text(type_update)
+        doc.elements["//pcx_ib:Head/edxlde:distributionType"].add_text(type_update)
         doc.elements["//pcx_ib:Head/commons:documentRevision"].add_text("#{edition_fields_map['edition_num']}")
         doc.elements["//pcx_ib:Head/commons:documentID"].add_text(edition_fields_map['uuid'])
-        doc.elements["//pcx_ib:Text"].add_text(name_in_custom_field_value(DST_LIST['custom_field_delivery']['summary']))
+        doc.elements["//pcx_ib:Text"].add_text(self.summary)
         doc.elements["//pcx_ib:Areas/pcx_ib:Area/commons:areaName"].add_text(DST_LIST['custom_field_delivery']['area_name'])
 
         # Body 部
         doc.elements["//pcx_ib:Head"].next_sibling = xml_body if xml_body.present?
 
         # Edxl 部要素追加
-        doc.elements["//commons:publishingOfficeName"].add_text(DST_LIST['custom_field_delivery']['pulishing_office'])
+        doc.elements["//commons:publishingOfficeName"].add_text(DST_LIST['commons_xml_field']['pulishing_office'])
         doc.elements["//commons:previousDocumentRevision"].add_text("#{edition_fields_map['edition_num']}")
-        doc.elements["//commons:contentObject/commons:documentRevision"].add_text("#{edition_fields_map['edition_num']}")
+        edition_num = edition_fields_map['edition_num']
+        doc.elements["//commons:contentObject/commons:documentRevision"].add_text("#{edition_num == 1 ? edition_num : edition_num - 1}")
         doc.elements["//commons:contentObject/commons:documentID"].add_text(edition_fields_map['uuid'])
 
         return doc.to_s
@@ -460,6 +445,7 @@ module Lgdis
       # ==== Raise
       def create_commons_event_body
         @issue_const = Constant::hash_for_table(Issue.table_name)
+        title  = DST_LIST['tracker_title'][self.tracker_id]
         doc =  REXML::Document.new
         doc.add_element("pcx_gi:GeneralInformation") # root
 
@@ -467,7 +453,7 @@ module Lgdis
         doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_eb:Disaster").add_element("pcx_eb:DisasterName").add_text("#{self.project.name}")
         doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:Category").add_text("#{DST_LIST["tracker_grouping"][self.tracker_id][0]}")
         doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:subCategory").add_text("#{DST_LIST["tracker_grouping"][self.tracker_id][1]}")
-        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:Title").add_text("#{self.mail_subject}")
+        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:Title").add_text(I18n.t('target_municipality') + ' ' + self.project.name + ' ' + title)
         doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:Description").add_text("#{self.summary}")
         doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:URL").add_text("#{name_in_custom_field_value(37)}") # 関連するホームページ
 
@@ -479,6 +465,7 @@ module Lgdis
       # 公共コモンズ用XML 作成処理(エリアメールBody部)
       # ==== Args
       # ==== Return
+      # _doc_ :: REXML::Document 文字列
       # ==== Raise
       def create_commons_area_mail_body
         doc =  REXML::Document.new
@@ -495,7 +482,9 @@ module Lgdis
       # UUID, 更新種別(status), 版番号(edition_num) を
       # ハッシュで返却します
       # ==== Args
+      # _edition_mng_ :: 版番号管理オブジェクト
       # ==== Return
+      # _edition_field_map_ :: uuid, status, edition_num のハッシュ
       # ==== Raise
       def set_edition_mng_field(edition_mng)
         uuid        = edition_mng.blank? || edition_mng.status == 0 ? \
@@ -511,6 +500,46 @@ module Lgdis
         edition_field_map.store('edition_num', edition_num)
 
         return edition_field_map
+      end
+
+      # 版番号管理テーブル検索処理
+      #
+      # 緊急速報メール、お知らせ・イベントは1チケットで
+      # 一つの版番号、UUID を管理する
+      # 上記以外のコモンズの配信内容に関しては、
+      # プロジェクトに紐付くトラッカー毎に一つの版番号、UUID を管理する
+      # ==== Args
+      # _delivery_place_id_ :: 配信先ID
+      # ==== Return
+      # _edition_mng_ :: 版番号管理オブジェクト
+      # ==== Raise
+      def find_edition_mng(delivery_place_id)
+        # イベント・お知らせ のトラッカー かつ 緊急速報メール以外
+        # イベント・お知らせ のトラッカー かつ 緊急速報メールのdelivery_place_id
+        # イベント・お知らせ 以外のトラッカー かつ 緊急速報メール以外
+        # イベント・お知らせ 以外のトラッカー かつ 緊急速報メールのdelivery_place_id
+        condition_str = ''
+        condition_ary = []
+        if DST_LIST['general_info_ids'].include?(self.tracker_id)
+          condition_str = 'issue_id = ?'
+          condition_ary.push self.id
+        else
+          condition_str = 'project_id = ? and tracker_id = ?'
+          condition_ary.push self.project_id, self.tracker_id
+        end
+
+        if DST_LIST['ugent_mail_ids'].include?(delivery_place_id)
+          condition_str << ' and delivery_place_id = ?'
+          condition_ary.push delivery_place_id
+        else
+          condition_str << ' and delivery_place_id not in (?)'
+          condition_ary.push DST_LIST['ugent_mail_ids']
+        end
+        condition_ary.unshift(condition_str)
+        edition_mng = EditionManagement.find(:first,
+                                             :order => 'updated_at desc',
+                                             :conditions => condition_ary)
+        return edition_mng
       end
     end
   end

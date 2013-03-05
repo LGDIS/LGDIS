@@ -58,8 +58,8 @@ class DeliveryHistory < ActiveRecord::Base
       errors.add(:summary, "を入力して下さい")
     end
 
-    if (self.delivery_place_id == 7 || self.delivery_place_id == 9) && self.summary.size >= 142
-      errors.add(:mail_subject, "は142文字以上入力できません")
+    if (self.delivery_place_id == 7 || self.delivery_place_id == 9) && self.summary.size >= (142 - DST_LIST['disaster_portal_url'].size)
+      errors.add(:mail_subject, "は#{142 - DST_LIST['disaster_portal_url'].size}文字以上入力できません")
     end
 
     if (self.delivery_place_id == 10 || self.delivery_place_id == 11 ||
@@ -88,6 +88,12 @@ class DeliveryHistory < ActiveRecord::Base
         self.delivery_place_id == 11 || self.delivery_place_id == 12) &&
         self.type_update == "3"      && self.description_cancel.blank?
       errors.add(:description_cancel, "を入力して下さい")
+    end
+
+    if (self.delivery_place_id == 1  || self.delivery_place_id == 10 ||
+        self.delivery_place_id == 11 || self.delivery_place_id == 12) &&
+        self.published_at.blank?
+      errors.add(:published_at, "を入力して下さい")
     end
   end
 end
