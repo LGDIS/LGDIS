@@ -54,7 +54,8 @@ module RedmineApp
     # Do not include all helpers
     config.action_controller.include_all_helpers = false
 
-    config.session_store :cookie_store, :key => '_redmine_session'
+#    config.session_store :cookie_store, :key => '_redmine_session'
+    config.session_store :active_record_store, :key => '_redmine_session'
 
     if File.exists?(File.join(File.dirname(__FILE__), 'additional_environment.rb'))
       instance_eval File.read(File.join(File.dirname(__FILE__), 'additional_environment.rb'))

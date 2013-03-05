@@ -150,7 +150,7 @@ end %>
     // ロケーション作成
     createLocations(global_locations, map);
   }
-  
+
   /**
    * ロケーションマーカー作成メソッド
    */
@@ -161,19 +161,26 @@ end %>
       var location = locations[i].location;
       var remarks = locations[i].remarks;
       if (location) {
-        geocoder.geocode({'address': location}, function(results, status){
+        geocoder.geocode({'address': location}, callback(remarks));
+      }
+    }
+  }
+
+  function callback(remarks) {
+
+    return function(results, status) {
           if (status == google.maps.GeocoderStatus.OK) {
             // Goecoding成功の場合のみ処理
             var marker = new google.maps.Marker({
               position: results[0].geometry.location,
               map: map
             });
-            
+
             if (remarks) {
               // マーカーオブジェクトに備考文字を設定
               // クリックイベント中にオブジェクトから文字列を取得する必要があるため
               marker.set('remarks', remarks);
-              
+
               // クリックイベント時の処理
               google.maps.event.addListener(marker, 'click', function(e){
                 var infowindow = new google.maps.InfoWindow({
@@ -185,11 +192,8 @@ end %>
               });
             }
           }
-        });
-      }
-    }
-  }
-
+}
+}
   /**
    * マーカー作成メソッド
    */
