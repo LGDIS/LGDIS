@@ -2927,10 +2927,10 @@ custom_field_delivery:
 
 # 災害訓練モードプロジェクトID
 training_prj:
-  6: true
+  3: true
 # 通信試験モードプロジェクトID
 test_prj:
-  2: true
+  9: true
 # 公共情報コモンズ配信用XML(edxlde:distributionStatus)
 
 # 公共情報コモンズへの発信
