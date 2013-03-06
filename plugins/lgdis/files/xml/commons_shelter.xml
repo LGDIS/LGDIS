@@ -22,10 +22,6 @@
 
 	<commons:contentObject>
 		<edxlde:contentDescription></edxlde:contentDescription>
-		<edxlde:consumerRole>
-			<edxlde:valueListUrn></edxlde:valueListUrn>
-			<edxlde:value></edxlde:value>
-		</edxlde:consumerRole>
 
 		<edxlde:xmlContent>
 			<edxlde:embeddedXMLContent>
@@ -38,15 +34,9 @@
 						<EditorialOffice>
 							<pcx_eb:OfficeName></pcx_eb:OfficeName>
 						</EditorialOffice>
-						<PulishingOffice>
+						<PublishingOffice>
 							<pcx_eb:OfficeName></pcx_eb:OfficeName>
-							<pcx_eb:ContactInfo>
-								<pcx_eb:contactType></pcx_eb:contactType>
-							</pcx_eb:ContactInfo>
-						</PulishingOffice>
-						<Errata>
-							<pcx_eb:Description></pcx_eb:Description>
-						</Errata>
+						</PublishingOffice>
 					</Control>
 
 					<!-- Head 部 -->
@@ -55,8 +45,6 @@
 						<pcx_ib:CreateDateTime></pcx_ib:CreateDateTime>
 						<pcx_ib:FirstCreateDateTime></pcx_ib:FirstCreateDateTime>
 						<pcx_ib:ReportDateTime></pcx_ib:ReportDateTime>
-						<pcx_ib:TargetDateTime></pcx_ib:TargetDateTime>
-						<pcx_ib:ValidDateTime></pcx_ib:ValidDateTime>
 						<edxlde:distributionID></edxlde:distributionID>
 						<edxlde:distributionType></edxlde:distributionType>
 						<commons:documentRevision></commons:documentRevision>
@@ -82,7 +70,7 @@
 		<commons:previousDocumentRevision></commons:previousDocumentRevision>
 		<commons:documentRevision></commons:documentRevision>
 		<commons:documentID></commons:documentID>
-		<commons:category>EvacuationOrder</commons:category>
+		<commons:category>Shelter</commons:category>
 
 	</commons:contentObject>
 </edxlde:EDXLDistribution>
