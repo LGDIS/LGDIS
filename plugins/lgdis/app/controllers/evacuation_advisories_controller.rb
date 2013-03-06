@@ -4,6 +4,8 @@ class EvacuationAdvisoriesController < ApplicationController
    
   before_filter :find_project, :authorize
   before_filter :init
+  
+  class ParamsException < StandardError; end
 
   # 共通初期処理
   # ==== Args
@@ -93,6 +95,8 @@ class EvacuationAdvisoriesController < ApplicationController
           links << view_context.link_to("##{issue.id}", issue_path(issue), :title => issue.subject)
         end
         flash[:notice] = l(:notice_issue_successful_create, :id => links.join(","))
+      rescue ParamsException
+        flash[:error] = l("error_not_exists_announcement")
       rescue ActiveRecord::RecordInvalid => e
         flash[:error] = e.message
       end

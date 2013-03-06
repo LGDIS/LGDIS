@@ -212,16 +212,17 @@ class EvacuationAdvisory < ActiveRecord::Base
     # XML出力対象をしぼって出力順にコレクションとして準備 
     # 明確に避難準備/避難勧告/避難指示/警戒区域として発令または解除された情報に限定
     evas=[]
-    cond1 = "AND households > 0 AND head_count > 0"
-    cond2 = "AND ((issueorlift = '1' AND NOT issued_at IS NULL) OR (issueorlift = '0' AND NOT lifted_at IS NULL))"
-    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '1' AND sort_criteria ='5' #{cond1.to_s} #{cond2.to_s}")
-    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '1' AND sort_criteria ='4' #{cond1.to_s} #{cond2.to_s}")
-    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '1' AND sort_criteria ='3' #{cond1.to_s} #{cond2.to_s}")
-    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '1' AND sort_criteria ='2' #{cond1.to_s} #{cond2.to_s}")
-    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '0' AND sort_criteria ='5' #{cond1.to_s} #{cond2.to_s}")
-    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '0' AND sort_criteria ='4' #{cond1.to_s} #{cond2.to_s}")
-    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '0' AND sort_criteria ='3' #{cond1.to_s} #{cond2.to_s}")
-    evas << EvacuationAdvisory.find_by_sql("select * from evacuation_advisories where issueorlift = '0' AND sort_criteria ='2' #{cond1.to_s} #{cond2.to_s}")
+    evas << EvacuationAdvisory.where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '5')
+    evas << EvacuationAdvisory.where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '4')
+    evas << EvacuationAdvisory.where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '3')
+    evas << EvacuationAdvisory.where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '2')
+    evas << EvacuationAdvisory.where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '5')
+    evas << EvacuationAdvisory.where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '4')
+    evas << EvacuationAdvisory.where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '3')
+    evas << EvacuationAdvisory.where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '2')
+    
+    # XML出力対象が存在しない場合は例外を発生させる
+    raise EvacuationAdvisoriesController::ParamsException if evas.flatten.blank?
 
     # EvacuationAdvisory要素の取得
     node_evas = doc.add_element("pcx_ev:EvacuationOrder",{"xmlns:pcx_ev" => 
@@ -231,16 +232,13 @@ class EvacuationAdvisory < ActiveRecord::Base
     node_evas.add_element("pcx_ev:ComplementaryInfo")
 
     # 避難人数、避難世帯数の合計値処理
-    summary = connection.select_rows(" 
-      select SUM(households), SUM(head_count) from evacuation_advisories 
-      where issueorlift >= '0' AND sort_criteria > '1'
-    ").first
-    if summary[0].present? || summary[1].present? 
+    summary = EvacuationAdvisory.select("SUM(households) as households_sum, SUM(head_count) as head_count_sum").where(:issueorlift => [ISSUEORLIFT_ISSUE,ISSUEORLIFT_LIFT]).where(:sort_criteria=> ['2','3','4','5']).first
+    if summary.households_sum.present? || summary.head_count_sum.present?
       node_total_number = node_evas.add_element("pcx_ev:TotalNumber")
         # 総世帯数
-        node_total_number.add_element("pcx_ev:Households", {"pcx_ev:unit" => "世帯"}).add_text("#{summary[0]}") if summary[0].present?
+        node_total_number.add_element("pcx_ev:Households", {"pcx_ev:unit" => "世帯"}).add_text("#{summary.households_sum}") if summary.households_sum.present?
         # 避難総人数 自主避難人数を含む。
-        node_total_number.add_element("pcx_ev:HeadCount").add_text("#{summary[1]}") if summary[1].present?
+        node_total_number.add_element("pcx_ev:HeadCount").add_text("#{summary.head_count_sum}") if summary.head_count_sum.present?
     end
     
     evas.each do |evas2|
