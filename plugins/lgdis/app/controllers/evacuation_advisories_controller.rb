@@ -98,7 +98,7 @@ class EvacuationAdvisoriesController < ApplicationController
       rescue ParamsException
         flash[:error] = l("error_not_exists_announcement")
       rescue ActiveRecord::RecordInvalid => e
-        flash[:error] = e.message
+        flash[:error] = e.record.errors.full_messages.join("<br>")
       end
     else
       flash[:error] = l(:error_not_exists_evacuation_advisories)

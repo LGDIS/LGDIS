@@ -748,6 +748,20 @@ class DisasterDamage < ActiveRecord::Base
                       .add_text("#{dd.turnout_fire_company_firefighter_count}") if dd.turnout_fire_company_firefighter_count.present?
     end
     
+    # 存在チェック
+    dd.errors.add(:base, l(:error_not_exists_disaster_damage_detail)) if root.elements[
+          ["//pcx_di:HumanDamages",     # 人的被害
+           "//pcx_di:HouseDamages",     # 住家被害
+           "//pcx_di:BuildingDamages",  # 非住家被害
+           "//pcx_di:OtherDamages",     # その他
+           "//pcx_di:Sufferers",        # り災
+           "//pcx_di:FireDamages",      # 火災発生
+           "//pcx_di:Losses",           # 被害額
+           "//pcx_di:Firefighter"       # 消防"
+          ].join("|")
+        ].blank?
+    raise ActiveRecord::RecordInvalid.new(dd) if dd.errors.present?
+    
     issue = Issue.new
     issue.tracker_id = 18
     issue.project_id = project.id
@@ -776,17 +790,25 @@ class DisasterDamage < ActiveRecord::Base
     node_disaster = root.add_element("pcx_eb:Disaster")
     node_disaster.add_element("pcx_eb:DisasterName").add_text("#{project.name}")
     
+    # 必須チェック
+    dd.errors.add_on_blank([
+          :municipal_antidisaster_headquarter_type,       # 本部種別
+          :municipal_antidisaster_headquarter_status,     # 設置状況
+          :municipal_antidisaster_headquarter_status_at   # 設置・解散日時
+        ])
+    raise ActiveRecord::RecordInvalid.new(dd) if dd.errors.present?
+    
     # 本部種別
     root.add_element("pcx_ah:Type")
-        .add_text(CONST["municipal_antidisaster_headquarter_type"]["#{dd.municipal_antidisaster_headquarter_type}"]) if dd.municipal_antidisaster_headquarter_type.present?
+        .add_text(CONST["municipal_antidisaster_headquarter_type"]["#{dd.municipal_antidisaster_headquarter_type}"])
     
     # 設置状況
     root.add_element("pcx_ah:Status")
-        .add_text(CONST["municipal_antidisaster_headquarter_status"]["#{dd.municipal_antidisaster_headquarter_status}"]) if dd.municipal_antidisaster_headquarter_status.present?
+        .add_text(CONST["municipal_antidisaster_headquarter_status"]["#{dd.municipal_antidisaster_headquarter_status}"])
     
     # 設置・解散日時
     root.add_element("pcx_ah:DateTime")
-        .add_text("#{dd.municipal_antidisaster_headquarter_status_at.xmlschema}") if dd.municipal_antidisaster_headquarter_status_at.present?
+        .add_text("#{dd.municipal_antidisaster_headquarter_status_at.xmlschema}")
     
     issue = Issue.new
     issue.tracker_id = 16

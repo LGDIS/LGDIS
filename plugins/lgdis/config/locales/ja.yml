@@ -262,6 +262,7 @@ ja:
 
   notice_disaster_damage_successful_save: 災害被害情報が保存されました。
   error_not_exists_disaster_damage: 災害被害情報が存在しません。
+  error_not_exists_disaster_damage_detail: 被害状況即報の被害・出動延人数が全て未入力のため、チケット登録ができません。
 
   # 項目名
   disaster_damages:

@@ -69,7 +69,7 @@ class DisasterDamageController < ApplicationController
         end
         flash[:notice] = l(:notice_issue_successful_create, :id => links.join(","))
       rescue ActiveRecord::RecordInvalid => e
-        flash[:error] = e.message
+        flash[:error] = e.record.errors.full_messages.join("<br>")
       end
     else
       # 災害被害情報が存在しない場合、処理しない
