@@ -341,8 +341,8 @@ module Lgdis
         doc.elements["//EditorialOffice/pcx_eb:OfficeName"].add_text(DST_LIST['commons_xml_field']['editorial_office'])
         doc.elements["//PulishingOffice/pcx_eb:OfficeName"].add_text(DST_LIST['commons_xml_field']['pulishing_office'])
         doc.elements["//pcx_eb:contactType"].add_text(DST_LIST['contact_type']) unless DST_LIST['contact_type'].blank?
-        doc.elements["//pcx_eb:Description"].add_text(name_in_custom_field_value(DST_LIST['custom_field_delivery']['corrected'])) if edition_fields_map['status'] == 0
-        doc.elements["//pcx_eb:Datetime"].add_text(self.updated_on.xmlschema) if edition_fields_map['status'] == 0
+        doc.elements["//Errata/pcx_eb:Description"].add_text(self.description_cancel) if edition_fields_map['status'] == 3
+        doc.elements["//pcx_eb:Datetime"].add_text(self.updated_on.xmlschema) if edition_fields_map['status'] == 3
 
         # Head 部要素追加
         doc.elements["//pcx_ib:Title"].add_text(I18n.t('target_municipality') + ' ' + self.project.name + ' ' +  (title.present? ? title : '緊急速報メール'))
@@ -487,11 +487,11 @@ module Lgdis
       # _edition_field_map_ :: uuid, status, edition_num のハッシュ
       # ==== Raise
       def set_edition_mng_field(edition_mng)
-        uuid        = edition_mng.blank? || edition_mng.status == 0 ? \
+        uuid        = edition_mng.blank? || edition_mng.status == 1 ? \
                       UUIDTools::UUID.random_create.to_s : edition_mng.uuid
-        status      = edition_mng.blank? || edition_mng.status == 0 ? \
+        status      = edition_mng.blank? || edition_mng.status == 1 ? \
                       1 : edition_mng.status
-        edition_num = edition_mng.blank? || edition_mng.status == 0 ? \
+        edition_num = edition_mng.blank? || edition_mng.status == 1 ? \
                       1 : edition_mng.edition_num + 1
 
         edition_field_map = Hash.new
