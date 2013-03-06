@@ -2,7 +2,7 @@
 class DeliveryHistory < ActiveRecord::Base
   unloadable
 
-  belongs_to :issue
+  belongs_to :issue, :dependent => :destroy
 
   attr_accessible :issue_id, :project_id, :delivery_place_id, :request_user, :respond_user, :status, :process_date,
                   :mail_subject, :summary, :type_update, :description_cancel, :published_date, :published_hm,
@@ -55,11 +55,11 @@ class DeliveryHistory < ActiveRecord::Base
         self.delivery_place_id == 6  || self.delivery_place_id == 7  ||
         self.delivery_place_id == 8  || self.delivery_place_id == 10 ||
         self.delivery_place_id == 11 || self.delivery_place_id == 12 ) && self.summary.blank?
-      errors.add(:summary, "を入力して下さい")
+      errors.add(:plugin_summary, "を入力して下さい")
     end
 
     if (self.delivery_place_id == 7 || self.delivery_place_id == 9) && self.summary.size >= (142 - DST_LIST['disaster_portal_url'].size)
-      errors.add(:mail_subject, "は#{142 - DST_LIST['disaster_portal_url'].size}文字以上入力できません")
+      errors.add(:plugin_summary, "は#{142 - DST_LIST['disaster_portal_url'].size}文字以上入力できません")
     end
 
     if (self.delivery_place_id == 10 || self.delivery_place_id == 11 ||
@@ -69,7 +69,7 @@ class DeliveryHistory < ActiveRecord::Base
 
     if (self.delivery_place_id == 10 || self.delivery_place_id == 11 ||
         self.delivery_place_id == 12) && self.summary.size > 171
-      errors.add(:mail_subject, "は172文字以上入力できません")
+      errors.add(:plugin_summary, "は172文字以上入力できません")
     end
 
     if (self.delivery_place_id == 1  || self.delivery_place_id == 10 ||

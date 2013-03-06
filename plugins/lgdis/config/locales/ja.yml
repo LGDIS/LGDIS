@@ -190,7 +190,7 @@ ja:
 
   # 配信履歴 項目名
   field_mail_subject: 情報のタイトル
-  field_summary: 情報の見出し要約文
+  field_plugin_summary: 情報の見出し要約文
   field_type_update: 情報の更新種別
   field_description_cancel: 取消の説明文
   field_published_at: 情報の発表日時

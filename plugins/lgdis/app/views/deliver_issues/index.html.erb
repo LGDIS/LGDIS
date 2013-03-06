@@ -28,6 +28,10 @@
     </tr>
   <thead>
 </table>
-  <%= submit_tag l(:allow),  :name=>'allow' %>
+  <% if check_admin(@issue) %>
+    <%= submit_tag l(:allow), :name=>'allow' %>
+  <% else %>
+    <input class="sbutton" value="登録" onclick="history.back()" type="button" />
+  <% end %>
   <%= submit_tag l(:reject), :name=>'reject' %>
 <% end %>

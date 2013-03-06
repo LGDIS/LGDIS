@@ -328,7 +328,7 @@ module Lgdis
         # edxl 部要素追加
         doc.elements["//edxlde:distributionID"].add_text(edition_fields_map['uuid'])
         doc.elements["//edxlde:dateTimeSent"].add_text(Time.now.xmlschema)
-        doc.elements["//edxlde:distributionStatus"].add_text(operation_flg)
+        doc.elements["//edxlde:EDXLDistribution/edxlde:distributionStatus"].add_text(operation_flg)
         doc.elements["//edxlde:EDXLDistribution/edxlde:distributionType"].add_text(type_update)
         doc.elements["//edxlde:combinedConfidentiality"].add_text(DST_LIST['commons_xml_field']['confidential_message'])
         doc.elements["//commons:targetArea/commons:areaName"].add_text(delivered_area)
@@ -337,7 +337,7 @@ module Lgdis
         doc.elements["//edxlde:consumerRole/edxlde:value"].add_text(DST_LIST['commons_xml_field']['carrier'][delivery_place_id]) if DST_LIST['ugent_mail_ids'].include? delivery_place_id # 緊急速報メールの場合のみ
 
         # Control 部要素追加
-        doc.elements["//edxlde:distributionStatus"].add_text(operation_flg)
+        doc.elements["//Control/edxlde:distributionStatus"].add_text(operation_flg)
         doc.elements["//EditorialOffice/pcx_eb:OfficeName"].add_text(DST_LIST['commons_xml_field']['editorial_office'])
         doc.elements["//PulishingOffice/pcx_eb:OfficeName"].add_text(DST_LIST['commons_xml_field']['pulishing_office'])
         doc.elements["//pcx_eb:contactType"].add_text(DST_LIST['contact_type']) unless DST_LIST['contact_type'].blank?

@@ -154,6 +154,11 @@ auto_destination:
   3:  # ３号配備
     - *smtp_3
 
+# 配信許可権限者ID
+dst_admin_id:
+  - 3 # 管理者(プロトタイプ環境 admin)
+  - 7 # 管理者(開発環境 admin)
+
 # 記載例
 # destination:
 #   role_id:
@@ -2899,8 +2904,8 @@ commons_xml_field:
     11: UMC2     # KDDI
     12: UMC3     # SoftBank
   edxl_status:  # 運用種別
-    2: System   # 通信試験モード
-    6: Exercise # 災害訓練モード
+    3: System   # 通信試験モード
+    2: Exercise # 災害訓練モード
   editorial_office: 石巻市総務部防災対策課 # 作成部署情報(部署名)
   pulishing_office: 石巻市                 # 発表部署情報(部署名)
   contact_type: 09012345678                # 発表部署情報(電話番号)
@@ -2927,10 +2932,10 @@ custom_field_delivery:
 
 # 災害訓練モードプロジェクトID
 training_prj:
-  3: true
+  2: true
 # 通信試験モードプロジェクトID
 test_prj:
-  9: true
+  3: true
 # 公共情報コモンズ配信用XML(edxlde:distributionStatus)
 
 # 公共情報コモンズへの発信
