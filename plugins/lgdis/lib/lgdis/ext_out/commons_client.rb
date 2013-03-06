@@ -187,7 +187,7 @@ module Lgdis
         publish_element.add_namespace PUB_INFO_COM_PREFIX, PUB_INFO_COMMONS_URI
         publish_element.add_namespace XML_PREFIX, XML_NAMESPACE
         message_element = REXML::Element.new PUB_INFO_COM_PREFIX + ':message'
-        message_element.add REXML::XPath.first(data,'//*')
+        message_element.add data.root.deep_clone  # 子ノードも含めてコピーしないとdataを破壊的にaddされてしまうため(dataが空になる)
 
         publish_element.add message_element
         soap_body.add publish_element
