@@ -349,7 +349,7 @@ module Lgdis
         doc.elements["//EditorialOffice/pcx_eb:OfficeName"].add_text(DST_LIST['commons_xml_field']['editorial_office'])
         doc.elements["//EditorialOffice/pcx_eb:OrganizationName"].add_text("石巻市") # 固定値
         doc.elements["//PublishingOffice/pcx_eb:OrganizationCode"].add_text("042021") # 固定値
-        doc.elements["//PublishingOffice/pcx_eb:OfficeName"].add_text(DST_LIST['commons_xml_field']['pulishing_office'])
+        doc.elements["//PublishingOffice/pcx_eb:OfficeName"].add_text(DST_LIST['commons_xml_field']['publishing_office'])
         unless DST_LIST['commons_xml_field']['contact_type'].blank? # 発表部署情報(電話番号)が存在する場合のみ
           ele = REXML::Element.new("pcx_eb:ContactInfo")
           ele.add_attribute("pcx_eb:contactType","phone")
@@ -376,9 +376,7 @@ module Lgdis
           doc.elements["//pcx_ib:ReportDateTime"].next_sibling = REXML::Element.new("pcx_ib:TargetDateTime")
           doc.elements["//pcx_ib:TargetDateTime"].add_text(self.opened_at.xmlschema)
         end
-        #doc.elements["//pcx_ib:TargetDateTime"].add_text(self.opened_at.xmlschema) unless self.opened_at.blank?
-        #doc.elements["//pcx_ib:ValidDateTime"].add_text(self.closed_at.xmlschema) unless self.closed_at.blank?
-        doc.elements["//edxlde:distributionID"].add_text(edition_fields_map['uuid'])
+        doc.elements["//pcx_ib:Head/edxlde:distributionID"].add_text(edition_fields_map['uuid'])
         doc.elements["//pcx_ib:Head/edxlde:distributionType"].add_text(type_update)
         doc.elements["//pcx_ib:Head/commons:documentRevision"].add_text("#{edition_fields_map['edition_num']}")
         doc.elements["//pcx_ib:Head/commons:documentID"].add_text(edition_fields_map['uuid'])
@@ -389,7 +387,7 @@ module Lgdis
         doc.elements["//pcx_ib:Head"].next_sibling = xml_body if xml_body.present?
 
         # Edxl 部要素追加
-        doc.elements["//commons:publishingOfficeName"].add_text(DST_LIST['commons_xml_field']['pulishing_office'])
+        doc.elements["//commons:publishingOfficeName"].add_text(DST_LIST['commons_xml_field']['publishing_office'])
         doc.elements["//commons:publishingOfficeID"].add_text("042021") # 固定値
         doc.elements["//commons:previousDocumentRevision"].add_text("#{edition_fields_map['edition_num']}")
         edition_num = edition_fields_map['edition_num']
