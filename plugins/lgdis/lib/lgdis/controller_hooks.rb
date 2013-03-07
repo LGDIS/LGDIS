@@ -80,17 +80,14 @@ module Lgdis
       issue = context[:issue]
       raise "配備番号が未設定です" if (auto_target = context[:params][:issue][:send_target]).blank?
 
-      # TODO
-      # redis が起動されている必要がある
+      place_id_ary = []
       (DST_LIST['auto_destination'][auto_target.to_i] || {}).each do |destination|
-        deliveryhistory = DeliveryHistory.create!(
-                            :issue_id          => issue.id,
-                            :project_id        => issue.project_id,
-                            :delivery_place_id => destination['id'],
-                            :request_user      => User.current.login,
-                            :status            => 'runtime',
-                            :process_date      => Time.now)
-        issue.deliver(deliveryhistory, 'runtime')
+         place_id_ary.push destination['id']
+      end
+
+      deliver_historires = DeliveryHistory.create_for_history(issue, place_id_ary)
+      (deliver_historires || {}).each do |d_h|
+        issue.deliver(d_h, 'runtime')
       end
     end
   end
