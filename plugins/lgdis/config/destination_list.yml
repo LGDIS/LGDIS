@@ -2608,6 +2608,7 @@ commons_xml:
   13: commons_damage_information.xml             # ガス設備被害報告
   14: commons_damage_information.xml             # 通信網被害報告
   15: commons_damage_information.xml             # その他被害報告
+  18: commons_damage_information.xml             # 被害要約報告(状況)
   33: commons_damage_information.xml             # 非住家建物被害報告
   34: commons_damage_information.xml             # 高等学校被害報告
   35: commons_damage_information.xml             # 中学校被害報告
@@ -2618,8 +2619,6 @@ commons_xml:
   40: commons_damage_information.xml             # 医療施設被害報告
   41: commons_damage_information.xml             # 災害重要施設被害報告
   16: commons_disaster_response_headquarters.xml # 災害対策本部設置報告
-  17: commons_disaster_response_headquarters.xml # 被害要約報告(概況)
-  18: commons_disaster_response_headquarters.xml # 被害要約報告(状況)
   20: commons_event_announcements.xml            # 道路通行規制に関する情報
   21: commons_event_announcements.xml            # 道路渋滞に関する情報
   25: commons_event_announcements.xml            # 道路工事に関する情報
@@ -2664,6 +2663,7 @@ tracker_title:
   13: 被害状況             # ガス設備被害報告
   14: 被害状況             # 通信網被害報告
   15: 被害状況             # その他被害報告
+  18: 被害状況             # 被害要約報告(状況)
   33: 被害状況             # 非住家建物被害報告
   34: 被害状況             # 高等学校被害報告
   35: 被害状況             # 中学校被害報告
@@ -2674,8 +2674,6 @@ tracker_title:
   40: 被害状況             # 医療施設被害報告
   41: 被害状況             # 災害重要施設被害報告
   16: 災害対策本部設置状況 # 災害対策本部設置報告
-  17: 災害対策本部設置状況 # 被害要約報告(概況)
-  18: 災害対策本部設置状況 # 被害要約報告(状況)
   20: イベント・お知らせ   # 道路通行規制に関する情報
   21: イベント・お知らせ   # 道路渋滞に関する情報
   25: イベント・お知らせ   # 道路工事に関する情報
