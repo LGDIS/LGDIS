@@ -319,11 +319,14 @@ module Lgdis
 
         # 配信対象地域
         str=''
+        key=''
         self.delivered_area='1'
         self.delivered_area.split(',').each do |s|
           str << @issue_const['delivered_area'][s] + ','
+          key << s.to_s + ','
         end
         delivered_area = str.split(//u)[0..-2].join
+        delivered_area_code = key.split(//u)[0..-2].join
 
         # edxl 部要素追加
         doc.elements["//edxlde:distributionID"].add_text(edition_fields_map['uuid'])
@@ -332,25 +335,49 @@ module Lgdis
         doc.elements["//edxlde:EDXLDistribution/edxlde:distributionType"].add_text(type_update)
         doc.elements["//edxlde:combinedConfidentiality"].add_text(DST_LIST['commons_xml_field']['confidential_message'])
         doc.elements["//commons:targetArea/commons:areaName"].add_text(delivered_area)
+        doc.elements["//commons:targetArea/commons:jisX0402"].add_text(delivered_area_code) 
         doc.elements["//edxlde:contentDescription"].add_text(self.summary)
-        doc.elements["//edxlde:consumerRole/edxlde:valueListUrn"].add_text('publicCommons:media:urgentmail:carrier') if DST_LIST['ugent_mail_ids'].include? delivery_place_id # 緊急速報メールの場合のみ
-        doc.elements["//edxlde:consumerRole/edxlde:value"].add_text(DST_LIST['commons_xml_field']['carrier'][delivery_place_id]) if DST_LIST['ugent_mail_ids'].include? delivery_place_id # 緊急速報メールの場合のみ
+        if DST_LIST['ugent_mail_ids'].include? delivery_place_id # 緊急速報メールの場合のみ
+          doc.elements["//edxlde:contentDescription"].next_sibling = REXML::Element.new("edxlde:consumerRole")
+          doc.elements["//edxlde:consumerRole"].add_element("edxlde:valueListUrn").add_text('publicCommons:media:urgentmail:carrier') 
+          doc.elements["//edxlde:consumerRole"].add_element("edxlde:value").add_text(DST_LIST['commons_xml_field']['carrier'][delivery_place_id]) 
+        end
 
         # Control 部要素追加
         doc.elements["//Control/edxlde:distributionStatus"].add_text(operation_flg)
+        doc.elements["//EditorialOffice/pcx_eb:OrganizationCode"].add_text("042021") # 固定値
         doc.elements["//EditorialOffice/pcx_eb:OfficeName"].add_text(DST_LIST['commons_xml_field']['editorial_office'])
-        doc.elements["//PulishingOffice/pcx_eb:OfficeName"].add_text(DST_LIST['commons_xml_field']['pulishing_office'])
-        doc.elements["//pcx_eb:contactType"].add_text(DST_LIST['contact_type']) unless DST_LIST['contact_type'].blank?
-        doc.elements["//Errata/pcx_eb:Description"].add_text(self.description_cancel) if edition_fields_map['status'] == 3
-        doc.elements["//pcx_eb:Datetime"].add_text(self.updated_on.xmlschema) if edition_fields_map['status'] == 3
+        doc.elements["//EditorialOffice/pcx_eb:OrganizationName"].add_text("石巻市") # 固定値
+        doc.elements["//PublishingOffice/pcx_eb:OrganizationCode"].add_text("042021") # 固定値
+        doc.elements["//PublishingOffice/pcx_eb:OfficeName"].add_text(DST_LIST['commons_xml_field']['pulishing_office'])
+        unless DST_LIST['commons_xml_field']['contact_type'].blank? # 発表部署情報(電話番号)が存在する場合のみ
+          ele = REXML::Element.new("pcx_eb:ContactInfo")
+          ele.add_attribute("pcx_eb:contactType","phone")
+          doc.elements["//PublishingOffice/pcx_eb:OfficeName"].next_sibling = ele
+          doc.elements["//PublishingOffice/pcx_eb:ContactInfo"].add_text(DST_LIST['commons_xml_field']['contact_type'])
+        end
+        doc.elements["//PublishingOffice/pcx_eb:OrganizationName"].add_text("石巻市") # 固定値
+        if edition_fields_map['status'] == 3 # 更新種別が取消の場合のみ
+          doc.elements["//PublishingOffice"].next_sibling = REXML::Element.new("Errata")
+          doc.elements["//Errata"].add_element("pcx_eb:Description").add_text(self.description_cancel)
+          doc.elements["//Errata"].add_element("pcx_eb:Datetime").add_text(self.updated_on.xmlschema)
+        end
 
         # Head 部要素追加
         doc.elements["//pcx_ib:Title"].add_text(I18n.t('target_municipality') + ' ' + self.project.name + ' ' +  (title.present? ? title : '緊急速報メール'))
         doc.elements["//pcx_ib:CreateDateTime"].add_text(self.created_on.xmlschema)
         doc.elements["//pcx_ib:FirstCreateDateTime"].add_text(self.created_on.xmlschema)
         doc.elements["//pcx_ib:ReportDateTime"].add_text(self.published_at.xmlschema) unless self.published_at.blank?
-        doc.elements["//pcx_ib:TargetDateTime"].add_text(self.opened_at.xmlschema) unless self.opened_at.blank?
-        doc.elements["//pcx_ib:ValidDateTime"].add_text(self.closed_at.xmlschema) unless self.closed_at.blank?
+        unless self.closed_at.blank? # 公開終了日時が設定されている場合のみ
+          doc.elements["//pcx_ib:ReportDateTime"].next_sibling = REXML::Element.new("pcx_ib:ValidDateTime")
+          doc.elements["//pcx_ib:ValidDateTime"].add_text(self.closed_at.xmlschema)
+        end
+        unless self.opened_at.blank? # 公開開始日時が設定されている場合のみ
+          doc.elements["//pcx_ib:ReportDateTime"].next_sibling = REXML::Element.new("pcx_ib:TargetDateTime")
+          doc.elements["//pcx_ib:TargetDateTime"].add_text(self.opened_at.xmlschema)
+        end
+        #doc.elements["//pcx_ib:TargetDateTime"].add_text(self.opened_at.xmlschema) unless self.opened_at.blank?
+        #doc.elements["//pcx_ib:ValidDateTime"].add_text(self.closed_at.xmlschema) unless self.closed_at.blank?
         doc.elements["//edxlde:distributionID"].add_text(edition_fields_map['uuid'])
         doc.elements["//pcx_ib:Head/edxlde:distributionType"].add_text(type_update)
         doc.elements["//pcx_ib:Head/commons:documentRevision"].add_text("#{edition_fields_map['edition_num']}")
@@ -363,6 +390,7 @@ module Lgdis
 
         # Edxl 部要素追加
         doc.elements["//commons:publishingOfficeName"].add_text(DST_LIST['commons_xml_field']['pulishing_office'])
+        doc.elements["//commons:publishingOfficeID"].add_text("042021") # 固定値
         doc.elements["//commons:previousDocumentRevision"].add_text("#{edition_fields_map['edition_num']}")
         edition_num = edition_fields_map['edition_num']
         doc.elements["//commons:contentObject/commons:documentRevision"].add_text("#{edition_num == 1 ? edition_num : edition_num - 1}")
