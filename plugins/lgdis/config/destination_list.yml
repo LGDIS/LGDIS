@@ -2895,8 +2895,9 @@ email_deployed:
   4: true
   5: true
 
+# 公共コモンズ配信用XML 設定値
 commons_xml_field:
-  namespace_start_tag: <body_namespace xmlns:pcx_di="http://xml.publiccommons.ne.jp/pcxml1/body/DamageInformation3" xmlns:pcx_en="http://xml.publiccommons.ne.jp/pcxml1/body/event3" xmlns:pcx_sh="http://xml.publiccommons.ne.jp/pcxml1/body/shelter3" xmlns:pcx_um="http://xml.publiccommons.ne.jp/pcxml1/body/UrgentMail3" xmlns:pcx_ev="http://xml.publiccommons.ne.jp/pcxml1/body/evacuation3" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:edxlde="urn:oasis:names:tc:emergency:EDXL:DE:1.0" xmlns:commons="http://xml.publiccommons.ne.jp/xml/edxl/" xmlns:pcxml="http://xml.publiccommons.ne.jp/pcxml1/3" xmlns:pcx_eb="http://xml.publiccommons.ne.jp/pcxml1/elementBasis3/" xmlns:pcx_ib="http://xml.publiccommons.ne.jp/pcxml1/informationBasis3/" xmlns:pcx_gi="http://xml.publiccommons.ne.jp/pcxml1/body/GeneralInformation3" xmlns:pcx_ah="http://xml.publiccommons.ne.jp/pcxml1/body/AntidisasterHeadquarter3">
+  namespace_start_tag: <body_namespace xmlns:pcx_di="http://xml.publiccommons.ne.jp/pcxml1/body/DamageInformation3" xmlns:pcx_en="http://xml.publiccommons.ne.jp/pcxml1/body/event3" xmlns:pcx_sh="http://xml.publiccommons.ne.jp/pcxml1/body/shelter3" xmlns:pcx_um="http://xml.publiccommons.ne.jp/pcxml1/body/UrgentMail3" xmlns:pcx_ev="http://xml.publiccommons.ne.jp/pcxml1/body/evacuation3" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:edxlde="urn:oasis:names:tc:emergency:EDXL:DE:1.0" xmlns:commons="http://xml.publiccommons.ne.jp/xml/edxl/" xmlns:pcxml="http://xml.publiccommons.ne.jp/pcxml1/3" xmlns:pcx_eb="http://xml.publiccommons.ne.jp/pcxml1/elementBasis3/" xmlns:pcx_ib="http://xml.publiccommons.ne.jp/pcxml1/informationBasis3/" xmlns:pcx_gi="http://xml.publiccommons.ne.jp/pcxml1/body/GeneralInformation3" xmlns:pcx_ah="http://xml.publiccommons.ne.jp/pcxml1/body/AntidisasterHeadquarter3"> # 名前空間定義
   namespace_end_tag: </body_namespace>
   confidential_message: UNCLASSIFIED AND NOTSENSITIVE # メッセージの機密性
   carrier:      # 受信媒体(キャリア)
@@ -2911,12 +2912,16 @@ commons_xml_field:
   contact_type: 09012345678                # 発表部署情報(電話番号)
   area_name: 石巻市                        # 事象の起きた場所
 
+# 配信要求ステータス定義
 status:
   request: 配信要求中
   done: 配信完了
   reject: 配信却下
   failed: 配信失敗
   runtime: 配信中
+
+# チケット一覧配信ステータス表示時用カスタムフィールドID
+cf_id_for_show_status: 999
 
 # 配信内容にあたるカスタムフィールドID
 custom_field_delivery:
