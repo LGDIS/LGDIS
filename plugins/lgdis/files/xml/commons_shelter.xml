@@ -18,6 +18,7 @@
 	<edxlde:combinedConfidentiality></edxlde:combinedConfidentiality>
 	<commons:targetArea>
 		<commons:areaName></commons:areaName>
+		<commons:jisX0402></commons:jisX0402>
 	</commons:targetArea>
 
 	<commons:contentObject>
@@ -32,10 +33,14 @@
 						<Title>Shelter</Title>
 						<edxlde:distributionStatus></edxlde:distributionStatus>
 						<EditorialOffice>
+							<pcx_eb:OrganizationCode></pcx_eb:OrganizationCode>
 							<pcx_eb:OfficeName></pcx_eb:OfficeName>
+							<pcx_eb:OrganizationName></pcx_eb:OrganizationName>
 						</EditorialOffice>
 						<PublishingOffice>
+							<pcx_eb:OrganizationCode></pcx_eb:OrganizationCode>
 							<pcx_eb:OfficeName></pcx_eb:OfficeName>
+							<pcx_eb:OrganizationName></pcx_eb:OrganizationName>
 						</PublishingOffice>
 					</Control>
 
@@ -67,6 +72,7 @@
 		
 		<!-- EDXL 部 -->
 		<commons:publishingOfficeName></commons:publishingOfficeName>
+		<commons:publishingOfficeID></commons:publishingOfficeID>
 		<commons:previousDocumentRevision></commons:previousDocumentRevision>
 		<commons:documentRevision></commons:documentRevision>
 		<commons:documentID></commons:documentID>
