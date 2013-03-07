@@ -47,7 +47,7 @@
 
 					<!-- Head 部 -->
 					<pcx_ib:Head>
-						<pcx_ib:Title>お知らせ</pcx_ib:Title>
+						<pcx_ib:Title></pcx_ib:Title>
 						<pcx_ib:CreateDateTime></pcx_ib:CreateDateTime>
 						<pcx_ib:FirstCreateDateTime></pcx_ib:FirstCreateDateTime>
 						<pcx_ib:ReportDateTime></pcx_ib:ReportDateTime>
