@@ -11,7 +11,7 @@ module Lgdis
         alias_method_chain :custom_field_values, :multipul_default_values
       end
     end
-    
+
     module InstanceMethods
       # CustomFieldValueオブジェクト配列を取得
       # カスタムフィールド値が未設定の場合（例.新しいチケット）、CustomFieldValue#valueにカスタムフィールドの初期値が設定される。
@@ -29,7 +29,7 @@ module Lgdis
           cfv
         end
       end
-      
+
       # 指定されたカスタムフィールド値で、『コード:名称』の場合の名称を取得
       # ==== Args
       # _c_ :: CustomFieldオブジェクト もしくは カスタムフィールドID
@@ -43,7 +43,7 @@ module Lgdis
       def name_in_custom_field_value(c)
         value = custom_field_value(c)
         return value unless (cv = custom_value_for(c)) && cv.custom_field.field_format == 'list'
-        
+
         result = nil
         case value.class.name
         when "Array"
@@ -57,9 +57,37 @@ module Lgdis
         end
         return result
       end
-      
+
+      # 指定されたカスタムフィールド値で、『コード:名称』の場合のコードを取得
+      # ==== Args
+      # _c_ :: CustomFieldオブジェクト もしくは カスタムフィールドID
+      # ==== Return
+      # CustomFieldValue#valueの最初の:までの文字列（もしくは最初の:までの文字列の配列）
+      # 但し、以下のいずれかに該当する場合は、未加工のvalueを返却
+      # ・カスタムフィールド書式がリスト以外の場合
+      # ・valueが（配列 or 文字列）以外の場合
+      # ・valueに:が存在しない場合
+      # ==== Raise
+      def code_in_custom_field_value(c)
+        value = custom_field_value(c)
+        return value unless (cv = custom_value_for(c)) && cv.custom_field.field_format == 'list'
+
+        result = nil
+        case value.class.name
+        when "Array"
+          value.each do |v|
+            (result ||= []) << split_custom_field_value(v)[0]
+          end
+        when "String"
+          result = split_custom_field_value(value)[0]
+        else
+          result = value
+        end
+        return result
+      end
+
       private
-      
+
       # 最初の:で分割
       # ==== Args
       # _value_ :: 分割対象文字列
@@ -71,7 +99,6 @@ module Lgdis
         return value, value unless /^([^:]*):(.*)$/ =~ value
         return $1, $2
       end
-      
     end
   end
 end

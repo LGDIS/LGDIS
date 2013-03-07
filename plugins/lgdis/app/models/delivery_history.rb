@@ -3,6 +3,7 @@ class DeliveryHistory < ActiveRecord::Base
   unloadable
 
   belongs_to :issue, :dependent => :destroy
+  after_update :update_custom_value, :if => :check_custom_value
 
   attr_accessible :issue_id, :project_id, :delivery_place_id, :request_user, :respond_user, :status, :process_date,
                   :mail_subject, :summary, :type_update, :description_cancel, :published_date, :published_hm,
@@ -42,6 +43,10 @@ class DeliveryHistory < ActiveRecord::Base
 
   private
 
+  # コントロールプレーン部バリデーション処理
+  # ==== Args
+  # ==== Return
+  # ==== Raise
   def for_commons
     if (self.delivery_place_id == 2  || self.delivery_place_id == 3  ||
         self.delivery_place_id == 4  || self.delivery_place_id == 5  ||
@@ -94,6 +99,32 @@ class DeliveryHistory < ActiveRecord::Base
         self.delivery_place_id == 11 || self.delivery_place_id == 12) &&
         self.published_at.blank?
       errors.add(:published_at, "を入力して下さい")
+    end
+  end
+
+  # チケット一覧表示用カスタムバリューステータス確認処理
+  # 配信ステータスが未配信(0)となっていた際はtrue
+  # 配信完了(1)となっていた際はfalse を返す
+  # ==== Args
+  # ==== Return
+  # _boolean_ :: true 未配信, false 配信完了
+  # ==== Raise
+  def check_custom_value
+    return true if self.issue.code_in_custom_field_value(DST_LIST['cf_id_for_show_status']) == '01' || self.issue.code_in_custom_field_value(DST_LIST['cf_id_for_show_status']).blank?
+    false
+  end
+
+  # チケット一覧表示用カスタムバリューステータス更新処理
+  # ==== Args
+  # ==== Return
+  # ==== Raise
+  def update_custom_value
+    if self.status == 'done'
+      self.issue.custom_values.each do |c|
+        if c.custom_field_id == DST_LIST['cf_id_for_show_status']
+          c.update_attributes(:value => '02:○')
+        end
+      end
     end
   end
 end

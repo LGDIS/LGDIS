@@ -9,7 +9,7 @@ module Lgdis
 
       base.class_eval do
         unloadable
-        alias_method_chain :custom_field_tag, :time
+        alias_method_chain :custom_field_tag, :time_status
         alias_method_chain :custom_field_tag_for_bulk_edit, :time
         alias_method_chain :format_value, :time
       end
@@ -40,13 +40,14 @@ module Lgdis
       # カスタムフィールド項目の作成処理
       # 日付フォーマットで、時刻入力指定がある場合は、
       # 日時入力補助付きの入力部品を作成するように変更
+      # 配信確認用ステータスは、編集できないよう変更
       # ==== Args
       # _name_ :: フォーム名
       # _custom_value_ :: CustomValueオブジェクト
       # ==== Return
       # 作成した入力部品
       # ==== Raise
-      def custom_field_tag_with_time(name, custom_value)
+      def custom_field_tag_with_time_status(name, custom_value)
         custom_field = custom_value.custom_field
         field_name = "#{name}[custom_field_values][#{custom_field.id}]"
         field_name << "[]" if custom_field.multiple?
@@ -61,9 +62,11 @@ module Lgdis
             return text_field_tag(field_name, custom_value.value, tag_options.merge(:size => 16)) +
                     calendar_with_time_for(field_id)
           end
+        when "list"
+          return custom_value if custom_field.id == DST_LIST['cf_id_for_show_status']
         end
 
-        return custom_field_tag_without_time(name, custom_value)
+        return custom_field_tag_without_time_status(name, custom_value)
       end
 
       # カスタムフィールド項目の作成処理（複数チケットの一括変更での編集画面向け）
