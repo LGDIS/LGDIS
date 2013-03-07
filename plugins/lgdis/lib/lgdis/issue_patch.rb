@@ -346,10 +346,10 @@ module Lgdis
         # Control 部要素追加
         doc.elements["//Control/edxlde:distributionStatus"].add_text(operation_flg)
         doc.elements["//EditorialOffice/pcx_eb:OrganizationCode"].add_text("042021") # 固定値
-        doc.elements["//EditorialOffice/pcx_eb:OfficeName"].add_text(DST_LIST['commons_xml_field']['editorial_office'] || "石巻市総務部防災対策課")
+        doc.elements["//EditorialOffice/pcx_eb:OfficeName"].add_text(DST_LIST['commons_xml_field']['editorial_office'])
         doc.elements["//EditorialOffice/pcx_eb:OrganizationName"].add_text("石巻市") # 固定値
         doc.elements["//PublishingOffice/pcx_eb:OrganizationCode"].add_text("042021") # 固定値
-        doc.elements["//PublishingOffice/pcx_eb:OfficeName"].add_text(DST_LIST['commons_xml_field']['pulishing_office'] || "石巻市総務部防災対策課")
+        doc.elements["//PublishingOffice/pcx_eb:OfficeName"].add_text(DST_LIST['commons_xml_field']['pulishing_office'])
         unless DST_LIST['commons_xml_field']['contact_type'].blank? # 発表部署情報(電話番号)が存在する場合のみ
           ele = REXML::Element.new("pcx_eb:ContactInfo")
           ele.add_attribute("pcx_eb:contactType","phone")
