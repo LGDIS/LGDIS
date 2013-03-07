@@ -28,6 +28,14 @@ module Lgdis
       # ==== Raise
       def init
         @issue_const = Constant::hash_for_table(Issue.table_name)
+
+        @area = {}
+        area_code = DST_LIST["custom_field_list"]["area"]["id"]
+        areas = IssueCustomField.find_by_id(area_code).possible_values
+        areas.each do |area|
+          key, value = area.split(":")
+          @area.store(key, area)
+        end
       end
 
       # リクエストパラメータから、登録用のチケット地理データを構築します
@@ -43,9 +51,9 @@ module Lgdis
 
       def get_delivery_histories
         @delivery_histories = DeliveryHistory.find_by_sql(
-                                  ["select * from delivery_histories
+          ["select * from delivery_histories
                                     where issue_id = :issue_id",
-                                    {:issue_id=>@issue.id}])
+            {:issue_id=>@issue.id}])
       end
 
       def get_destination_list
