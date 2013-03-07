@@ -81,6 +81,8 @@ class SheltersController < ApplicationController
       ensure
         Shelter.set_callback(:save, :after, :execute_release_all_data)
       end
+      # エラーが存在しない場合メッセージを出力する
+      flash.now[:notice] = l(:notice_successful_update) unless @shelters.map{|sh| sh.errors.any? }.include?(true)
     else
       @search   = Shelter.search(params[:search])
       @shelters = @search.paginate(:page => params[:page], :per_page => 30).order("shelter_code ASC")

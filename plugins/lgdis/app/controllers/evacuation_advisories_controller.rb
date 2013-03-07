@@ -72,6 +72,8 @@ class EvacuationAdvisoriesController < ApplicationController
           eva.save
         end
       end
+      # エラーが存在しない場合メッセージを出力する
+      flash.now[:notice] = l(:notice_successful_update) unless @evacuation_advisories.map{|ea| ea.errors.any? }.include?(true)
     else
       @search   = EvacuationAdvisory.search(params[:search])
       @evacuation_advisories = @search.paginate(:page => params[:page], :per_page => 30).order("identifier ASC")
