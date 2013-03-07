@@ -1,3 +1,4 @@
+<%= stylesheet_link_tag 'deliver_issues', :plugin => 'lgdis' %>
 <%= form_tag(:controller => :deliver_issues, :action => :allow_delivery) do %>
 <%= hidden_field_tag 'id',        @delivery_history.id %>
 <%= hidden_field_tag :issue_id,   @issue.id %>
