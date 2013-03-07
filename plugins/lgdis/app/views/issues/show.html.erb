@@ -68,7 +68,7 @@ end %>
 <%= call_hook(:view_issues_show_details_bottom, :issue => @issue) %>
 </table>
 
-<% if @issue.description? || @issue.attachments.any? -%>
+<% if @issue.description? || @issue.attachments.any? || @issue.xml_control_status -%>
 <hr />
 <% if @issue.description? %>
 <div class="description">
