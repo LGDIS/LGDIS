@@ -2974,3 +2974,9 @@ ext_out:
     test_flag: false
     title_prefix: "[LGDIS]外部出力ジョブエラー "
     alert_msg: "外部出力ジョブエラーが発生しました。"
+
+# カスタムフィールドリストのID
+# custom_field_list_items.ymlのIDを変更した場合はここも変更する
+custom_field_list:
+  area:
+    id: 3
