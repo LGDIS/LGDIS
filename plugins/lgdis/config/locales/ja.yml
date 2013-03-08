@@ -172,17 +172,17 @@ ja:
   notice_delivery_unselected: 配信先が選択されていません。
   notice_delivery_failed: 配信に失敗しました。
 
-  ####  
+  ####
   # 避難勧告･指示機能
   #
   project_module_evacuation_advisories: 避難勧告･指示機能
   permission_view_evacuation_advisories: 避難勧告･指示情報の閲覧
   permission_manage_evacuation_advisories: 避難勧告･指示情報の管理
-  
+
   label_evacuation_advisory: 避難勧告･指示
   label_evacuation_advisory_plural: 避難勧告･指示一覧
   label_evacuation_advisory_new: 避難勧告･指示登録・更新
-  
+
   notice_evacuation_advisory_successful_create: 避難勧告･指示 %{id} が作成されました。
   text_evacuation_advisory_destroy_confirmation: '本当に削除しますか？'
   text_evacuation_advisory_update_confirmation: '更新してよろしいですか？'
@@ -204,6 +204,7 @@ ja:
   field_closed_at: 情報の公開終了日時
   field_closed_date: 情報の公開終了日時(日付)
   field_closed_hm: 情報の公開終了日時(時間)
+  field_cf_classification: カスタムフィールドの情報識別区分
 
   # 避難勧告･指示機能 項目名
   evacuation_advisories:
