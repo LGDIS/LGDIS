@@ -1,6 +1,7 @@
 <table class="list">
   <thead>
     <tr>
+      <th style="text-align: center;">地区名</th>
       <th style="text-align: center;">発令・解除地区名称</th>
       <th style="text-align: center;">発令区分</th>
       <th style="text-align: center;">発令・解除区分</th>
@@ -13,6 +14,9 @@
   <tbody>
     <% evacuation_advisories.each do |evacuation_advisory| %>
       <tr class="<%= cycle("even", "odd") -%>">
+        <td style="text-align: center;">
+          <%= @areas.select{|v| v.area_code == evacuation_advisory.district}.first.try(:name) %>
+        </td>
         <td style="text-align: center;">
           <a href=<%= edit_project_evacuation_advisory_path(@project, evacuation_advisory) %> >
             <%= evacuation_advisory.area %>
