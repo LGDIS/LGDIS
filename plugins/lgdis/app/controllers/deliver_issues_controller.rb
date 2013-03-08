@@ -39,6 +39,8 @@ class DeliverIssuesController < ApplicationController
         issue_map.store('xml_body', @issue.create_commons_event_body)
       end
 
+      # 情報の配信対象地域のコード値をstring に変換
+      issue_map = convert_issue_map(issue_map)
       @issue.update_attributes(issue_map)
       deliver_historires =  DeliveryHistory.create_for_history(@issue, ext_out_ary)
       error_messages = error_messages_for_issues(deliver_historires)
@@ -121,5 +123,17 @@ class DeliverIssuesController < ApplicationController
       end
     end
     return messages
+  end
+
+  # チケット更新情報修正処理
+  # ==== Args
+  # ==== Return
+  # ==== Raise
+  def convert_issue_map(issue_map)
+    if issue_map['delivered_area'].present?
+      code_str = issue_map['delivered_area'].join(',')
+      issue_map['delivered_area'] = code_str
+    end
+    issue_map
   end
 end
