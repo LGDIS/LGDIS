@@ -532,11 +532,12 @@ module Lgdis
       # _edition_field_map_ :: uuid, status, edition_num のハッシュ
       # ==== Raise
       def set_edition_mng_field(edition_mng)
-        uuid        = edition_mng.blank? || edition_mng.status == 1 ? \
+        uuid        = edition_mng.blank? || self.type_update == '1' ? \
                       UUIDTools::UUID.random_create.to_s : edition_mng.uuid
-        status      = edition_mng.blank? || edition_mng.status == 1 ? \
-                      1 : edition_mng.status
-        edition_num = edition_mng.blank? || edition_mng.status == 1 ? \
+
+        status      = self.type_update.to_i
+
+        edition_num = edition_mng.blank? || self.type_update == '1' ? \
                       1 : edition_mng.edition_num + 1
 
         edition_field_map = Hash.new
