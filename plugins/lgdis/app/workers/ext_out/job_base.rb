@@ -47,7 +47,7 @@ module ExtOut
         yield(delivery_history, delivery_place, client)
 
         # 文書改版管理処理
-        register_edition(delivery_history) if DST_LIST['commons_delivery_ids'].include?(delivery_history.delivery_place_id)
+        register_edition(content, delivery_history) if DST_LIST['commons_delivery_ids'].include?(delivery_history.delivery_place_id)
 
         success = true
         return
@@ -124,12 +124,12 @@ module ExtOut
       return outputs.join("\n")
     end
 
-    # 文書改版管理処理｡取り消しされた場合はDocumentID(=UUID)を発番し、版番号を1にリセットする｡
+    # 文書改版管理処理｡取り消しされた場合は、版番号を1にリセットする｡
     # ==== Args
     # _delivery_history_ ::: DeliveryHistoryオブジェクト
     # ==== Return
     # ==== Raise
-    def self.register_edition(delivery_history)
+    def self.register_edition(content, delivery_history)
       issue = delivery_history.issue
       project_id = issue.project_id
       tracker_id = issue.tracker_id
@@ -141,13 +141,13 @@ module ExtOut
         EditionManagement.create(project_id:  project_id,
                                  tracker_id:  tracker_id,
                                  issue_id:    issue.id,
-                                 uuid:        'uuid')   # TODO: 固定値"uuid"で良いのか？
+                                 uuid:        content.elements["//pcx_ib:Head/commons:documentID"].text)
       else
-        # [情報の更新種別]が取消の場合、ステータスは0、それ以外は1
-        edition_status = type_update == "3" ? 0 : 1
+        # [情報の更新種別]が取消の場合、ステータスは1(新規)に戻る、それ以外は2(更新)
+        edition_status = type_update == "3" ? 1 : 2
         # 直近の配信で、配信取消されていた場合は、版番号を振りなおす
         # それ以外は版番号をインクリメント
-        edition_num = edition_mng.status == 0 ? 1 : edition_mng.edition_num+=1
+        edition_num = edition_mng.status == 1 ? 1 : edition_mng.edition_num+=1
         edition_mng.update_attributes(status:       edition_status,
                                       edition_num:  edition_num)
       end
