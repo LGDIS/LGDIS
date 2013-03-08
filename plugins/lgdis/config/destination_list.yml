@@ -2968,9 +2968,9 @@ commons_xml_field:
     2: Exercise # 災害訓練モード
   editorial_office: 石巻市総務部防災対策課  # 作成部署情報(部署名)
   publishing_office: 石巻市総務部防災対策課 # 発表部署情報(部署名)
-  contact_type: 09012345678                 # 発表部署情報(電話番号)
+  contact_type: '09012345678'               # 発表部署情報(電話番号)
   area_name: 石巻市                         # 事象の起きた場所
-  organization_code: 042021                 # 作成部署情報(組織コード)
+  organization_code: '042021'               # 作成部署情報(組織コード)
   organization_name: 石巻市                 # 作成部署情報(組織名)
 
 # 配信要求ステータス定義

@@ -330,12 +330,8 @@ module Lgdis
 
         # 情報の配信対象地域を設定
         area_ary = []
-        if self.delivered_area.instance_of?(Array)
-          self.delivered_area.each do |code|
-            area_ary.push get_area_name(code)
-          end
-        else
-          area_ary.push get_area_name(self.delivered_area)
+        self.delivered_area.split(',').each do |code|
+          area_ary.push get_area_name(code)
         end
 
         # edxl 部要素追加
@@ -350,7 +346,7 @@ module Lgdis
           area_code, area_name = area.split(":")
           doc.elements["//edxlde:combinedConfidentiality"].next_sibling = REXML::Element.new("commons:targetArea")
           doc.elements["//commons:targetArea"].add_element("commons:areaName").add_text(area_name)
-          doc.elements["//commons:targetArea"].add_element("commons:jisX0402").add_text(area_code.to_s)
+          doc.elements["//commons:targetArea"].add_element("commons:jisX0402").add_text(area_code)
         end
 
         doc.elements["//edxlde:contentDescription"].add_text(self.summary)
@@ -362,10 +358,10 @@ module Lgdis
 
         # Control 部要素追加
         doc.elements["//Control/edxlde:distributionStatus"].add_text(operation_flg)
-        doc.elements["//EditorialOffice/pcx_eb:OrganizationCode"].add_text(DST_LIST['commons_xml_field']['organization_code'].to_s) # 固定値
+        doc.elements["//EditorialOffice/pcx_eb:OrganizationCode"].add_text(DST_LIST['commons_xml_field']['organization_code']) # 固定値
         doc.elements["//EditorialOffice/pcx_eb:OfficeName"].add_text(DST_LIST['commons_xml_field']['editorial_office'])
         doc.elements["//EditorialOffice/pcx_eb:OrganizationName"].add_text(DST_LIST['commons_xml_field']['organization_name']) # 固定値
-        doc.elements["//PublishingOffice/pcx_eb:OrganizationCode"].add_text(DST_LIST['commons_xml_field']['organization_code'].to_s) # 固定値
+        doc.elements["//PublishingOffice/pcx_eb:OrganizationCode"].add_text(DST_LIST['commons_xml_field']['organization_code']) # 固定値
         doc.elements["//PublishingOffice/pcx_eb:OfficeName"].add_text(DST_LIST['commons_xml_field']['publishing_office'])
         unless DST_LIST['commons_xml_field']['contact_type'].blank? # 発表部署情報(電話番号)が存在する場合のみ
           ele = REXML::Element.new("pcx_eb:ContactInfo")
@@ -410,7 +406,7 @@ module Lgdis
 
         # Edxl 部要素追加
         doc.elements["//commons:publishingOfficeName"].add_text(DST_LIST['commons_xml_field']['publishing_office'])
-        doc.elements["//commons:publishingOfficeID"].add_text(DST_LIST['commons_xml_field']['organization_code'].to_s) # 固定値
+        doc.elements["//commons:publishingOfficeID"].add_text(DST_LIST['commons_xml_field']['organization_code']) # 固定値
         edition_num = edition_fields_map['edition_num']
         doc.elements["//commons:previousDocumentRevision"].add_text("#{edition_num - 1}")
         doc.elements["//commons:contentObject/commons:documentRevision"].add_text("#{edition_fields_map['edition_num']}")
