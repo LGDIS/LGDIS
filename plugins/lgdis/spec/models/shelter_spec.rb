@@ -791,24 +791,10 @@ describe Shelter do
 
   describe "#release_all_data" do
     before do
-      Shelter.should_receive(:write_cache)
       Shelter.should_receive(:create_json_file)
     end
-    it "call write_cache, create_json_file" do
+    it "call create_json_file" do
       Shelter.release_all_data
-    end
-  end
-
-
-  describe "#write_cache" do
-    before do
-      @shelter.save!
-      h = {}
-      h[@shelter.shelter_code] = {"name" => @shelter.name, "area" => @shelter.area}
-      Rails.cache.should_receive(:write).with("shelter", h)
-    end
-    it "call write cache" do
-      Shelter.write_cache
     end
   end
 

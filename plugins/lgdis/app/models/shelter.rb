@@ -386,31 +386,16 @@ class Shelter < ActiveRecord::Base
   end
   
   # 全データ公開処理を行います。
-  # cacheデータと、JSONファイルを上書きします。
+  # JSONファイルを上書きします。
   # ==== Args
   # ==== Return
   # ==== Raise
   def self.release_all_data
-    write_cache
     create_json_file
-  end
-  
-  # cacheデータを上書きします。
-  # ==== Args
-  # _shelters_ :: Shelterオブジェクト配列
-  # ==== Return
-  # ==== Raise
-  def self.write_cache
-    h = {}
-    Shelter.all.each do |s|
-      h[s.shelter_code] = {"name" => s.name, "area" => s.area}
-    end
-    Rails.cache.write("shelter", h)
   end
   
   # JSONファイルを上書きします。
   # ==== Args
-  # _shelters_ :: Shelterオブジェクト配列
   # ==== Return
   # ==== Raise
   def self.create_json_file
