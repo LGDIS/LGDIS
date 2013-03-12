@@ -28,9 +28,6 @@
         <% if authorize_for(:evacuation_advisories, :new) # 権限判定 %>
           <%= submit_tag l(:button_new), :kind => "new" %>
         <% end %>
-        <% if authorize_for(:evacuation_advisories, :bulk_update) # 権限判定 %>
-          <%= submit_tag l(:button_bulk_update), :kind => "bulk_update", :confirm => l(:text_evacuation_advisory_update_confirmation) %>
-        <% end %>
         <% if authorize_for(:evacuation_advisories, :ticket) # 権限判定 %>
          <%= submit_tag l(:button_ticket), :kind => "ticket" %>
         <% end %>
