@@ -96,9 +96,3 @@ Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'xml_control_apply', text: 
 Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'type_update', text: '新規', value: '1', _order: '1')
 Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'type_update', text: '更新', value: '2', _order: '2')
 Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'type_update', text: '取消', value: '3', _order: '3')
-# TODO
-# seed とするかcache とするか確認
-# 情報の配信対象地域(仮想データ)
-Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'delivered_area', text: '石巻市', value: '1', _order: '1')
-Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'delivered_area', text: '仙台市', value: '2', _order: '2')
-
