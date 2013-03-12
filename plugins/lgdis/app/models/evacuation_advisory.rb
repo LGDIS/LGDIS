@@ -282,7 +282,7 @@ class EvacuationAdvisory < ActiveRecord::Base
     issue = Issue.new
     issue.tracker_id = 1
     issue.project_id = project.id
-    issue.subject    = "避難勧告･指示 #{Time.now.xmlschema}"
+    issue.subject    = "避難勧告･指示 #{Time.now.strftime("%Y/%m/%d %H:%M:%S")}"
     issue.author_id  = User.current.id
     fmtdoc = "\n" + doc.to_s.gsub(/></,">\n<").gsub("<pcx_ev:De","\n\n<pcx_ev:De")
       fmtdoc = fmtdoc.gsub("<commons:areaName>","\n<commons:areaName>")
