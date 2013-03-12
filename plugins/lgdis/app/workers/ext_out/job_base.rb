@@ -164,22 +164,18 @@ module ExtOut
       issue = delivery_history.issue
       delivery_name = (DST_LIST["delivery_place"][delivery_history.delivery_place_id]||{})["name"].to_s
       delivery_history_id = delivery_history.id.to_s
+      delivery_process_date = delivery_history.process_date.strftime("%Y/%m/%d %H:%M:%S")
       notes = ""
       case content
       when String, Hash
         notessuffix = "\n#{content.to_s}"
       when NIL
-      else
-        if content.elements["//edxlde:dateTimeSent"].present?
-          notes = content.elements["//edxlde:dateTimeSent"].text
-          notes = notes.to_s.to_datetime.strftime("%Y/年%m月%d日 %H時%M分%S秒の")
-        end
       end
-      notes += "配信要求#{delivery_history_id} #{delivery_name}むけの結果は"
-      notes += success ? "正常でした" : "エラーでした"
+      notes += "#{delivery_process_date}に処理を行った、 #{delivery_name}配信は、"
+      notes += success ? "正常に配信しました。\n" : "異常終了しました。\n"
       notes += notessuffix.to_s
       issue.init_journal(User.current, notes)
+      issue.save
     end
-
   end
 end
