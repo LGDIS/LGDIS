@@ -3014,7 +3014,7 @@ test_prj:
 #ie commons_endpoint: http://192.168.43.186/commons/subscriber/soap/testservice.example.com/
 #sha 
 commons_connection:
-  endpoint: http://192.168.11.7/commons/subscriber/soap/testservice.example.com/
+  endpoint: https://lgdis.local/commons/subscriber/soap/testservice.example.com/
   #sha centos_ssh: commons_endpoint: https://localhost:443/commons/subscriber/soap/testservice.example.com/
   username: user1@example.com
   password: password
