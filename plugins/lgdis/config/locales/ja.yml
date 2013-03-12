@@ -65,13 +65,14 @@ ja:
   permission_view_shelters: 避難所開設情報の閲覧
   permission_manage_shelters: 避難所開設情報の管理
   
-  label_shelter: 避難所開設
+  label_shelter: 避難所一覧
   label_shelter_plural: 避難所一覧
   label_shelter_new: 避難所登録・更新
   
   button_bulk_update: 更新
   button_ticket: 登録
   button_summary: 集計
+  button_new_shelter: 新規避難所
   
   notice_shelter_successful_create: 避難所 %{id} が登録されました。
   text_shelter_destroy_confirmation: '本当に削除しますか？'
