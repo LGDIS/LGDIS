@@ -10,6 +10,7 @@ ja:
   description_project_identifier_on_create: システムで自動設定されます
   text_select_tracker: 登録するチケットのトラッカーを選んでください
   text_custom_field_default_value_multiple_info: '初期値が複数の場合は、1行に1個ずつ記述してください。'
+  button_curd_confirm: この内容で保存してよろしいですか？
 
   activerecord:
     errors:
