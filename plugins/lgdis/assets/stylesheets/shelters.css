@@ -20,3 +20,11 @@ div.search_condition label{
 .nonsplitcontent {
   clear: both;
 }
+
+fieldset.normal_font {
+  font-size: 1em;
+}
+
+fieldset.no_padding {
+  padding: 0;
+}
