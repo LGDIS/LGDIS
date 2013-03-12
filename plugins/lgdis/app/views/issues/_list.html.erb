@@ -36,11 +36,11 @@
     <%= raw query.inline_columns.map {|column|
           case column.name
           when :tracker
-            style = 'style=\'width:220px;white-space: normal;\''
+            style = 'style=\'width:220px;white-space: normal;text-align: left;\''
           when :status
             style = 'style=\'width:165px;white-space: normal;\''
           when :subject
-            style = 'style=\'width:220px;white-space: normal;\''
+            style = 'style=\'width:220px;white-space: normal;text-align: left;\''
           end
 
           "<td #{style} >#{column_content(column, issue)}</td>"
