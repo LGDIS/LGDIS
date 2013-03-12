@@ -1,12 +1,34 @@
 <% if Setting.plugin_lgdis.present? && Setting.plugin_lgdis[:enable_external_auth] %>
 <%= stylesheet_link_tag 'external_auth', :plugin => 'lgdis' %>
-<div id="login-form">
+<div id="login-form2">
   <table>
     <tr>
-      <td><%= link_to image_tag('/plugin_assets/lgdis/images/google-16x16.png', :alt => l('external_auth.sign_in_via', :kind => 'Google')), '/auth/google' %></td>
-      <td><%= link_to image_tag('/plugin_assets/lgdis/images/twitter-16x16.png', :alt => l('external_auth.sign_in_via', :kind => 'Twitter')), '/auth/twitter' %></td>
-      <td><%= link_to image_tag('/plugin_assets/lgdis/images/facebook-16x16.png', :alt => l('external_auth.sign_in_via', :kind => 'Facebook')), '/auth/facebook' %></td>
+      <th colspan="3">普段お使いのアカウントでログインをされる場合はこちら</th>
+    </tr>
+    <tr>
+      <td></td>
+    </tr>
+    <tr>
+      <td><%= link_to image_tag('/plugin_assets/lgdis/images/google-16x16.png', :alt => l('external_auth.sign_in_via', :kind => 'Google'), :size => '48x48'), '/auth/google' %></td>
+      <td><%= link_to image_tag('/plugin_assets/lgdis/images/twitter-16x16.png', :alt => l('external_auth.sign_in_via', :kind => 'Twitter'), :size => '48x48'), '/auth/twitter' %></td>
+      <td><%= link_to image_tag('/plugin_assets/lgdis/images/facebook-16x16.png', :alt => l('external_auth.sign_in_via', :kind => 'Facebook'), :size => '48x48'), '/auth/facebook' %></td>
       <!-- <td><%= link_to image_tag('/plugin_assets/lgdis/images/openam-16x16.png', :alt => l('external_auth.sign_in_via', :kind => 'OpenAM')), '/auth/openam' %></td> -->
+    </tr>
+  </table>
+</div>
+<% end %>
+
+<% if !User.current.logged? && Setting.self_registration? %>
+<div id="login-form2">
+  <table>
+    <tr>
+      <th>アカウントを新規に登録される場合はこちら</th>
+    </tr>
+    <tr>
+      <td></td>
+    </tr>
+    <tr>
+      <td><%= button_to "新規登録", register_path, :method=>:get %></td>
     </tr>
   </table>
 </div>

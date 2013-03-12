@@ -1,7 +1,10 @@
-#login-form table {
-  width: 450px;
-  margin-top: 30px;
-}
-#login-form table td {
-  text-align: center;
-}
+#login-form table {margin-top:5em; padding:1em; margin-left: auto; margin-right: auto; border: 2px solid #FDBF3B; background-color:#FFEBC1; width: 450px;}
+#login-form table td {padding: 6px;}
+#login-form label {font-weight: bold;}
+#login-form input#username, #login-form input#password { width: 300px; }
+
+#login-form2 table {margin-top:2em; padding:1em; margin-left: auto; margin-right: auto; border: 2px solid #FDBF3B; background-color:#FFCCC1; width: 450px;}
+#login-form2 table th {text-align: left;}
+#login-form2 table td {padding: 6px; text-align: center;}
+#login-form2 label {font-weight: bold;}
+#login-form2 input#username, #login-form input#password { width: 300px; }
