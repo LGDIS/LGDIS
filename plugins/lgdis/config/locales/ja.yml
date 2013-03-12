@@ -164,6 +164,9 @@ ja:
   machicomi: まちcomi
   twitter: Twitter
   facebook: Facebook
+  google: Google
+  openam: OpenAM
+  ldap: LDAP
 
   notice_delivery_request_successful: 配信要求を行いました。
   notice_delivery_request_reject: 配信要求を却下しました。

@@ -1,13 +1,12 @@
 <% if Setting.plugin_lgdis.present? && Setting.plugin_lgdis[:enable_external_auth] %>
+<%= stylesheet_link_tag 'external_auth', :plugin => 'lgdis' %>
 <div id="login-form">
   <table>
     <tr>
-      <td><%= link_to l('external_auth.sign_in_via', :kind => 'Google'), '/auth/google' %></td>
-      <td><%= link_to l('external_auth.sign_in_via', :kind => 'Twitter'), '/auth/twitter' %></td>
-    </tr>
-    <tr>
-      <td><%= link_to l('external_auth.sign_in_via', :kind => 'facebook'), '/auth/facebook' %></td>
-      <td><%= link_to l('external_auth.sign_in_via', :kind => 'OpenAM'), '/auth/openam' %></td>
+      <td><%= link_to image_tag('/plugin_assets/lgdis/images/google-16x16.png', :alt => l('external_auth.sign_in_via', :kind => 'Google')), '/auth/google' %></td>
+      <td><%= link_to image_tag('/plugin_assets/lgdis/images/twitter-16x16.png', :alt => l('external_auth.sign_in_via', :kind => 'Twitter')), '/auth/twitter' %></td>
+      <td><%= link_to image_tag('/plugin_assets/lgdis/images/facebook-16x16.png', :alt => l('external_auth.sign_in_via', :kind => 'Facebook')), '/auth/facebook' %></td>
+      <!-- <td><%= link_to image_tag('/plugin_assets/lgdis/images/openam-16x16.png', :alt => l('external_auth.sign_in_via', :kind => 'OpenAM')), '/auth/openam' %></td> -->
     </tr>
   </table>
 </div>
