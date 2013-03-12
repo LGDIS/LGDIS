@@ -118,120 +118,130 @@
   </div>
 </div>
 
-<hr>
-
-<div class="splitcontent">
+<fieldset class="collapsible normal_font no_padding">
+  <legend id="shelters_detail" onclick="toggleFieldset(this);">
+    <%= l(:label_detail) %>
+  </legend>
+  <div class="splitcontent">
+    <div class="split3contentleft">
+      <%= field_for :manager_code do |key, label| %>
+        <%= label_tag{label} %>
+        <%= f.text_field key,:size=>'10',:disabled => @disabled %>
+      <% end %>
+    </div>
+    <div class="split3contentcenter">
+      <%= field_for :manager_name do |key, label| %>
+        <%= label_tag{label} %>
+        <%= f.text_field key,:size=>'30',:disabled => @disabled %>
+      <% end %>
+    </div>
+    <div class="split3contentright">
+      <%= field_for :manager_another_name do |key, label| %>
+        <%= label_tag{label} %>
+        <%= f.text_field key,:size=>'30',:disabled => @disabled %>
+      <% end %>
+    </div>
+  </div>
+    
+  <div class="nonsplitcontent">
+    <%= field_for :reported_at do |key, label| %>
+      <%= label_tag{label} %>
+        <%= f.text_field :reported_date,:size=>'10',:disabled => @disabled %><%= calendar_for("#{f.object_name}_reported_date") unless @disabled %>
+        <%= f.text_field :reported_hm,:size=>'5',:disabled => @disabled %>
+    <% end %>
+    
+    <%= field_for :building_damage_info do |key, label| %>
+      <%= label_tag{label} %>
+      <%= f.text_area key,:size=>'70x4',:disabled => @disabled %>
+    <% end %>
+    
+    <%= field_for :electric_infra_damage_info do |key, label| %>
+      <%= label_tag{label} %>
+      <%= f.text_area key,:size=>'70x4',:disabled => @disabled %>
+    <% end %>
+    
+    <%= field_for :communication_infra_damage_info do |key, label| %>
+      <%= label_tag{label} %>
+      <%= f.text_area key,:size=>'70x4',:disabled => @disabled %>
+    <% end %>
+    
+    <%= field_for :other_damage_info do |key, label| %>
+      <%= label_tag{label} %>
+      <%= f.text_area key,:size=>'70x4',:disabled => @disabled %>
+    <% end %>
+  </div>
+  
   <div class="split3contentleft">
-    <%= field_for :manager_code do |key, label| %>
+    <%= field_for :usable_flag do |key, label| %>
+      <%= label_tag{label} %>
+      <%= f.select key, options_for_select(@shelter_const[key.to_s].invert, f.object.send(key)),{:include_blank => true},:disabled => @disabled %>
+    <% end %>
+    
+    <%= field_for :injury_count do |key, label| %>
+      <%= label_tag{label} %>
+      <%= f.text_field key,:size=>'10',:disabled => @disabled %>
+    <% end %>
+    
+    <%= field_for :elderly_couple_count do |key, label| %>
+      <%= label_tag{label} %>
+      <%= f.text_field key,:size=>'10',:disabled => @disabled %>
+    <% end %>
+    
+    <%= field_for :rehabilitation_certificate_count do |key, label| %>
       <%= label_tag{label} %>
       <%= f.text_field key,:size=>'10',:disabled => @disabled %>
     <% end %>
   </div>
+  
   <div class="split3contentcenter">
-    <%= field_for :manager_name do |key, label| %>
+    <%= field_for :openable_flag do |key, label| %>
       <%= label_tag{label} %>
-      <%= f.text_field key,:size=>'30',:disabled => @disabled %>
+      <%= f.select key, options_for_select(@shelter_const[key.to_s].invert, f.object.send(key)),{:include_blank => true},:disabled => @disabled %>
+    <% end %>
+    
+    <%= field_for :upper_care_level_three_count do |key, label| %>
+      <%= label_tag{label} %>
+      <%= f.text_field key,:size=>'10',:disabled => @disabled %>
+    <% end %>
+    
+    <%= field_for :bedridden_elderly_count do |key, label| %>
+      <%= label_tag{label} %>
+      <%= f.text_field key,:size=>'10',:disabled => @disabled %>
+    <% end %>
+    
+    <%= field_for :physical_disability_certificate_count do |key, label| %>
+      <%= label_tag{label} %>
+      <%= f.text_field key,:size=>'10',:disabled => @disabled %>
     <% end %>
   </div>
+  
   <div class="split3contentright">
-    <%= field_for :manager_another_name do |key, label| %>
+    <p />
+    
+    <%= field_for :elderly_alone_count do |key, label| %>
       <%= label_tag{label} %>
-      <%= f.text_field key,:size=>'30',:disabled => @disabled %>
+      <%= f.text_field key,:size=>'10',:disabled => @disabled %>
+    <% end %>
+    
+    <%= field_for :elderly_dementia_count do |key, label| %>
+      <%= label_tag{label} %>
+      <%= f.text_field key,:size=>'10',:disabled => @disabled %>
     <% end %>
   </div>
-</div>
   
-<div class="nonsplitcontent">
-  <%= field_for :reported_at do |key, label| %>
-    <%= label_tag{label} %>
-      <%= f.text_field :reported_date,:size=>'10',:disabled => @disabled %><%= calendar_for("#{f.object_name}_reported_date") unless @disabled %>
-      <%= f.text_field :reported_hm,:size=>'5',:disabled => @disabled %>
-  <% end %>
-  
-  <%= field_for :building_damage_info do |key, label| %>
-    <%= label_tag{label} %>
-    <%= f.text_area key,:size=>'70x4',:disabled => @disabled %>
-  <% end %>
-  
-  <%= field_for :electric_infra_damage_info do |key, label| %>
-    <%= label_tag{label} %>
-    <%= f.text_area key,:size=>'70x4',:disabled => @disabled %>
-  <% end %>
-  
-  <%= field_for :communication_infra_damage_info do |key, label| %>
-    <%= label_tag{label} %>
-    <%= f.text_area key,:size=>'70x4',:disabled => @disabled %>
-  <% end %>
-  
-  <%= field_for :other_damage_info do |key, label| %>
-    <%= label_tag{label} %>
-    <%= f.text_area key,:size=>'70x4',:disabled => @disabled %>
-  <% end %>
-</div>
-
-<div class="split3contentleft">
-  <%= field_for :usable_flag do |key, label| %>
-    <%= label_tag{label} %>
-    <%= f.select key, options_for_select(@shelter_const[key.to_s].invert, f.object.send(key)),{:include_blank => true},:disabled => @disabled %>
-  <% end %>
-  
-  <%= field_for :injury_count do |key, label| %>
-    <%= label_tag{label} %>
-    <%= f.text_field key,:size=>'10',:disabled => @disabled %>
-  <% end %>
-  
-  <%= field_for :elderly_couple_count do |key, label| %>
-    <%= label_tag{label} %>
-    <%= f.text_field key,:size=>'10',:disabled => @disabled %>
-  <% end %>
-  
-  <%= field_for :rehabilitation_certificate_count do |key, label| %>
-    <%= label_tag{label} %>
-    <%= f.text_field key,:size=>'10',:disabled => @disabled %>
-  <% end %>
-</div>
-
-<div class="split3contentcenter">
-  <%= field_for :openable_flag do |key, label| %>
-    <%= label_tag{label} %>
-    <%= f.select key, options_for_select(@shelter_const[key.to_s].invert, f.object.send(key)),{:include_blank => true},:disabled => @disabled %>
-  <% end %>
-  
-  <%= field_for :upper_care_level_three_count do |key, label| %>
-    <%= label_tag{label} %>
-    <%= f.text_field key,:size=>'10',:disabled => @disabled %>
-  <% end %>
-  
-  <%= field_for :bedridden_elderly_count do |key, label| %>
-    <%= label_tag{label} %>
-    <%= f.text_field key,:size=>'10',:disabled => @disabled %>
-  <% end %>
-  
-  <%= field_for :physical_disability_certificate_count do |key, label| %>
-    <%= label_tag{label} %>
-    <%= f.text_field key,:size=>'10',:disabled => @disabled %>
-  <% end %>
-</div>
-
-<div class="split3contentright">
-  <p />
-  
-  <%= field_for :elderly_alone_count do |key, label| %>
-    <%= label_tag{label} %>
-    <%= f.text_field key,:size=>'10',:disabled => @disabled %>
-  <% end %>
-  
-  <%= field_for :elderly_dementia_count do |key, label| %>
-    <%= label_tag{label} %>
-    <%= f.text_field key,:size=>'10',:disabled => @disabled %>
-  <% end %>
-</div>
-
-<div class="nonsplitcontent">
-  <%= field_for :note do |key, label| %>
-    <%= label_tag{label} %>
-    <%= f.text_area key,:size=>'70x4',:disabled => @disabled %>
-  <% end %>
-</div>
+  <div class="nonsplitcontent">
+    <%= field_for :note do |key, label| %>
+      <%= label_tag{label} %>
+      <%= f.text_area key,:size=>'70x4',:disabled => @disabled %>
+    <% end %>
+  </div>
+</fieldset>
 
 <% include_calendar_headers_tags %>
+
+<%= javascript_tag do %>
+  $(document).ready(function() {
+    // 詳細を初期表示時に非表示にする
+    $("#shelters_detail").click();
+  });
+<% end %>

@@ -4,18 +4,20 @@ ja:
   #
   target_municipality: 石巻市
   label_search_condition_plural: 検索条件
+  label_detail: 詳細
   button_new: 新規登録
   map: 地図
   description_project_identifier_on_create: システムで自動設定されます
   text_select_tracker: 登録するチケットのトラッカーを選んでください
   text_custom_field_default_value_multiple_info: '初期値が複数の場合は、1行に1個ずつ記述してください。'
-  
+  button_curd_confirm: この内容で保存してよろしいですか？
+
   activerecord:
     errors:
       messages:
         not_an_integer: は整数で入力してください
         not_a_datetime: "は日時を入力してください。"
-  
+
   field_include_time: 時刻を含む
   datetimepicker:
     time: 時刻
@@ -23,7 +25,12 @@ ja:
     minute: 分
     current: 現在日時
     close: 閉じる
-  
+
+  ####
+  # チケット
+  #
+  button_to_deliver: 配信画面へ
+
   ####
   # 課題管理機能
   #
@@ -59,15 +66,16 @@ ja:
   permission_view_shelters: 避難所開設情報の閲覧
   permission_manage_shelters: 避難所開設情報の管理
   
-  label_shelter: 避難所開設
+  label_shelter: 避難所一覧
   label_shelter_plural: 避難所一覧
   label_shelter_new: 避難所登録・更新
   
   button_bulk_update: 更新
-  button_ticket: チケット登録
+  button_ticket: 登録
   button_summary: 集計
+  button_new_shelter: 新規避難所
   
-  notice_shelter_successful_create: 避難所 %{id} が作成されました。
+  notice_shelter_successful_create: 避難所 %{id} が登録されました。
   text_shelter_destroy_confirmation: '本当に削除しますか？'
   text_shelter_update_confirmation: '更新してよろしいですか？'
   error_not_exists_shelters: 避難所情報が存在しません。
@@ -156,7 +164,7 @@ ja:
   allow: 許可
   reject: 却下
 
-  ext_out_field: 外部出力
+  ext_out_field: 外部配信
   delivery_place: 配信先
   delivery_status: 配信状況
   control_plane_settings: 配信内容の入力
@@ -185,8 +193,10 @@ ja:
   label_evacuation_advisory: 避難勧告･指示
   label_evacuation_advisory_plural: 避難勧告･指示一覧
   label_evacuation_advisory_new: 避難勧告･指示登録・更新
+  
+  button_new_area: 新規地区
 
-  notice_evacuation_advisory_successful_create: 避難勧告･指示 %{id} が作成されました。
+  notice_evacuation_advisory_successful_create: 避難勧告･指示が発令／解除されました。
   text_evacuation_advisory_destroy_confirmation: '本当に削除しますか？'
   text_evacuation_advisory_update_confirmation: '更新してよろしいですか？'
   error_not_exists_evacuation_advisories: 避難勧告･指示情報が存在しません。

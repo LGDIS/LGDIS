@@ -69,7 +69,13 @@ end %>
 </table>
 
 <% if @issue.description? || @issue.attachments.any? || @issue.xml_control_status -%>
-<hr />
+  <% if @issue.xml_control_publishingoffice.blank? %>
+    <hr />
+  <% else %>
+    <fieldset class="collapsible">
+      <legend><%= @issue.xml_control_publishingoffice + '情報' %></legend>
+    </fieldset>
+  <% end %>
 <% if @issue.description? %>
 <div class="description">
   <div class="contextual">

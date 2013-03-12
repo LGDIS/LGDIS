@@ -107,9 +107,6 @@ module Lgdis
             test_flag = DST_LIST['test_prj'][self.project_id]
             delivery_history.update_attributes({:status => status_to, :respond_user => User.current.login, :process_date => Time.now})
             Resque.enqueue(delivery_job_class, delivery_history.id, summary, test_flag)
-            # アーカイブの為、チケットに登録
-            msg = summary['message'].blank? ? summary : summary['message']
-            journal = self.init_journal(User.current, msg)
             unless self.save
              # TODO
              # log 出力内容

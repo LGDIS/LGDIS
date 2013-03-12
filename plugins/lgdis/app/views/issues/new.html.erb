@@ -19,9 +19,9 @@
     <% end %>
   </div>
 
-  <%= submit_tag l(:button_create) %>
-  <%= submit_tag l(:button_create_and_continue), :name => 'continue' %>
-  <%= preview_link preview_new_issue_path(:project_id => @project), 'issue-form' %>
+  <%= submit_tag l(:button_to_deliver), :confirm => l(:button_curd_confirm) %>
+  <%= submit_tag l(:button_create), {:name => 'continue', :confirm => l(:button_curd_confirm)} %>
+  <%#= preview_link preview_new_issue_path(:project_id => @project), 'issue-form' %>
 
   <%= javascript_tag "$('#issue_subject').focus();" %>
 <% end %>
