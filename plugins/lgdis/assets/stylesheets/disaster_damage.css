@@ -7,6 +7,10 @@
   font-weight: normal;
 }
 
+.fdma_form_4 textarea {
+  width: 97%;
+}
+
 .fdma_form_4 table {
   width: 870px;
   margin-left:auto;

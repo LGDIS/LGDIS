@@ -377,7 +377,7 @@ class Shelter < ActiveRecord::Base
     issue = Issue.new
     issue.tracker_id = 2
     issue.project_id = project.id
-    issue.subject    = "避難所情報 #{Time.now.xmlschema}"
+    issue.subject    = "避難所情報 #{Time.now.strftime("%Y/%m/%d %H:%M:%S")}"
     issue.author_id  = User.current.id
     issue.xml_body   = doc.to_s
     issue.save!
