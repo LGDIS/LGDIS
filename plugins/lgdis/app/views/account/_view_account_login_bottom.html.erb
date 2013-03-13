@@ -9,10 +9,11 @@
       <td></td>
     </tr>
     <tr>
-      <td><%= link_to image_tag('/plugin_assets/lgdis/images/google-16x16.png', :alt => l('external_auth.sign_in_via', :kind => 'Google'), :size => '48x48'), '/auth/google' %></td>
-      <td><%= link_to image_tag('/plugin_assets/lgdis/images/twitter-16x16.png', :alt => l('external_auth.sign_in_via', :kind => 'Twitter'), :size => '48x48'), '/auth/twitter' %></td>
-      <td><%= link_to image_tag('/plugin_assets/lgdis/images/facebook-16x16.png', :alt => l('external_auth.sign_in_via', :kind => 'Facebook'), :size => '48x48'), '/auth/facebook' %></td>
-      <!-- <td><%= link_to image_tag('/plugin_assets/lgdis/images/openam-16x16.png', :alt => l('external_auth.sign_in_via', :kind => 'OpenAM')), '/auth/openam' %></td> -->
+      <% prefix = ENV['RAILS_RELATIVE_URL_ROOT'].to_s %>
+      <td><%= link_to image_tag('/plugin_assets/lgdis/images/google-16x16.png', :alt => l('external_auth.sign_in_via', :kind => 'Google'), :size => '48x48'), prefix + '/auth/google' %></td>
+      <td><%= link_to image_tag('/plugin_assets/lgdis/images/twitter-16x16.png', :alt => l('external_auth.sign_in_via', :kind => 'Twitter'), :size => '48x48'), prefix + '/auth/twitter' %></td>
+      <td><%= link_to image_tag('/plugin_assets/lgdis/images/facebook-16x16.png', :alt => l('external_auth.sign_in_via', :kind => 'Facebook'), :size => '48x48'), prefix + '/auth/facebook' %></td>
+      <!-- <td><%= link_to image_tag('/plugin_assets/lgdis/images/openam-16x16.png', :alt => l('external_auth.sign_in_via', :kind => 'OpenAM')), prefix + '/auth/openam' %></td> -->
     </tr>
   </table>
 </div>
