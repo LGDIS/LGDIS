@@ -24,7 +24,7 @@
     <tr>
       <th style="text-align: left">チケット作成日 :</th>
       <th style="text-align: left">
-        <%= @issue.created_on.strftime("%Y-%m-%d %H:%M:%S") unless @issue.created_on.blank? %>
+        <%= format_time(@issue.created_on) %>
       </th>
     </tr>
   <thead>
