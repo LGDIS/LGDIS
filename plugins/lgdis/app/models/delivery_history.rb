@@ -3,7 +3,6 @@ class DeliveryHistory < ActiveRecord::Base
   unloadable
 
   belongs_to :issue, :dependent => :destroy
-  after_update :update_custom_value, :if => :check_custom_value
 
   attr_accessible :issue_id, :project_id, :delivery_place_id, :request_user, :respond_user, :status, :process_date,
                   :mail_subject, :summary, :type_update, :description_cancel, :published_date, :published_hm,
@@ -108,32 +107,6 @@ class DeliveryHistory < ActiveRecord::Base
     if (DST_LIST['general_info_ids'].include?(self.issue.tracker_id)) && \
         self.issue.name_in_custom_field_value(DST_LIST['custom_field_delivery']['info_classification']).blank?
       errors.add(:cf_classification, "を入力して下さい")
-    end
-  end
-
-  # チケット一覧表示用カスタムバリューステータス確認処理
-  # 配信ステータスが未配信(0)となっていた際はtrue
-  # 配信完了(1)となっていた際はfalse を返す
-  # ==== Args
-  # ==== Return
-  # _boolean_ :: true 未配信, false 配信完了
-  # ==== Raise
-  def check_custom_value
-    return true if self.issue.code_in_custom_field_value(DST_LIST['cf_id_for_show_status']) == '01' || self.issue.code_in_custom_field_value(DST_LIST['cf_id_for_show_status']).blank?
-    false
-  end
-
-  # チケット一覧表示用カスタムバリューステータス更新処理
-  # ==== Args
-  # ==== Return
-  # ==== Raise
-  def update_custom_value
-    if self.status == 'done'
-      self.issue.custom_values.each do |c|
-        if c.custom_field_id == DST_LIST['cf_id_for_show_status']
-          c.update_attributes(:value => '02:○')
-        end
-      end
     end
   end
 end
