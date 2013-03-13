@@ -51,7 +51,7 @@ module EvacuationAdvisoriesHelper
     objects.each do |object|
       errors = object.map do |o|
         o.errors.full_messages.map do |m|
-          "#{l('evacuation_advisories.field_identifier')}\"#{o.identifier}\"の#{m}"
+          "#{l('evacuation_advisories.field_area')}\"#{o.area}\"の#{m}"
         end
       end.flatten
     end
