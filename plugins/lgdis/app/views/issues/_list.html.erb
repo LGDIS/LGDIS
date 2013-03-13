@@ -33,7 +33,19 @@
   <tr id="issue-<%= issue.id %>" class="hascontextmenu <%= cycle('odd', 'even') %> <%= issue.css_classes %> <%= level > 0 ? "idnt idnt-#{level}" : nil %>">
     <td class="checkbox hide-when-print"><%= check_box_tag("ids[]", issue.id, false, :id => nil) %></td>
     <td class="id"><%= link_to issue.id, issue_path(issue) %></td>
-    <%= raw query.inline_columns.map {|column| "<td style='white-space: nowrap;' class=\"#{column.css_classes}\">#{column_content(column, issue)}</td>"}.join %>
+    <%= raw query.inline_columns.map {|column|
+          case column.name
+          when :tracker
+            style = 'style=\'width:220px;white-space: normal;text-align: left;\''
+          when :status
+            style = 'style=\'width:165px;white-space: normal;\''
+          when :subject
+            style = 'style=\'width:220px;white-space: normal;text-align: left;\''
+          end
+
+          "<td #{style} >#{column_content(column, issue)}</td>"
+        }.join
+    %>
   </tr>
   <% @query.block_columns.each do |column|
        if (text = column_content(column, issue)) && text.present? -%>

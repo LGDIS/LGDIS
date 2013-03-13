@@ -77,17 +77,17 @@ class OmniauthCallbacksController < AccountController
       user.last_login_on = Time.now
       if user.save(:validate => false)
         self.logged_user = user
-        flash[:notice] = I18n.t("external_auth.result.success", :kind => user.provider)
+        flash[:notice] = I18n.t("external_auth.result.success", :kind => I18n.t(user.provider))
         redirect_to :controller => 'my', :action => 'account'
       else
-        flash[:error] = I18n.t("external_auth.result.failure", :kind => user.provider)
+        flash[:error] = I18n.t("external_auth.result.failure", :kind => I18n.t(user.provider))
         error
         return
       end
     else
       session["devise.#{user.provider}_data"] = request.env["omniauth.auth"]
       successful_authentication(user)
-      flash[:notice] =  I18n.t("external_auth.result.success", :kind => user.provider)
+      flash[:notice] =  I18n.t("external_auth.result.success", :kind => I18n.t(user.provider))
     end
     logger.info "Successful authentication for '#{user.login}' from #{request.remote_ip} via #{user.provider} at #{Time.now.utc}"
   end

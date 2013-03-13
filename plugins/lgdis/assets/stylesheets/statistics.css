@@ -1,0 +1,29 @@
+.statistics table,
+.statistics table th,
+.statistics table td{
+  border:1px #c0c0c0 solid;
+  border-collapse: collapse;
+  background-color: #f6f6f6;
+}
+
+.statistics table th{
+  text-align: center;
+  background-color: #e5e5e5;
+  border-bottom: 3px #c0c0c0 double;
+}
+
+
+.statistics table td{
+  vertical-align: baseline;
+}
+
+.statistics table td.num{
+  text-align: right;
+  border-right-width: 0px;
+}
+.statistics table td.unit{
+  width: 25px;
+  text-align: center;
+  border-left-width: 0px;
+}
+
