@@ -119,11 +119,14 @@ function setNewLayer(event, target, field1_id, field2_id, field3_id, type) {
 	case 'dai':
 		// テキストフィールドへ適用
 		$("#"+field1_id).val(event.row.area_dai.value);
+		$("#"+field2_id).val("");
+		$("#"+field3_id).val("");
 		break;
 	case 'tyu':
 		// テキストフィールドへ適用
 		$("#"+field1_id).val(event.row.area_dai.value);
 		$("#"+field2_id).val(event.row.area_tyu.value);
+		$("#"+field3_id).val("");
 		break;
 	case 'syo':
 		// テキストフィールドへ適用
