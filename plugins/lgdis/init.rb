@@ -53,6 +53,11 @@ Redmine::Plugin.register :lgdis do
     menu.delete :home
   end
 
+  # トップメニュー/アカウント登録の削除
+  Redmine::MenuManager.map :account_menu do |menu|
+    menu.delete :register
+  end
+
   # プロジェクトメニュー/チケット・新しいチケットを概要の次に配置
   Redmine::MenuManager.map :project_menu do |menu|
     menu.delete :issues
