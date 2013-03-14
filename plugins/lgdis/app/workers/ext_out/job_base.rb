@@ -149,6 +149,8 @@ module ExtOut
         EditionManagement.create(project_id:  project_id,
                                  tracker_id:  tracker_id,
                                  issue_id:    issue.id,
+                                 edition_num: 1,
+                                 status:      1,
                                  uuid:        content.elements["//pcx_ib:Head/commons:documentID"].text)
       else
         # [情報の更新種別]が取消の場合、ステータスは1(新規)に戻る、それ以外は2(更新)
