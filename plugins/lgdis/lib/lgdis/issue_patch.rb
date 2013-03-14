@@ -411,9 +411,9 @@ module Lgdis
         end
 
         # Edxl 部要素追加
-        doc.elements["//commons:publishingOfficeName"].add_text(DST_LIST['commons_xml_field']['publishing_office'])
-        doc.elements["//commons:publishingOfficeID"].add_text(DST_LIST['commons_xml_field']['organization_code']) # 固定値
-        doc.elements["//commons:previousDocumentRevision"].add_text("#{edition_num - 1}")
+        doc.elements["//commons:contentObject/commons:publishingOfficeName"].add_text(DST_LIST['commons_xml_field']['publishing_office'])
+        doc.elements["//commons:contentObject/commons:publishingOfficeID"].add_text(DST_LIST['commons_xml_field']['organization_code']) # 固定値
+        doc.elements["//commons:contentObject/commons:previousDocumentRevision"].add_text("#{edition_num - 1}")
         doc.elements["//commons:contentObject/commons:documentRevision"].add_text("#{edition_num}")
         doc.elements["//commons:contentObject/commons:documentID"].add_text(edition_fields_map['uuid'])
 
