@@ -2,7 +2,8 @@
 class DisasterDamageController < ApplicationController
   unloadable
   
-  before_filter :find_project, :authorize
+  before_filter :find_project
+  before_filter :authorize, :except => :show
   before_filter :init
   
   # 共通初期処理
@@ -42,7 +43,7 @@ class DisasterDamageController < ApplicationController
   # ==== Return
   # ==== Raise
   def save
-    @disaster_damage = DisasterDamage.first_or_initialize
+    @disaster_damage = DisasterDamage.has_no_issues.first_or_initialize
     @disaster_damage.assign_attributes(params[:disaster_damage])
     if @disaster_damage.save
       flash[:notice] = l(:notice_disaster_damage_successful_save)
@@ -60,12 +61,14 @@ class DisasterDamageController < ApplicationController
   def ticket
     if params[:tracker_id].blank?
       flash[:error] = l(:text_select_tracker)
-    elsif DisasterDamage.first.present?
+    elsif (dd = DisasterDamage.first).present?
       begin
-        issues = DisasterDamage.create_issues(@project, params[:tracker_id])
+        issues = dd.create_issues(@project, params[:tracker_id])
         links = []
         issues.each do |issue|
           links << view_context.link_to("##{issue.id}", issue_path(issue), :title => issue.subject)
+          issue.init_journal(User.current, "\"第４号様式へのリンク\":#{url_for(controller: 'disaster_damage', action: 'show', id: dd.id)}") # 履歴
+          issue.save!
         end
         flash[:notice] = l(:notice_issue_successful_create, :id => links.join(","))
       rescue ActiveRecord::RecordInvalid => e
@@ -76,6 +79,18 @@ class DisasterDamageController < ApplicationController
       flash[:error] = l(:error_not_exists_disaster_damage)
     end
     redirect_to :action => :index
+  end
+  
+  # 災害被害情報（第４号様式）画面
+  # 照会処理
+  # ==== Args
+  # ==== Return
+  # ==== Raise
+  def show
+    @disaster_damage = DisasterDamage.find(params[:id])
+    render :action  => :index
+  rescue ActiveRecord::RecordNotFound
+    render_404
   end
   
   private

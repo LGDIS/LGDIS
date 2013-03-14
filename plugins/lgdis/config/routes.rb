@@ -20,6 +20,7 @@ RedmineApp::Application.routes.draw do
 
   # 災害被害情報（第４号様式）機能
     match '/disaster_damage'        => 'disaster_damage#index',   :via => [:get,:post,:put]
+    match '/disaster_damage/:id'        => 'disaster_damage#show',   :via => :get
 
   end
   resources :deliver_issues do
