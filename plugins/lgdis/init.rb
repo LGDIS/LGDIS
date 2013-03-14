@@ -18,6 +18,7 @@ DST_LIST    = YAML.load_file("#{Rails.root}/plugins/lgdis/config/destination_lis
 MAP_VALUES  = YAML.load_file("#{Rails.root}/plugins/lgdis/config/issue_map_default_values.yml")
 CF_CONNECT  = YAML.load_file("#{Rails.root}/plugins/lgdis/config/custom_field_connection.yml")["custom_field_connection"]
 CF_ADDRESS  = YAML.load_file("#{Rails.root}/plugins/lgdis/config/custom_field_connection.yml")["custom_field_address"]
+STATISTICS_SQL  = YAML.load_file("#{Rails.root}/plugins/lgdis/config/statistics_sql_query.yml")
 
 # library, plugin
 require_dependency 'lgdis/acts/acts_as_datetime_separable'
