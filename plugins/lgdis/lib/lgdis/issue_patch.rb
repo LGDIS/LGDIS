@@ -10,7 +10,7 @@ module Lgdis
       base.class_eval do
         unloadable
         has_many :issue_geographies, :dependent => :destroy
-        has_many :delivery_histories
+        has_many :delivery_histories, :dependent => :destroy
 
         acts_as_datetime_separable :published_at, :opened_at, :closed_at
 

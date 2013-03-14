@@ -2,7 +2,7 @@
 class DeliveryHistory < ActiveRecord::Base
   unloadable
 
-  belongs_to :issue, :dependent => :destroy
+  belongs_to :issue
 
   attr_accessible :issue_id, :project_id, :delivery_place_id, :request_user, :respond_user, :status, :process_date,
                   :mail_subject, :summary, :type_update, :description_cancel, :published_date, :published_hm,
