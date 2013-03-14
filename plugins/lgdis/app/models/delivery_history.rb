@@ -104,7 +104,7 @@ class DeliveryHistory < ActiveRecord::Base
 
     # トラッカーID の種別がイベント・お知らせ時のみ
     # 配信要求時にカスタムフィールドの情報識別区分 の有無のバリデーションを行う
-    if (DST_LIST['general_info_ids'].include?(self.issue.tracker_id)) && \
+    if (DST_LIST['general_info_ids'].include?(self.issue.tracker_id)) && [COMMONS_ID].include?(self.delivery_place_id) &&
         self.issue.name_in_custom_field_value(DST_LIST['custom_field_delivery']['info_classification']).blank?
       errors.add(:cf_classification, "を入力して下さい")
     end
