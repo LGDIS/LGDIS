@@ -21,10 +21,10 @@
             </td>
             <td style="text-align: center;"><%= DST_LIST['delivery_place'][d_h.delivery_place_id]['name'] %></td>
             <td style="text-align: center;"><%= DST_LIST['status'][d_h.status] %></td>
-            <td style="text-align: center;"><%= d_h.created_at.strftime("%Y-%m-%d %H:%M:%S") unless d_h.created_at.blank? %></td>
+            <td style="text-align: center;"><%= format_time(d_h.created_at) %></td>
             <td style="text-align: center;"><%= d_h.request_user %></td>
             <td style="text-align: center;"><%= d_h.issue.subject %></td>
-            <td style="text-align: center;"><%= d_h.process_date.strftime("%Y-%m-%d %H:%M:%S") unless d_h.process_date.blank? %></td>
+            <td style="text-align: center;"><%= format_time(d_h.process_date) %></td>
             <td style="text-align: center;"><%= d_h.respond_user %></td>
           </tr>
         <% end %>

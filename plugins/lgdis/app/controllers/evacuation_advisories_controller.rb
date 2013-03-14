@@ -14,6 +14,8 @@ class EvacuationAdvisoriesController < ApplicationController
   def init
     @evacuation_advisory_const = Constant::hash_for_table(EvacuationAdvisory.table_name)
     @areas = Area.all
+    # TODO:発令・解除地区名称（中域）の持ち方,内容について検討
+    @sections = {}
   end
   
   # 避難勧告･指示一覧検索画面

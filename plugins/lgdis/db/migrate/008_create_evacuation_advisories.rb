@@ -13,6 +13,7 @@ class CreateEvacuationAdvisories < ActiveRecord::Migration
       t.string     :area, :limit => 100
       t.string     :area_kana,  :limit => 100
       t.string     :district,  :limit => 10
+      t.string     :section,  :limit => 10
       t.datetime   :issued_at
       t.datetime   :changed_at 
       t.datetime   :lifted_at
@@ -60,7 +61,8 @@ class CreateEvacuationAdvisories < ActiveRecord::Migration
     set_column_comment(:evacuation_advisories, :issueorlift, "発令・解除区分")
     set_column_comment(:evacuation_advisories, :area, "発令・解除地区名称")
     set_column_comment(:evacuation_advisories, :area_kana, "発令・解除地区名称かな")
-    set_column_comment(:evacuation_advisories, :district, "地区（大分類）")
+    set_column_comment(:evacuation_advisories, :district, "発令・解除地区名称（大域）")
+    set_column_comment(:evacuation_advisories, :section, "発令・解除地区名称（中域）")
     set_column_comment(:evacuation_advisories, :issued_at, "発令日時")
     set_column_comment(:evacuation_advisories, :changed_at, "移行日時")
     set_column_comment(:evacuation_advisories, :lifted_at, "解除日時")

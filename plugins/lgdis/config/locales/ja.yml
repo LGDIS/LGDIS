@@ -227,7 +227,8 @@ ja:
     field_issueorlift: 発令・解除区分
     field_area: 発令・解除地区名称
     field_area_kana: 発令・解除地区名称かな
-    field_district: 地区（大分類）
+    field_district: 発令・解除地区名称（大域）
+    field_section: 発令・解除地区名称（中域）
     field_households: 対象世帯数
     field_head_count: 対象人数
     field_identifier:  避難勧告_指示識別情報

@@ -10,8 +10,10 @@
         <%= hidden_field_tag :project_id, @project.identifier %>
 
         <% unless @destination_list.blank? %>
+        <% checked = [] %>
+        <% DST_LIST["delivery_place_default"][@issue.tracker_id].each {|i| checked << i["id"] } %>
           <% @destination_list.each do |dest|%>
-            <label style="display: block;float: left;"><%= check_box_tag "ext_out_target[]", dest['id'] %><%= dest['name'] %></label>
+            <label style="display: block;float: left;"><%= check_box_tag "ext_out_target[]", dest['id'], checked.include?( dest['id'] ) ? true : false %><%= dest['name'] %></label>
           <% end %>
         <% end %>
         <div style="clear:both;"></div>

@@ -45,6 +45,11 @@
       <%= f.text_field :lifted_hm,:size=>'5',:disabled => @disabled %>
     <% end %>
 
+    <%= field_for :section do |key, label| %>
+      <%= label_tag{label} %>
+      <%= f.select key, options_for_select(@sections.map{|v| [v.name,v.section_code]}, f.object.send(key)),{:include_blank => true},:disabled => @disabled %>
+    <% end %>
+    
     <%= field_for :households do |key, label| %>
       <%= label_tag{label} %>
       <%= f.text_field key,:size=>'70',:disabled => @disabled %>
