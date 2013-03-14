@@ -9,7 +9,7 @@ class EvacuationAdvisory < ActiveRecord::Base
                   :emergency_hq_needed_prefecture,:emergency_hq_needed_city,
                   :alert,:alerting_area,:siren_area,:evacuation_order,
                   :evacuate_from,:evacuate_to,:evacuation_steps_by_authorities,:remarks, 
-                  :households,:head_count
+                  :households,:head_count,:section
 
   ##正の整数チェック用オプションハッシュ値
   POSITIVE_INTEGER = {:only_integer => true,
