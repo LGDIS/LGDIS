@@ -2595,6 +2595,49 @@ destination:
       - *urgent_mail_au
       - *urgent_mail_sb
 
+# トラッカーごとの配信先にデフォルトでチェックを入れる
+# 記載例
+# チェックを入れる配信先のみを記載する
+#:delivery_place_default
+#  tracker_id:
+#    - 配信先1
+#    - 配信先2
+#    - 配信先3
+#    - 配信先4
+delivery_place_default:
+  1: # 【システム】避難勧告・指示
+    - *commons
+  2: # 【システム】避難所開設・閉鎖
+    - *smtp_0
+  3: # 【システム】気象庁発信（その他）
+    - *commons
+    - *smtp_0
+  5: # 【システム】河川管理者発信（その他）
+    - *commons
+    - *smtp_1
+  6: # 【システム】河川管理者発信（警報・注意報）
+    - *smtp_0
+    - *smtp_1
+  7: # 【被害報告】人的
+    - *commons
+    - *smtp_0
+    - *smtp_1
+  8: # 【被害報告】住家建物
+    - *smtp_2
+  9: # 【被害報告】道路
+    - *commons
+    - *smtp_0
+    - *smtp_1
+    - *smtp_2
+    - *smtp_3
+    - *smtp_auth
+    - *twitter
+    - *facebook
+    - *atom
+    - *urgent_mail_docomo
+    - *urgent_mail_au
+    - *urgent_mail_sb
+
 commons_xml:
   0: commons_urgent_mail.xml                     # 緊急速報メール
   1: commons_evacuation.xml                      # 避難勧告・指示
