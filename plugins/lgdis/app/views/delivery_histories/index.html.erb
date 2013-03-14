@@ -24,7 +24,7 @@
             <td style="text-align: center;"><%= format_time(d_h.created_at) %></td>
             <td style="text-align: center;"><%= d_h.request_user %></td>
             <td style="text-align: center;"><%= d_h.issue.subject %></td>
-            <td style="text-align: center;"><%= format_time(d_h.process_date) %></td>
+            <td style="text-align: center;"><%= format_time(d_h.process_date)  if d_h.process_date.present?%></td>
             <td style="text-align: center;"><%= d_h.respond_user %></td>
           </tr>
         <% end %>
