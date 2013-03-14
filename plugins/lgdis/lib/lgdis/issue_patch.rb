@@ -81,6 +81,9 @@ module Lgdis
       COMPLEMENTARYINFO_ID = 5
       # 関連するホームページのcustom_field_id
       URL_ID = 37
+      # 緊急速報メール に紐付くtitle id
+      # destination_list.yml tracker_title　に紐付くID
+      UGENT_MAIL_ID = 0
 
       # チケット情報のコピー
       # チケット位置情報もコピーするように処理追加
@@ -291,10 +294,13 @@ module Lgdis
           commons_xml = DST_LIST['commons_xml'][0]
           # 緊急速報メールのBody 部はxml_body に保持しない為生成
           xml_body    = create_commons_area_mail_body
+          title  = DST_LIST['tracker_title'][UGENT_MAIL_ID]
         else
           element     = DST_LIST['destination_xpath'][self.tracker_id]
           commons_xml = DST_LIST['commons_xml'][self.tracker_id]
           xml_body    = self.xml_body
+          # tracker_id に紐付く標題を設定
+          title  = DST_LIST['tracker_title'][self.tracker_id]
         end
 
         file = File.new("#{Rails.root}/plugins/lgdis/files/xml/#{commons_xml}")
@@ -313,9 +319,6 @@ module Lgdis
           xml_body = start_element + xml_body + end_element
           xml_body = REXML::Document.new(xml_body).elements["//#{element}"]
         end
-
-        # tracker_id に紐付く標題を設定
-        title  = DST_LIST['tracker_title'][self.tracker_id]
 
         # status(更新種別), uuid, edition_num(版番号)を設定
         edition_mng = find_edition_mng(delivery_place_id)
