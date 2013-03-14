@@ -12,8 +12,6 @@ module Lgdis
         has_many :issue_geographies, :dependent => :destroy
         has_many :delivery_histories, :dependent => :destroy
 
-        acts_as_datetime_separable :published_at, :opened_at, :closed_at
-
         validates :xml_control_status, :length => {:maximum => 12}
         validates :xml_control_editorialoffice, :length => {:maximum => 50}
         validates :xml_control_publishingoffice, :length => {:maximum => 100}
@@ -28,6 +26,9 @@ module Lgdis
         validates :xml_head_infokind, :length => {:maximum => 100}
         validates :xml_head_infokindversion, :length => {:maximum => 12}
         validates :xml_head_text, :length => {:maximum => 500}
+        validates :published_at, :custom_format => {:type => :datetime}
+        validates :opened_at, :custom_format => {:type => :datetime}
+        validates :closed_at, :custom_format => {:type => :datetime}
 
         safe_attributes 'xml_control_status',
           'xml_control',
@@ -54,13 +55,10 @@ module Lgdis
           'summary',
           'type_update',
           'description_cancel',
-          'published_date',
-          'published_hm',
+          'published_at',
           'delivered_area',
-          'opened_date',
-          'opened_hm',
-          'closed_date',
-          'closed_hm',
+          'opened_at',
+          'closed_at',
           :if => lambda {|issue, user| issue.new_record? || user.allowed_to?(:edit_issues, issue.project) }
 
         alias_method_chain :copy_from, :geographies

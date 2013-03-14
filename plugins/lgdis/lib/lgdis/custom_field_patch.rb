@@ -76,7 +76,7 @@ module Lgdis
       def validate_field_value_format_with_datetime(value)
         if value.present? && field_format == "date" && include_time?
           err = []
-          err << ::I18n.t('activerecord.errors.messages.not_a_datetime') unless value =~ /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/ && begin; value.to_datetime; rescue; false end
+          err << ::I18n.t('activerecord.errors.messages.invalid') unless CustomFormatValidator.datetime(value)
           return err
         end
         return validate_field_value_format_without_datetime(value)

@@ -11,13 +11,10 @@ class DisasterDamage < ActiveRecord::Base
   # コンスタント存在チェック用
   CONST = Constant::hash_for_table(self.table_name).freeze
   
-  acts_as_datetime_separable :disaster_occurred_at, :general_prefectural_antidisaster_headquarter_status_at,
-                             :general_municipal_antidisaster_headquarter_status_at, :prefectural_antidisaster_headquarter_status_at,
-                             :municipal_antidisaster_headquarter_status_at, :disaster_relief_act_applied_at
-  
   validates :disaster_occurred_location,
                 :length => {:maximum => 100}
-  # validates :disaster_occurred_at
+  validates :disaster_occurred_at,
+                :custom_format => {:type => :datetime}
   validates :general_disaster_situation,
                 :length => {:maximum => 4000}
   validates :general_dead_count,
@@ -38,12 +35,14 @@ class DisasterDamage < ActiveRecord::Base
                 :length => {:maximum => 4000}
   validates :general_prefectural_antidisaster_headquarter_status,
                 :length => {:maximum => 4000}
-  # validates :general_prefectural_antidisaster_headquarter_status_at
+  validates :general_prefectural_antidisaster_headquarter_status_at,
+                :custom_format => {:type => :datetime}
   validates :general_municipal_antidisaster_headquarter_of,
                 :length => {:maximum => 12}
   validates :general_municipal_antidisaster_headquarter_status,
                 :length => {:maximum => 4000}
-  # validates :general_municipal_antidisaster_headquarter_status_at
+  validates :general_municipal_antidisaster_headquarter_status_at,
+                :custom_format => {:type => :datetime}
   validates :emergency_measures_status,
                 :length => {:maximum => 4000}
   validates :dead_count,
@@ -162,17 +161,20 @@ class DisasterDamage < ActiveRecord::Base
                 :numericality => POSITIVE_INTEGER
   validates :prefectural_antidisaster_headquarter_status,
                 :length => {:maximum => 4000}
-  # validates :prefectural_antidisaster_headquarter_status_at
+  validates :prefectural_antidisaster_headquarter_status_at,
+                :custom_format => {:type => :datetime}
   validates :municipal_antidisaster_headquarter_of,
                 :length => {:maximum => 12}
   validates :municipal_antidisaster_headquarter_type,
                 :inclusion => {:in => CONST[:municipal_antidisaster_headquarter_type.to_s].keys, :allow_blank => true}
   validates :municipal_antidisaster_headquarter_status,
                 :inclusion => {:in => CONST[:municipal_antidisaster_headquarter_status.to_s].keys, :allow_blank => true}
-  # validates :municipal_antidisaster_headquarter_status_at
+  validates :municipal_antidisaster_headquarter_status_at,
+                :custom_format => {:type => :datetime}
   validates :disaster_relief_act_applied_of,
                 :length => {:maximum => 12}
-  # validates :disaster_relief_act_applied_at
+  validates :disaster_relief_act_applied_at,
+                :custom_format => {:type => :datetime}
   validates :disaster_relief_act_applied_municipalities_count,
                 :numericality => POSITIVE_INTEGER
   validates :turnout_fire_station_firefighter_count,

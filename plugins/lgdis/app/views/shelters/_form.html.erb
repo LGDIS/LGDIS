@@ -50,8 +50,7 @@
     
     <%= field_for :opened_at do |key, label| %>
       <%= label_tag{label} %>
-      <%= f.text_field :opened_date,:size=>'10',:disabled => @disabled %><%= calendar_for("#{f.object_name}_opened_date") unless @disabled %>
-      <%= f.text_field :opened_hm,:size=>'5',:disabled => @disabled %>
+      <%= f.text_field key,:value=>format_time_for_input(f.object,key),:size=>'16',:disabled => @disabled %><%= calendar_with_time_for("#{f.object_name}_#{key}") unless @disabled %>
     <% end %>
     
     <%= field_for :status do |key, label| %>
@@ -80,8 +79,7 @@
     
     <%= field_for :closed_at do |key, label| %>
       <%= label_tag{label} %>
-      <%= f.text_field :closed_date,:size=>'10',:disabled => @disabled %><%= calendar_for("#{f.object_name}_closed_date") unless @disabled %>
-      <%= f.text_field :closed_hm,:size=>'5',:disabled => @disabled %>
+      <%= f.text_field key,:value=>format_time_for_input(f.object,key),:size=>'16',:disabled => @disabled %><%= calendar_with_time_for("#{f.object_name}_#{key}") unless @disabled %>
     <% end %>
   </div>
 </div>
@@ -100,8 +98,7 @@
     
     <%= field_for :checked_at do |key, label| %>
       <%= label_tag{label} %>
-      <%= f.text_field :checked_date,:size=>'10',:disabled => @disabled %><%= calendar_for("#{f.object_name}_checked_date") unless @disabled %>
-      <%= f.text_field :checked_hm,:size=>'5',:disabled => @disabled %>
+      <%= f.text_field key,:value=>format_time_for_input(f.object,key),:size=>'16',:disabled => @disabled %><%= calendar_with_time_for("#{f.object_name}_#{key}") unless @disabled %>
     <% end %>
   </div>
   
@@ -146,8 +143,7 @@
   <div class="nonsplitcontent">
     <%= field_for :reported_at do |key, label| %>
       <%= label_tag{label} %>
-        <%= f.text_field :reported_date,:size=>'10',:disabled => @disabled %><%= calendar_for("#{f.object_name}_reported_date") unless @disabled %>
-        <%= f.text_field :reported_hm,:size=>'5',:disabled => @disabled %>
+        <%= f.text_field key,:value=>format_time_for_input(f.object,key),:size=>'16',:disabled => @disabled %><%= calendar_with_time_for("#{f.object_name}_#{key}") unless @disabled %>
     <% end %>
     
     <%= field_for :building_damage_info do |key, label| %>
