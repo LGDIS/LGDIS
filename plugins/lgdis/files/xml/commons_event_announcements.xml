@@ -36,9 +36,15 @@
 							<pcx_eb:OrganizationName></pcx_eb:OrganizationName>
 						</EditorialOffice>
 						<PublishingOffice>
-							<pcx_eb:OrganizationCode></pcx_eb:OrganizationCode>
-							<pcx_eb:OfficeName></pcx_eb:OfficeName>
-							<pcx_eb:OrganizationName></pcx_eb:OrganizationName>
+							<pcx_eb:OfficeInfo>
+								<pcx_eb:OrganizationCode></pcx_eb:OrganizationCode>
+								<pcx_eb:OfficeName></pcx_eb:OfficeName>
+								<pcx_eb:OfficeLocation>
+									<commons:areaName></commons:areaName>
+								</pcx_eb:OfficeLocation>
+								<pcx_eb:OfficeDomainName></pcx_eb:OfficeDomainName>
+								<pcx_eb:OrganizationName></pcx_eb:OrganizationName>
+							</pcx_eb:OfficeInfo>
 						</PublishingOffice>
 					</Control>
 
@@ -51,6 +57,7 @@
 						<edxlde:distributionID></edxlde:distributionID>
 						<edxlde:distributionType></edxlde:distributionType>
 						<commons:documentRevision></commons:documentRevision>
+						<commons:previousDocumentRevision></commons:previousDocumentRevision>
 						<commons:documentID></commons:documentID>
 						<pcx_ib:Headline>
 							<pcx_ib:Text></pcx_ib:Text>

@@ -2969,6 +2969,8 @@ commons_xml_field:
   editorial_office: 石巻市総務部防災対策課  # 作成部署情報(部署名)
   publishing_office: 石巻市総務部防災対策課 # 発表部署情報(部署名)
   contact_type: '09012345678'               # 発表部署情報(電話番号)
+  area_address: 宮城県石巻市穀町１４－１    # 発表部署情報(住所)
+  office_domain: shinomaki.lg.jp            # 発表部署情報(ドメイン)
   area_name: 石巻市                         # 事象の起きた場所
   organization_code: '042021'               # 作成部署情報(組織コード)
   organization_name: 石巻市                 # 作成部署情報(組織名)

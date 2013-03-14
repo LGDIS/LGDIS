@@ -77,6 +77,11 @@ module Lgdis
                       '3' => 'Cancel'
                     }.freeze
 
+      # 補足情報のcustom_field_id
+      COMPLEMENTARYINFO_ID = 5
+      # 関連するホームページのcustom_field_id
+      URL_ID = 37
+
       # チケット情報のコピー
       # チケット位置情報もコピーするように処理追加
       # ==== Args
@@ -276,8 +281,6 @@ module Lgdis
       # _doc_ :: 配信内容
       # ==== Raise
       def create_commons_msg(delivery_place_id)
-        @issue_const = Constant::hash_for_table(Issue.table_name)
-
         # 緊急速報メールはどのトラッカーの情報も配信可能な為
         # 配信先ID で判定
         # テンプレート生成
@@ -317,6 +320,7 @@ module Lgdis
         # status(更新種別), uuid, edition_num(版番号)を設定
         edition_mng = find_edition_mng(delivery_place_id)
         edition_fields_map = set_edition_mng_field(edition_mng)
+        edition_num = edition_fields_map['edition_num']
 
         # 運用種別フラグ
         operation_flg = DST_LIST['commons_xml_field']['edxl_status'][self.project_id]
@@ -358,15 +362,17 @@ module Lgdis
         doc.elements["//EditorialOffice/pcx_eb:OrganizationCode"].add_text(DST_LIST['commons_xml_field']['organization_code']) # 固定値
         doc.elements["//EditorialOffice/pcx_eb:OfficeName"].add_text(DST_LIST['commons_xml_field']['editorial_office'])
         doc.elements["//EditorialOffice/pcx_eb:OrganizationName"].add_text(DST_LIST['commons_xml_field']['organization_name']) # 固定値
-        doc.elements["//PublishingOffice/pcx_eb:OrganizationCode"].add_text(DST_LIST['commons_xml_field']['organization_code']) # 固定値
-        doc.elements["//PublishingOffice/pcx_eb:OfficeName"].add_text(DST_LIST['commons_xml_field']['publishing_office'])
+        doc.elements["//PublishingOffice/pcx_eb:OfficeInfo/pcx_eb:OrganizationCode"].add_text(DST_LIST['commons_xml_field']['organization_code']) # 固定値
+        doc.elements["//PublishingOffice/pcx_eb:OfficeInfo/pcx_eb:OfficeName"].add_text(DST_LIST['commons_xml_field']['publishing_office'])
         unless DST_LIST['commons_xml_field']['contact_type'].blank? # 発表部署情報(電話番号)が存在する場合のみ
           ele = REXML::Element.new("pcx_eb:ContactInfo")
           ele.add_attribute("pcx_eb:contactType","phone")
-          doc.elements["//PublishingOffice/pcx_eb:OfficeName"].next_sibling = ele
-          doc.elements["//PublishingOffice/pcx_eb:ContactInfo"].add_text(DST_LIST['commons_xml_field']['contact_type'].to_s)
+          doc.elements["//PublishingOffice/pcx_eb:OfficeInfo/pcx_eb:OfficeName"].next_sibling = ele
+          doc.elements["//PublishingOffice/pcx_eb:OfficeInfo/pcx_eb:ContactInfo"].add_text(DST_LIST['commons_xml_field']['contact_type'].to_s)
         end
-        doc.elements["//PublishingOffice/pcx_eb:OrganizationName"].add_text(DST_LIST['commons_xml_field']['organization_name']) # 固定値
+        doc.elements["//PublishingOffice/pcx_eb:OfficeInfo/pcx_eb:OfficeLocation/commons:areaName"].add_text(DST_LIST['commons_xml_field']['area_address']) # 固定値
+        doc.elements["//PublishingOffice/pcx_eb:OfficeInfo/pcx_eb:OfficeDomainName"].add_text(DST_LIST['commons_xml_field']['office_domain']) # 固定値
+        doc.elements["//PublishingOffice/pcx_eb:OfficeInfo/pcx_eb:OrganizationName"].add_text(DST_LIST['commons_xml_field']['organization_name']) # 固定値
         if edition_fields_map['status'] == 3 # 更新種別が取消の場合のみ
           doc.elements["//PublishingOffice"].next_sibling = REXML::Element.new("Errata")
           doc.elements["//Errata"].add_element("pcx_eb:Description").add_text(self.description_cancel)
@@ -388,7 +394,8 @@ module Lgdis
         end
         doc.elements["//pcx_ib:Head/edxlde:distributionID"].add_text(distribution_id)
         doc.elements["//pcx_ib:Head/edxlde:distributionType"].add_text(type_update)
-        doc.elements["//pcx_ib:Head/commons:documentRevision"].add_text("#{edition_fields_map['edition_num']}")
+        doc.elements["//pcx_ib:Head/commons:documentRevision"].add_text("#{edition_num}")
+        doc.elements["//pcx_ib:Head/commons:previousDocumentRevision"].add_text("#{edition_num - 1}")
         doc.elements["//pcx_ib:Head/commons:documentID"].add_text(edition_fields_map['uuid'])
         doc.elements["//pcx_ib:Text"].add_text(self.summary)
         doc.elements["//pcx_ib:Areas/pcx_ib:Area/commons:areaName"].add_text(DST_LIST['commons_xml_field']['area_name'])
@@ -397,16 +404,17 @@ module Lgdis
         doc.elements["//pcx_ib:Head"].next_sibling = xml_body if xml_body.present?
         # 補足情報追加処理
         # 避難勧告・指示、避難所情報、被害情報 時のみ追加
-        if !DST_LIST['ugent_mail_ids'].include?(delivery_place_id) && DST_LIST['comp_info_trackers'].include?(self.tracker_id)
+        if self.name_in_custom_field_value(COMPLEMENTARYINFO_ID).present? && !DST_LIST['ugent_mail_ids'].include?(delivery_place_id) && DST_LIST['comp_info_trackers'].include?(self.tracker_id)
           doc.elements["//#{DST_LIST['comp_info_xpath'][self.tracker_id]}"].add_text(self.name_in_custom_field_value(DST_LIST['custom_field_delivery']['comp_info']))
+        else
+          doc.delete_element("//#{DST_LIST['comp_info_xpath'][self.tracker_id]}")
         end
 
         # Edxl 部要素追加
         doc.elements["//commons:publishingOfficeName"].add_text(DST_LIST['commons_xml_field']['publishing_office'])
         doc.elements["//commons:publishingOfficeID"].add_text(DST_LIST['commons_xml_field']['organization_code']) # 固定値
-        edition_num = edition_fields_map['edition_num']
         doc.elements["//commons:previousDocumentRevision"].add_text("#{edition_num - 1}")
-        doc.elements["//commons:contentObject/commons:documentRevision"].add_text("#{edition_fields_map['edition_num']}")
+        doc.elements["//commons:contentObject/commons:documentRevision"].add_text("#{edition_num}")
         doc.elements["//commons:contentObject/commons:documentID"].add_text(edition_fields_map['uuid'])
 
         return doc.to_s
@@ -485,7 +493,6 @@ module Lgdis
       # _doc_ :: REXML::Document
       # ==== Raise
       def create_commons_event_body
-        @issue_const = Constant::hash_for_table(Issue.table_name)
         title  = DST_LIST['tracker_title'][self.tracker_id]
         doc =  REXML::Document.new
         doc.add_element("pcx_gi:GeneralInformation") # root
@@ -494,10 +501,10 @@ module Lgdis
         doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:DisasterInformationType").add_text(info_code)
         doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_eb:Disaster").add_element("pcx_eb:DisasterName").add_text("#{self.project.name}")
         doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:Category").add_text("#{DST_LIST["tracker_grouping"][self.tracker_id][0]}")
-        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:subCategory").add_text("#{DST_LIST["tracker_grouping"][self.tracker_id][1]}")
+        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:SubCategory").add_text("#{DST_LIST["tracker_grouping"][self.tracker_id][1]}")
         doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:Title").add_text(I18n.t('target_municipality') + ' ' + self.project.name + ' ' + title)
         doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:Description").add_text("#{self.description}")
-        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:URL").add_text("#{name_in_custom_field_value(37)}") # 関連するホームページ
+        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:URL").add_text("#{self.name_in_custom_field_value(URL_ID)}") if self.name_in_custom_field_value(URL_ID).blank?
 
         return doc.to_s
       end

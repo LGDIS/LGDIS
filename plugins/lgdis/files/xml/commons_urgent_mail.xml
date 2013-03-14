@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <edxlde:EDXLDistribution
 	xmlns:pcx_um="http://xml.publiccommons.ne.jp/pcxml1/body/UrgentMail3"
-	targetNamespace="http://xml.publiccommons.ne.jp/pcxml1/body/UrgentMail3"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:edxlde="urn:oasis:names:tc:emergency:EDXL:DE:1.0"
@@ -35,9 +34,15 @@
 							<pcx_eb:OrganizationName></pcx_eb:OrganizationName>
 						</EditorialOffice>
 						<PublishingOffice>
-							<pcx_eb:OrganizationCode></pcx_eb:OrganizationCode>
-							<pcx_eb:OfficeName></pcx_eb:OfficeName>
-							<pcx_eb:OrganizationName></pcx_eb:OrganizationName>
+							<pcx_eb:OfficeInfo>
+								<pcx_eb:OrganizationCode></pcx_eb:OrganizationCode>
+								<pcx_eb:OfficeName></pcx_eb:OfficeName>
+								<pcx_eb:OfficeLocation>
+									<commons:areaName></commons:areaName>
+								</pcx_eb:OfficeLocation>
+								<pcx_eb:OfficeDomainName></pcx_eb:OfficeDomainName>
+								<pcx_eb:OrganizationName></pcx_eb:OrganizationName>
+							</pcx_eb:OfficeInfo>
 						</PublishingOffice>
 					</Control>
 
@@ -50,6 +55,7 @@
 						<edxlde:distributionID></edxlde:distributionID>
 						<edxlde:distributionType></edxlde:distributionType>
 						<commons:documentRevision></commons:documentRevision>
+						<commons:previousDocumentRevision></commons:previousDocumentRevision>
 						<commons:documentID></commons:documentID>
 						<pcx_ib:Headline>
 							<pcx_ib:Text></pcx_ib:Text>
