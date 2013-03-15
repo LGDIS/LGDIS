@@ -143,15 +143,14 @@ module ExtOut
       tracker_id = issue.tracker_id
       type_update = issue.type_update
       edition_mng = EditionManagement.find_by_project_id_and_tracker_id(project_id, tracker_id)
+      xml_body = REXML::Document.new(content)
 
       # 新規追加処理
       if edition_mng.blank?
-        EditionManagement.create(project_id:  project_id,
-                                 tracker_id:  tracker_id,
-                                 issue_id:    issue.id,
-                                 edition_num: 1,
-                                 status:      1,
-                                 uuid:        content.elements["//pcx_ib:Head/commons:documentID"].text)
+        EditionManagement.create(project_id: project_id,
+                                 tracker_id: tracker_id,
+                                 issue_id:   issue.id,
+                                 uuid:       xml_body.elements["//pcx_ib:Head/commons:documentID"].text)
       else
         # [情報の更新種別]が取消の場合、ステータスは1(新規)に戻る、それ以外は2(更新)
         edition_status = type_update == "3" ? 1 : 2
