@@ -9,8 +9,8 @@ FactoryGirl.define do
 #     issued_at                       
 #     changed_at                      
 #     lifted_at                       
-    households                      
-    head_count                      
+    households                      10
+    head_count                      11
     identifier                      '04202E00000000000006'
 #     category                        
 #     cause                           
