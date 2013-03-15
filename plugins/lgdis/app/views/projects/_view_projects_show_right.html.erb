@@ -31,13 +31,22 @@
   </tr>
   
   <tr>
-    <td rowspan="10">住家被害</td>
+    <td rowspan="12">住家被害</td>
     <td rowspan="2">全壊</td>
     <td class="num"><%= ActiveRecord::Base.connection.execute( ActiveRecord::Base.send(:sanitize_sql_array, [STATISTICS_SQL["sql_complete_collapse_houses_count"], project.id]))[0]["count"] %></td>
     <td class="unit">棟</td>
   </tr>
   <tr>
     <td class="num"><%= ActiveRecord::Base.connection.execute( ActiveRecord::Base.send(:sanitize_sql_array, [STATISTICS_SQL["sql_complete_collapse_households_count"], project.id]))[0]["count"] %></td>
+    <td class="unit">世帯</td>
+  </tr>
+  <tr>
+    <td rowspan="2">大規模半壊</td>
+    <td class="num"><%= ActiveRecord::Base.connection.execute( ActiveRecord::Base.send(:sanitize_sql_array, [STATISTICS_SQL["sql_massively_half_collapse_houses_count"], project.id]))[0]["count"] %></td>
+    <td class="unit">棟</td>
+  </tr>
+  <tr>
+    <td class="num"><%= ActiveRecord::Base.connection.execute( ActiveRecord::Base.send(:sanitize_sql_array, [STATISTICS_SQL["sql_massively_half_collapse_households_count"], project.id]))[0]["count"] %></td>
     <td class="unit">世帯</td>
   </tr>
   <tr>

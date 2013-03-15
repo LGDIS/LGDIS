@@ -8,3 +8,5 @@
 #login-form2 table td {padding: 6px; text-align: center;}
 #login-form2 label {font-weight: bold;}
 #login-form2 input#username, #login-form input#password { width: 300px; }
+
+h1 { font-size: 4em; }
