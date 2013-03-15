@@ -1130,6 +1130,19 @@ destination:
       - *urgent_mail_docomo
       - *urgent_mail_au
       - *urgent_mail_sb
+    71: # 被災者からの要望（食料）
+      - *commons
+      - *smtp_0
+      - *smtp_1
+      - *smtp_2
+      - *smtp_3
+      - *smtp_auth
+      - *twitter
+      - *facebook
+      - *atom
+      - *urgent_mail_docomo
+      - *urgent_mail_au
+      - *urgent_mail_sb
 ##
 ##added by NTTPC ここから
   7: # 災害対策本部(プロトタイプ環境 xxxxx)
@@ -3011,9 +3024,10 @@ commons_xml_field:
     2: Exercise # 災害訓練モード
   editorial_office: 石巻市総務部防災対策課  # 作成部署情報(部署名)
   publishing_office: 石巻市総務部防災対策課 # 発表部署情報(部署名)
+  publishing_office_kana: いしのまきしそうむぶぼうさいたいさくか # 発表部署情報(部署名かな)
   contact_type: '09012345678'               # 発表部署情報(電話番号)
   area_address: 宮城県石巻市穀町１４－１    # 発表部署情報(住所)
-  office_domain: shinomaki.lg.jp            # 発表部署情報(ドメイン)
+  office_domain: city.ishinomaki.lg.jp            # 発表部署情報(ドメイン)
   area_name: 石巻市                         # 事象の起きた場所
   organization_code: '042021'               # 作成部署情報(組織コード)
   organization_name: 石巻市                 # 作成部署情報(組織名)

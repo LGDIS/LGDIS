@@ -52,10 +52,8 @@ module ExtOut
         success = true
         return
       ensure
-        # デバッグ用
-        log_of_output("##### before delivery_history.update_attributes ## delivery_history_id ## #{delivery_history_id} ## success ## #{success} ## delivery_history ## #{delivery_history}")
         # ステータス更新
-        delivery_history.update_attributes(status: (success ? "done" : "failed")) if delivery_history
+        delivery_history.update_attributes!(status: (success ? "done" : "failed")) if delivery_history
         # チケットへの送信履歴書き込み処理
         register_issue_journal(delivery_history, content, success)
         # 配信状況更新処理
@@ -152,7 +150,8 @@ module ExtOut
         EditionManagement.create(project_id: project_id,
                                  tracker_id: tracker_id,
                                  issue_id:   issue.id,
-                                 uuid:       xml_body.elements["//pcx_ib:Head/commons:documentID"].text)
+                                 uuid:       xml_body.elements["//pcx_ib:Head/commons:documentID"].text,
+                                 delivery_place_id: delivery_history.delivery_place_id)
       else
         # [情報の更新種別]が取消の場合、ステータスは1(新規)に戻る、それ以外は2(更新)
         edition_status = type_update == "3" ? 1 : 2

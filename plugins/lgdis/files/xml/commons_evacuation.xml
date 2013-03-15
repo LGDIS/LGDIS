@@ -22,7 +22,7 @@
 
 		<edxlde:xmlContent>
 			<edxlde:embeddedXMLContent>
-				<Report>
+				<Report xmlns="http://xml.publiccommons.ne.jp/pcxml1/3">
 
 					<!-- Control 部 -->
 					<Control>
@@ -37,6 +37,8 @@
 							<pcx_eb:OfficeInfo>
 								<pcx_eb:OrganizationCode></pcx_eb:OrganizationCode>
 								<pcx_eb:OfficeName></pcx_eb:OfficeName>
+								<pcx_eb:ContactInfo pcx_eb:contactType="phone"></pcx_eb:ContactInfo>
+								<pcx_eb:OfficeNameKana></pcx_eb:OfficeNameKana>
 								<pcx_eb:OfficeLocation>
 									<commons:areaName></commons:areaName>
 								</pcx_eb:OfficeLocation>
@@ -76,6 +78,7 @@
 		<!-- EDXL 部 -->
 		<commons:publishingOfficeName></commons:publishingOfficeName>
 		<commons:publishingOfficeID></commons:publishingOfficeID>
+		<commons:publishingOfficeDomainName></commons:publishingOfficeDomainName>
 		<commons:previousDocumentRevision></commons:previousDocumentRevision>
 		<commons:documentRevision></commons:documentRevision>
 		<commons:documentID></commons:documentID>

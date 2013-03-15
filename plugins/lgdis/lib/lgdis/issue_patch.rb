@@ -365,11 +365,11 @@ module Lgdis
         doc.elements["//EditorialOffice/pcx_eb:OrganizationName"].add_text(DST_LIST['commons_xml_field']['organization_name']) # 固定値
         doc.elements["//PublishingOffice/pcx_eb:OfficeInfo/pcx_eb:OrganizationCode"].add_text(DST_LIST['commons_xml_field']['organization_code']) # 固定値
         doc.elements["//PublishingOffice/pcx_eb:OfficeInfo/pcx_eb:OfficeName"].add_text(DST_LIST['commons_xml_field']['publishing_office'])
+        doc.elements["//PublishingOffice/pcx_eb:OfficeInfo/pcx_eb:OfficeNameKana"].add_text(DST_LIST['commons_xml_field']['publishing_office_kana'])
         unless DST_LIST['commons_xml_field']['contact_type'].blank? # 発表部署情報(電話番号)が存在する場合のみ
-          ele = REXML::Element.new("pcx_eb:ContactInfo")
-          ele.add_attribute("pcx_eb:contactType","phone")
-          doc.elements["//PublishingOffice/pcx_eb:OfficeInfo/pcx_eb:OfficeName"].next_sibling = ele
           doc.elements["//PublishingOffice/pcx_eb:OfficeInfo/pcx_eb:ContactInfo"].add_text(DST_LIST['commons_xml_field']['contact_type'].to_s)
+        else
+          doc.delete_element("//PublishingOffice/pcx_eb:OfficeInfo/pcx_eb:ContactInfo")
         end
         doc.elements["//PublishingOffice/pcx_eb:OfficeInfo/pcx_eb:OfficeLocation/commons:areaName"].add_text(DST_LIST['commons_xml_field']['area_address']) # 固定値
         doc.elements["//PublishingOffice/pcx_eb:OfficeInfo/pcx_eb:OfficeDomainName"].add_text(DST_LIST['commons_xml_field']['office_domain']) # 固定値
@@ -414,6 +414,7 @@ module Lgdis
         # Edxl 部要素追加
         doc.elements["//commons:contentObject/commons:publishingOfficeName"].add_text(DST_LIST['commons_xml_field']['publishing_office'])
         doc.elements["//commons:contentObject/commons:publishingOfficeID"].add_text(DST_LIST['commons_xml_field']['organization_code']) # 固定値
+        doc.elements["//commons:contentObject/commons:publishingOfficeDomainName"].add_text(DST_LIST['commons_xml_field']['office_domain']) # 固定値
         doc.elements["//commons:contentObject/commons:previousDocumentRevision"].add_text("#{edition_num - 1}")
         doc.elements["//commons:contentObject/commons:documentRevision"].add_text("#{edition_num}")
         doc.elements["//commons:contentObject/commons:documentID"].add_text(edition_fields_map['uuid'])
