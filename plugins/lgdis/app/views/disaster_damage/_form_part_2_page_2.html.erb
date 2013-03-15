@@ -28,8 +28,7 @@
     <th>千円</th>
     <td class="input"><%= f.text_field :agriculture_forestry_and_fisheries_buildings_losses_amount,:size=>'24',:disabled => @disabled %></td>
     <td colspan=3 class="input">
-      <%= f.text_field :prefectural_antidisaster_headquarter_status_date,:size=>'10',:disabled => @disabled %><%= calendar_for("#{f.object_name}_prefectural_antidisaster_headquarter_status_date") unless @disabled %>
-      <%= f.text_field :prefectural_antidisaster_headquarter_status_hm,:size=>'5',:disabled => @disabled %>
+      <%= f.text_field :prefectural_antidisaster_headquarter_status_at,:value=>format_time_for_input(f.object,:prefectural_antidisaster_headquarter_status_at),:size=>'16',:disabled => @disabled %><%= calendar_with_time_for("#{f.object_name}_prefectural_antidisaster_headquarter_status_at") unless @disabled %>
     </td>
   </tr>
   <tr>
@@ -56,8 +55,7 @@
     <th>団体</th>
     <td class="input"><%= f.text_field :damaged_public_buildings_municipalities_count,:size=>'24',:disabled => @disabled %></td>
     <td colspan=3 rowspan=3 class="input">
-      <%= f.text_field :municipal_antidisaster_headquarter_status_date,:size=>'10',:disabled => @disabled %><%= calendar_for("#{f.object_name}_municipal_antidisaster_headquarter_status_date") unless @disabled %>
-      <%= f.text_field :municipal_antidisaster_headquarter_status_hm,:size=>'5',:disabled => @disabled %>
+      <%= f.text_field :municipal_antidisaster_headquarter_status_at,:value=>format_time_for_input(f.object,:municipal_antidisaster_headquarter_status_at),:size=>'16',:disabled => @disabled %><%= calendar_with_time_for("#{f.object_name}_municipal_antidisaster_headquarter_status_at") unless @disabled %>
     </td>
   </tr>
   <tr>
@@ -84,8 +82,7 @@
     <th>千円</th>
     <td class="input"><%= f.text_field :fisheries_losses_amount,:size=>'24',:disabled => @disabled %></td>
     <td colspan=4 rowspan=3 class="input">
-      <%= f.text_field :disaster_relief_act_applied_date,:size=>'10',:disabled => @disabled %><%= calendar_for("#{f.object_name}_disaster_relief_act_applied_date") unless @disabled %>
-      <%= f.text_field :disaster_relief_act_applied_hm,:size=>'5',:disabled => @disabled %>
+      <%= f.text_field :disaster_relief_act_applied_at,:value=>format_time_for_input(f.object,:disaster_relief_act_applied_at),:size=>'16',:disabled => @disabled %><%= calendar_with_time_for("#{f.object_name}_disaster_relief_act_applied_at") unless @disabled %>
     </td>
   </tr>
   <tr>

@@ -42,6 +42,9 @@ class DeliverIssuesController < ApplicationController
       # 情報の配信対象地域のコード値をstring に変換
       issue_map = convert_issue_map(issue_map)
       @issue.update_attributes(issue_map)
+      error_messages = @issue.errors.full_messages.join("\n")
+      raise RecordInvalid, error_messages if error_messages.present?
+
       deliver_historires =  DeliveryHistory.create_for_history(@issue, ext_out_ary)
       error_messages = error_messages_for_issues(deliver_historires)
       raise RecordInvalid, error_messages if error_messages.present?

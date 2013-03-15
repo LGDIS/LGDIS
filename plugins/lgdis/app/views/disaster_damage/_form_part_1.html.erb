@@ -10,8 +10,7 @@
     </td>
     <th>発生日時</th>
     <td class="input">
-      <%= f.text_field :disaster_occurred_date,:size=>'10',:disabled => @disabled %><%= calendar_for("#{f.object_name}_disaster_occurred_date") unless @disabled %>
-      <%= f.text_field :disaster_occurred_hm,:size=>'5',:disabled => @disabled %>
+      <%= f.text_field :disaster_occurred_at,:value=>format_time_for_input(f.object,:disaster_occurred_at),:size=>'16',:disabled => @disabled %><%= calendar_with_time_for("#{f.object_name}_disaster_occurred_at") unless @disabled %>
     </td>
   </tr>
   <tr>
@@ -69,15 +68,13 @@
     <td class="input">
       （都道府県）<br>
       <%= f.text_area :general_prefectural_antidisaster_headquarter_status,:size=>'30x2',:disabled => @disabled %><br>
-      <%= f.text_field :general_prefectural_antidisaster_headquarter_status_date,:size=>'10',:disabled => @disabled %><%= calendar_for("#{f.object_name}_general_prefectural_antidisaster_headquarter_status_date") unless @disabled %>
-      <%= f.text_field :general_prefectural_antidisaster_headquarter_status_hm,:size=>'5',:disabled => @disabled %>
+      <%= f.text_field :general_prefectural_antidisaster_headquarter_status_at,:value=>format_time_for_input(f.object,:general_prefectural_antidisaster_headquarter_status_at),:size=>'16',:disabled => @disabled %><%= calendar_with_time_for("#{f.object_name}_general_prefectural_antidisaster_headquarter_status_at") unless @disabled %>
     </td>
     <td class="input">
       （市町村）
       <%= f.text_field :general_municipal_antidisaster_headquarter_of,:size=>'24',:disabled => @disabled %><br>
       <%= f.text_area :general_municipal_antidisaster_headquarter_status,:size=>'45x2',:disabled => @disabled %><br>
-      <%= f.text_field :general_municipal_antidisaster_headquarter_status_date,:size=>'10',:disabled => @disabled %><%= calendar_for("#{f.object_name}_general_municipal_antidisaster_headquarter_status_date") unless @disabled %>
-      <%= f.text_field :general_municipal_antidisaster_headquarter_status_hm,:size=>'5',:disabled => @disabled %>
+      <%= f.text_field :general_municipal_antidisaster_headquarter_status_at,:value=>format_time_for_input(f.object,:general_municipal_antidisaster_headquarter_status_at),:size=>'16',:disabled => @disabled %><%= calendar_with_time_for("#{f.object_name}_general_municipal_antidisaster_headquarter_status_at") unless @disabled %>
     </td>
   </tr>
   <tr>

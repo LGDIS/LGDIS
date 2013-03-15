@@ -6,6 +6,7 @@ class CustomFormatValidator < ActiveModel::EachValidator
   # phone_number :: 電話番号
   # time :: 時刻
   # date :: 日付
+  # datetime :: 日時
   # ==== Args
   # _record_ :: record
   # _attribute_ :: attribute
@@ -13,8 +14,11 @@ class CustomFormatValidator < ActiveModel::EachValidator
   # ==== Return
   # ==== Raise
   def validate_each(record, attribute, value)
+    before_type_cast = "#{attribute}_before_type_cast"
+    raw_value = record.send(before_type_cast) if record.respond_to?(before_type_cast.to_sym)
+    raw_value ||= value
     begin
-      r = __send__ options[:type].to_s, value
+      r = self.class.__send__(options[:type].to_s, raw_value)
     rescue
       raise "Invalid option (type) is specified."
     end
@@ -24,14 +28,13 @@ class CustomFormatValidator < ActiveModel::EachValidator
     end
   end
   
-  private
   # バリデーション処理（メールアドレス）
   # ==== Args
   # _value_ :: value
   # ==== Return
   # バリデーション結果
   # ==== Raise
-  def mail_address(value)
+  def self.mail_address(value)
     value.blank? || /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/ =~ value
   end
   
@@ -41,31 +44,25 @@ class CustomFormatValidator < ActiveModel::EachValidator
   # ==== Return
   # バリデーション結果
   # ==== Raise
-  def phone_number(value)
+  def self.phone_number(value)
     value.blank? || /^[-0-9]+$/ =~ value
   end
   
-  # バリデーション処理（時刻）
+  # バリデーション処理（日時）
   # ==== Args
   # _value_ :: value
   # ==== Return
   # バリデーション結果
   # ==== Raise
-  def time(value)
-    value.blank? || /^(0?[0-9]|1[0-9]|2[0-3]):([0-5]?[0-9])$/ =~ value
-  end
-  
-  # バリデーション処理（日付）
-  # ==== Args
-  # _value_ :: value
-  # ==== Return
-  # バリデーション結果
-  # ==== Raise
-  def date(value)
+  def self.datetime(value)
     return true if value.blank?
-    begin
-      Date.strptime(value.to_s, "%Y-%m-%d")
-    rescue
+    if value.to_s =~ /^(\d{4})(?:\/|-|.)?(\d{1,2})(?:\/|-|.)?(\d{1,2})(?:\s{1}|T)(\d{1,2}):?(\d{1,2}):?(\d{1,2})/
+      begin
+        DateTime.new($1.to_i,$2.to_i,$3.to_i,$4.to_i,$5.to_i,$6.to_i)
+      rescue
+        return false
+      end
+    else
       return false
     end
   end

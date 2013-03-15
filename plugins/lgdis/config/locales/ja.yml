@@ -16,7 +16,6 @@ ja:
     errors:
       messages:
         not_an_integer: は整数で入力してください
-        not_a_datetime: "は日時を入力してください。"
 
   field_include_time: 時刻を含む
   datetimepicker:
@@ -124,15 +123,6 @@ ja:
     field_physical_disability_certificate_count: 身体障がい者手帳1/2級所持者
     field_note: 備考
     
-    field_opened_date: 開設日時（年月日）
-    field_opened_hm: 開設日時（時分）
-    field_closed_date: 閉鎖日時（年月日）
-    field_closed_hm: 閉鎖日時（時分）
-    field_checked_date: 避難所状況確認日時（年月日）
-    field_checked_hm: 避難所状況確認日時（時分）
-    field_reported_date: 報告日時（年月日）
-    field_reported_hm: 報告日時（時分）
-    
     field_address_area: 地区名
     field_address_postal_code: 郵便番号
     field_address_state: 都道府県
@@ -208,15 +198,9 @@ ja:
   field_type_update: 情報の更新種別
   field_description_cancel: 取消の説明文
   field_published_at: 情報の発表日時
-  field_published_date: 情報の発表日時(日付)
-  field_published_hm: 情報の発表日時(時間)
   field_delivered_area: 情報の配信対象地域
   field_opened_at: 情報の公開開始日時
-  field_opened_date: 情報の公開開始日時(日付)
-  field_opened_hm: 情報の公開開始日時(時間)
   field_closed_at: 情報の公開終了日時
-  field_closed_date: 情報の公開終了日時(日付)
-  field_closed_hm: 情報の公開終了日時(時間)
   field_cf_classification: カスタムフィールドの情報識別区分
 
   # 避難勧告･指示機能 項目名
@@ -259,12 +243,6 @@ ja:
     field_issued_at: 発令日時
     field_changed_at: 移行日時
     field_lifted_at: 解除日時
-    field_issued_date: 発令日時（年月日）
-    field_issued_hm: 発令日時（時分）
-    field_changed_date: 移行日時（年月日）
-    field_changed_hm: 移行日時（時分）
-    field_lifted_date: 解除日時（年月日）
-    field_lifted_hm: 解除日時（時分）
 
   ####
   # 災害被害情報（第４号様式）機能
@@ -375,19 +353,6 @@ ja:
     field_note_other_local_government: その２（被害状況即報） / 備考 / 応急対策の状況 / 他の地方公共団体への応援要請、応援活動の状況
     field_note_self_defence_force: その２（被害状況即報） / 備考 / 応急対策の状況 / 自衛隊の派遣要請、出勤状況
     field_note_volunteer: その２（被害状況即報） / 備考 / 応急対策の状況 / 災害ボランティアの活動状況
-
-    field_disaster_occurred_date: その１（災害概況即報） / 災害の概況 / 発生日時（年月日）
-    field_disaster_occurred_hm: その１（災害概況即報） / 災害の概況 / 発生日時（時分）
-    field_general_prefectural_antidisaster_headquarter_status_date: その１（災害概況即報） / 応急対策の状況 / 災害対策本部等の設置状況 / （都道府県） / 設置状況日時（年月日）
-    field_general_prefectural_antidisaster_headquarter_status_hm: その１（災害概況即報） / 応急対策の状況 / 災害対策本部等の設置状況 / （都道府県） / 設置状況日時（時分）
-    field_general_municipal_antidisaster_headquarter_status_date: その１（災害概況即報） / 応急対策の状況 / 災害対策本部等の設置状況 / （市町村） / 設置状況日時（年月日）
-    field_general_municipal_antidisaster_headquarter_status_hm: その１（災害概況即報） / 応急対策の状況 / 災害対策本部等の設置状況 / （市町村） / 設置状況日時（時分）
-    field_prefectural_antidisaster_headquarter_status_date: その２（被害状況即報） / 災害対策本部等の設置状況 / 都道府県 / 設置状況日時（年月日）
-    field_prefectural_antidisaster_headquarter_status_hm: その２（被害状況即報） / 災害対策本部等の設置状況 / 都道府県 / 設置状況日時（時分）
-    field_municipal_antidisaster_headquarter_status_date: その２（被害状況即報） / 災害対策本部等の設置状況 / 市町村 / 設置状況日時（年月日）
-    field_municipal_antidisaster_headquarter_status_hm: その２（被害状況即報） / 災害対策本部等の設置状況 / 市町村 / 設置状況日時（時分）
-    field_disaster_relief_act_applied_date: その２（被害状況即報） / 災害救助法適用市町村名 / 適用日時（年月日）
-    field_disaster_relief_act_applied_hm: その２（被害状況即報） / 災害救助法適用市町村名 / 適用日時（時分）
 
   # GoogleMaps入力
   button_map_show: 地図を表示

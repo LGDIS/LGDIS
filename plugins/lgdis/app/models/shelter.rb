@@ -4,10 +4,10 @@ class Shelter < ActiveRecord::Base
   unloadable
   
   attr_accessible :name,:name_kana,:area,:address,:phone,:fax,:e_mail,:person_responsible,
-                  :shelter_type,:shelter_type_detail,:shelter_sort,:opened_date,:opened_hm,
-                  :closed_date, :closed_hm,:capacity,:status,:head_count_voluntary,
-                  :households_voluntary,:checked_date, :checked_hm,:manager_code,:manager_name,
-                  :manager_another_name,:reported_date, :reported_hm,:building_damage_info,
+                  :shelter_type,:shelter_type_detail,:shelter_sort,:opened_at,
+                  :closed_at,:capacity,:status,:head_count_voluntary,
+                  :households_voluntary,:checked_at,:manager_code,:manager_name,
+                  :manager_another_name,:reported_at,:building_damage_info,
                   :electric_infra_damage_info,:communication_infra_damage_info,
                   :other_damage_info,:usable_flag,:openable_flag,:note,
                   :head_count, :households,:injury_count, :upper_care_level_three_count,
@@ -34,8 +34,6 @@ class Shelter < ActiveRecord::Base
   acts_as_paranoid
   validates_as_paranoid
   
-  acts_as_datetime_separable :opened_at,:closed_at,:checked_at,:reported_at
-  
   validates :name, :presence => true,
                 :length => {:maximum => 30}
   validates_uniqueness_of_without_deleted :name
@@ -61,8 +59,10 @@ class Shelter < ActiveRecord::Base
                 :length => {:maximum => 255}
   validates :shelter_sort, :presence => true,
                 :inclusion => {:in => CONST[:shelter_sort.to_s].keys, :allow_blank => true}
-  # validates :opened_at
-  # validates :closed_at
+  validates :opened_at,
+                :custom_format => {:type => :datetime}
+  validates :closed_at,
+                :custom_format => {:type => :datetime}
   validates :capacity,
                 :numericality => POSITIVE_INTEGER
   validates :status,
@@ -75,14 +75,16 @@ class Shelter < ActiveRecord::Base
                 :numericality => POSITIVE_INTEGER
   validates :households_voluntary,
                 :numericality => POSITIVE_INTEGER
-  # validates :checked_at
+  validates :checked_at,
+                :custom_format => {:type => :datetime}
   validates :manager_code,
                 :length => {:maximum => 10}
   validates :manager_name,
                 :length => {:maximum => 100}
   validates :manager_another_name,
                 :length => {:maximum => 100}
-  # validates :reported_at
+  validates :reported_at,
+                :custom_format => {:type => :datetime}
   validates :building_damage_info,
                 :length => {:maximum => 4000}
   validates :electric_infra_damage_info,
