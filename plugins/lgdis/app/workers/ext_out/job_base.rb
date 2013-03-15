@@ -52,6 +52,8 @@ module ExtOut
         success = true
         return
       ensure
+        # デバッグ用
+        log_of_output("##### before delivery_history.update_attributes ## delivery_history_id ## #{delivery_history_id} ## success ## #{success} ## delivery_history ## #{delivery_history}")
         # ステータス更新
         delivery_history.update_attributes(status: (success ? "done" : "failed")) if delivery_history
         # チケットへの送信履歴書き込み処理
