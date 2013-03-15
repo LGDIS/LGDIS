@@ -301,7 +301,8 @@ class Shelter < ActiveRecord::Base
     node_informations = node_shelter.add_element("pcx_sh:Informations")
     
     # 避難所を取得しXMLを生成する
-    Shelter.all.each do |shelter|
+    @shelters = Shelter.scoped.order(:shelter_code)
+    @shelters.each do |shelter|
       node_information = node_informations.add_element("pcx_sh:Information")
       
       # 子要素がすべてブランクの場合、親要素を生成しない
@@ -382,6 +383,19 @@ class Shelter < ActiveRecord::Base
     issue.subject    = "避難所情報 #{Time.now.strftime("%Y/%m/%d %H:%M:%S")}"
     issue.author_id  = User.current.id
     issue.xml_body   = doc.to_s
+    # チケットにcsvファイルを添付する
+    tf = create_csv(@shelters, "避難所情報", [:name,:name_kana,:area,:address,:phone,:fax,:e_mail,:person_responsible,
+      :shelter_type,:shelter_type_detail,:shelter_sort,:opened_at,:closed_at,:capacity,:status,:head_count]) do |key, value|
+      if key == "area"
+        Area.all.select{|v| v.area_code == value}.first.try(:name)
+      else
+        value
+      end
+    end
+    issue.save_attachments(["file"=> tf, "description" => "全ての避難所情報CSVファイル ※チケット作成時点"])
+    # 一時ファイルの削除
+    tf.close(true)
+    
     issue.save!
     
     return issue
