@@ -10,7 +10,13 @@ class Batches::LinkDisasterPortal < ActiveRecord::Base
   def self.execute
     Rails.logger.info(" #{Time.now.to_s} ===== #{self.name} START ===== ")
     
-    pj = Project.find(DST_LIST["link_disaster_portal_project_id"])
+    # プロジェクトIDが未設定、または設定してあるプロジェクトIDのデータが存在しない場合は終了
+    if DST_LIST["link_disaster_portal_project_id"].blank? || Project.where({:id => DST_LIST["link_disaster_portal_project_id"]}).blank?
+      Rails.logger.info(" #{Time.now.to_s} ===== #{self.name} PROJECT ID is not setting. ===== ")
+      return
+    end
+    pj = Project.where({:id => DST_LIST["link_disaster_portal_project_id"]}).first
+    
     auther_name  = DST_LIST["link_disaster_portal_auther_name"]
     auther_email = DST_LIST["link_disaster_portal_auther_email"]
     
