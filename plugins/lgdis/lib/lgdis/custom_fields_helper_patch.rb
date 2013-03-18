@@ -98,38 +98,6 @@ module Lgdis
         return custom_field_tag_for_bulk_edit_without_time(name, custom_field)
       end
 
-      # 日時入力補助のjavascript作成処理
-      # ==== Args
-      # _field_id_ :: 項目ID
-      # ==== Return
-      # ==== Raise
-      def calendar_with_time_for(field_id)
-        include_calendar_headers_tags
-        include_calendar_with_time_headers_tags
-        javascript_tag("$(function() { $('##{field_id}').datetimepicker(datetimepickerOptions); });")
-      end
-
-      # 日時入力補助のjavascriptヘッダー作成処理
-      # ==== Args
-      # ==== Return
-      # ==== Raise
-      def include_calendar_with_time_headers_tags
-        unless @calendar_with_time_headers_tags_included
-          @calendar_with_time_headers_tags_included = true
-          content_for :header_tags do
-            tags = javascript_tag(
-                "var datetimepickerOptions= $.extend(datepickerOptions, {" +
-                    "timeText: '#{l(:time, scope: :datetimepicker)}'," +
-                    "hourText: '#{l(:hour, scope: :datetimepicker)}'," +
-                    "minuteText: '#{l(:minute, scope: :datetimepicker)}'," +
-                    "currentText: '#{l(:current, scope: :datetimepicker)}'," +
-                    "closeText: '#{l(:close, scope: :datetimepicker)}'});")
-            tags << javascript_include_tag("jquery-ui-timepicker-addon", :plugin => "lgdis")
-            tags
-          end
-        end
-      end
-
     end
 
   end

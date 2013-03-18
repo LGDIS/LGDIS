@@ -53,7 +53,7 @@ module ExtOut
         return
       ensure
         # ステータス更新
-        delivery_history.update_attributes(status: (success ? "done" : "failed")) if delivery_history
+        delivery_history.update_attributes!(status: (success ? "done" : "failed")) if delivery_history
         # チケットへの送信履歴書き込み処理
         register_issue_journal(delivery_history, content, success)
         # 配信状況更新処理
@@ -143,13 +143,15 @@ module ExtOut
       tracker_id = issue.tracker_id
       type_update = issue.type_update
       edition_mng = EditionManagement.find_by_project_id_and_tracker_id(project_id, tracker_id)
+      xml_body = REXML::Document.new(content)
 
       # 新規追加処理
       if edition_mng.blank?
-        EditionManagement.create(project_id:  project_id,
-                                 tracker_id:  tracker_id,
-                                 issue_id:    issue.id,
-                                 uuid:        content.elements["//pcx_ib:Head/commons:documentID"].text)
+        EditionManagement.create(project_id: project_id,
+                                 tracker_id: tracker_id,
+                                 issue_id:   issue.id,
+                                 uuid:       xml_body.elements["//pcx_ib:Head/commons:documentID"].text,
+                                 delivery_place_id: delivery_history.delivery_place_id)
       else
         # [情報の更新種別]が取消の場合、ステータスは1(新規)に戻る、それ以外は2(更新)
         edition_status = type_update == "3" ? 1 : 2

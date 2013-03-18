@@ -2,14 +2,15 @@
 class DeliveryHistory < ActiveRecord::Base
   unloadable
 
-  belongs_to :issue, :dependent => :destroy
+  belongs_to :issue
 
   attr_accessible :issue_id, :project_id, :delivery_place_id, :request_user, :respond_user, :status, :process_date,
-                  :mail_subject, :summary, :type_update, :description_cancel, :published_date, :published_hm,
-                  :delivered_area, :opened_date, :opened_hm, :closed_date, :closed_hm
+                  :mail_subject, :summary, :type_update, :description_cancel, :published_at,
+                  :delivered_area, :opened_at, :closed_at
 
-  acts_as_datetime_separable :published_at, :opened_at, :closed_at
-
+  validates :published_at, :custom_format => {:type => :datetime}
+  validates :opened_at, :custom_format => {:type => :datetime}
+  validates :closed_at, :custom_format => {:type => :datetime}
   validate :for_commons
 
   # 外部配信先ID
@@ -41,12 +42,9 @@ class DeliveryHistory < ActiveRecord::Base
         :type_update       => issue[:type_update],
         :description_cancel=> issue[:description_cancel],
         :delivered_area    => issue[:delivered_area],
-        :published_date    => issue.published_date,
-        :published_hm      => issue.published_hm,
-        :opened_date       => issue.opened_date,
-        :opened_hm         => issue.opened_hm,
-        :closed_date       => issue.closed_date,
-        :closed_hm         => issue.closed_hm)
+        :published_at      => issue[:published_at],
+        :opened_at         => issue[:opened_at],
+        :closed_at         => issue[:closed_at])
       x.save
       deliver_histories << x
     end
@@ -104,7 +102,7 @@ class DeliveryHistory < ActiveRecord::Base
 
     # トラッカーID の種別がイベント・お知らせ時のみ
     # 配信要求時にカスタムフィールドの情報識別区分 の有無のバリデーションを行う
-    if (DST_LIST['general_info_ids'].include?(self.issue.tracker_id)) && \
+    if (DST_LIST['general_info_ids'].include?(self.issue.tracker_id)) && [COMMONS_ID].include?(self.delivery_place_id) &&
         self.issue.name_in_custom_field_value(DST_LIST['custom_field_delivery']['info_classification']).blank?
       errors.add(:cf_classification, "を入力して下さい")
     end

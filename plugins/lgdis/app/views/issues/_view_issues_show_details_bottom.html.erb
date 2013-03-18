@@ -10,8 +10,10 @@
         <%= hidden_field_tag :project_id, @project.identifier %>
 
         <% unless @destination_list.blank? %>
+        <% checked = [] %>
+        <% (DST_LIST["delivery_place_default"][@issue.tracker_id] || []).each {|i| checked << i["id"] } %>
           <% @destination_list.each do |dest|%>
-            <label style="display: block;float: left;"><%= check_box_tag "ext_out_target[]", dest['id'] %><%= dest['name'] %></label>
+            <label style="display: block;float: left;"><%= check_box_tag "ext_out_target[]", dest['id'], checked.include?( dest['id'] ) ? true : false %><%= dest['name'] %></label>
           <% end %>
         <% end %>
         <div style="clear:both;"></div>
@@ -58,8 +60,7 @@
         <div class="splitcontentleft">
           <p>
             <label>情報の発表日時</label>
-            <%= text_field_tag "issue[published_date]", @issue.published_date, :size=>'10' %><%= calendar_for("issue_published_date") %>
-            <%= text_field_tag "issue[published_hm]",   @issue.published_hm,   :size=>'10' %>
+            <%= text_field_tag "issue[published_at]", format_time_for_input(@issue, :published_at), :size=>'16' %><%= calendar_with_time_for("issue_published_at") %>
           </p>
         </div>
         <div class="splitcontentright">
@@ -79,15 +80,13 @@
         <div class="splitcontentleft">
           <p>
             <label>情報の公開開始日時</label>
-            <%= text_field_tag "issue[opened_date]", @issue.opened_date, :size=>'10' %><%= calendar_for("issue_opened_date") %>
-            <%= text_field_tag "issue[opened_hm]",   @issue.opened_hm,   :size=>'10' %>
+            <%= text_field_tag "issue[opened_at]", format_time_for_input(@issue, :opened_at), :size=>'16' %><%= calendar_with_time_for("issue_opened_at") %>
           </p>
         </div>
         <div class="splitcontentright">
           <p>
             <label>情報の公開終了日時</label>
-            <%= text_field_tag "issue[closed_date]", @issue.closed_date, :size=>'10' %><%= calendar_for("issue_closed_date") %>
-            <%= text_field_tag "issue[closed_hm]",   @issue.closed_hm,   :size=>'10' %>
+            <%= text_field_tag "issue[closed_at]", format_time_for_input(@issue, :closed_at), :size=>'16' %><%= calendar_with_time_for("issue_closed_at") %>
           </p>
         </div>
       </div>

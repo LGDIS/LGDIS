@@ -33,14 +33,12 @@
           <%= select_tag "evacuation_advisories[#{evacuation_advisory.id}][issueorlift]", options_for_select(@evacuation_advisory_const["issueorlift"].invert, evacuation_advisory.issueorlift), {:include_blank => true, :disabled => @disabled} %>
         </td>
         <td style="text-align: center;" nowrap>
-          <%= text_field_tag "evacuation_advisories[#{evacuation_advisory.id}][issued_date]", evacuation_advisory.issued_date, :size => "10", :disabled => @disabled %>
-          <%= calendar_for("evacuation_advisories_#{evacuation_advisory.id}_issued_date") %>
-          <%= text_field_tag "evacuation_advisories[#{evacuation_advisory.id}][issued_hm]", evacuation_advisory.issued_hm, :size => "5", :disabled => @disabled %>
+          <%= text_field_tag "evacuation_advisories[#{evacuation_advisory.id}][issued_at]", format_time_for_input(evacuation_advisory, :issued_at), :size => "16", :disabled => @disabled %>
+          <%= calendar_with_time_for("evacuation_advisories_#{evacuation_advisory.id}_issued_at") %>
         </td>
         <td style="text-align: center;" nowrap>
-          <%= text_field_tag "evacuation_advisories[#{evacuation_advisory.id}][lifted_date]", evacuation_advisory.lifted_date, :size => "10", :disabled => @disabled %>
-          <%= calendar_for("evacuation_advisories_#{evacuation_advisory.id}_lifted_date") %>
-          <%= text_field_tag "evacuation_advisories[#{evacuation_advisory.id}][lifted_hm]", evacuation_advisory.lifted_hm, :size => "5", :disabled => @disabled %>
+          <%= text_field_tag "evacuation_advisories[#{evacuation_advisory.id}][lifted_at]", format_time_for_input(evacuation_advisory, :lifted_at), :size => "16", :disabled => @disabled %>
+          <%= calendar_with_time_for("evacuation_advisories_#{evacuation_advisory.id}_lifted_at") %>
         </td>
         <td style="text-align: center;"><%= evacuation_advisory.households %></td>
         <td style="text-align: center;"><%= evacuation_advisory.head_count%></td>

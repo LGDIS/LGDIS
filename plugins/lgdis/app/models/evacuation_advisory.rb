@@ -3,8 +3,8 @@ class EvacuationAdvisory < ActiveRecord::Base
   unloadable
 
   attr_accessible :advisory_type,:sort_criteria,:issueorlift,:area,
-                  :area_kana,:district,:issued_date,:issued_hm,:issued_hm,:changed_date,
-                  :changed_hm,:lifted_date,:lifted_hm,:address,:category,:cause,
+                  :area_kana,:district,:issued_at,:changed_at,
+                  :lifted_at,:address,:category,:cause,
                   :staff_no,:full_name,:alias,:headline,:message,
                   :emergency_hq_needed_prefecture,:emergency_hq_needed_city,
                   :alert,:alerting_area,:siren_area,:evacuation_order,
@@ -23,8 +23,6 @@ class EvacuationAdvisory < ActiveRecord::Base
   acts_as_paranoid
   validates_as_paranoid
 
-  acts_as_datetime_separable :issued_at,:lifted_at,:changed_at
-
   #Data base NOT-NULL項目validations
   validates :advisory_type, 
                 :inclusion => {:in => CONST[:advisory_type.to_s].keys, :allow_blank => true}
@@ -40,6 +38,12 @@ class EvacuationAdvisory < ActiveRecord::Base
                 :length => {:maximum => 100}
   validates_uniqueness_of_without_deleted :area
 
+  validates :issued_at,
+                :custom_format => {:type => :datetime}
+  validates :changed_at,
+                :custom_format => {:type => :datetime}
+  validates :lifted_at,
+                :custom_format => {:type => :datetime}
   validates :households,
                  :numericality => POSITIVE_INTEGER
   validates :head_count,
