@@ -13,6 +13,7 @@ class Batches::LinkDisasterPortal < ActiveRecord::Base
     # プロジェクトIDが未設定、または設定してあるプロジェクトIDのデータが存在しない場合は終了
     if DST_LIST["link_disaster_portal_project_id"].blank? || Project.where({:id => DST_LIST["link_disaster_portal_project_id"]}).blank?
       Rails.logger.info(" #{Time.now.to_s} ===== #{self.name} PROJECT ID is not setting. ===== ")
+      Rails.logger.info(" #{Time.now.to_s} ===== #{self.name}  END  ===== ")
       return
     end
     pj = Project.where({:id => DST_LIST["link_disaster_portal_project_id"]}).first
