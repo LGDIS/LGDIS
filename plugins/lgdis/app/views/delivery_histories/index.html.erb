@@ -1,4 +1,15 @@
-<div class=?"autoscroll" >
+<div class="splitcontent">
+  <div class="splitcontentleft">
+  </div>
+  <div class="splitcontentright">
+    <p style="text-align: right;">
+      <%= will_paginate @delivery_histories, :previous_label => "前 &lt;&lt; ",
+        :link_separator => "#{page_entries_info @delivery_histories}", :container => false,
+        :next_label => " &gt;&gt; 次", :page_links => false %>
+    </p>
+  </div>
+</div>
+<div class="autoscroll" >
   <table class="list issues">
     <thead>
       <tr>

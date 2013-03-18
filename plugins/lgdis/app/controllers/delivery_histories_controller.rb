@@ -9,7 +9,7 @@ class DeliveryHistoriesController < ApplicationController
   # ==== Return
   # ==== Raise
   def index
-    @delivery_histories = DeliveryHistory.where(:project_id => @project.id)
+    @delivery_histories = DeliveryHistory.where(:project_id => @project.id).paginate(:page => params[:page], :order => 'created_at desc', :per_page => 30)
   end
 
   private
