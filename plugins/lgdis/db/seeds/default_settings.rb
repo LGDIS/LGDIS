@@ -1,13 +1,13 @@
 # encoding: utf-8
 # システム管理者(admin)ユーザの設定
 admin = User.find(1)
-# 言語：Japanese(日本語)
-admin.update_attributes!(language: "ja")
+# 言語：Japanese (日本語:LGDIS)
+admin.update_attributes!(language: "ja-LG")
 
 
 # 設定/表示
-# 既定の言語：Japanese(日本語)
-Setting.default_language = "ja"
+# 既定の言語：Japanese (日本語:LGDIS)
+Setting.default_language = "ja-LG"
 # ユーザー名の表示書式：姓 名
 Setting.user_format = "lastname_firstname"
 
