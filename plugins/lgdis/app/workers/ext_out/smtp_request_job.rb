@@ -41,8 +41,8 @@ module ExtOut
 
         client.from     = delivery_place["from"]
         client.to       = delivery_place["to"]
-        client.subject  = content["subject"]
-        client.body     = content["body"]
+        client.subject  = content["title"]
+        client.body     = content["message"]
 
         # メール送信
         client.output
