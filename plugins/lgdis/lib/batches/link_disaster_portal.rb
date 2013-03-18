@@ -11,7 +11,7 @@ class Batches::LinkDisasterPortal < ActiveRecord::Base
     Rails.logger.info(" #{Time.now.to_s} ===== #{self.name} START ===== ")
     
     pj = Project.find(DST_LIST["link_disaster_portal_project_id"])
-    auther_name  = DST_LIST["link_disaster_portal_auher_name"]
+    auther_name  = DST_LIST["link_disaster_portal_auther_name"]
     auther_email = DST_LIST["link_disaster_portal_auther_email"]
     
     # 連携対象のトラッカーID
