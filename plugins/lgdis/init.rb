@@ -12,6 +12,9 @@ require "#{Rails.root}/plugins/lgdis/config/initializers/resque"
 # カスタムバリデータ
 ActiveSupport::Dependencies.autoload_paths += %W(#{Rails.root}/plugins/lgdis/lib/validators)
 
+# バッチファイル
+ActiveSupport::Dependencies.autoload_paths += %W(#{Rails.root}/plugins/lgdis/lib/batches)
+
 # API キー設定ファイルロード
 API_KEY     = YAML.load_file("#{Rails.root}/plugins/lgdis/config/api_key.yml")
 DST_LIST    = YAML.load_file("#{Rails.root}/plugins/lgdis/config/destination_list.yml")
