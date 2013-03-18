@@ -3080,7 +3080,7 @@ atom:
 disaster_portal_url: "下記リンクより、災害情報を確認して下さい。\n http://www.jice.or.jp/sinsai/sinsai_result.php"
 
 # LGDSF URL
-lgdsf_url: "下記リンクより、位置情報、参集場所の報告を行ってください。\n http://203.138.187.89/LGDSF/staffs/send"
+lgdsf_url: "下記リンクより、位置情報、参集場所の報告を行ってください。\n http://203.138.187.89/LGDSF/staffs/send/mail_id="
 
 # 外部出力
 ext_out:
