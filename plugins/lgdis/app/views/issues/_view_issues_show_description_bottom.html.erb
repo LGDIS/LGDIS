@@ -87,14 +87,24 @@ end %>
 <%= print_xml_field(val, "xml_body") %>
 <% end %>
 
+<%
+area_dai_value, area_tyu_value, area_syo_value = nil, nil, nil
+custom_map_fields_ids = CF_ADDRESS.first
+@issue.custom_field_values.each do |cf_v|
+  case cf_v.custom_field.id
+  when custom_map_fields_ids[0]
+    area_dai_value = cf_v.to_s
+  when custom_map_fields_ids[1]
+    area_tyu_value = cf_v.to_s
+  when custom_map_fields_ids[2]
+    area_syo_value = cf_v.to_s
+  end
+end
+%>
 <fieldset class="collapsible collapsed" >
-<legend onclick="toggleFieldset(this); init();"><%= l(:map) %></legend>
+<legend onclick="toggleFieldset(this); init('<%= area_dai_value -%>','<%= area_tyu_value -%>','<%= area_syo_value -%>');"><%= l(:map) %></legend>
     <div style="display: none;" id="map" class="map_field"></div>
 </fieldset>
-
-<% content_for :header_tags do %>
-   <%= javascript_include_tag "//maps.google.com/maps/api/js?sensor=false&language=ja" %>
-<% end %>
 
 <script>
   //<![CDATA[
@@ -125,14 +135,12 @@ end %>
   // 各種メソッド
 
   // 初期化。bodyのonloadでinit()を指定することで呼び出してます
-  function init() {
+  function init(dai, tyu, syo) {
     // Google Mapで利用する初期設定用の変数
-    var latlng = new google.maps.LatLng(<%= MAP_VALUES['ishi_lat'] %>,
-                                        <%= MAP_VALUES['ishi_lon'] %>);
     var opts = {
       zoom: 12,
       mapTypeId: google.maps.MapTypeId.ROADMAP,
-      center: latlng
+      center: DEFAULT_MAP_CENTER
     };
 
     // getElementById("map")の"map"は、body内の<div id="map">より
@@ -149,6 +157,9 @@ end %>
 
     // ロケーション作成
     createLocations(global_locations, map);
+
+    // マップの中心を移動
+    setCenterByKML(dai, tyu, syo, map);
   }
 
   /**
@@ -207,7 +218,6 @@ end %>
       var marker = new google.maps.Marker({
           position: new google.maps.LatLng(point[0], point[1]),
           map: map
-
       });
 
       if (remarks) {
@@ -310,7 +320,7 @@ end %>
   }
 
   /**
-   * point([緯度,軽度])の配列からLatLng型の配列を作成します
+   * point([緯度,経度])の配列からLatLng型の配列を作成します
    */
   function createPathArray(points) {
     var pathArray = new Array();
@@ -320,7 +330,53 @@ end %>
     }
     return pathArray;
   }
+
+  /**
+   * マップの中心・ズーム率をGoogle Fusion Tablesから指定
+   */
+  function setCenterByKML(area_dai, area_tyu, area_syo, map) {
+    var whe;
+    if (area_syo) {
+       whe = "WHERE area_dai='" + area_dai + "' AND area_tyu='" + area_tyu + "' AND area_syo='" + area_syo + "'";
+    } else if (area_tyu) {
+       whe = "WHERE area_dai='" + area_dai + "' AND area_tyu='" + area_tyu + "'";
+    } else if (area_dai) {
+       whe = "WHERE area_dai='" + area_dai + "'";
+    }
+    if (!whe) return;
+    var query_string = 'SELECT kml FROM '+GOOGLE_FT_KEY+' '+whe+'';
+    var uri_string = 'http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent(query_string);
+    var query = new google.visualization.Query(uri_string);
+    query.send(function(response) {
+      if (!response.isError()) {
+        var result_count = response.getDataTable().getNumberOfRows();
+        if (result_count > 0) {
+          var kml = response.getDataTable().getValue(0, 0);
+          var bounds = new google.maps.LatLngBounds();
+          // parse polygons' lat & lng
+          var parsedXML = $.parseXML(kml);
+          $(parsedXML).find("Polygon").text().split(" ").forEach(function(elem,idx,arry){
+            if(elem) {
+              var poly = elem.split(",");
+              if (parseFloat(poly[1]) && parseFloat(poly[0])) {
+                var latlng = new google.maps.LatLng(parseFloat(poly[1]), parseFloat(poly[0]));
+                bounds.extend(latlng);
+              }
+            }
+          });
+          map.panToBounds(bounds);
+          map.fitBounds(bounds);
+        }
+      } else {
+        console.log("ERROR:");
+        console.log(response.getMessage());
+        console.log(" "+response.getDetailedMessage());
+        for (var j = 0; j < response.getReasons().length; j++) {
+          console.log(" "+response.getReasons()[j]);
+        }
+      }
+    });
+  }
   //]]>
 </script>
 <% end %>
-
