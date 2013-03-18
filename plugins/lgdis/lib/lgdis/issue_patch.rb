@@ -377,7 +377,7 @@ module Lgdis
         if edition_fields_map['status'] == 3 # 更新種別が取消の場合のみ
           doc.elements["//PublishingOffice"].next_sibling = REXML::Element.new("Errata")
           doc.elements["//Errata"].add_element("pcx_eb:Description").add_text(self.description_cancel)
-          doc.elements["//Errata"].add_element("pcx_eb:Datetime").add_text(self.updated_on.xmlschema)
+          doc.elements["//Errata"].add_element("pcx_eb:DateTime").add_text(self.updated_on.xmlschema)
         end
 
         # Head 部要素追加
