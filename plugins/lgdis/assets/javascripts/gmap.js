@@ -1,5 +1,4 @@
 // google maps api
-var DEFAULT_MAP_CENTER = new google.maps.LatLng(35.702086,139.55979);//38.4342786010442, 141.30284786224365);//石巻市役所
 var DEFAULT_MAP_ZOOM = 13;
 var GOOGLE_FT_KEY = '1wVRsRYtnqjtYd4tMVAJt_zlS9TnOznTQdlGk9_g'; // FusionTablesのテーブルID
 

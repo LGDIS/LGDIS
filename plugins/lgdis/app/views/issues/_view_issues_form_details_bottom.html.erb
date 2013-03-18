@@ -5,6 +5,7 @@
   <%= stylesheet_link_tag 'issue', :plugin => 'lgdis' %>
 <% end %>
 <%= javascript_tag do %>
+  var DEFAULT_MAP_CENTER = new google.maps.LatLng(<%= MAP_VALUES['ishi_lat'] %>,<%= MAP_VALUES['ishi_lon'] %>);
   $(function(){
     // input support by google-maps for 3 areas
     <% urlpart_prefix = ENV['RAILS_RELATIVE_URL_ROOT'].to_s %>
