@@ -15,7 +15,7 @@ module ExtOut
       body = "#{config["alert_msg"]}\n" +
              "\n" +
              "#{payload.inspect}\n" +
-             "#{exception.message}(#{exception.class})\n\t" + exception.backtrace.join("\n\t")
+             "#{exception.message}(#{exception.class})\n" + exception.backtrace.join("\n")
 
       # 標準出力
       puts("#{subject}\n#{body}")
@@ -39,7 +39,7 @@ module ExtOut
       # メール送信
       client.output
     rescue Exception => e
-      puts("#{e.message}(#{e.class})\n\t" + e.backtrace.join("\n\t"))
+      puts("#{e.message}(#{e.class})\n" + e.backtrace.join("\n"))
     end
 
   end
