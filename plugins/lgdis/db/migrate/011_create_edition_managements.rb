@@ -8,7 +8,6 @@ class CreateEditionManagements < ActiveRecord::Migration
       t.integer :edition_num,:null => false, :default => 1
       t.integer :status,     :null => false, :default => 1
       t.string  :uuid,       :null => false
-      t.integer :delivery_place_id
       t.timestamps
     end
     set_table_comment(:edition_managements, '版番号管理')
@@ -18,6 +17,5 @@ class CreateEditionManagements < ActiveRecord::Migration
     set_column_comment(:edition_managements, :edition_num,'版番号')
     set_column_comment(:edition_managements, :status,     'ステータス')
     set_column_comment(:edition_managements, :uuid,       'Universally Unique Identifier')
-    set_column_comment(:edition_managements, :delivery_place_id, '外部配信先ID')
   end
 end
