@@ -26,7 +26,6 @@ class EvacuationAdvisoriesController < ApplicationController
   # * 新規登録ボタンが押下された場合、避難勧告･指示登録画面に遷移する
   # * 更新ボタンが押下された場合、避難勧告･指示情報の一括更新を行う
   # * チケット登録ボタンが押下された場合、全ての避難勧告･指示情報をXML化しチケットに登録する
-  # * 集計ボタンが押下された場合、LGDPMから避難者集計情報を取得し避難勧告･指示情報に登録する
   # ==== Args
   # _search_ :: 検索条件
   # _commit_kind_ :: ボタン種別
@@ -48,8 +47,6 @@ class EvacuationAdvisoriesController < ApplicationController
       bulk_update
     when "ticket"
       ticket
-    when "summary"
-      summary
     else
       @search   = EvacuationAdvisory.search(params[:search])
       @evacuation_advisories = @search.paginate(:page => params[:page], :per_page => 30).order("identifier ASC")
