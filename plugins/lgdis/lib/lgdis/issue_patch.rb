@@ -538,11 +538,13 @@ module Lgdis
       # _edition_field_map_ :: uuid, status, edition_num のハッシュ
       # ==== Raise
       def set_edition_mng_field(edition_mng)
+        # 新規配信許可時、更新種別が新規の場合、UUID を新規生成
         uuid        = edition_mng.blank? || self.type_update == '1' ? \
                       UUIDTools::UUID.random_create.to_s : edition_mng.uuid
 
         status      = self.type_update.to_i
 
+        # 新規配信許可時、更新種別が新規の場合、版番号を1に設定
         edition_num = edition_mng.blank? || self.type_update == '1' ? \
                       1 : edition_mng.edition_num + 1
 
@@ -566,10 +568,6 @@ module Lgdis
       # _edition_mng_ :: 版番号管理オブジェクト
       # ==== Raise
       def find_edition_mng(delivery_place_id)
-        # イベント・お知らせ のトラッカー かつ 緊急速報メール以外
-        # イベント・お知らせ のトラッカー かつ 緊急速報メールのdelivery_place_id
-        # イベント・お知らせ 以外のトラッカー かつ 緊急速報メール以外
-        # イベント・お知らせ 以外のトラッカー かつ 緊急速報メールのdelivery_place_id
         condition_str = ''
         condition_ary = []
         if DST_LIST['general_info_ids'].include?(self.tracker_id)
