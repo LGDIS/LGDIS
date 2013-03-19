@@ -238,6 +238,7 @@ ja:
     field_evacuation_steps_by_authorities: 住民の避難に関して関係機関が講ずべき措置の概要
 
     field_remarks: 備考
+    field_disaster_overview: 災害概要
     #field_created_at: 登録日時
     #field_updated_at: 更新日時
 
