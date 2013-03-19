@@ -57,6 +57,8 @@
 end %>
 </table>
 
+<% if Setting.plugin_lgdis.present? && Setting.plugin_lgdis[:issue_xml_visible] %>
+
 <% if val = issue.xml_control %>
 <hr />
 <table class="attributes">
@@ -85,6 +87,8 @@ end %>
 </tr>
 </table>
 <%= print_xml_field(val, "xml_body") %>
+<% end %>
+
 <% end %>
 
 <%

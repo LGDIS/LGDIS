@@ -8,3 +8,7 @@
   <%= text_field_tag("settings[term_auto_launch_project]", @settings[:term_auto_launch_project]) %>
   <em class="info"><%= l('auto_launch_project.text_term_description') %> </em>
 </p>
+<p>
+  <label><%= l('issue_xml.field_visible') %>:</label>
+  <%= check_box_tag("settings[issue_xml_visible]", true, (@settings.present? && @settings[:issue_xml_visible])) %>
+</p>
