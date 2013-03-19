@@ -41,7 +41,7 @@
 
     <%= f.hidden_field :lock_version %>
     <%= hidden_field_tag 'last_journal_id', params[:last_journal_id] || @issue.last_journal_id %>
-    <%= submit_tag l(:button_submit), :confirm => l(:button_curd_confirm) %>
+    <%= submit_tag l(:button_issue_update), :confirm => l(:button_curd_confirm) %>
     <%#= preview_link preview_edit_issue_path(:project_id => @project, :id => @issue), 'issue-form' %>
 <% end %>
 

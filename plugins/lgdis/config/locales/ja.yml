@@ -29,6 +29,7 @@ ja:
   # チケット
   #
   button_to_deliver: 配信画面へ
+  button_issue_update: 更新
 
   ####
   # 課題管理機能
