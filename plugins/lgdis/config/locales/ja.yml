@@ -368,6 +368,11 @@ ja:
       success: '%{kind} アカウントによる個人認証に成功しました。'
       failure: '%{kind} アカウントによる個人認証に失敗しました。'
 
+  # 認証(redmine設定値の上書き)
+  lgdis_notice_account_register_done: 仮登録メールを送信しました。メールの内容をご確認ください。
+  lgdis_mail_subject_register: 仮登録完了メール
+  lgdis_mail_body_register: 本人確認のため、下記URLへにアクセスしアカウントの本登録を完了させて下さい。
+
   # プロジェクト自動作成
   auto_launch_project:
     field_term: 'プロジェクト自動作成における猶予期間[日]'

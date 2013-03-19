@@ -28,3 +28,7 @@ Setting.rest_api_enabled = 1
 Setting.default_projects_public = 0
 # 新規プロジェクトにおいてデフォルトで有効になるモジュール：チケットトラッキング,避難所開設機能
 Setting.default_projects_modules = ["issue_tracking", "shelters", "delivery_histories", "evacuation_advisories", "disaster_damage"]
+
+# 設定/メール通知
+# 送信元メールアドレス：
+Setting.mail_from = 'saitai@example.com'

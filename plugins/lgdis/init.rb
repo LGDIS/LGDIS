@@ -37,9 +37,11 @@ require_dependency 'lgdis/custom_field_patch'
 require_dependency 'lgdis/project_patch'
 require_dependency 'lgdis/user_patch'
 require_dependency 'lgdis/issue_patch'
+require_dependency 'lgdis/mailer_patch'
 
 # controller
 require_dependency 'lgdis/welcome_controller_patch'
+require_dependency 'lgdis/account_controller_patch'
 require_dependency 'lgdis/issues_controller_patch'
 require_dependency 'lgdis/controller_hooks'
 
