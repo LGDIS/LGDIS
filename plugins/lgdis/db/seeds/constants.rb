@@ -40,7 +40,7 @@ Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'advisory_ty
 Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'advisory_type', text: '2 避難勧告', value: '2', _order: '2')
 Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'advisory_type', text: '3 避難指示', value: '3', _order: '3')
 Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'advisory_type', text: '4 自主避難', value: '4', _order: '4')
-# APPLIC互換 災害区分
+# APPLIC互換 災害名
 Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'category', text: '01 台風', value: '01', _order: '1')
 Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'category', text: '02 暴風', value: '02', _order: '2')
 Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'category', text: '03 豪雨', value: '03', _order: '3')

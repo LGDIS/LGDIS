@@ -70,7 +70,7 @@ class CreateEvacuationAdvisories < ActiveRecord::Migration
     set_column_comment(:evacuation_advisories, :households, "対象世帯数")
     set_column_comment(:evacuation_advisories, :head_count, "対象人数")
     set_column_comment(:evacuation_advisories, :identifier, " 避難勧告_指示識別情報")
-    set_column_comment(:evacuation_advisories, :category, "災害区分")
+    set_column_comment(:evacuation_advisories, :category, "災害名")
     set_column_comment(:evacuation_advisories, :cause, "避難原因")
     set_column_comment(:evacuation_advisories, :advisory_type, "避難勧告･指示種別")
   

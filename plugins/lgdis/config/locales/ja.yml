@@ -217,7 +217,7 @@ ja:
     field_households: 対象世帯数
     field_head_count: 対象人数
     field_identifier:  避難勧告_指示識別情報
-    field_category: 災害区分
+    field_category: 災害名
     field_cause: 避難原因
 
     field_staff_no: 発令権限者の職員番号
