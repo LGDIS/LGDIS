@@ -23,7 +23,7 @@ class CreateEvacuationAdvisories < ActiveRecord::Migration
       t.string     :identifier , :limit => 20, :null => false
       t.string     :category, :limit => 2
       t.string     :cause, :limit => 4000	   #, :null => false
-      t.string     :advisory_type, :limit => 2, :null => false
+      t.string     :advisory_type, :limit => 2#, :null => false
        
       t.string     :staff_no, :limit => 10
       t.string     :full_name, :limit => 100

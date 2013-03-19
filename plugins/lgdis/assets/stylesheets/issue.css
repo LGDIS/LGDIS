@@ -31,3 +31,10 @@ tr.like_hr td{
   padding: 0;
   background-color: rgb(204,204,204);
 }
+
+.tabular label.flt{
+  font-weight: normal;
+  margin-left: 0px;
+  text-align: left;
+  width: 180px;
+}

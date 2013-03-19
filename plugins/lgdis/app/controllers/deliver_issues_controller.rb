@@ -12,7 +12,7 @@ class DeliverIssuesController < ApplicationController
     # 配信内容作成処理
     contents = @issue.create_summary(@delivery_history.delivery_place_id)
 
-    @summary = contents.instance_of?(Hash) ? contents['message'] : contents
+    @summary = contents.instance_of?(Hash) ? contents['message'] : @issue.summary
   end
 
   class ParamsException < StandardError; end
