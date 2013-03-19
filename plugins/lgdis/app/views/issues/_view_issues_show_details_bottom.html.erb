@@ -3,8 +3,8 @@
   <legend onclick="toggleFieldset(this);"><%= l(:ext_out_field) %></legend>
   <div>
   <%= form_tag(:controller => :deliver_issues, :action => :request_delivery) do %>
-    <div>
-        <p><strong><label><%= l(:delivery_place) %>:</label></strong></p>
+    <p><strong><label><%= l(:delivery_place) %>:</label></strong></p>
+    <div class="tabular">
         <%= hidden_field_tag :issue_id, @issue.id %>
         <%= hidden_field_tag :current_user, User.current %>
         <%= hidden_field_tag :project_id, @project.identifier %>
@@ -13,7 +13,7 @@
         <% checked = [] %>
         <% (DST_LIST["delivery_place_default"][@issue.tracker_id] || []).each {|i| checked << i["id"] } %>
           <% @destination_list.each do |dest|%>
-            <label style="display: block;float: left;"><%= check_box_tag "ext_out_target[]", dest['id'], checked.include?( dest['id'] ) ? true : false %><%= dest['name'] %></label>
+            <label class="flt"><%= check_box_tag "ext_out_target[]", dest['id'], checked.include?( dest['id'] ) ? true : false %><%= dest['name'] %></label>
           <% end %>
         <% end %>
         <div style="clear:both;"></div>
@@ -35,7 +35,9 @@
         </div>
       </div>
     </div>
-
+    
+    <fieldset class="collapsible"><legend><%= l(:commons) %></legend>
+    
     <div class="search_condition tabular">
       <div class="splitcontent">
         <div class="splitcontentleft">
