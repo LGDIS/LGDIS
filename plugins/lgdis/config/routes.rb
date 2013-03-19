@@ -15,7 +15,6 @@ RedmineApp::Application.routes.draw do
     match '/evacuation_advisories/search'      => 'evacuation_advisories#index',       :via => :post
     match '/evacuation_advisories/bulk_update' => 'evacuation_advisories#bulk_update', :via => :post
     match '/evacuation_advisories/ticket'      => 'evacuation_advisories#ticket',      :via => :post
-    match '/evacuation_advisories/summary'     => 'evacuation_advisories#summary',     :via => :post
     resources :evacuation_advisories, :except => [:show, :index]
 
   # 災害被害情報（第４号様式）機能

@@ -9,7 +9,7 @@ class EvacuationAdvisory < ActiveRecord::Base
                   :emergency_hq_needed_prefecture,:emergency_hq_needed_city,
                   :alert,:alerting_area,:siren_area,:evacuation_order,
                   :evacuate_from,:evacuate_to,:evacuation_steps_by_authorities,:remarks, 
-                  :households,:head_count,:section
+                  :households,:head_count,:section, :disaster_overview
 
   ##正の整数チェック用オプションハッシュ値
   POSITIVE_INTEGER = {:only_integer => true,
@@ -83,6 +83,8 @@ class EvacuationAdvisory < ActiveRecord::Base
   validates :evacuation_steps_by_authorities,
                 :length => {:maximum => 4000}
   validates :remarks,
+                 :length => {:maximum => 4000}
+  validates :disaster_overview,
                  :length => {:maximum => 4000}
 
   before_create :number_evacuation_advisory_code , :if => Proc.new { |evacuation_advisory| evacuation_advisory.identifier.nil? }

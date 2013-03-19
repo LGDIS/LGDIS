@@ -43,10 +43,10 @@
       <%= f.text_field key,:value=>format_time_for_input(f.object,key),:size=>'16',:disabled => @disabled %><%= calendar_with_time_for("#{f.object_name}_#{key}") unless @disabled %>
     <% end %>
 
-    <%= field_for :section do |key, label| %>
-      <%= label_tag{label} %>
-      <%= f.select key, options_for_select(@sections.map{|v| [v.name,v.section_code]}, f.object.send(key)),{:include_blank => true},:disabled => @disabled %>
-    <% end %>
+<!--     <%= field_for :section do |key, label| %> -->
+<!--       <%= label_tag{label} %> -->
+<!--       <%= f.select key, options_for_select(@sections.map{|v| [v.name,v.section_code]}, f.object.send(key)),{:include_blank => true},:disabled => @disabled %> -->
+<!--     <% end %> -->
     
     <%= field_for :households do |key, label| %>
       <%= label_tag{label} %>

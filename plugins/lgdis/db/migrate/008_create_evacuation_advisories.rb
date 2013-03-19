@@ -43,6 +43,7 @@ class CreateEvacuationAdvisories < ActiveRecord::Migration
       t.string     :evacuation_steps_by_authorities, :limit => 4000
 
       t.string     :remarks, :limit => 4000
+      t.string     :disaster_overview, :limit => 4000
       t.timestamp  :deleted_at
       t.timestamps
       
@@ -69,7 +70,7 @@ class CreateEvacuationAdvisories < ActiveRecord::Migration
     set_column_comment(:evacuation_advisories, :households, "対象世帯数")
     set_column_comment(:evacuation_advisories, :head_count, "対象人数")
     set_column_comment(:evacuation_advisories, :identifier, " 避難勧告_指示識別情報")
-    set_column_comment(:evacuation_advisories, :category, "災害区分")
+    set_column_comment(:evacuation_advisories, :category, "災害名")
     set_column_comment(:evacuation_advisories, :cause, "避難原因")
     set_column_comment(:evacuation_advisories, :advisory_type, "避難勧告･指示種別")
   
@@ -91,6 +92,7 @@ class CreateEvacuationAdvisories < ActiveRecord::Migration
     set_column_comment(:evacuation_advisories, :evacuation_steps_by_authorities, "住民の避難に関して関係機関が講ずべき措置の概要")
   
     set_column_comment(:evacuation_advisories, :remarks, "備考")
+    set_column_comment(:evacuation_advisories, :disaster_overview, "災害概要")
     set_column_comment(:evacuation_advisories, :deleted_at, "削除日時")
     set_column_comment(:evacuation_advisories, :created_at, "登録日時")
     set_column_comment(:evacuation_advisories, :updated_at, "更新日時")
