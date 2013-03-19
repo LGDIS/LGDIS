@@ -155,11 +155,10 @@ module ExtOut
       else
         # [情報の更新種別]が取消の場合、ステータスは1(新規)に戻る、それ以外は2(更新)
         edition_status = type_update == "3" ? 1 : 2
-        # 直近の配信で、配信取消されていた場合は、版番号を振りなおす
-        # それ以外は版番号をインクリメント
-        edition_num = edition_mng.status == 1 ? 1 : edition_mng.edition_num+=1
+        # 配信管理側で生成したUUID(documentID), 版番号(documentRevision) を設定
         edition_mng.update_attributes(status:       edition_status,
-                                      edition_num:  edition_num)
+                                      uuid:         xml_body.elements["//pcx_ib:Head/commons:documentID"].text,
+                                      edition_num:  xml_body.elements["//pcx_ib:Head/commons:documentRevision"].text)
       end
     end
 
