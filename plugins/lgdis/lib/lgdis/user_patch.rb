@@ -6,6 +6,7 @@ module Lgdis
       base.send(:include, InstanceMethods)
       base.class_eval do
         unloadable
+        has_many :delivery_histories
       end
     end
 
