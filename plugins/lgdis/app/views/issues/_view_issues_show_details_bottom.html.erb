@@ -46,6 +46,13 @@
             <%= select_tag 'issue[type_update]',
               options_for_select(@issue_const["type_update"].invert, @issue.type_update) %>
           </p>
+          <% if DST_LIST["general_info_ids"].include?(@issue.tracker_id) %>
+            <p>
+              <label>情報の識別区分</label>
+              <%= select_tag 'issue[disaster_info_type]',
+                options_for_select(@issue_const["disaster_info_type"].invert, @issue.disaster_info_type) %>
+            </p>
+          <% end %>
         </div>
         <div class="splitcontentright">
           <p>
@@ -91,19 +98,6 @@
         </div>
       </div>
     </div>
-    <% if DST_LIST["general_info_ids"].include?(@issue.tracker_id) %>
-      <div class="search_condition tabular">
-        <div class="splitcontent">
-          <div class="splitcontentleft">
-            <p>
-              <label>情報の識別区分</label>
-              <%= select_tag 'issue[disaster_info_type]',
-                options_for_select(@issue_const["disaster_info_type"].invert, @issue.disaster_info_type) %>
-            </p>
-          </div>
-        </div>
-      </div>
-    <% end %>
     <div class="search_condition tabular">
       <div class="splitcontent">
         <div class="splitcontentleft">
