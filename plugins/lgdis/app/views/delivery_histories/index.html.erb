@@ -27,16 +27,16 @@
       <% unless @delivery_histories.blank? %>
         <% @delivery_histories.each do |d_h| -%>
           <tr class="hascontextmenu <%= cycle('odd', 'even') %>">
-            <td style="text-align: center;">
+            <td style="text-align: left;">
                <%= link_to d_h.issue_id, issue_path(d_h.issue) %>
             </td>
-            <td style="text-align: center;"><%= DST_LIST['delivery_place'][d_h.delivery_place_id]['name'] %></td>
-            <td style="text-align: center;"><%= DST_LIST['status'][d_h.status] %></td>
-            <td style="text-align: center;"><%= format_time(d_h.created_at) %></td>
-            <td style="text-align: center;"><%= d_h.request_user %></td>
-            <td style="text-align: center;"><%= d_h.issue.subject %></td>
-            <td style="text-align: center;"><%= format_time(d_h.process_date)  if d_h.process_date.present?%></td>
-            <td style="text-align: center;"><%= d_h.respond_user %></td>
+            <td style="text-align: left;"><%= DST_LIST['delivery_place'][d_h.delivery_place_id]['name'] %></td>
+            <td style="text-align: left;"><%= DST_LIST['status'][d_h.status] %></td>
+            <td style="text-align: left;"><%= format_time(d_h.created_at) %></td>
+            <td style="text-align: left;"><%= d_h.request_user %></td>
+            <td style="text-align: left;"><%= d_h.issue.subject %></td>
+            <td style="text-align: left;"><%= format_time(d_h.process_date)  if d_h.process_date.present?%></td>
+            <td style="text-align: left;"><%= d_h.respond_user %></td>
           </tr>
         <% end %>
       <% end %>
