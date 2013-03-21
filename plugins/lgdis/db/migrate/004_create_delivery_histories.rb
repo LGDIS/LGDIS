@@ -18,6 +18,7 @@ class CreateDeliveryHistories < ActiveRecord::Migration
       t.timestamp  "published_at"
       t.timestamp  "opened_at"
       t.timestamp  "closed_at"
+      t.string     "disaster_info_type"
 
       t.timestamps
     end
@@ -40,5 +41,6 @@ class CreateDeliveryHistories < ActiveRecord::Migration
     set_column_comment(:delivery_histories,  :delivered_area,     "情報の配信対象地域")
     set_column_comment(:delivery_histories,  :opened_at,          "情報の公開開始日時")
     set_column_comment(:delivery_histories,  :closed_at,          "情報の公開終了日時")
+    set_column_comment(:delivery_histories,  :disaster_info_type, "情報の識別区分")
   end
 end

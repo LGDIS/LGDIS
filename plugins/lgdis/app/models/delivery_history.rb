@@ -8,7 +8,7 @@ class DeliveryHistory < ActiveRecord::Base
 
   attr_accessible :issue_id, :project_id, :delivery_place_id, :status, :process_date,
                   :mail_subject, :summary, :type_update, :description_cancel, :published_at,
-                  :delivered_area, :opened_at, :closed_at, :request_user_id, :respond_user_id
+                  :delivered_area, :opened_at, :closed_at, :disaster_info_type, :request_user_id, :respond_user_id
 
   validates :published_at, :custom_format => {:type => :datetime}
   validates :opened_at, :custom_format => {:type => :datetime}
@@ -46,7 +46,8 @@ class DeliveryHistory < ActiveRecord::Base
         :delivered_area    => issue[:delivered_area],
         :published_at      => issue[:published_at],
         :opened_at         => issue[:opened_at],
-        :closed_at         => issue[:closed_at])
+        :closed_at         => issue[:closed_at],
+        :disaster_info_type=> issue[:disaster_info_type])
       x.save
       deliver_histories << x
     end
@@ -105,8 +106,8 @@ class DeliveryHistory < ActiveRecord::Base
     # トラッカーID の種別がイベント・お知らせ時のみ
     # 配信要求時にカスタムフィールドの情報識別区分 の有無のバリデーションを行う
     if (DST_LIST['general_info_ids'].include?(self.issue.tracker_id)) && [COMMONS_ID].include?(self.delivery_place_id) &&
-        self.issue.name_in_custom_field_value(DST_LIST['custom_field_delivery']['info_classification']).blank?
-      errors.add(:cf_classification, "を入力して下さい")
+        self.issue.disaster_info_type.blank?
+      errors.add(:disaster_info_type, "を入力して下さい")
     end
   end
 end

@@ -29,6 +29,7 @@ class AddColumnsToIssues < ActiveRecord::Migration
     add_column :issues, :delivered_area,     :string
     add_column :issues, :opened_at,          :datetime
     add_column :issues, :closed_at,          :datetime
+    add_column :issues, :disaster_info_type, :string
 
     set_column_comment(:issues, :xml_control, "XMLControl部")
     set_column_comment(:issues, :xml_control_status, "運用種別")
@@ -58,5 +59,6 @@ class AddColumnsToIssues < ActiveRecord::Migration
     set_column_comment(:issues, :delivered_area,     "情報の配信対象地域")
     set_column_comment(:issues, :opened_at,          "情報の公開開始日時")
     set_column_comment(:issues, :closed_at,          "情報の公開終了日時")
+    set_column_comment(:issues, :disaster_info_type, "情報の識別区分")
   end
 end

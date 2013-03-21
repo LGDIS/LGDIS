@@ -96,3 +96,7 @@ Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'xml_control_apply', text: 
 Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'type_update', text: '新規', value: '1', _order: '1')
 Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'type_update', text: '更新', value: '2', _order: '2')
 Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'type_update', text: '取消', value: '3', _order: '3')
+# 情報の識別区分
+Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'disaster_info_type', text: '警報', value: 'Alert', _order: '1')
+Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'disaster_info_type', text: '災害情報', value: 'Disaster', _order: '2')
+Constant.create(kind1: 'TD', kind2: 'issues', kind3: 'disaster_info_type', text: '平時情報', value: 'Ordinary', _order: '3')

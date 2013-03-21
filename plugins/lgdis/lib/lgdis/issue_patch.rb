@@ -9,7 +9,7 @@ module Lgdis
 
       base.class_eval do
         unloadable
-        has_many :issue_geographies, :dependent => :destroy
+        has_many :issue_geographies,  :dependent => :destroy
         has_many :delivery_histories, :dependent => :destroy
 
         validates :xml_control_status, :length => {:maximum => 12}
@@ -59,6 +59,7 @@ module Lgdis
           'delivered_area',
           'opened_at',
           'closed_at',
+          'disaster_info_type',
           :if => lambda {|issue, user| issue.new_record? || user.allowed_to?(:edit_issues, issue.project) }
 
         alias_method_chain :copy_from, :geographies
@@ -499,7 +500,7 @@ module Lgdis
         doc =  REXML::Document.new
         doc.add_element("pcx_gi:GeneralInformation") # root
 
-        info_code = self.code_in_custom_field_value(DST_LIST['custom_field_delivery']['info_classification'])
+        info_code = self.disaster_info_type
         doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:DisasterInformationType").add_text(info_code)
         doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_eb:Disaster").add_element("pcx_eb:DisasterName").add_text("#{self.project.name}")
         doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:Category").add_text("#{DST_LIST["tracker_grouping"][self.tracker_id][0]}")
