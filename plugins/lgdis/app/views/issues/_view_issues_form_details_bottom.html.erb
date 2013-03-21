@@ -1,6 +1,6 @@
 <% content_for :header_tags do %>
   <%= javascript_include_tag "http://www.google.com/jsapi" %>
-  <%= javascript_include_tag "http://maps.googleapis.com/maps/api/js?sensor=false" %>
+  <%= javascript_include_tag "http://maps.googleapis.com/maps/api/js?sensor=false&language=ja&v=3&client=#{API_KEY["google_map"]["client_id"]}" %>
   <%= javascript_include_tag "gmap", :plugin => "lgdis" %>
   <%= stylesheet_link_tag 'issue', :plugin => 'lgdis' %>
 <% end %>
