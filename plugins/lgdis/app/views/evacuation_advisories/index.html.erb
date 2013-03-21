@@ -32,7 +32,7 @@
           <%= submit_tag l(:button_bulk_update), :kind => "bulk_update", :confirm => l(:text_evacuation_advisory_update_confirmation) %>
         <% end %>
         <% if authorize_for(:evacuation_advisories, :ticket) # 権限判定 %>
-         <%= submit_tag l(:button_ticket), :kind => "ticket" %>
+         <%= submit_tag l(:button_ticket), :kind => "ticket", :confirm => l(:button_ticket_confirm) %>
         <% end %>
       </p>
       <p style="text-align: right;">

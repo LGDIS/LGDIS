@@ -6,7 +6,7 @@
     <%= l(:label_shelter_new) %>
     <span style="float: right;">
       <% if authorize_for(:shelters, :update) # 権限判定 %>
-        <%= f.submit l(:button_save) %>
+        <%= f.submit l(:button_save), :confirm => l(:button_curd_confirm) %>
       <% end %>
       <% if authorize_for(:shelters, :destroy) # 権限判定 %>
         <input type="button" value="<%= l(:button_delete) %>" onclick="if (window.confirm('<%= l(:text_shelter_destroy_confirmation) %>')) window.location='<%= url_for :action => :destroy, :id => @shelter, :project_id => @project %>'; return false;">
