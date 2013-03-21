@@ -5,7 +5,7 @@
   <h2>
     <%= l(:label_evacuation_advisory_new) %>
     <span style="float: right;">
-      <%= f.submit l(:button_save) %>
+      <%= f.submit l(:button_save), :confirm => l(:button_curd_confirm) %>
       <input type="button" value="<%= l(:button_back) %>" onclick="window.location='<%= url_for :action => :index, :project_id => @project %>';">
     </span>
   </h2>

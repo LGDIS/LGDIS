@@ -8,8 +8,8 @@
     <span style="float: right;">
       <% if authorize_for(:disaster_damage, :save) && # 権限判定
               controller.action_name != "show" # 参照時 %>
-        <%= submit_tag l(:button_save), :kind => "save" %>
-        <%= submit_tag l(:button_ticket), :kind => "ticket" %>
+        <%= submit_tag l(:button_save), :kind => "save", :confirm => l(:button_curd_confirm) %>
+        <%= submit_tag l(:button_ticket), :kind => "ticket", :confirm => l(:button_ticket_confirm) %>
         <%= select_tag :tracker_id, options_for_select(@project.trackers.select {|t| [16, 17, 18].index(t.id)}.collect {|t| [t.name, t.id]}), :prompt => "--- #{l(:text_select_tracker)} ---" %>
       <% end %>
     </span>
