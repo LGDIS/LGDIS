@@ -3,6 +3,19 @@ require 'fileutils'
 
 module ExtOut
   class JobBase
+    # 配信先ID
+    COMMONS_ID    =  1
+    SMTP_0_ID     =  2
+    SMTP_1_ID     =  3
+    SMTP_2_ID     =  4
+    SMTP_3_ID     =  5
+    SMTP_AUTH_ID  =  6
+    TWITTER_ID    =  7
+    FACEBOOK_ID   =  8
+    U_MAIL_DCM_ID = 10
+    U_MAIL_SB_ID  = 11
+    U_MAIL_AU_ID  = 12
+    
     # logger設定
     cattr_reader(:logger)
     @@logger = Rails.logger.clone
@@ -162,6 +175,44 @@ module ExtOut
       end
     end
 
+
+    # チケットへの配信要求履歴書き込み処理
+    # ==== Args
+    # _issue_ ::: Issuesオブジェクト
+    # _ext_out_ary_ :: 外部配信要求対象配列
+    # _user_ ::: Userオブジェクト
+    # ==== Return
+    # ==== Raise
+    def self.register_issue_journal_request(issue, ext_out_ary, user)
+      request_date = issue.updated_on.strftime("%Y/%m/%d %H:%M:%S")
+      notes = ""
+      notes += "#{request_date}に、以下の配信要求を行いました。\n"
+      ext_out_ary.each do |delivery_place_id|
+        notes += (DST_LIST["delivery_place"][delivery_place_id.to_i]||{})["name"].to_s + "\n"
+      end
+      notes += "\n" + issue.summary
+      issue.init_journal(user, notes)
+      issue.save
+    end
+    
+    # チケットへの配信要求却下履歴書き込み処理
+    # ==== Args
+    # _delivery_history_ ::: DeliveryHistoryオブジェクト
+    # _content_ :: 外部出力内容
+    # _success_ ::: 外部出力の実行ステータス
+    # ==== Return
+    # ==== Raise
+    def self.register_issue_journal_reject(delivery_history)
+      issue = delivery_history.issue
+      delivery_name = (DST_LIST["delivery_place"][delivery_history.delivery_place_id]||{})["name"].to_s
+      delivery_process_date = delivery_history.process_date.strftime("%Y/%m/%d %H:%M:%S")
+      notes = ""
+      notes += "#{delivery_process_date}に、 #{delivery_name}配信要求を却下しました。\n"
+      notes += "\n" + delivery_history.summary
+      issue.init_journal(delivery_history.respond_user, notes)
+      issue.save
+    end
+    
     # チケットへの送信履歴書き込み処理
     # ==== Args
     # _delivery_history_ ::: DeliveryHistoryオブジェクト
@@ -171,15 +222,22 @@ module ExtOut
     # ==== Raise
     def self.register_issue_journal(delivery_history, content, success)
       issue = delivery_history.issue
-      delivery_name = (DST_LIST["delivery_place"][delivery_history.delivery_place_id]||{})["name"].to_s
+      delivery_place_id = delivery_history.delivery_place_id
+      delivery_name = (DST_LIST["delivery_place"][delivery_place_id]||{})["name"].to_s
       delivery_history_id = delivery_history.id.to_s
       delivery_process_date = delivery_history.process_date.strftime("%Y/%m/%d %H:%M:%S")
-      notes = ""
-      case content
-      when String, Hash
-        notessuffix = "\n#{content.to_s}"
-      when NIL
+      
+      notessuffix = ""
+      if [SMTP_0_ID, SMTP_1_ID, SMTP_2_ID, SMTP_3_ID, SMTP_AUTH_ID].include?(delivery_place_id)
+        notessuffix = content['message'].to_s
+      elsif [TWITTER_ID, FACEBOOK_ID].include?(delivery_place_id)
+        notessuffix = content.to_s
+      elsif [U_MAIL_DCM_ID, U_MAIL_SB_ID, U_MAIL_AU_ID].include?(delivery_place_id)
+        xml_body = REXML::Document.new(content)
+        notessuffix = xml_body.elements["//pcx_um:Information/pcx_um:Message"].text
       end
+      
+      notes = ""
       notes += "#{delivery_process_date}に処理を行った、 #{delivery_name}配信は、"
       notes += success ? "正常に配信しました。\n" : "異常終了しました。\n"
       notes += notessuffix.to_s
@@ -188,3 +246,5 @@ module ExtOut
     end
   end
 end
+
+

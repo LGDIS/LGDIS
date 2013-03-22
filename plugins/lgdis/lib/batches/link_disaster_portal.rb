@@ -6,7 +6,7 @@
 
 require 'cgi'
 
-class Batches::LinkDisasterPortal < ActiveRecord::Base
+class Batches::LinkDisasterPortal
   def self.execute
     Rails.logger.info(" #{Time.now.to_s} ===== #{self.name} START ===== ")
     

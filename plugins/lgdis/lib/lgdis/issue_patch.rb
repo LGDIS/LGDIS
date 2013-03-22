@@ -121,6 +121,9 @@ module Lgdis
             end
           elsif status_to == 'reject'
             delivery_history.update_attributes({:status => status_to, :respond_user_id => User.current.id, :process_date => Time.now})
+            
+            # チケットへの配信要求却下履歴書き込み
+            ExtOut::JobBase.register_issue_journal_reject(delivery_history)
           end
         rescue
           # TODO
