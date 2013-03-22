@@ -4,6 +4,19 @@ module Lgdis
 
     AUTO_FLAG = {"1" => true}.freeze
 
+    # controller_issues_new_before_saveホック処理
+    # ==== Args
+    # _context_ :: コンテキスト
+    # ==== Return
+    # ==== Raise
+    def controller_issues_new_before_save(context={})
+      # 自動配信時のみ、141文字(Twitter のMAXついーと文字数)から
+      # 災害ポータルのURL 文字数を引いた文字数を登録する
+      if AUTO_FLAG[context[:params][:issue][:auto_send]]
+        context[:issue][:summary] = context[:issue][:summary].slice(0,(141 - DST_LIST['disaster_portal_url'].size))
+      end
+    end
+
     # controller_issues_new_after_saveホック処理
     # ==== Args
     # _context_ :: コンテキスト
