@@ -2,21 +2,23 @@
 <fieldset class="collapsible">
   <legend onclick="toggleFieldset(this);"><%= l(:ext_out_field) %></legend>
   <div>
-  <%= form_tag(:controller => :deliver_issues, :action => :request_delivery) do %>
+  <%= form_tag(:action => :request_delivery) do %>
     <p><strong><label><%= l(:delivery_place) %>:</label></strong></p>
     <div class="tabular">
-        <%= hidden_field_tag :issue_id, @issue.id %>
-        <%= hidden_field_tag :current_user, User.current %>
-        <%= hidden_field_tag :project_id, @project.identifier %>
-
-        <% unless @destination_list.blank? %>
-        <% checked = [] %>
-        <% (DST_LIST["delivery_place_default"][@issue.tracker_id] || []).each {|i| checked << i["id"] } %>
-          <% @destination_list.each do |dest|%>
-            <label class="flt"><%= check_box_tag "ext_out_target[]", dest['id'], checked.include?( dest['id'] ) ? true : false %><%= dest['name'] %></label>
-          <% end %>
+      <% unless @destination_list.blank? %>
+        <%
+          checked = []
+          if @ext_out_target.nil? # 初期表示時
+            (DST_LIST["delivery_place_default"][@issue.tracker_id] || []).each {|i| checked << i["id"] } 
+          else  # 再表示時
+            checked = @ext_out_target.map(&:to_i)
+          end
+        %>
+        <% @destination_list.each do |dest|%>
+          <label class="flt"><%= check_box_tag "ext_out_target[]", dest['id'], checked.include?( dest['id'] ) ? true : false %><%= dest['name'] %></label>
         <% end %>
-        <div style="clear:both;"></div>
+      <% end %>
+      <div style="clear:both;"></div>
     </div>
 
     <p><strong><label><%= l(:control_plane_settings) %>:</label></strong></p>
@@ -75,7 +77,7 @@
           <p>
             <label>情報の配信対象地域</label>
             <%= select_tag 'issue[delivered_area]',
-              options_for_select(@area.invert, @issue.delivered_area),
+              options_for_select(@area.invert, (@issue.delivered_area ||"").split(",") ),
               {:multiple => true, :size =>3} %>
           </p>
         </div>

@@ -24,13 +24,12 @@ RedmineApp::Application.routes.draw do
   end
   resources :deliver_issues do
     get "deliver_issues/index"
-    get "deliver_issues/show"
   end
 
   resources :delivery_histories do
     get "delivery_histories/index"
   end
-  post "deliver_issues/request_delivery"
+  match "/issues/:id/request_delivery" => "issues#request_delivery", :via => :post
   post "deliver_issues/allow_delivery"
 
   match "/auth/:provider"          => "omniauth_callbacks#error", :via => [:get, :post]
