@@ -93,7 +93,7 @@ delivery_place:
     smtp_server:        *smtp_server_1
   &id 6: &smtp_auth
     id: *id
-    name: まちcomi向けメール
+    name: メーリングリスト
     create_msg_method:  *create_msg_method_2
     delivery_job_class: *delivery_job_class_2
     add_url_type:       *add_url_type_1
