@@ -1,7 +1,6 @@
 <table class="list">
   <thead>
     <tr>
-      <th style="text-align: center;">発令・解除地区名称（大域）</th>
 <!--       <th style="text-align: center;">発令・解除地区名称（中域）</th> -->
       <th style="text-align: center;">発令・解除地区名称</th>
       <th style="text-align: center;">発令区分</th>
@@ -15,9 +14,6 @@
   <tbody>
     <% evacuation_advisories.each do |evacuation_advisory| %>
       <tr class="<%= cycle("even", "odd") -%>">
-        <td style="text-align: center;">
-          <%= @areas.select{|v| v.area_code == evacuation_advisory.district}.first.try(:name) %>
-        </td>
 <!--         <td style="text-align: center;"> -->
 <!--           <%= @sections.select{|v| v.section_code == evacuation_advisory.section}.first.try(:name) %> -->
 <!--         </td> -->

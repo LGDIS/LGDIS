@@ -17,11 +17,6 @@
   </div>
   
   <div class="splitcontentright">
-    <%= field_for :district  do |key, label| %>
-      <%= label_tag{label} %>
-      <%= f.select("#{key}_in", options_for_select(@areas.map{|v| [v.name,v.area_code]},
-        (@search.district_in.blank? ? @areas.map{|v| [v.area_code]}.flatten : @search.district_in)), {}, {:multiple => true, :size => @areas.size}) %>
-    <% end %>
   </div>
 </div>
 
