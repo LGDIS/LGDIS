@@ -1,4 +1,3 @@
-<%= stylesheet_link_tag params[:controller], :plugin => 'lgdis' %>
 <p>
   <label><%= l('external_auth.field_enable') %>:</label>
   <%= check_box_tag("settings[enable_external_auth]", true, (@settings.present? && @settings[:enable_external_auth])) %>

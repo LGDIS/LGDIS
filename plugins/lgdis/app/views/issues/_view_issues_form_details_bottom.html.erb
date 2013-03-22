@@ -2,7 +2,6 @@
   <%= javascript_include_tag "http://www.google.com/jsapi" %>
   <%= javascript_include_tag "http://maps.googleapis.com/maps/api/js?sensor=false&language=ja&v=3&client=#{API_KEY["google_map"]["client_id"]}" %>
   <%= javascript_include_tag "gmap", :plugin => "lgdis" %>
-  <%= stylesheet_link_tag 'issue', :plugin => 'lgdis' %>
 <% end %>
 <%= javascript_tag do %>
   var DEFAULT_MAP_CENTER = new google.maps.LatLng(<%= MAP_VALUES['ishi_lat'] %>,<%= MAP_VALUES['ishi_lon'] %>);
