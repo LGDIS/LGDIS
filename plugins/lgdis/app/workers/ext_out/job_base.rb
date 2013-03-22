@@ -142,7 +142,7 @@ module ExtOut
       project_id = issue.project_id
       tracker_id = issue.tracker_id
       type_update = issue.type_update
-      edition_mng = EditionManagement.find_by_project_id_and_tracker_id(project_id, tracker_id)
+      edition_mng = EditionManagement.find_by_project_id_and_tracker_id_and_delivery_place_id(project_id, tracker_id, delivery_history.delivery_place_id)
       xml_body = REXML::Document.new(content)
 
       # 新規追加処理
