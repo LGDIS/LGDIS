@@ -54,6 +54,9 @@ module Lgdis
             error_messages = error_messages_for_request_delivery(deliver_historires)
             raise RecordInvalid, error_messages if error_messages.present?
 
+            # チケットへの配信要求履歴書き込み
+            ExtOut::JobBase.register_issue_journal_request(@issue, @ext_out_target, User.current)
+
             flash[:notice] = l(:notice_delivery_request_successful)
             redirect_back_or_default({:action     => 'show',
                                       :id         => @issue})
