@@ -79,6 +79,7 @@
             <%= select_tag 'issue[delivered_area]',
               options_for_select(@area.invert, (@issue.delivered_area ||"").split(",") ),
               {:multiple => true, :size =>3} %>
+            <%= hidden_field_tag 'issue[delivered_area]', '' %><%# select_tagヘルパーで複数選択可の場合、未選択時にpostされないため（selectヘルパーの場合は、ヘルパーで自動的にhidden項目が追加されるので問題無し） %>
           </p>
         </div>
       </div>
