@@ -31,10 +31,6 @@ module Lgdis
       deliver_issue(context) if AUTO_FLAG[param_issue[:auto_send]]
     end
 
-    def view_account_login_bottom(context={})
-      context[:controller].send(:render_to_string, {:partial => "account/view_account_login_bottom", :locals => context})
-    end
-
     private
 
     # プロジェクト自動作成判定処理
