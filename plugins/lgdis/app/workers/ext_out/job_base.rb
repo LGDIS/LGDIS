@@ -183,7 +183,7 @@ module ExtOut
       notes += "#{delivery_process_date}に処理を行った、 #{delivery_name}配信は、"
       notes += success ? "正常に配信しました。\n" : "異常終了しました。\n"
       notes += notessuffix.to_s
-      issue.init_journal(User.current, notes)
+      issue.init_journal(delivery_history.respond_user, notes)
       issue.save
     end
   end

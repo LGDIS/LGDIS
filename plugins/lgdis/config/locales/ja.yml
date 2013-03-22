@@ -11,6 +11,7 @@ ja:
   text_select_tracker: 登録するチケットのトラッカーを選んでください
   text_custom_field_default_value_multiple_info: '初期値が複数の場合は、1行に1個ずつ記述してください。'
   button_curd_confirm: この内容で保存してよろしいですか？
+  button_ticket_confirm: チケットを登録してよろしいですか？
 
   activerecord:
     errors:
@@ -201,7 +202,6 @@ ja:
   field_delivered_area: 情報の配信対象地域
   field_opened_at: 情報の公開開始日時
   field_closed_at: 情報の公開終了日時
-  field_cf_classification: カスタムフィールドの情報識別区分
 
   # 避難勧告･指示機能 項目名
   evacuation_advisories:

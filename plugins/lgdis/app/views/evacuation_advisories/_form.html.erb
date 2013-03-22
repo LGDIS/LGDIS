@@ -70,6 +70,7 @@
   </div>
 </div>
 
+<% if User.current.admin? %>
 <fieldset class="collapsible normal_font no_padding">
   <legend id="evacuation_advisories_detail" onclick="toggleFieldset(this);">
     <%= l(:label_detail) %>
@@ -167,6 +168,7 @@
     <% end %>
   </div>
 </fieldset>
+<% end %>
   
 <% include_calendar_headers_tags %>
 

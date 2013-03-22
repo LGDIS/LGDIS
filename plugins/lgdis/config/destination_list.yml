@@ -150,18 +150,22 @@ auto_destination:
     - *smtp_0
     - *twitter
     - *facebook
+    - *urgent_mail_docomo
   1:  # １号配備
     - *smtp_1
     - *twitter
     - *facebook
+    - *urgent_mail_docomo
   2:  # ２号配備
     - *smtp_2
     - *twitter
     - *facebook
+    - *urgent_mail_docomo
   3:  # ３号配備
     - *smtp_3
     - *twitter
     - *facebook
+    - *urgent_mail_docomo
 
 # 配信許可権限者ID
 dst_admin_id:
@@ -3045,7 +3049,6 @@ cf_id_for_show_status: 999
 
 # 配信内容にあたるカスタムフィールドID
 custom_field_delivery:
-  info_classification: 14 # 情報の識別区分
   comp_info: 5            # 補足情報
 
 # 災害訓練モードプロジェクトID
