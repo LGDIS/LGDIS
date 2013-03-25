@@ -57,7 +57,12 @@ module ExtOut
         # ステータス更新
         delivery_history.update_attributes!(status: (success ? "done" : "failed")) if delivery_history
         # チケットへの送信履歴書き込み処理
-        register_issue_journal(delivery_history, client, success)
+        register_issue_journal(delivery_history.issue,
+                               delivery_history.respond_user,
+                               "#{delivery_history.process_date.strftime("%Y/%m/%d %H:%M:%S")}に処理を行った、 " +
+                               "#{delivery_name}配信は、" +
+                               "#{success ? "正常に配信しました。" : "異常終了しました。"}\n" +
+                               "#{content_for_issue_journal_of(client)}")
         # ログ出力
         log_of_output("Completed queue of #{delivery_name} " +
                       "#{test_flag ? "TEST-" : ""}#{success ? "OK" : "NG"} " +
@@ -130,7 +135,7 @@ module ExtOut
 
     # 文書改版管理処理｡取り消しされた場合は、版番号を1にリセットする｡
     # ==== Args
-    # _delivery_history_ ::: DeliveryHistoryオブジェクト
+    # _delivery_history_ :: DeliveryHistoryオブジェクト
     # ==== Return
     # ==== Raise
     def self.register_edition(content, delivery_history)
@@ -160,23 +165,13 @@ module ExtOut
 
     # チケットへの送信履歴書き込み処理
     # ==== Args
-    # _delivery_history_ ::: DeliveryHistoryオブジェクト
-    # _client_ :: クライアントオブジェクト
-    # _success_ ::: 外部出力の実行ステータス
+    # _issue_ :: Issueオブジェクト
+    # _user_ :: Userオブジェクト
+    # _content_ :: 出力文字列
     # ==== Return
     # ==== Raise
-    def self.register_issue_journal(delivery_history, client, success)
-      issue = delivery_history.issue
-      delivery_place_id = delivery_history.delivery_place_id
-      delivery_name = (DST_LIST["delivery_place"][delivery_place_id]||{})["name"].to_s
-      delivery_history_id = delivery_history.id.to_s
-      delivery_process_date = delivery_history.process_date.strftime("%Y/%m/%d %H:%M:%S")
-
-      notes = []
-      notes << "#{delivery_process_date}に処理を行った、 #{delivery_name}配信は、" +
-                (success ? "正常に配信しました。" : "異常終了しました。")
-      notes << content_for_issue_journal_of(client).presence
-      issue.init_journal(delivery_history.respond_user, notes.compact.join("\n"))
+    def self.register_issue_journal(issue, user, content)
+      issue.init_journal(user, content.to_s)
       issue.save!
     end
 
