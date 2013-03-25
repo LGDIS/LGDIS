@@ -98,6 +98,56 @@ module Lgdis
         self
       end
 
+      # 配信要求処理
+      # ==== Args
+      # _ext_out_ary_ :: 外部配信要求対象配列
+      # ==== Return
+      # 処理結果:true(成功)/false(失敗)
+      # エラー内容は本インスタンス(Issueオブジェクト)のerrorsを参照のこと
+      # ==== Raise
+      def request_delivery(ext_out_target)
+        success = false
+        transaction do
+          # イベント・お知らせ のxml_body 部を生成
+          if DST_LIST['general_info_ids'].include?(self.tracker_id) &&
+              ext_out_target.include?(DST_LIST['delivery_place'][1]['id'].to_s)
+            self.xml_body = create_commons_event_body
+          end
+          raise ActiveRecord::Rollback unless self.save
+
+          error_messages = []
+          DeliveryHistory.create_for_history(self, ext_out_target).each do |dh|
+            dh.errors.full_messages.each do |m|
+              self.errors.add(:base, "#{l('delivery_place')}が\"#{DST_LIST['delivery_place'][dh.delivery_place_id]['name']}\"の場合は、#{m}")
+            end
+          end
+          raise ActiveRecord::Rollback if self.errors.present?
+
+          # チケットへの配信要求履歴書き込み
+          register_issue_journal_request(ext_out_target)
+
+          success = true
+        end
+        return success
+      end
+
+      # 配信要求履歴書き込み処理
+      # ==== Args
+      # _ext_out_ary_ :: 外部配信要求対象配列
+      # ==== Return
+      # ==== Raise
+      def register_issue_journal_request(ext_out_ary)
+        notes = []
+        request_date = self.updated_on.strftime("%Y/%m/%d %H:%M:%S")
+        notes << "#{request_date}に、以下の配信要求を行いました。"
+        ext_out_ary.each do |delivery_place_id|
+          notes << (DST_LIST["delivery_place"][delivery_place_id.to_i]||{})["name"].to_s
+        end
+        notes << self.summary
+        self.init_journal(User.current, notes.join("\n"))
+        self.save!
+      end
+
       # 配信処理
       # ==== Args
       # _delivery_history_ :: DeliveryHistoryオブジェクト
@@ -123,7 +173,7 @@ module Lgdis
             delivery_history.update_attributes({:status => status_to, :respond_user_id => User.current.id, :process_date => Time.now})
             
             # チケットへの配信要求却下履歴書き込み
-            ExtOut::JobBase.register_issue_journal_reject(delivery_history)
+            register_issue_journal_reject(delivery_history)
           end
         rescue
           # TODO
@@ -134,6 +184,21 @@ module Lgdis
         ensure
           return status_to
         end
+      end
+
+      # 配信要求却下履歴書き込み処理
+      # ==== Args
+      # _delivery_history_ :: DeliveryHistoryオブジェクト
+      # ==== Return
+      # ==== Raise
+      def register_issue_journal_reject(delivery_history)
+        notes = []
+        delivery_name = (DST_LIST["delivery_place"][delivery_history.delivery_place_id]||{})["name"].to_s
+        delivery_process_date = delivery_history.process_date.strftime("%Y/%m/%d %H:%M:%S")
+        notes << "#{delivery_process_date}に、 #{delivery_name}配信要求を却下しました。"
+        notes << delivery_history.summary
+        self.init_journal(delivery_history.respond_user, notes.join("\n"))
+        self.save!
       end
 
       # 配信内容作成処理
