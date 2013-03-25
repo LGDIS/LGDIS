@@ -23,55 +23,32 @@ module Lgdis
 
     module InstanceMethods
 
-      class ParamsException < StandardError; end
-      class RecordInvalid < StandardError; end
-
       # 外部配信要求処理(手動配信)
       # 外部配信要求受付け処理を行います
       # ==== Args
       # ==== Return
       # ==== Raise
       def request_delivery
-        issue_map = params[:issue]
         # 情報の配信対象地域のコード値の配列を","区切のstring に変換
-        issue_map = build_issue_attributes_for_request_delivery(issue_map)
+        issue_attr = build_issue_attributes_for_request_delivery(params[:issue])
+        @issue.assign_attributes(issue_attr)
 
-        @ext_out_target = params[:ext_out_target]
-        begin
-          raise ParamsException, l(:notice_delivery_unselected) if @ext_out_target.blank?
-          ActiveRecord::Base.transaction do
-            # イベント・お知らせ のxml_body 部を生成
-            if DST_LIST['general_info_ids'].include?(@issue.tracker_id) &&
-                @ext_out_target.include?(DST_LIST['delivery_place'][1]['id'].to_s)
-              issue_map.store('xml_body', @issue.create_commons_event_body)
-            end
+        if (@ext_out_target = params[:ext_out_target]).blank?
+          flash.now[:error] = l(:notice_delivery_unselected)
 
-            @issue.update_attributes(issue_map)
-            error_messages = @issue.errors.full_messages.join("\n")
-            raise RecordInvalid, error_messages if error_messages.present?
-
-            deliver_historires =  DeliveryHistory.create_for_history(@issue, @ext_out_target)
-            error_messages = error_messages_for_request_delivery(deliver_historires)
-            raise RecordInvalid, error_messages if error_messages.present?
-
-            # チケットへの配信要求履歴書き込み
-            ExtOut::JobBase.register_issue_journal_request(@issue, @ext_out_target, User.current)
-
-            flash[:notice] = l(:notice_delivery_request_successful)
-            redirect_back_or_default({:action     => 'show',
-                                      :id         => @issue})
-            return
-          end
-        rescue RecordInvalid => e
-          flash.now[:error] = e.message.gsub(/\r\n|\r|\n/, "<br />")
-        rescue ParamsException => e
-          flash.now[:error] = e.message
+        elsif @issue.request_delivery(@ext_out_target)
+          flash[:notice] = l(:notice_delivery_request_successful)
+          redirect_back_or_default({:action     => 'show',
+                                    :id         => @issue})
+          return
+        else
+          flash.now[:error] = @issue.errors.full_messages.join("<br />")
         end
-        # @issueを再構築
+
+        # @issueの再構築
         find_issue
-        @issue.assign_attributes(issue_map)
-        # IssuesController#showメソッドに委譲
-        show
+        @issue.assign_attributes(issue_attr)
+        show  # IssuesController#showメソッドに委譲
       end
 
       private
@@ -162,30 +139,6 @@ module Lgdis
         end
       end
 
-      # 外部配信要求受付け時のエラーメッセージ作成処理
-      # ==== Args
-      # _objects_ :: 配信履歴配列
-      # ==== Return
-      # エラーメッセージ
-      # ==== Raise
-      def error_messages_for_request_delivery(*objects)
-        messages = ""
-        errors   = nil
-        objects.each do |object|
-          errors = object.map do |o|
-            o.errors.full_messages.map do |m|
-              "#{l('delivery_place')}が\"#{DST_LIST['delivery_place'][o.delivery_place_id]['name']}\"の場合は、#{m}"
-            end
-          end.flatten
-        end
-        if errors.any?
-          errors.each do |error|
-            messages << "#{error}\n"
-          end
-        end
-        return messages
-      end
-
       # 外部配信要求受付け時のチケット更新用の項目値ハッシュの再構築処理
       # ==== Args
       # _issue_attr_ :: Issueの属性値ハッシュ
@@ -194,7 +147,7 @@ module Lgdis
       # ==== Raise
       def build_issue_attributes_for_request_delivery(issue_attr)
         if issue_attr['delivered_area'].present?
-          code_str = issue_attr['delivered_area'].join(',')
+          code_str = issue_attr['delivered_area'].delete_if{|o| o.blank?}.join(',')
           issue_attr['delivered_area'] = code_str
         end
         issue_attr

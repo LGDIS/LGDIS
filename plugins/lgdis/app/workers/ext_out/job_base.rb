@@ -3,19 +3,6 @@ require 'fileutils'
 
 module ExtOut
   class JobBase
-    # 配信先ID
-    COMMONS_ID    =  1
-    SMTP_0_ID     =  2
-    SMTP_1_ID     =  3
-    SMTP_2_ID     =  4
-    SMTP_3_ID     =  5
-    SMTP_AUTH_ID  =  6
-    TWITTER_ID    =  7
-    FACEBOOK_ID   =  8
-    U_MAIL_DCM_ID = 10
-    U_MAIL_SB_ID  = 11
-    U_MAIL_AU_ID  = 12
-    
     # logger設定
     cattr_reader(:logger)
     @@logger = Rails.logger.clone
@@ -31,8 +18,10 @@ module ExtOut
     @@client_class = ""
     # ログ出力項目（初期値）
     @@output_log_fields = []
-    # アーカイブ出力項目（初期値
+    # アーカイブ出力項目（初期値）
     @@output_archive_fields = [:test_flag]
+    # チケット履歴出力項目（初期値）
+    @@output_issue_journal_fields = []
 
     # Lgdis 外部出力 I/F呼出の共通処理
     # ※非同期処理ワーカー処理（Resque向け）
@@ -96,6 +85,7 @@ module ExtOut
     # ログ向けコンテンツ作成
     # クラス変数のログ出力項目に指定された項目値を、
     # クライアントオブジェクトから『項目名: 項目内容』の体裁で出力します
+    # ※本ルール以外で出力したい場合は、本メソッドをオーバーライドすること
     # ==== Args
     # _client_ :: クライアントオブジェクト
     # ==== Return
@@ -124,6 +114,7 @@ module ExtOut
     # アーカイブ向けコンテンツ作成
     # クラス変数のアーカイブ出力項目に指定された項目値を、
     # クライアントオブジェクトから『項目名: 項目内容』の体裁で出力します
+    # ※本ルール以外で出力したい場合は、本メソッドをオーバーライドすること
     # ==== Args
     # _client_ :: クライアントオブジェクト
     # ==== Return
@@ -167,75 +158,45 @@ module ExtOut
       end
     end
 
-
-    # チケットへの配信要求履歴書き込み処理
-    # ==== Args
-    # _issue_ ::: Issuesオブジェクト
-    # _ext_out_ary_ :: 外部配信要求対象配列
-    # _user_ ::: Userオブジェクト
-    # ==== Return
-    # ==== Raise
-    def self.register_issue_journal_request(issue, ext_out_ary, user)
-      request_date = issue.updated_on.strftime("%Y/%m/%d %H:%M:%S")
-      notes = ""
-      notes += "#{request_date}に、以下の配信要求を行いました。\n"
-      ext_out_ary.each do |delivery_place_id|
-        notes += (DST_LIST["delivery_place"][delivery_place_id.to_i]||{})["name"].to_s + "\n"
-      end
-      notes += "\n" + issue.summary
-      issue.init_journal(user, notes)
-      issue.save
-    end
-    
-    # チケットへの配信要求却下履歴書き込み処理
-    # ==== Args
-    # _delivery_history_ ::: DeliveryHistoryオブジェクト
-    # _content_ :: 外部出力内容
-    # _success_ ::: 外部出力の実行ステータス
-    # ==== Return
-    # ==== Raise
-    def self.register_issue_journal_reject(delivery_history)
-      issue = delivery_history.issue
-      delivery_name = (DST_LIST["delivery_place"][delivery_history.delivery_place_id]||{})["name"].to_s
-      delivery_process_date = delivery_history.process_date.strftime("%Y/%m/%d %H:%M:%S")
-      notes = ""
-      notes += "#{delivery_process_date}に、 #{delivery_name}配信要求を却下しました。\n"
-      notes += "\n" + delivery_history.summary
-      issue.init_journal(delivery_history.respond_user, notes)
-      issue.save
-    end
-    
     # チケットへの送信履歴書き込み処理
     # ==== Args
     # _delivery_history_ ::: DeliveryHistoryオブジェクト
-    # _content_ :: 外部出力内容
+    # _client_ :: クライアントオブジェクト
     # _success_ ::: 外部出力の実行ステータス
     # ==== Return
     # ==== Raise
-    def self.register_issue_journal(delivery_history, content, success)
+    def self.register_issue_journal(delivery_history, client, success)
       issue = delivery_history.issue
       delivery_place_id = delivery_history.delivery_place_id
       delivery_name = (DST_LIST["delivery_place"][delivery_place_id]||{})["name"].to_s
       delivery_history_id = delivery_history.id.to_s
       delivery_process_date = delivery_history.process_date.strftime("%Y/%m/%d %H:%M:%S")
-      
-      notessuffix = ""
-      if [SMTP_0_ID, SMTP_1_ID, SMTP_2_ID, SMTP_3_ID, SMTP_AUTH_ID].include?(delivery_place_id)
-        notessuffix = content['message'].to_s
-      elsif [TWITTER_ID, FACEBOOK_ID].include?(delivery_place_id)
-        notessuffix = content.to_s
-      elsif [U_MAIL_DCM_ID, U_MAIL_SB_ID, U_MAIL_AU_ID].include?(delivery_place_id)
-        xml_body = REXML::Document.new(content)
-        notessuffix = xml_body.elements["//pcx_um:Information/pcx_um:Message"].text
-      end
-      
-      notes = ""
-      notes += "#{delivery_process_date}に処理を行った、 #{delivery_name}配信は、"
-      notes += success ? "正常に配信しました。\n" : "異常終了しました。\n"
-      notes += notessuffix.to_s
-      issue.init_journal(delivery_history.respond_user, notes)
-      issue.save
+
+      notes = []
+      notes << "#{delivery_process_date}に処理を行った、 #{delivery_name}配信は、" +
+                (success ? "正常に配信しました。" : "異常終了しました。")
+      notes << content_for_issue_journal_of(client).presence
+      issue.init_journal(delivery_history.respond_user, notes.compact.join("\n"))
+      issue.save!
     end
+
+    # チケット履歴向けコンテンツ作成
+    # クラス変数のチケット履歴出力項目に指定された項目値を、
+    # クライアントオブジェクトから『項目内容』の体裁で出力します
+    # ※本ルール以外で出力したい場合は、本メソッドをオーバーライドすること
+    # ==== Args
+    # _client_ :: クライアントオブジェクト
+    # ==== Return
+    # コンテンツ文字列
+    # ==== Raise
+    def self.content_for_issue_journal_of(client)
+      outputs = []
+      (@@output_issue_journal_fields || []).each do |field|
+        outputs << eval("client.#{field}").to_s rescue ""
+      end
+      return outputs.join("\n")
+    end
+
   end
 end
 
