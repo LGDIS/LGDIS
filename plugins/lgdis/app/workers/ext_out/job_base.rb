@@ -69,14 +69,6 @@ module ExtOut
         delivery_history.update_attributes!(status: (success ? "done" : "failed")) if delivery_history
         # チケットへの送信履歴書き込み処理
         register_issue_journal(delivery_history, content, success)
-        # 配信状況更新処理
-        if delivery_history.status == "done"
-          delivery_history.issue.custom_values.each do |c|
-            if c.custom_field_id == DST_LIST['cf_id_for_show_status']
-              c.update_attributes(:value => '1:○')
-            end
-          end
-        end
         # ログ出力
         log_of_output("Completed queue of #{delivery_name} " +
                       "#{test_flag ? "TEST-" : ""}#{success ? "OK" : "NG"} " +

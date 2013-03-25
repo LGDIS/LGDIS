@@ -62,8 +62,6 @@ module Lgdis
             return text_field_tag(field_name, custom_value.value, tag_options.merge(:size => 16)) +
                     calendar_with_time_for(field_id)
           end
-        when "list"
-          return custom_value if custom_field.id == DST_LIST['cf_id_for_show_status']
         end
 
         return custom_field_tag_without_time_status(name, custom_value)

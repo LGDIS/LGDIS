@@ -3044,9 +3044,6 @@ status:
   failed: 配信失敗
   runtime: 配信中
 
-# チケット一覧配信ステータス表示時用カスタムフィールドID
-cf_id_for_show_status: 999
-
 # 配信内容にあたるカスタムフィールドID
 custom_field_delivery:
   comp_info: 5            # 補足情報
