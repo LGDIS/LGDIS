@@ -67,6 +67,20 @@ module Lgdis
     end
 
     module ClassMethods
+      # 属性のローカライズ名取得
+      # validateエラー時のメッセージに使用されます。
+      # "field_" + 属性名 でローカライズします。
+      # ※"summary"の場合、既存の翻訳ファイルと重複するため、"plugin_"を接頭辞として追加する。
+      # ==== Args
+      # _attr_ :: 属性名
+      # _args_ :: args
+      # ==== Return
+      # 項目名
+      # ==== Raise
+      def self.human_attribute_name(attr, *args)
+        attr = "plugin_#{attr}" if attr == "summary"
+        super(attr, args)
+      end
     end
 
     module InstanceMethods

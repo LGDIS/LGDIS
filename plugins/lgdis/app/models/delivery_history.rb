@@ -29,6 +29,21 @@ class DeliveryHistory < ActiveRecord::Base
   U_MAIL_SB_ID  = 11
   U_MAIL_AU_ID  = 12
 
+  # 属性のローカライズ名取得
+  # validateエラー時のメッセージに使用されます。
+  # "field_" + 属性名 でローカライズします。
+  # ※"summary"の場合、既存の翻訳ファイルと重複するため、"plugin_"を接頭辞として追加する。
+  # ==== Args
+  # _attr_ :: 属性名
+  # _args_ :: args
+  # ==== Return
+  # 項目名
+  # ==== Raise
+  def self.human_attribute_name(attr, *args)
+    attr = "plugin_#{attr}" if attr.to_s == "summary"
+    l("field_#{name.underscore.gsub('/', '_')}_#{attr}", :default => ["field_#{attr}".to_sym, attr])
+  end
+
   def self.create_for_history(issue, ary)
     deliver_histories = []
     ary.each do |e|
@@ -66,24 +81,21 @@ class DeliveryHistory < ActiveRecord::Base
       errors.add(:mail_subject, "を入力して下さい")
     end
 
-    # Redmine 本体のsummary と名前競合の為名称変更
     if ([SMTP_AUTH_ID, TWITTER_ID, FACEBOOK_ID, ATOM_ID,
          U_MAIL_DCM_ID, U_MAIL_SB_ID, U_MAIL_AU_ID].include?(self.delivery_place_id)) && self.summary.blank?
-      errors.add(:plugin_summary, "を入力して下さい")
+      errors.add(:summary, "を入力して下さい")
     end
 
-    # Redmine 本体のsummary と名前競合の為名称変更
     if ([TWITTER_ID, ATOM_ID].include?(self.delivery_place_id)) && self.summary.size >= (142 - DST_LIST['disaster_portal_url'].size)
-      errors.add(:plugin_summary, "は#{142 - DST_LIST['disaster_portal_url'].size}文字以上入力できません")
+      errors.add(:summary, "は#{142 - DST_LIST['disaster_portal_url'].size}文字以上入力できません")
     end
 
     if ([U_MAIL_DCM_ID, U_MAIL_SB_ID, U_MAIL_AU_ID].include?(self.delivery_place_id)) && self.mail_subject.size > 15
       errors.add(:mail_subject, "は16文字以上入力できません")
     end
 
-    # Redmine 本体のsummary と名前競合の為名称変更
     if ([U_MAIL_DCM_ID, U_MAIL_SB_ID, U_MAIL_AU_ID].include?(self.delivery_place_id)) && self.summary.size > 171
-      errors.add(:plugin_summary, "は172文字以上入力できません")
+      errors.add(:summary, "は172文字以上入力できません")
     end
 
     if ([COMMONS_ID, U_MAIL_DCM_ID, U_MAIL_SB_ID, U_MAIL_AU_ID].include?(self.delivery_place_id)) && self.type_update.blank?
