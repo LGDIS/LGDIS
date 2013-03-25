@@ -92,6 +92,10 @@ module Lgdis
       # 緊急速報メール の定義用トラッカーid(実在しないトラッカー)
       # destination_list.yml commons_xml、tracker_title に紐付くID
       UGENT_MAIL_ID = 0
+      # 緊急速報メールの外部配信先ID配列
+      UGENT_MAIL_PLACE_IDS = DST_LIST['delivery_place_group_urgent_mail'].map{|o| o["id"]}
+      # ** 号配備メールの外部配信先ID配列
+      DEPLOYED_MAIL_PLACE_IDS = DST_LIST['delivery_place_group_deployed_mail'].map{|o| o["id"]}
 
       # チケット情報のコピー
       # チケット位置情報もコピーするように処理追加
@@ -341,7 +345,7 @@ module Lgdis
       # ==== Raise
       def add_url_and_training(contents, delivery_place_id)
         url = ''
-        if DST_LIST['email_deployed'][delivery_place_id].present?
+        if DEPLOYED_MAIL_PLACE_IDS.include?(delivery_place_id)
           url = DST_LIST['lgdsf_url'] + Time.now.strftime("%Y%m%d%H%M%S")
         end
 
@@ -365,7 +369,7 @@ module Lgdis
         # テンプレート生成
         # XML Body 生成
         # Body root element 生成
-        if DST_LIST['ugent_mail_ids'].include?(delivery_place_id)
+        if UGENT_MAIL_PLACE_IDS.include?(delivery_place_id)
           element     = 'pcx_um:UrgentMail'
           commons_xml = DST_LIST['commons_xml'][UGENT_MAIL_ID]
           # 緊急速報メールのBody 部はxml_body に保持しない為生成
@@ -437,7 +441,7 @@ module Lgdis
         end
 
         doc.elements["//edxlde:contentDescription"].add_text(self.summary)
-        if DST_LIST['ugent_mail_ids'].include? delivery_place_id # 緊急速報メールの場合のみ
+        if UGENT_MAIL_PLACE_IDS.include? delivery_place_id # 緊急速報メールの場合のみ
           doc.elements["//edxlde:contentDescription"].next_sibling = REXML::Element.new("edxlde:consumerRole")
           doc.elements["//edxlde:consumerRole"].add_element("edxlde:valueListUrn").add_text('publicCommons:media:urgentmail:carrier')
           doc.elements["//edxlde:consumerRole"].add_element("edxlde:value").add_text(DST_LIST['delivery_place'][delivery_place_id]['commons_xml_carrier'])
@@ -490,7 +494,7 @@ module Lgdis
         doc.elements["//pcx_ib:Head"].next_sibling = xml_body if xml_body.present?
         # 補足情報追加処理
         # 避難勧告・指示、避難所情報、被害情報 時のみ追加
-        if self.name_in_custom_field_value(DST_LIST['custom_field_delivery']['comp_info']).present? && !DST_LIST['ugent_mail_ids'].include?(delivery_place_id) && DST_LIST['comp_info_trackers'].include?(self.tracker_id)
+        if self.name_in_custom_field_value(DST_LIST['custom_field_delivery']['comp_info']).present? && !UGENT_MAIL_PLACE_IDS.include?(delivery_place_id) && DST_LIST['comp_info_trackers'].include?(self.tracker_id)
           doc.elements["//#{DST_LIST['comp_info_xpath'][self.tracker_id]}"].add_text(self.name_in_custom_field_value(DST_LIST['custom_field_delivery']['comp_info']))
         else
           doc.delete_element("//#{DST_LIST['comp_info_xpath'][self.tracker_id]}")
@@ -665,12 +669,12 @@ module Lgdis
           condition_ary.push self.project_id, self.tracker_id
         end
 
-        if DST_LIST['ugent_mail_ids'].include?(delivery_place_id)
+        if UGENT_MAIL_PLACE_IDS.include?(delivery_place_id)
           condition_str << ' and delivery_place_id = ?'
           condition_ary.push delivery_place_id
         else
           condition_str << ' and delivery_place_id not in (?)'
-          condition_ary.push DST_LIST['ugent_mail_ids']
+          condition_ary.push UGENT_MAIL_PLACE_IDS
         end
         condition_ary.unshift(condition_str)
         edition_mng = EditionManagement.find(:first,

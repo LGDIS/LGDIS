@@ -137,19 +137,33 @@ delivery_place:
     delivery_job_class: *delivery_job_class_1
     commons_xml_carrier: UMC3      # 受信媒体(キャリア)
 
-
-# 緊急速報メール判定用配列
-ugent_mail_ids:
-  - 10
-  - 11
-  - 12
-
-# ** 号配備 delivery_place id
-email_deployed:
-  2: true
-  3: true
-  4: true
-  5: true
+# 配信先グループ
+#
+# 全て
+delivery_place_group_all: &delivery_place_group_all
+  - *commons
+  - *smtp_0
+  - *smtp_1
+  - *smtp_2
+  - *smtp_3
+  - *smtp_auth
+  - *twitter
+  - *facebook
+  - *atom
+  - *urgent_mail_docomo
+  - *urgent_mail_au
+  - *urgent_mail_sb
+# 緊急即報メール
+delivery_place_group_urgent_mail: &delivery_place_group_urgent_mail
+  - *urgent_mail_docomo
+  - *urgent_mail_au
+  - *urgent_mail_sb
+# ** 号配備メール
+delivery_place_group_deployed_mail: &delivery_place_group_deployed_mail
+  - *smtp_0
+  - *smtp_1
+  - *smtp_2
+  - *smtp_3
 
 # 自動配信時先リスト
 # 記載例
@@ -186,388 +200,388 @@ auto_destination:
 destination:
   1: # Non member
     1: # 避難勧告指示・指示情報(公共コモンズ配信用)
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     2: # 避難所情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
   2: # Anonymous
     1: # 避難勧告指示・指示情報(公共コモンズ配信用)
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     2: # 避難所情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
   3: # 管理者(プロトタイプ環境 admin)
     1: # 避難勧告指示・指示情報(公共コモンズ配信用)
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     2: # 避難所情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     3: # 気象環境変化
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     5: # 
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     6: # 
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     7: # 人的被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     8: # 住家建物被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     9: # 道路被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     10: # 橋梁被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     11: # 上水道被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     12: # 下水道被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     13: # ガス設備被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     14: # 通信網被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     15: # その他被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     16: # 災害対策本部設置報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     17: # 被害者要約報告(概況)
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     18: # 被害者要約報告(状況)
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     20: # 道路交通規制に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     21: # 道路渋滞に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     25: # 道路工事に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     27: # 道路路面状況に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     28: #
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     29: #
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     33: # 非住家建物被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     34: # 高等学校被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     35: # 中学校被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     36: # 小学校被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     37: # 幼稚園被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     38: # 保育所被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     39: # 災害弱者関連施設被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     40: # 医療施設被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     41: # 災害重要施設被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     42: # 鉄道の運行に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     43: # 上水道に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     44: # 下水道に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     45: # ガスに関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     46: # 通信網に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     50: # 電気に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     51: # 臨時災害放送に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     52: # 行政手続きに関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     53: # その他の被災者支援に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     54: # 学校・幼稚園・保育所に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     55: # 給水に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     56: # 健康・福祉・介護に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     57: # 環境に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     58: # 防犯に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     59: # 医療に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     60: # 炊き出し・物資配布に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     61: # 入浴サービスに関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     62: # 安置所に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     63: # 災害習得物に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     64: # ボランティアの支援を受けたい方への情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     65: # ボランティア活動をしたい方への情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     66: # 営業店舗に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     67: # 
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     68: # 
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     69: # 
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     70: # 
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     71: # 
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     72: # バスの運行に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     73: # 航空路の運行に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     74: # 船舶路の運行に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     75: # その他公共交通の運行に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     77: # 
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     78: # 
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
   6: # モデレータ
     1: # 避難勧告指示・指示情報(公共コモンズ配信用)
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     2: # 避難所情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     18: # 【システム】被害要約（状況）
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     44: # 下水道に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     71: # 被災者からの要望（食料）
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
 ##
 ##added by NTTPC ここから
   7: # 災害対策本部(プロトタイプ環境 xxxxx)
     1: # 避難勧告指示・指示情報(公共コモンズ配信用)
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     2: # 避難所情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     3: # 気象環境変化
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     7: # 人的被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     8: # 住家建物被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     9: # 道路被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     10: # 橋梁被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     11: # 上水道被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     12: # 下水道被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     13: # ガス設備被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     14: # 通信網被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     15: # その他被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     16: # 災害対策本部設置報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     17: # 被害者要約報告(概況)
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     18: # 被害者要約報告(状況)
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     20: # 道路交通規制に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     21: # 道路渋滞に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     25: # 道路工事に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     27: # 道路路面状況に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     33: # 非住家建物被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     34: # 高等学校被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     35: # 中学校被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     36: # 小学校被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     37: # 幼稚園被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     38: # 保育所被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     39: # 災害弱者関連施設被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     40: # 医療施設被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     41: # 災害重要施設被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     42: # 鉄道の運行に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     43: # 上水道に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     44: # 下水道に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     45: # ガスに関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     46: # 通信網に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     50: # 電気に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     51: # 臨時災害放送に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     52: # 行政手続きに関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     53: # その他の被災者支援に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     54: # 学校・幼稚園・保育所に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     55: # 給水に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     56: # 健康・福祉・介護に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     57: # 環境に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     58: # 防犯に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     59: # 医療に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     60: # 炊き出し・物資配布に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     61: # 入浴サービスに関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     62: # 安置所に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     63: # 災害習得物に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     64: # ボランティアの支援を受けたい方への情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     65: # ボランティア活動をしたい方への情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     66: # 営業店舗に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     72: # バスの運行に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     73: # 航空路の運行に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     74: # 船舶路の運行に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     75: # その他公共交通の運行に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
   8: # 広報担当(プロトタイプ環境)
     1: # 避難勧告指示・指示情報(公共コモンズ配信用)
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     2: # 避難所情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     3: # 気象環境変化
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     7: # 人的被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     8: # 住家建物被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     9: # 道路被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     10: # 橋梁被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     11: # 上水道被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     12: # 下水道被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     13: # ガス設備被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     14: # 通信網被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     15: # その他被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     16: # 災害対策本部設置報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     17: # 被害者要約報告(概況)
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     18: # 被害者要約報告(状況)
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     20: # 道路交通規制に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     21: # 道路渋滞に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     25: # 道路工事に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     27: # 道路路面状況に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     33: # 非住家建物被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     34: # 高等学校被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     35: # 中学校被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     36: # 小学校被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     37: # 幼稚園被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     38: # 保育所被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     39: # 災害弱者関連施設被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     40: # 医療施設被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     41: # 災害重要施設被害報告
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     42: # 鉄道の運行に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     43: # 上水道に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     44: # 下水道に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     45: # ガスに関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     46: # 通信網に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     50: # 電気に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     51: # 臨時災害放送に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     52: # 行政手続きに関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     53: # その他の被災者支援に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     54: # 学校・幼稚園・保育所に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     55: # 給水に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     56: # 健康・福祉・介護に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     57: # 環境に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     58: # 防犯に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     59: # 医療に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     60: # 炊き出し・物資配布に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     61: # 入浴サービスに関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     62: # 安置所に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     63: # 災害習得物に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     64: # ボランティアの支援を受けたい方への情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     65: # ボランティア活動をしたい方への情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     66: # 営業店舗に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     72: # バスの運行に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     73: # 航空路の運行に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     74: # 船舶路の運行に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     75: # その他公共交通の運行に関する情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
 ## added by NTTPC ここまで
 ##
   9: # 外部入力者
     1: # 避難勧告指示・指示情報(公共コモンズ配信用)
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     2: # 避難所情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
   10: # 閲覧者
     1: # 避難勧告指示・指示情報(公共コモンズ配信用)
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
     2: # 避難所情報
-      [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+      *delivery_place_group_all
 
 # トラッカーごとの配信先にデフォルトでチェックを入れる
 # 記載例
@@ -597,7 +611,7 @@ delivery_place_default:
   8: # 【被害報告】住家建物
     [*smtp_2]
   9: # 【被害報告】道路
-    [*commons, *smtp_0, *smtp_1, *smtp_2, *smtp_3, *smtp_auth, *twitter, *facebook, *atom, *urgent_mail_docomo, *urgent_mail_au, *urgent_mail_sb]
+    *delivery_place_group_all
 
 commons_xml:
   0: commons_urgent_mail.xml                     # 緊急速報メール
