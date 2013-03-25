@@ -1,9 +1,9 @@
 <div style="display:none;"></div><%# IE8のバグで、fieldsetがうまく描画されないため、ダミーで要素追加 %>
 <fieldset class="collapsible">
-  <legend onclick="toggleFieldset(this);"><%= l(:ext_out_field) %></legend>
+  <legend onclick="toggleFieldset(this);"><%= l(:label_ext_out_field) %></legend>
   <div>
   <%= form_tag(:action => :request_delivery) do %>
-    <p><strong><label><%= l(:delivery_place) %>:</label></strong></p>
+    <p><strong><label><%= l(:label_delivery_place) %>:</label></strong></p>
     <div class="tabular">
       <% unless @destination_list.blank? %>
         <%
@@ -21,7 +21,7 @@
       <div style="clear:both;"></div>
     </div>
 
-    <p><strong><label><%= l(:control_plane_settings) %>:</label></strong></p>
+    <p><strong><label><%= l(:label_control_plane_settings) %>:</label></strong></p>
     <div class="search_condition tabular">
       <div class="splitcontent">
         <div class="splitcontentleft">
@@ -38,7 +38,7 @@
       </div>
     </div>
 
-    <fieldset class="collapsible"><legend><%= l(:commons) %></legend>
+    <fieldset class="collapsible"><legend><%= l(:label_commons) %></legend>
 
     <div class="search_condition tabular">
       <div class="splitcontent">
@@ -112,7 +112,7 @@
   <% end %>
 
 
-  <p><strong><label><%= l(:delivery_status) %>:</label></strong></p>
+  <p><strong><label><%= l(:label_delivery_status) %>:</label></strong></p>
   <% if check_permissions(@issue) %>
     <% unless @delivery_histories.blank? %>
       <% @delivery_histories.each do | d_h | %>
@@ -121,7 +121,7 @@
           <label style="position:absolute; left:240px;">
             <%= DST_LIST['delivery_place'][d_h.delivery_place_id]['name'] %>
           </label>
-          <label style="position:absolute; left:450px;"><%= DST_LIST['status'][d_h.status] %></label>
+          <label style="position:absolute; left:450px;"><%= l(d_h.status, :scope => "delivery_status") %></label>
           <% if d_h.status == 'request' || d_h.status == 'failed' %>
           <label style="position:absolute; left:580px;">
             <%= link_to "配信確認", {:controller => "deliver_issues",
@@ -140,7 +140,7 @@
         <p class="table_border">
           <%= tm_fmt(d_h.process_date) %>
           <%= DST_LIST['delivery_place'][d_h.delivery_place_id]['name'] %>
-          <%= DST_LIST['status'][d_h.status] %>
+          <%= l(d_h.status, :scope => "delivery_status") %>
         </p>
       <% end %>
     <% end %>

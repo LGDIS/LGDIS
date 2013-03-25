@@ -3036,14 +3036,6 @@ commons_xml_field:
   organization_code: '042021'               # 作成部署情報(組織コード)
   organization_name: 石巻市                 # 作成部署情報(組織名)
 
-# 配信要求ステータス定義
-status:
-  request: 配信要求中
-  done: 配信完了
-  reject: 配信却下
-  failed: 配信失敗
-  runtime: 配信中
-
 # 配信内容にあたるカスタムフィールドID
 custom_field_delivery:
   comp_info: 5            # 補足情報

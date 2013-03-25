@@ -89,13 +89,10 @@ module Lgdis
                       '2' => 'Update',
                       '3' => 'Cancel'
                     }.freeze
-
-      # 補足情報のcustom_field_id
-      COMPLEMENTARYINFO_ID = 5
       # 関連するホームページのcustom_field_id
       URL_ID = 37
-      # 緊急速報メール に紐付くtitle id
-      # destination_list.yml tracker_title　に紐付くID
+      # 緊急速報メール の定義用トラッカーid(実在しないトラッカー)
+      # destination_list.yml commons_xml、tracker_title に紐付くID
       UGENT_MAIL_ID = 0
 
       # チケット情報のコピー
@@ -372,7 +369,7 @@ module Lgdis
         # Body root element 生成
         if DST_LIST['ugent_mail_ids'].include?(delivery_place_id)
           element     = 'pcx_um:UrgentMail'
-          commons_xml = DST_LIST['commons_xml'][0]
+          commons_xml = DST_LIST['commons_xml'][UGENT_MAIL_ID]
           # 緊急速報メールのBody 部はxml_body に保持しない為生成
           xml_body    = create_commons_area_mail_body
           title  = DST_LIST['tracker_title'][UGENT_MAIL_ID]
@@ -488,7 +485,7 @@ module Lgdis
         doc.elements["//pcx_ib:Head"].next_sibling = xml_body if xml_body.present?
         # 補足情報追加処理
         # 避難勧告・指示、避難所情報、被害情報 時のみ追加
-        if self.name_in_custom_field_value(COMPLEMENTARYINFO_ID).present? && !DST_LIST['ugent_mail_ids'].include?(delivery_place_id) && DST_LIST['comp_info_trackers'].include?(self.tracker_id)
+        if self.name_in_custom_field_value(DST_LIST['custom_field_delivery']['comp_info']).present? && !DST_LIST['ugent_mail_ids'].include?(delivery_place_id) && DST_LIST['comp_info_trackers'].include?(self.tracker_id)
           doc.elements["//#{DST_LIST['comp_info_xpath'][self.tracker_id]}"].add_text(self.name_in_custom_field_value(DST_LIST['custom_field_delivery']['comp_info']))
         else
           doc.delete_element("//#{DST_LIST['comp_info_xpath'][self.tracker_id]}")

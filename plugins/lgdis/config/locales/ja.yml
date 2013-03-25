@@ -68,7 +68,7 @@ ja:
   ####
   # 課題管理機能
   #
-  map: 地図
+  label_map: 地図
   button_xml_view_sampling: 石巻市関連情報のみ
   button_ticket_update: チケットの更新
   button_ticket_delete: チケットの削除
@@ -112,14 +112,15 @@ ja:
   project_module_delivery_histories: 配信管理機能
   permission_request_delivery: 配信要求
   project_module_deliver: 配信管理
-  allow: 配信許可
-  reject: 配信却下
 
-  ext_out_field: 外部配信
-  delivery_place: 配信先
-  delivery_status: 配信状況
-  control_plane_settings: 配信内容の入力
-  commons: 公共情報コモンズ
+  label_ext_out_field: 外部配信
+  label_delivery_place: 配信先
+  label_delivery_status: 配信状況
+  label_control_plane_settings: 配信内容の入力
+  label_commons: 公共情報コモンズ
+
+  button_allow: 配信許可
+  button_reject: 配信却下
 
   notice_delivery_request_successful: 配信要求を行いました。
   notice_delivery_request_reject: 配信要求を却下しました。
@@ -136,6 +137,13 @@ ja:
   field_delivered_area: 情報の配信対象地域
   field_opened_at: 情報の公開開始日時
   field_closed_at: 情報の公開終了日時
+  
+  delivery_status:
+    request: 配信要求中
+    done: 配信完了
+    reject: 配信却下
+    failed: 配信失敗
+    runtime: 配信中
 
   ####
   # 避難勧告･指示機能
