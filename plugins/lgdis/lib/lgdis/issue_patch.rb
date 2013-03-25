@@ -89,8 +89,6 @@ module Lgdis
                       '2' => 'Update',
                       '3' => 'Cancel'
                     }.freeze
-      # 関連するホームページのcustom_field_id
-      URL_ID = 37
       # 緊急速報メール の定義用トラッカーid(実在しないトラッカー)
       # destination_list.yml commons_xml、tracker_title に紐付くID
       UGENT_MAIL_ID = 0
@@ -129,7 +127,7 @@ module Lgdis
           error_messages = []
           DeliveryHistory.create_for_history(self, ext_out_target).each do |dh|
             dh.errors.full_messages.each do |m|
-              self.errors.add(:base, "#{l('delivery_place')}が\"#{DST_LIST['delivery_place'][dh.delivery_place_id]['name']}\"の場合は、#{m}")
+              self.errors.add(:base, "#{l('label_delivery_place')}が\"#{DST_LIST['delivery_place'][dh.delivery_place_id]['name']}\"の場合は、#{m}")
             end
           end
           raise ActiveRecord::Rollback if self.errors.present?
@@ -404,8 +402,15 @@ module Lgdis
         edition_num = edition_fields_map['edition_num']
 
         # 運用種別フラグ
-        operation_flg = DST_LIST['commons_xml_field']['edxl_status'][self.project_id]
-        operation_flg = operation_flg.blank? ? 'Actual' : operation_flg
+        prj_mode = ""
+        if DST_LIST['training_prj'][self.project_id]
+          prj_mode = "training"
+        elsif DST_LIST['test_prj'][self.project_id]
+          prj_mode = "test"
+        else
+          prj_mode = "normal"
+        end
+        operation_flg = DST_LIST['commons_xml_field']['edxl_status'][prj_mode]
 
         # 更新種別設定処理
         type_update = TYPE_UPDATE[self.type_update]
@@ -435,7 +440,7 @@ module Lgdis
         if DST_LIST['ugent_mail_ids'].include? delivery_place_id # 緊急速報メールの場合のみ
           doc.elements["//edxlde:contentDescription"].next_sibling = REXML::Element.new("edxlde:consumerRole")
           doc.elements["//edxlde:consumerRole"].add_element("edxlde:valueListUrn").add_text('publicCommons:media:urgentmail:carrier')
-          doc.elements["//edxlde:consumerRole"].add_element("edxlde:value").add_text(DST_LIST['commons_xml_field']['carrier'][delivery_place_id])
+          doc.elements["//edxlde:consumerRole"].add_element("edxlde:value").add_text(DST_LIST['delivery_place'][delivery_place_id]['commons_xml_carrier'])
         end
 
         # Control 部要素追加
@@ -586,7 +591,9 @@ module Lgdis
         doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:SubCategory").add_text("#{DST_LIST["tracker_grouping"][self.tracker_id][1]}")
         doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:Title").add_text(I18n.t('target_municipality') + ' ' + self.project.name + ' ' + title)
         doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:Description").add_text("#{self.description}")
-        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:URL").add_text("#{self.name_in_custom_field_value(URL_ID)}") if self.name_in_custom_field_value(URL_ID).blank?
+        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:URL").add_text(
+            "#{self.name_in_custom_field_value(DST_LIST['custom_field_delivery']['related_url'])}"
+            ) if self.name_in_custom_field_value(DST_LIST['custom_field_delivery']['related_url']).present?
 
         return doc.to_s
       end
