@@ -57,7 +57,7 @@ module ExtOut
         # ステータス更新
         delivery_history.update_attributes!(status: (success ? "done" : "failed")) if delivery_history
         # チケットへの送信履歴書き込み処理
-        register_issue_journal(delivery_history, content, success)
+        register_issue_journal(delivery_history, client, success)
         # ログ出力
         log_of_output("Completed queue of #{delivery_name} " +
                       "#{test_flag ? "TEST-" : ""}#{success ? "OK" : "NG"} " +
