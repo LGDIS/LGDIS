@@ -9,7 +9,8 @@ class DeliveryHistoriesController < ApplicationController
   # ==== Return
   # ==== Raise
   def index
-    @delivery_histories = DeliveryHistory.where(:project_id => @project.id).paginate(:page => params[:page], :order => 'created_at desc', :per_page => 30)
+    @search = DeliveryHistory.search(params[:search])
+    @delivery_histories = @search.paginate(:page => params[:page], :order => 'created_at desc', :per_page => 30)
   end
 
   private
@@ -19,6 +20,11 @@ class DeliveryHistoriesController < ApplicationController
   # ==== Return
   # ==== Raise
   def find_project
-    @project = Project.find(params[:project_id])
+    unless params[:project_id].blank?
+      @project = Project.find(params[:project_id])
+      params[:search] = {:project_id_equals => @project.id} 
+    else 
+      @project = Project.find(params[:search][:project_id_equals])
+    end
   end
 end
