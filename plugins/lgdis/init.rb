@@ -15,13 +15,14 @@ ActiveSupport::Dependencies.autoload_paths += %W(#{Rails.root}/plugins/lgdis/lib
 # バッチファイル
 ActiveSupport::Dependencies.autoload_paths += %W(#{Rails.root}/plugins/lgdis/lib/batches)
 
-# API キー設定ファイルロード
+# 設定ファイルロード
 API_KEY     = YAML.load_file("#{Rails.root}/plugins/lgdis/config/api_key.yml")
 DST_LIST    = YAML.load_file("#{Rails.root}/plugins/lgdis/config/destination_list.yml")
 MAP_VALUES  = YAML.load_file("#{Rails.root}/plugins/lgdis/config/issue_map_default_values.yml")
 CF_CONNECT  = YAML.load_file("#{Rails.root}/plugins/lgdis/config/custom_field_connection.yml")["custom_field_connection"]
 CF_ADDRESS  = YAML.load_file("#{Rails.root}/plugins/lgdis/config/custom_field_connection.yml")["custom_field_address"]
 STATISTICS_SQL  = YAML.load_file("#{Rails.root}/plugins/lgdis/config/statistics_sql_query.yml")
+EVACUATIONADVISORY_MAP = YAML.load_file("#{Rails.root}/plugins/lgdis/config/evacuation_advisory.yml")
 
 # library, plugin
 require_dependency 'lgdis/acts/acts_as_csv_creatable'

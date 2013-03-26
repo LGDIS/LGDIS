@@ -238,6 +238,7 @@ ja:
 
     field_remarks: 備考
     field_disaster_overview: 災害概要
+    field_current_sort_criteria: 発令区分
     #field_created_at: 登録日時
     #field_updated_at: 更新日時
 
