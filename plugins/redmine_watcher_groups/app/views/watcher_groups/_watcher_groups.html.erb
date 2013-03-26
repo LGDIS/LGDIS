@@ -1,0 +1,14 @@
+<p>
+<label><%= l(:label_issue_watcher_groups) %></label>
+<% Group.find(:all, :order => 'lastname').each do |group| %>
+  <label class="floating">
+    <%= check_box_tag "watcher_groups[group_ids][]", group.users.map(&:id).join(','), false,
+        :id => nil, :onclick => "checkWatchers(this.value.split(','), this.checked)" %>
+    <%= group.lastname %>
+  </label>
+<% end %>
+</p>
+
+<% content_for :header_tags do %>
+  <%= javascript_include_tag("watcher_groups.js", :plugin => "redmine_watcher_groups") %>
+<% end %>

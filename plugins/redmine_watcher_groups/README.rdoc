@@ -1,0 +1,20 @@
+= redmine_watcher_groups
+
+Select issue watchers by groups.
+
+
+= Install
+
+    $ cd path/to/your/redmine/plugins
+    $ git clone git://github.com/yyuu/redmine_watcher_groups.git
+
+
+= Author
+
+- YAMASHITA Yuu (https://github.com/yyuu)
+- Geisha Tokyo Entertainment Inc. (http://www.geishatokyo.com/)
+
+
+= License
+
+MIT
