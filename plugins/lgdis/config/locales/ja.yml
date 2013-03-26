@@ -199,6 +199,7 @@ ja:
 
     field_remarks: 備考
     field_disaster_overview: 災害概要
+    field_current_sort_criteria: 発令区分
 
     field_issued_at: 発令日時
     field_changed_at: 移行日時

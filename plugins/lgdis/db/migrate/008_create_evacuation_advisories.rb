@@ -44,6 +44,10 @@ class CreateEvacuationAdvisories < ActiveRecord::Migration
 
       t.string     :remarks, :limit => 4000
       t.string     :disaster_overview, :limit => 4000
+
+      t.string     :previous_sort_criteria
+      t.string     :current_sort_criteria
+
       t.timestamp  :deleted_at
       t.timestamps
       
@@ -93,6 +97,10 @@ class CreateEvacuationAdvisories < ActiveRecord::Migration
   
     set_column_comment(:evacuation_advisories, :remarks, "備考")
     set_column_comment(:evacuation_advisories, :disaster_overview, "災害概要")
+
+    set_column_comment(:evacuation_advisories, :current_sort_criteria, "最新の発令区分")
+    set_column_comment(:evacuation_advisories, :previous_sort_criteria, "直前の発令区分")
+
     set_column_comment(:evacuation_advisories, :deleted_at, "削除日時")
     set_column_comment(:evacuation_advisories, :created_at, "登録日時")
     set_column_comment(:evacuation_advisories, :updated_at, "更新日時")

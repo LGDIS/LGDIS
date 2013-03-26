@@ -9,7 +9,8 @@ class EvacuationAdvisory < ActiveRecord::Base
                   :emergency_hq_needed_prefecture,:emergency_hq_needed_city,
                   :alert,:alerting_area,:siren_area,:evacuation_order,
                   :evacuate_from,:evacuate_to,:evacuation_steps_by_authorities,:remarks, 
-                  :households,:head_count,:section, :disaster_overview
+                  :households,:head_count,:section, :disaster_overview,
+                  :current_sort_criteria, :previous_sort_criteria
 
   ##正の整数チェック用オプションハッシュ値
   POSITIVE_INTEGER = {:only_integer => true,
@@ -28,11 +29,13 @@ class EvacuationAdvisory < ActiveRecord::Base
                 :inclusion => {:in => CONST[:advisory_type.to_s].keys, :allow_blank => true}
 
   #そのほかの項目チェック:DB定義順
-  validates :sort_criteria, :presence => true,
+  validates :sort_criteria,
                 :inclusion => {:in => CONST[:sort_criteria.to_s].keys, :allow_blank => true}
   validates :issueorlift,
                 :inclusion => {:in => CONST[:issueorlift.to_s].keys, :allow_blank => true} ,
                 :presence => true, :if => Proc.new {|evacuation_advisory| evacuation_advisory.sort_criteria.to_i > 1}
+  validates :current_sort_criteria, :presence => true,
+                :inclusion => {:in => CONST[:current_sort_criteria.to_s].keys, :allow_blank => true}
   
   validates :area, :presence => true,
                 :length => {:maximum => 100}
@@ -146,9 +149,6 @@ class EvacuationAdvisory < ActiveRecord::Base
     
     #避難勧告･指示を取得しXMLを生成する
     evacuation_advisories = EvacuationAdvisory.all
-
-
-
     evacuation_advisories.each do |eva|
       node_eva = doc.root.add_element("_避難勧告･指示情報")
       node_eva.add_element("災害識別情報").add_text("#{project.disaster_code}")
@@ -193,7 +193,6 @@ class EvacuationAdvisory < ActiveRecord::Base
       node_eva.add_element("備考").add_text("#{eva.remarks}")
     end
     
-                          
     issue = Issue.new
     issue.tracker_id = 30
     issue.project_id = project.id
@@ -212,6 +211,12 @@ class EvacuationAdvisory < ActiveRecord::Base
   # Issueオブジェクト
   # ==== Raise
   def self.create_commons_issue(project)
+    # 発令区分の遷移履歴を更新する
+    evacuation_advisories = EvacuationAdvisory.all
+    evacuation_advisories.each do |eva|
+      eva.update_sort_criteria_history
+    end
+
     # Xmlドキュメントの生成
     doc  = REXML::Document.new
 
@@ -241,10 +246,10 @@ class EvacuationAdvisory < ActiveRecord::Base
     summary = EvacuationAdvisory.select("SUM(households) as households_sum, SUM(head_count) as head_count_sum").where(:issueorlift => [ISSUEORLIFT_ISSUE,ISSUEORLIFT_LIFT]).where(:sort_criteria=> ['2','3','4','5']).first
     if summary.households_sum.present? || summary.head_count_sum.present?
       node_total_number = node_evas.add_element("pcx_ev:TotalNumber")
-        # 総世帯数
-        node_total_number.add_element("pcx_ev:Households", {"pcx_ev:unit" => "世帯"}).add_text("#{summary.households_sum}") if summary.households_sum.present?
-        # 避難総人数 自主避難人数を含む。
-        node_total_number.add_element("pcx_ev:HeadCount").add_text("#{summary.head_count_sum}") if summary.head_count_sum.present?
+      # 総世帯数
+      node_total_number.add_element("pcx_ev:Households", {"pcx_ev:unit" => "世帯"}).add_text("#{summary.households_sum}") if summary.households_sum.present?
+      # 避難総人数 自主避難人数を含む。
+      node_total_number.add_element("pcx_ev:HeadCount").add_text("#{summary.head_count_sum}") if summary.head_count_sum.present?
     end
     
     evas.each do |evas2|
@@ -305,6 +310,15 @@ class EvacuationAdvisory < ActiveRecord::Base
   def number_evacuation_advisory_code
     seq =  connection.select_value("select nextval('evacuation_code_seq')")
     self.identifier = "04202E#{format("%014d", seq)}"
+  end
+
+  # 発令区分の遷移履歴を更新する
+  def update_sort_criteria_history
+    # 公共コモンズ用の発令区分と発令解除区分を決定
+    self.sort_criteria, self.issueorlift = EVACUATIONADVISORY_MAP["sort_criteria_map"][self.previous_sort_criteria || "1"][self.current_sort_criteria]
+    # 更新前の発令区分を保存
+    self.previous_sort_criteria = self.current_sort_criteria
+    save!
   end
 
   private

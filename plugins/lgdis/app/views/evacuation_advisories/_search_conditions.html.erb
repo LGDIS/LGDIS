@@ -1,13 +1,11 @@
 <div class="splitcontent">
   <div class="splitcontentleft">
-    <%= field_for :sort_criteria do |key, label| %>
+    <%= field_for :current_sort_criteria do |key, label| %>
       <%= label_tag{label} %>
-      <%= f.select("#{key}_eq", options_for_select(@evacuation_advisory_const[key.to_s].invert, @search.sort_criteria_eq),:include_blank => true) %>
-    <% end %>
-    
-    <%= field_for :issueorlift do |key, label| %>
-      <%= label_tag{label} %>
-      <%= f.select("#{key}_eq", options_for_select(@evacuation_advisory_const[key.to_s].invert, @search.issueorlift_eq),:include_blank => true) %>
+      <%= f.radio_button "#{key}_eq", "", :checked => true %>なし
+      <% @evacuation_advisory_const["current_sort_criteria"].each do |sc_key, sc_value| %>
+        <%= f.radio_button "#{key}_eq", sc_key %><%= sc_value %>
+      <% end %>
     <% end %>
     
     <%= field_for :area do |key, label| %>

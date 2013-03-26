@@ -25,8 +25,8 @@ Constant.create(kind1: 'TD', kind2: 'shelters', kind3: 'usable_flag', text: '不
 Constant.create(kind1: 'TD', kind2: 'shelters', kind3: 'openable_flag', text: '可',    value: '1', _order: '1')
 Constant.create(kind1: 'TD', kind2: 'shelters', kind3: 'openable_flag', text: '不可',  value: '0', _order: '2')
 
-# 避難勧告･指示モデル' 
-# 発令・解除区分 
+# 避難勧告･指示モデル'
+# 発令・解除区分
 Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'issueorlift', text: '発令',      value: '1', _order: '1')
 Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'issueorlift', text: '解除',      value: '0', _order: '2')
 # COMMONSむけ発令区分
@@ -35,6 +35,13 @@ Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'sort_criter
 Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'sort_criteria', text: '避難勧告',   value: '3', _order: '3')
 Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'sort_criteria', text: '避難指示',   value: '4', _order: '4')
 Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'sort_criteria', text: '警戒区域',   value: '5', _order: '5')
+# 自治体むけ発令区分
+Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'current_sort_criteria', text: '－', value: '1', _order: '1')
+Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'current_sort_criteria', text: '警戒情報', value: '2', _order: '2')
+Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'current_sort_criteria', text: '避難準備情報',   value: '3', _order: '3')
+Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'current_sort_criteria', text: '避難勧告',   value: '4', _order: '4')
+Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'current_sort_criteria', text: '避難指示',   value: '5', _order: '5')
+Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'current_sort_criteria', text: '警戒区域',   value: '6', _order: '6')
 # APPLIC互換 避難勧告･指示種別
 Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'advisory_type', text: '1 避難準備', value: '1', _order: '1')
 Constant.create(kind1: 'TD', kind2: 'evacuation_advisories', kind3: 'advisory_type', text: '2 避難勧告', value: '2', _order: '2')

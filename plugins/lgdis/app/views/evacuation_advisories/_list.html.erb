@@ -4,7 +4,6 @@
 <!--       <th style="text-align: center;">発令・解除地区名称（中域）</th> -->
       <th style="text-align: center;"><%= sort_link @search, :area,          "発令・解除地区名称", {page: params[:page]}%></th>
       <th style="text-align: center;"><%= sort_link @search, :sort_criteria, "発令区分", {page: params[:page]}%></th>
-      <th style="text-align: center;"><%= sort_link @search, :issueorlift,   "発令・解除区分", {page: params[:page]}%></th>
       <th style="text-align: center;"><%= sort_link @search, :issued_at,     "発令日時", {page: params[:page]}%></th>
       <th style="text-align: center;"><%= sort_link @search, :lifted_at,     "解除日時", {page: params[:page]}%></th>
       <th style="text-align: center;"><%= sort_link @search, :households,    "対象世帯数", {page: params[:page]}%></th>
@@ -23,10 +22,9 @@
           </a>
         </td>
         <td style="text-align: center;">
-          <%= select_tag "evacuation_advisories[#{evacuation_advisory.id}][sort_criteria]", options_for_select(@evacuation_advisory_const["sort_criteria"].invert, evacuation_advisory.sort_criteria), {:include_blank => true, :disabled => @disabled} %>
-        </td>
-        <td style="text-align: center;">
-          <%= select_tag "evacuation_advisories[#{evacuation_advisory.id}][issueorlift]", options_for_select(@evacuation_advisory_const["issueorlift"].invert, evacuation_advisory.issueorlift), {:include_blank => true, :disabled => @disabled} %>
+          <% @evacuation_advisory_const["current_sort_criteria"].each do |key, value| %>
+            <%= radio_button_tag "evacuation_advisories[#{evacuation_advisory.id}][current_sort_criteria]", key, (evacuation_advisory.current_sort_criteria==key), :disabled => @disabled -%><%= value %>
+          <% end %>
         </td>
         <td style="text-align: center;" nowrap>
           <%= text_field_tag "evacuation_advisories[#{evacuation_advisory.id}][issued_at]", format_time_for_input(evacuation_advisory, :issued_at), :size => "16", :disabled => @disabled %>
