@@ -67,6 +67,20 @@ module Lgdis
     end
 
     module ClassMethods
+      # 属性のローカライズ名取得
+      # validateエラー時のメッセージに使用されます。
+      # "field_" + 属性名 でローカライズします。
+      # ※"summary"の場合、既存の翻訳ファイルと重複するため、"plugin_"を接頭辞として追加する。
+      # ==== Args
+      # _attr_ :: 属性名
+      # _args_ :: args
+      # ==== Return
+      # 項目名
+      # ==== Raise
+      def self.human_attribute_name(attr, *args)
+        attr = "plugin_#{attr}" if attr == "summary"
+        super(attr, args)
+      end
     end
 
     module InstanceMethods
@@ -75,14 +89,13 @@ module Lgdis
                       '2' => 'Update',
                       '3' => 'Cancel'
                     }.freeze
-
-      # 補足情報のcustom_field_id
-      COMPLEMENTARYINFO_ID = 5
-      # 関連するホームページのcustom_field_id
-      URL_ID = 37
-      # 緊急速報メール に紐付くtitle id
-      # destination_list.yml tracker_title　に紐付くID
+      # 緊急速報メール の定義用トラッカーid(実在しないトラッカー)
+      # destination_list.yml commons_xml、tracker_title に紐付くID
       UGENT_MAIL_ID = 0
+      # 緊急速報メールの外部配信先ID配列
+      UGENT_MAIL_PLACE_IDS = DST_LIST['delivery_place_group_urgent_mail'].map{|o| o["id"]}
+      # ** 号配備メールの外部配信先ID配列
+      DEPLOYED_MAIL_PLACE_IDS = DST_LIST['delivery_place_group_deployed_mail'].map{|o| o["id"]}
 
       # チケット情報のコピー
       # チケット位置情報もコピーするように処理追加
@@ -96,6 +109,56 @@ module Lgdis
           self.issue_geographies.build(copied_from_g.attributes.dup.except(:id, :issue_id, :created_at, :updated_at))
         end
         self
+      end
+
+      # 配信要求処理
+      # ==== Args
+      # _ext_out_ary_ :: 外部配信要求対象配列
+      # ==== Return
+      # 処理結果:true(成功)/false(失敗)
+      # エラー内容は本インスタンス(Issueオブジェクト)のerrorsを参照のこと
+      # ==== Raise
+      def request_delivery(ext_out_target)
+        success = false
+        transaction do
+          # イベント・お知らせ のxml_body 部を生成
+          if DST_LIST['general_info_ids'].include?(self.tracker_id) &&
+              ext_out_target.include?(DST_LIST['delivery_place'][1]['id'].to_s)
+            self.xml_body = create_commons_event_body
+          end
+          raise ActiveRecord::Rollback unless self.save
+
+          error_messages = []
+          DeliveryHistory.create_for_history(self, ext_out_target).each do |dh|
+            dh.errors.full_messages.each do |m|
+              self.errors.add(:base, "#{l('label_delivery_place')}が\"#{DST_LIST['delivery_place'][dh.delivery_place_id]['name']}\"の場合は、#{m}")
+            end
+          end
+          raise ActiveRecord::Rollback if self.errors.present?
+
+          # チケットへの配信要求履歴書き込み
+          register_issue_journal_request(ext_out_target)
+
+          success = true
+        end
+        return success
+      end
+
+      # 配信要求履歴書き込み処理
+      # ==== Args
+      # _ext_out_ary_ :: 外部配信要求対象配列
+      # ==== Return
+      # ==== Raise
+      def register_issue_journal_request(ext_out_ary)
+        notes = []
+        request_date = self.updated_on.strftime("%Y/%m/%d %H:%M:%S")
+        notes << "#{request_date}に、以下の配信要求を行いました。"
+        ext_out_ary.each do |delivery_place_id|
+          notes << (DST_LIST["delivery_place"][delivery_place_id.to_i]||{})["name"].to_s
+        end
+        notes << self.summary
+        self.init_journal(User.current, notes.join("\n"))
+        self.save!
       end
 
       # 配信処理
@@ -123,7 +186,7 @@ module Lgdis
             delivery_history.update_attributes({:status => status_to, :respond_user_id => User.current.id, :process_date => Time.now})
             
             # チケットへの配信要求却下履歴書き込み
-            ExtOut::JobBase.register_issue_journal_reject(delivery_history)
+            register_issue_journal_reject(delivery_history)
           end
         rescue
           # TODO
@@ -134,6 +197,21 @@ module Lgdis
         ensure
           return status_to
         end
+      end
+
+      # 配信要求却下履歴書き込み処理
+      # ==== Args
+      # _delivery_history_ :: DeliveryHistoryオブジェクト
+      # ==== Return
+      # ==== Raise
+      def register_issue_journal_reject(delivery_history)
+        notes = []
+        delivery_name = (DST_LIST["delivery_place"][delivery_history.delivery_place_id]||{})["name"].to_s
+        delivery_process_date = delivery_history.process_date.strftime("%Y/%m/%d %H:%M:%S")
+        notes << "#{delivery_process_date}に、 #{delivery_name}配信要求を却下しました。"
+        notes << delivery_history.summary
+        self.init_journal(delivery_history.respond_user, notes.join("\n"))
+        self.save!
       end
 
       # 配信内容作成処理
@@ -267,7 +345,7 @@ module Lgdis
       # ==== Raise
       def add_url_and_training(contents, delivery_place_id)
         url = ''
-        if DST_LIST['email_deployed'][delivery_place_id].present?
+        if DEPLOYED_MAIL_PLACE_IDS.include?(delivery_place_id)
           url = DST_LIST['lgdsf_url'] + Time.now.strftime("%Y%m%d%H%M%S")
         end
 
@@ -291,9 +369,9 @@ module Lgdis
         # テンプレート生成
         # XML Body 生成
         # Body root element 生成
-        if DST_LIST['ugent_mail_ids'].include?(delivery_place_id)
+        if UGENT_MAIL_PLACE_IDS.include?(delivery_place_id)
           element     = 'pcx_um:UrgentMail'
-          commons_xml = DST_LIST['commons_xml'][0]
+          commons_xml = DST_LIST['commons_xml'][UGENT_MAIL_ID]
           # 緊急速報メールのBody 部はxml_body に保持しない為生成
           xml_body    = create_commons_area_mail_body
           title  = DST_LIST['tracker_title'][UGENT_MAIL_ID]
@@ -328,8 +406,15 @@ module Lgdis
         edition_num = edition_fields_map['edition_num']
 
         # 運用種別フラグ
-        operation_flg = DST_LIST['commons_xml_field']['edxl_status'][self.project_id]
-        operation_flg = operation_flg.blank? ? 'Actual' : operation_flg
+        prj_mode = ""
+        if DST_LIST['training_prj'][self.project_id]
+          prj_mode = "training"
+        elsif DST_LIST['test_prj'][self.project_id]
+          prj_mode = "test"
+        else
+          prj_mode = "normal"
+        end
+        operation_flg = DST_LIST['commons_xml_field']['edxl_status'][prj_mode]
 
         # 更新種別設定処理
         type_update = TYPE_UPDATE[self.type_update]
@@ -356,10 +441,10 @@ module Lgdis
         end
 
         doc.elements["//edxlde:contentDescription"].add_text(self.summary)
-        if DST_LIST['ugent_mail_ids'].include? delivery_place_id # 緊急速報メールの場合のみ
+        if UGENT_MAIL_PLACE_IDS.include? delivery_place_id # 緊急速報メールの場合のみ
           doc.elements["//edxlde:contentDescription"].next_sibling = REXML::Element.new("edxlde:consumerRole")
           doc.elements["//edxlde:consumerRole"].add_element("edxlde:valueListUrn").add_text('publicCommons:media:urgentmail:carrier')
-          doc.elements["//edxlde:consumerRole"].add_element("edxlde:value").add_text(DST_LIST['commons_xml_field']['carrier'][delivery_place_id])
+          doc.elements["//edxlde:consumerRole"].add_element("edxlde:value").add_text(DST_LIST['delivery_place'][delivery_place_id]['commons_xml_carrier'])
         end
 
         # Control 部要素追加
@@ -409,7 +494,7 @@ module Lgdis
         doc.elements["//pcx_ib:Head"].next_sibling = xml_body if xml_body.present?
         # 補足情報追加処理
         # 避難勧告・指示、避難所情報、被害情報 時のみ追加
-        if self.name_in_custom_field_value(COMPLEMENTARYINFO_ID).present? && !DST_LIST['ugent_mail_ids'].include?(delivery_place_id) && DST_LIST['comp_info_trackers'].include?(self.tracker_id)
+        if self.name_in_custom_field_value(DST_LIST['custom_field_delivery']['comp_info']).present? && !UGENT_MAIL_PLACE_IDS.include?(delivery_place_id) && DST_LIST['comp_info_trackers'].include?(self.tracker_id)
           doc.elements["//#{DST_LIST['comp_info_xpath'][self.tracker_id]}"].add_text(self.name_in_custom_field_value(DST_LIST['custom_field_delivery']['comp_info']))
         else
           doc.delete_element("//#{DST_LIST['comp_info_xpath'][self.tracker_id]}")
@@ -510,7 +595,9 @@ module Lgdis
         doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:SubCategory").add_text("#{DST_LIST["tracker_grouping"][self.tracker_id][1]}")
         doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:Title").add_text(I18n.t('target_municipality') + ' ' + self.project.name + ' ' + title)
         doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:Description").add_text("#{self.description}")
-        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:URL").add_text("#{self.name_in_custom_field_value(URL_ID)}") if self.name_in_custom_field_value(URL_ID).blank?
+        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:URL").add_text(
+            "#{self.name_in_custom_field_value(DST_LIST['custom_field_delivery']['related_url'])}"
+            ) if self.name_in_custom_field_value(DST_LIST['custom_field_delivery']['related_url']).present?
 
         return doc.to_s
       end
@@ -582,12 +669,12 @@ module Lgdis
           condition_ary.push self.project_id, self.tracker_id
         end
 
-        if DST_LIST['ugent_mail_ids'].include?(delivery_place_id)
+        if UGENT_MAIL_PLACE_IDS.include?(delivery_place_id)
           condition_str << ' and delivery_place_id = ?'
           condition_ary.push delivery_place_id
         else
           condition_str << ' and delivery_place_id not in (?)'
-          condition_ary.push DST_LIST['ugent_mail_ids']
+          condition_ary.push UGENT_MAIL_PLACE_IDS
         end
         condition_ary.unshift(condition_str)
         edition_mng = EditionManagement.find(:first,

@@ -6,18 +6,46 @@ ja:
   label_search_condition_plural: 検索条件
   label_detail: 詳細
   button_new: 新規登録
-  map: 地図
-  description_project_identifier_on_create: システムで自動設定されます
-  text_select_tracker: 登録するチケットのトラッカーを選んでください
-  text_custom_field_default_value_multiple_info: '初期値が複数の場合は、1行に1個ずつ記述してください。'
   button_curd_confirm: この内容で保存してよろしいですか？
   button_ticket_confirm: チケットを登録してよろしいですか？
+  text_select_tracker: 登録するチケットのトラッカーを選んでください
 
   activerecord:
     errors:
       messages:
         not_an_integer: は整数で入力してください
 
+  will_paginate:
+    page_entries_info:
+      single_page:
+        zero:  "No %{model} found"
+        one:   "Displaying 1 %{model}"
+        other: "Displaying all %{count} %{model}"
+      single_page_html:
+        zero:  "No %{model} found"
+        one:   "Displaying <b>1</b> %{model}"
+        other: "Displaying <b>all&nbsp;%{count}</b> %{model}"
+
+      multi_page: "Displaying %{model} %{from} - %{to} of %{count} in total"
+      multi_page_html: "(%{from}～%{to}/%{count})"
+
+  # 認証
+  external_auth:
+    field_enable: 'OpenID(Google)/OAuth(Twitter,facebook)/SAMLを有効にする'
+    sign_in_via: '%{kind}アカウントでログイン'
+    result:
+      success: '%{kind} アカウントによる個人認証に成功しました。'
+      failure: '%{kind} アカウントによる個人認証に失敗しました。'
+
+  # 認証(redmine設定値の上書き)
+  lgdis_notice_account_register_done: 仮登録メールを送信しました。メールの内容をご確認ください。
+  lgdis_mail_subject_register: 仮登録完了メール
+  lgdis_mail_body_register: 本人確認のため、下記URLへにアクセスしアカウントの本登録を完了させて下さい。
+
+  # カスタムフィールドリスト複数初期値設定
+  text_custom_field_default_value_multiple_info: '初期値が複数の場合は、1行に1個ずつ記述してください。'
+
+  # カスタムフィールド日時入力
   field_include_time: 時刻を含む
   datetimepicker:
     time: 時刻
@@ -26,15 +54,27 @@ ja:
     current: 現在日時
     close: 閉じる
 
-  ####
-  # チケット
-  #
-  button_to_deliver: 配信画面へ
-  button_issue_update: 更新
+  # プロジェクト識別子自動採番
+  description_project_identifier_on_create: システムで自動設定されます
+
+  # プロジェクト自動作成
+  auto_launch_project:
+    field_term: 'プロジェクト自動作成における猶予期間[日]'
+    text_term_description: |
+      プロジェクト自動作成機能において、前回の自動作成した日付から設定期間の間は、自動作成が実行されません。
+      期間無しの場合は0を設定してください。
+      例) 前回自動作成日付:4/1, 設定期間:7 ⇒ 4/8～自動作成が実行
 
   ####
   # 課題管理機能
   #
+  label_map: 地図
+  button_xml_view_sampling: 石巻市関連情報のみ
+  button_ticket_update: チケットの更新
+  button_ticket_delete: チケットの削除
+  button_to_deliver: 配信画面へ
+  button_issue_update: 更新
+
   field_xml_body: XMLBody部
   field_xml_control: XMLControl部
   field_xml_control_status: 運用種別
@@ -56,31 +96,136 @@ ja:
   field_xml_head_infokindversion: 運用種別情報のバージョン番号
   field_xml_head_text: 見出し文
   field_xml_body: XMLBody部
-  button_xml_view_sampling: 石巻市関連情報のみ
-  button_ticket_update: チケットの更新
-  button_ticket_delete: チケットの削除
+
+  # GoogleMaps入力
+  button_map_show: 地図を表示
+  button_map_hide: 地図を隠す
+  button_area_get: エリア取得
+
+  # チケットのXML表示
+  issue_xml:
+    field_visible: 'チケット画面のXML表示を有効にする'
+
+  ####
+  # 配信管理機能
+  #
+  project_module_delivery_histories: 配信管理機能
+  permission_request_delivery: 配信要求
+  project_module_deliver: 配信管理
+
+  label_ext_out_field: 外部配信
+  label_delivery_place: 配信先
+  label_delivery_status: 配信状況
+  label_control_plane_settings: 配信内容の入力
+  label_commons: 公共情報コモンズ
+
+  button_allow: 配信許可
+  button_reject: 配信却下
+
+  notice_delivery_request_successful: 配信要求を行いました。
+  notice_delivery_request_reject: 配信要求を却下しました。
+  notice_delivery_request_failed: 配信要求に失敗しました。
+  notice_delivery_successful: 配信を行いました。
+  notice_delivery_unselected: 配信先が選択されていません。
+  notice_delivery_failed: 配信に失敗しました。
+
+  field_mail_subject: 情報のタイトル
+  field_plugin_summary: 情報の見出し要約文
+  field_type_update: 情報の更新種別
+  field_description_cancel: 取消の説明文
+  field_published_at: 情報の発表日時
+  field_delivered_area: 情報の配信対象地域
+  field_opened_at: 情報の公開開始日時
+  field_closed_at: 情報の公開終了日時
   
+  delivery_status:
+    request: 配信要求中
+    done: 配信完了
+    reject: 配信却下
+    failed: 配信失敗
+    runtime: 配信中
+
+  ####
+  # 避難勧告･指示機能
+  #
+  project_module_evacuation_advisories: 避難勧告･指示機能
+  permission_view_evacuation_advisories: 避難勧告･指示情報の閲覧
+  permission_manage_evacuation_advisories: 避難勧告･指示情報の管理
+
+  label_evacuation_advisory: 避難勧告･指示
+  label_evacuation_advisory_plural: 避難勧告･指示一覧
+  label_evacuation_advisory_new: 避難勧告･指示登録・更新
+  
+  button_new_area: 新規地区
+
+  notice_evacuation_advisory_successful_create: 避難勧告･指示が発令／解除されました。
+  text_evacuation_advisory_destroy_confirmation: '本当に削除しますか？'
+  text_evacuation_advisory_update_confirmation: '更新してよろしいですか？'
+  error_not_exists_evacuation_advisories: 避難勧告･指示情報が存在しません。
+  error_not_exists_announcement: 避難勧告等が発令された地区が存在しません。
+
+  # 項目名
+  evacuation_advisories:
+    field_advisory_type: 避難勧告･指示種別
+    field_disaster_code: 災害コード
+    field_sort_criteria: 発令区分
+    field_issueorlift: 発令・解除区分
+    field_area: 発令・解除地区名称
+    field_area_kana: 発令・解除地区名称かな
+    field_district: 発令・解除地区名称（大域）
+    field_section: 発令・解除地区名称（中域）
+    field_households: 対象世帯数
+    field_head_count: 対象人数
+    field_identifier:  避難勧告_指示識別情報
+    field_category: 災害名
+    field_cause: 避難原因
+
+    field_staff_no: 発令権限者の職員番号
+    field_full_name: 発令権限者の氏名
+    field_alias: 発令権限者の別名称
+
+    field_headline: ヘッドライン
+    field_message: 避難情報文
+    field_emergency_hq_needed_prefecture: 都道府県緊急対処事態対策本部を設置すべき都道府県
+    field_emergency_hq_needed_city: 市町村緊急対処事態対策本部を設置すべき市町村
+    field_alert: 警報内容
+    field_alerting_area: 警報の通知伝達の対象となる地域の範囲
+    field_siren_area: サイレンを使用する地域
+
+    field_evacuation_order: 避難措置の指示内容
+    field_evacuate_from: 要避難地域
+    field_evacuate_to: 避難先地域
+    field_evacuation_steps_by_authorities: 住民の避難に関して関係機関が講ずべき措置の概要
+
+    field_remarks: 備考
+    field_disaster_overview: 災害概要
+    field_current_sort_criteria: 発令区分
+
+    field_issued_at: 発令日時
+    field_changed_at: 移行日時
+    field_lifted_at: 解除日時
+
   ####
   # 避難所開設機能
   #
   project_module_shelters: 避難所開設機能
   permission_view_shelters: 避難所開設情報の閲覧
   permission_manage_shelters: 避難所開設情報の管理
-  
+
   label_shelter: 避難所一覧
   label_shelter_plural: 避難所一覧
   label_shelter_new: 避難所登録・更新
-  
+
   button_bulk_update: 更新
   button_ticket: 登録
   button_summary: 集計
   button_new_shelter: 新規避難所
-  
+
   notice_shelter_successful_create: 避難所 %{id} が登録されました。
   text_shelter_destroy_confirmation: '本当に削除しますか？'
   text_shelter_update_confirmation: '更新してよろしいですか？'
   error_not_exists_shelters: 避難所情報が存在しません。
-  
+
   # 項目名
   shelters:
     field_disaster_code: 災害コード
@@ -124,127 +269,13 @@ ja:
     field_rehabilitation_certificate_count: 療育手帳A/A1/A2所持者
     field_physical_disability_certificate_count: 身体障がい者手帳1/2級所持者
     field_note: 備考
-    
+
     field_address_area: 地区名
     field_address_postal_code: 郵便番号
     field_address_state: 都道府県
     field_address_city: 市区町村
     field_address_street: 町名
     field_address_number: 番地
-    
-  will_paginate:
-    page_entries_info:
-      single_page:
-        zero:  "No %{model} found"
-        one:   "Displaying 1 %{model}"
-        other: "Displaying all %{count} %{model}"
-      single_page_html:
-        zero:  "No %{model} found"
-        one:   "Displaying <b>1</b> %{model}"
-        other: "Displaying <b>all&nbsp;%{count}</b> %{model}"
-
-      multi_page: "Displaying %{model} %{from} - %{to} of %{count} in total"
-      multi_page_html: "(%{from}～%{to}/%{count})"
-
-  ####
-  # 配信管理機能
-  #
-  project_module_delivery_histories: 配信管理機能
-  permission_request_delivery: 配信要求
-  project_module_deliver: 配信管理
-  allow: 配信許可
-  reject: 配信却下
-
-  ext_out_field: 外部配信
-  delivery_place: 配信先
-  delivery_status: 配信状況
-  control_plane_settings: 配信内容の入力
-  commons: 公共情報コモンズ
-  machicomi: まちcomi
-  twitter: Twitter
-  facebook: Facebook
-  google: Google
-  openam: OpenAM
-  ldap: LDAP
-
-  notice_delivery_request_successful: 配信要求を行いました。
-  notice_delivery_request_reject: 配信要求を却下しました。
-  notice_delivery_request_failed: 配信要求に失敗しました。
-  notice_delivery_successful: 配信を行いました。
-  notice_delivery_unselected: 配信先が選択されていません。
-  notice_delivery_failed: 配信に失敗しました。
-
-  ####
-  # 避難勧告･指示機能
-  #
-  project_module_evacuation_advisories: 避難勧告･指示機能
-  permission_view_evacuation_advisories: 避難勧告･指示情報の閲覧
-  permission_manage_evacuation_advisories: 避難勧告･指示情報の管理
-
-  label_evacuation_advisory: 避難勧告･指示
-  label_evacuation_advisory_plural: 避難勧告･指示一覧
-  label_evacuation_advisory_new: 避難勧告･指示登録・更新
-  
-  button_new_area: 新規地区
-
-  notice_evacuation_advisory_successful_create: 避難勧告･指示が発令／解除されました。
-  text_evacuation_advisory_destroy_confirmation: '本当に削除しますか？'
-  text_evacuation_advisory_update_confirmation: '更新してよろしいですか？'
-  error_not_exists_evacuation_advisories: 避難勧告･指示情報が存在しません。
-  error_not_exists_announcement: 避難勧告等が発令された地区が存在しません。
-
-  # 配信履歴 項目名
-  field_mail_subject: 情報のタイトル
-  field_plugin_summary: 情報の見出し要約文
-  field_type_update: 情報の更新種別
-  field_description_cancel: 取消の説明文
-  field_published_at: 情報の発表日時
-  field_delivered_area: 情報の配信対象地域
-  field_opened_at: 情報の公開開始日時
-  field_closed_at: 情報の公開終了日時
-
-  # 避難勧告･指示機能 項目名
-  evacuation_advisories:
-    field_advisory_type: 避難勧告･指示種別
-    field_disaster_code: 災害コード
-    field_sort_criteria: 発令区分
-    field_issueorlift: 発令・解除区分
-    field_area: 発令・解除地区名称
-    field_area_kana: 発令・解除地区名称かな
-    field_district: 発令・解除地区名称（大域）
-    field_section: 発令・解除地区名称（中域）
-    field_households: 対象世帯数
-    field_head_count: 対象人数
-    field_identifier:  避難勧告_指示識別情報
-    field_category: 災害名
-    field_cause: 避難原因
-
-    field_staff_no: 発令権限者の職員番号
-    field_full_name: 発令権限者の氏名
-    field_alias: 発令権限者の別名称
-
-    field_headline: ヘッドライン
-    field_message: 避難情報文
-    field_emergency_hq_needed_prefecture: 都道府県緊急対処事態対策本部を設置すべき都道府県
-    field_emergency_hq_needed_city: 市町村緊急対処事態対策本部を設置すべき市町村
-    field_alert: 警報内容
-    field_alerting_area: 警報の通知伝達の対象となる地域の範囲
-    field_siren_area: サイレンを使用する地域
-
-    field_evacuation_order: 避難措置の指示内容
-    field_evacuate_from: 要避難地域
-    field_evacuate_to: 避難先地域
-    field_evacuation_steps_by_authorities: 住民の避難に関して関係機関が講ずべき措置の概要
-
-    field_remarks: 備考
-    field_disaster_overview: 災害概要
-    field_current_sort_criteria: 発令区分
-    #field_created_at: 登録日時
-    #field_updated_at: 更新日時
-
-    field_issued_at: 発令日時
-    field_changed_at: 移行日時
-    field_lifted_at: 解除日時
 
   ####
   # 災害被害情報（第４号様式）機能
@@ -355,33 +386,3 @@ ja:
     field_note_other_local_government: その２（被害状況即報） / 備考 / 応急対策の状況 / 他の地方公共団体への応援要請、応援活動の状況
     field_note_self_defence_force: その２（被害状況即報） / 備考 / 応急対策の状況 / 自衛隊の派遣要請、出勤状況
     field_note_volunteer: その２（被害状況即報） / 備考 / 応急対策の状況 / 災害ボランティアの活動状況
-
-  # GoogleMaps入力
-  button_map_show: 地図を表示
-  button_map_hide: 地図を隠す
-  button_area_get: エリア取得
-
-  # 認証
-  external_auth:
-    field_enable: 'OpenID(Google)/OAuth(Twitter,facebook)/SAMLを有効にする'
-    sign_in_via: '%{kind}アカウントでログイン'
-    result:
-      success: '%{kind} アカウントによる個人認証に成功しました。'
-      failure: '%{kind} アカウントによる個人認証に失敗しました。'
-
-  # 認証(redmine設定値の上書き)
-  lgdis_notice_account_register_done: 仮登録メールを送信しました。メールの内容をご確認ください。
-  lgdis_mail_subject_register: 仮登録完了メール
-  lgdis_mail_body_register: 本人確認のため、下記URLへにアクセスしアカウントの本登録を完了させて下さい。
-
-  # プロジェクト自動作成
-  auto_launch_project:
-    field_term: 'プロジェクト自動作成における猶予期間[日]'
-    text_term_description: |
-      プロジェクト自動作成機能において、前回の自動作成した日付から設定期間の間は、自動作成が実行されません。
-      期間無しの場合は0を設定してください。
-      例) 前回自動作成日付:4/1, 設定期間:7 ⇒ 4/8～自動作成が実行
-
-  # チケットのXML表示
-  issue_xml:
-    field_visible: 'チケット画面のXML表示を有効にする'

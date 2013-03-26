@@ -26,7 +26,7 @@ module Lgdis
         table_name = objects.first.class.table_name
         object_const = Constant.hash_for_table(table_name)
         
-        CSV.open(tf.path, "w", force_quotes: true) do |row|
+        CSV.open(tf.path, "w", force_quotes: true, :encoding => "SJIS", :row_sep => "\r\n") do |row|
           # ヘッダー部の設定
           row << columns.map{|col| l(("#{table_name}.field_" + col.to_s).to_sym) }
           # ボディ部の設定

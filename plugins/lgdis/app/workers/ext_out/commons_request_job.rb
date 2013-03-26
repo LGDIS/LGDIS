@@ -16,6 +16,8 @@ module ExtOut
         :password,
         :message
       ]
+    # チケット履歴出力項目
+    #@@output_issue_journal_fields +=
 
     # Lgdis 外部出力 公共情報コモンズ I/F 呼出処理
     # ※非同期処理ワーカー処理（Resque向け）
@@ -38,6 +40,20 @@ module ExtOut
         # 送信
         client.output
       end
+    end
+
+    # チケット履歴向けコンテンツ作成
+    # ==== Args
+    # _client_ :: クライアントオブジェクト
+    # ==== Return
+    # コンテンツ文字列
+    # ==== Raise
+    def self.content_for_issue_journal_of(client)
+      # 緊急速報メールの場合のみ存在
+      if e = client.message.elements["//pcx_um:UrgentMail/pcx_um:Information/pcx_um:Message"]
+        return e.text
+      end
+      return ""
     end
 
   end

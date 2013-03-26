@@ -13,6 +13,8 @@ module ExtOut
         :output_file_name,
         :data
       ]
+    # チケット履歴出力項目
+    #@@output_issue_journal_fields +=
 
     # Lgdis 外部出力 SMTP I/F 呼出処理
     # ※非同期処理ワーカー処理（Resque向け）
