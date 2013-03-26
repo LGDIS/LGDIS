@@ -2,7 +2,7 @@
 class DisasterDamageController < ApplicationController
   unloadable
   
-  before_filter :find_project
+  before_filter :find_project_by_project_id
   before_filter :authorize, :except => :show
   before_filter :init
   
@@ -91,17 +91,6 @@ class DisasterDamageController < ApplicationController
     render :action  => :index
   rescue ActiveRecord::RecordNotFound
     render_404
-  end
-  
-  private
-  
-  # プロジェクト情報取得
-  # ==== Args
-  # ==== Return
-  # ==== Raise
-  def find_project
-    # authorize filterの前に、@project にセットする
-    @project = Project.find(params[:project_id])
   end
   
 end

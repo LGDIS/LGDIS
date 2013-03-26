@@ -2,7 +2,7 @@
 class EvacuationAdvisoriesController < ApplicationController
   unloadable
    
-  before_filter :find_project, :authorize
+  before_filter :find_project_by_project_id, :authorize
   before_filter :init
   
   class ParamsException < StandardError; end
@@ -171,15 +171,4 @@ class EvacuationAdvisoriesController < ApplicationController
     redirect_to :action  => :index
   end
   
-  private
-  
-  # プロジェクト情報取得
-  # ==== Args
-  # ==== Return
-  # ==== Raise
-  def find_project
-    # authorize filterの前に、@project にセットする
-    @project = Project.find(params[:project_id])
-  end
-
 end

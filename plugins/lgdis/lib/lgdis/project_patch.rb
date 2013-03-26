@@ -11,6 +11,7 @@ module Lgdis
       
       base.class_eval do
         unloadable
+        has_many :delivery_histories
         validate :skip_identifer_validation, :on => :create
         before_create :set_identifer
         alias_method_chain :identifier_frozen?, :always_freeze

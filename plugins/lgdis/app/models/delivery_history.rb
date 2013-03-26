@@ -2,6 +2,7 @@
 class DeliveryHistory < ActiveRecord::Base
   unloadable
 
+  belongs_to :project
   belongs_to :issue
   belongs_to :request_user, :class_name => "User", :foreign_key => :request_user_id
   belongs_to :respond_user, :class_name => "User", :foreign_key => :respond_user_id

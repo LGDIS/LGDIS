@@ -3,7 +3,7 @@ class SheltersController < ApplicationController
   unloadable
   
   accept_api_auth :index, :update
-  before_filter :find_project, :authorize
+  before_filter :find_project_by_project_id, :authorize
   before_filter :init
   
   # 共通初期処理
@@ -182,17 +182,6 @@ class SheltersController < ApplicationController
       flash[:notice] = l(:notice_successful_delete)
     end
     redirect_to :action  => :index
-  end
-  
-  private
-  
-  # プロジェクト情報取得
-  # ==== Args
-  # ==== Return
-  # ==== Raise
-  def find_project
-    # authorize filterの前に、@project にセットする
-    @project = Project.find(params[:project_id])
   end
   
 end
