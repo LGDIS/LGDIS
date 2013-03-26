@@ -23,7 +23,8 @@
         </td>
         <td style="text-align: center;">
           <% @evacuation_advisory_const["current_sort_criteria"].each do |key, value| %>
-            <%= radio_button_tag "evacuation_advisories[#{evacuation_advisory.id}][current_sort_criteria]", key, (evacuation_advisory.current_sort_criteria==key), :disabled => @disabled -%><%= value %>
+            <%= radio_button_tag "evacuation_advisories[#{evacuation_advisory.id}][current_sort_criteria]", key, (evacuation_advisory.current_sort_criteria==key), :disabled => @disabled -%>
+            <%= label_tag "evacuation_advisories[#{evacuation_advisory.id}][current_sort_criteria]_#{key}", value %>
           <% end %>
         </td>
         <td style="text-align: center;" nowrap>

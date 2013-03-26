@@ -23,6 +23,7 @@ CF_CONNECT  = YAML.load_file("#{Rails.root}/plugins/lgdis/config/custom_field_co
 CF_ADDRESS  = YAML.load_file("#{Rails.root}/plugins/lgdis/config/custom_field_connection.yml")["custom_field_address"]
 STATISTICS_SQL  = YAML.load_file("#{Rails.root}/plugins/lgdis/config/statistics_sql_query.yml")
 EVACUATIONADVISORY_MAP = YAML.load_file("#{Rails.root}/plugins/lgdis/config/evacuation_advisory.yml")
+VERSION     = YAML.load_file("#{Rails.root}/plugins/lgdis/config/version.yml")
 
 # library, plugin
 require_dependency 'lgdis/acts/acts_as_csv_creatable'
@@ -54,7 +55,7 @@ Redmine::Plugin.register :lgdis do
   name 'LGDIS (Local Government Disaster Information System) plugin'
   author '作成者XXX'
   description '災害発生時における地方公共団体向けの包括的メッセージング:LGDIS (Local Government Disaster Information System) をRedmineに追加するプラグインです。'
-  version '0.0.1'
+  version VERSION["version"]
 
   # トップメニュー/ホームの削除
   Redmine::MenuManager.map :top_menu do |menu|

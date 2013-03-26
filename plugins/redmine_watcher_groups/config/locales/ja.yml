@@ -1,0 +1,3 @@
+# Japanese strings go here for Rails i18n
+ja:
+  label_issue_watcher_groups: "ウォッチャーグループ"

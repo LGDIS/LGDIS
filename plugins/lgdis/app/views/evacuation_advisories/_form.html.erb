@@ -24,7 +24,8 @@
     <%= field_for :current_sort_criteria, :required => true do |key, label| %>
       <%= label_tag{label} %>
       <% @evacuation_advisory_const["current_sort_criteria"].each do |sc_key, sc_value| %>
-        <%= f.radio_button key, sc_key, :checked => (f.object.send(key)==sc_key), :disabled => @disabled %><%= sc_value %>
+        <%= f.radio_button key, sc_key, :checked => (f.object.send(key)==sc_key), :disabled => @disabled %>
+        <%= label_tag "evacuation_advisory_#{key}_#{sc_key}", sc_value, :style => "float:none;margin:0;font-weight:normal;" %>
       <% end %>
     <% end %>
     
