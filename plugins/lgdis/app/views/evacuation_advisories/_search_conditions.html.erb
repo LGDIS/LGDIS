@@ -2,9 +2,13 @@
   <div class="splitcontentleft">
     <%= field_for :current_sort_criteria do |key, label| %>
       <%= label_tag{label} %>
-      <%= f.radio_button "#{key}_eq", "", :checked => true %>なし
-      <% @evacuation_advisory_const["current_sort_criteria"].each do |sc_key, sc_value| %>
-        <%= f.radio_button "#{key}_eq", sc_key %><%= sc_value %>
+      <%= f.radio_button "#{key}_eq", "", :checked => true %>
+      <%= label_tag "search_#{key}_eq_", "なし", :style => "float:none;margin:0;font-weight:normal;" %>
+      <% @evacuation_advisory_const["current_sort_criteria"].each_with_index do |item, index| %>
+        <% sc_key, sc_value = item %>
+        <%= f.radio_button "#{key}_eq", sc_key %>
+        <%= label_tag "search_#{key}_eq_#{sc_key}", sc_value, :style => "float:none;margin:0;font-weight:normal;" %>
+        <%= tag("br") if index % 4 == 3 %>
       <% end %>
     <% end %>
     
