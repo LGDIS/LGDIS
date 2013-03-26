@@ -115,7 +115,7 @@ delivery_place:
     delivery_job_class: *delivery_job_class_4
   &id 9: &atom
     id: *id
-    name: 災害情報ポータル
+    name: RSS情報
     create_msg_method:  *create_msg_method_5
     delivery_job_class: *delivery_job_class_5
   &id 10: &urgent_mail_docomo
