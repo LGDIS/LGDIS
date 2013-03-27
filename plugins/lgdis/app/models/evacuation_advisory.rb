@@ -92,6 +92,8 @@ class EvacuationAdvisory < ActiveRecord::Base
 
   before_create :number_evacuation_advisory_code , :if => Proc.new { |evacuation_advisory| evacuation_advisory.identifier.nil? }
   
+  # 発令
+  SORT_ISSUE_NONE   = "1" # 指示無し(解除含む)※この値以外は発令とみなす
   # 発令・解除区分
   ISSUEORLIFT_ISSUE = "1" # 発令
   ISSUEORLIFT_LIFT  = "0" # 解除
@@ -124,13 +126,14 @@ class EvacuationAdvisory < ActiveRecord::Base
   # チケット登録処理
   # ==== Args
   # _project_ :: Projectオブジェクト
+  # _options_ :: チケット情報
   # ==== Return
   # Issueオブジェクト配列
   # ==== Raise
-  def self.create_issues(project)
+  def self.create_issues(project, options)
     issues = []
     ### 公共コモンズ用チケット登録
-    issues << self.create_commons_issue(project)
+    issues << self.create_commons_issue(project, options)
     ### Applic用チケット登録
 #     issues << self.create_applic_issue(project)
     return issues
@@ -207,16 +210,11 @@ class EvacuationAdvisory < ActiveRecord::Base
   # 公共コモンズ用チケット登録処理
   # ==== Args
   # _project_ :: Projectオブジェクト
+  # _options_ :: チケット情報
   # ==== Return
   # Issueオブジェクト
   # ==== Raise
-  def self.create_commons_issue(project)
-    # 発令区分の遷移履歴を更新する
-    evacuation_advisories = EvacuationAdvisory.all
-    evacuation_advisories.each do |eva|
-      eva.update_sort_criteria_history
-    end
-
+  def self.create_commons_issue(project, options)
     # Xmlドキュメントの生成
     doc  = REXML::Document.new
 
@@ -274,9 +272,9 @@ class EvacuationAdvisory < ActiveRecord::Base
             node_location.add_element("commons:areaNameKana").add_text("#{eva.area_kana}") if eva.area_kana.present?
           # 日時
           case eva.issueorlift
-          when "1" # 発令
+          when ISSUEORLIFT_ISSUE # 発令
             date = eva.issued_at.xmlschema if eva.issued_at.present?
-          when "0" # 解除
+          when ISSUEORLIFT_LIFT # 解除
             date = eva.lifted_at.xmlschema if eva.lifted_at.present?
           else
             date = nil
@@ -298,6 +296,7 @@ class EvacuationAdvisory < ActiveRecord::Base
     fmtdoc = "\n" + doc.to_s.gsub(/></,">\n<").gsub("<pcx_ev:De","\n\n<pcx_ev:De")
       fmtdoc = fmtdoc.gsub("<commons:areaName>","\n<commons:areaName>")
     issue.xml_body   = fmtdoc
+    issue.description = options[:description]
     issue.save!
     
     return issue
@@ -313,12 +312,44 @@ class EvacuationAdvisory < ActiveRecord::Base
   end
 
   # 発令区分の遷移履歴を更新する
-  def update_sort_criteria_history
-    # 公共コモンズ用の発令区分と発令解除区分を決定
-    self.sort_criteria, self.issueorlift = EVACUATIONADVISORY_MAP["sort_criteria_map"][self.previous_sort_criteria || "1"][self.current_sort_criteria]
-    # 更新前の発令区分を保存
-    self.previous_sort_criteria = self.current_sort_criteria
-    save!
+  # ==== Args
+  # _target_selves_ :: 更新対象
+  # ==== Return
+  # 公共コモンズ用チケットの説明フィールドに入力する文言
+  # ==== Raise
+  def self.update_sort_criteria_history(target_selves)
+    histories = []
+    target_selves.each do |eva|
+      # 公共コモンズ用の発令区分と発令解除区分を決定
+      eva.sort_criteria, eva.issueorlift = EVACUATIONADVISORY_MAP["sort_criteria_map"][eva.previous_sort_criteria || SORT_ISSUE_NONE][eva.current_sort_criteria]
+      # 後続処理で登録するチケットの説明文を作成
+      histories << eva.get_sort_criteria_changes
+      # 更新前の発令区分を保存
+      eva.previous_sort_criteria = eva.current_sort_criteria
+      eva.save
+    end
+    return histories.compact.join("\n")
+  end
+
+  # 発令区分の遷移文言を作成
+  # ==== Args
+  # ==== Return
+  # 公共コモンズ用チケットの説明フィールドに入力する文言(1件分)
+  # ただし出力対象外の場合はnil
+  # ==== Raise
+  def get_sort_criteria_changes
+    result = nil
+    case
+    when [nil, SORT_ISSUE_NONE].include?(previous_sort_criteria) && current_sort_criteria != SORT_ISSUE_NONE
+      result =  [area, CONST["current_sort_criteria"][current_sort_criteria],  "発令"]
+    when previous_sort_criteria != SORT_ISSUE_NONE && current_sort_criteria == SORT_ISSUE_NONE
+      result =  [area, CONST["current_sort_criteria"][previous_sort_criteria], "解除"]
+    when previous_sort_criteria != SORT_ISSUE_NONE && previous_sort_criteria == current_sort_criteria
+      result =  [area, CONST["current_sort_criteria"][current_sort_criteria],  "継続"]
+    when previous_sort_criteria == SORT_ISSUE_NONE && previous_sort_criteria == current_sort_criteria
+      result = nil
+    end
+    return result ? "|#{result.join("|")}|" : nil
   end
 
   private
@@ -337,5 +368,4 @@ class EvacuationAdvisory < ActiveRecord::Base
     ").first
     return subtotals
   end
-  
 end
