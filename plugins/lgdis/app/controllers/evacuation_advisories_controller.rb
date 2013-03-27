@@ -34,13 +34,13 @@ class EvacuationAdvisoriesController < ApplicationController
   def index
     case params["commit_kind"]
     when "search"
-      @search   = EvacuationAdvisory.search(params[:search])
+      @search   = EvacuationAdvisory.mode_in(@project).search(params[:search])
       @evacuation_advisories = @search.paginate(:page => params[:page], :per_page => 30).order("identifier ASC")
       render :action => :index
     when "new"
       redirect_to :action => :new
     when "clear"
-      @search   = EvacuationAdvisory.search
+      @search   = EvacuationAdvisory.mode_in(@project).search
       @evacuation_advisories = @search.paginate(:page => params[:page], :per_page => 30).order("identifier ASC")
       render :action => :index
     when "bulk_update"
@@ -48,7 +48,7 @@ class EvacuationAdvisoriesController < ApplicationController
     when "ticket"
       ticket
     else
-      @search   = EvacuationAdvisory.search(params[:search])
+      @search   = EvacuationAdvisory.mode_in(@project).search(params[:search])
       @evacuation_advisories = @search.paginate(:page => params[:page], :per_page => 30).order("identifier ASC")
       render :action => :index
     end
@@ -63,7 +63,7 @@ class EvacuationAdvisoriesController < ApplicationController
   def bulk_update
     if params[:evacuation_advisories].present?
       eva_id = params[:evacuation_advisories].keys
-      @search    = EvacuationAdvisory.search(:id_in => eva_id)
+      @search    = EvacuationAdvisory.mode_in(@project).search(:id_in => eva_id)
       @evacuation_advisories  = @search.paginate(:page => params[:page], :per_page => 30).order("identifier ASC")
       ActiveRecord::Base.transaction do
         @evacuation_advisories.each do |eva|
@@ -74,7 +74,7 @@ class EvacuationAdvisoriesController < ApplicationController
       # エラーが存在しない場合メッセージを出力する
       flash.now[:notice] = l(:notice_successful_update) unless @evacuation_advisories.map{|ea| ea.errors.any? }.include?(true)
     else
-      @search   = EvacuationAdvisory.search(params[:search])
+      @search   = EvacuationAdvisory.mode_in(@project).search(params[:search])
       @evacuation_advisories = @search.paginate(:page => params[:page], :per_page => 30).order("identifier ASC")
     end
     
@@ -88,7 +88,7 @@ class EvacuationAdvisoriesController < ApplicationController
   # ==== Raise
   def ticket
     # 避難勧告･指示情報が存在しない場合、処理しない
-    if EvacuationAdvisory.limit(1).present?
+    if EvacuationAdvisory.mode_in(@project).limit(1).present?
       begin
         issues = EvacuationAdvisory.create_issues(@project)
         links = []
@@ -113,7 +113,7 @@ class EvacuationAdvisoriesController < ApplicationController
   # ==== Return
   # ==== Raise
   def new
-    @evacuation_advisory = EvacuationAdvisory.new
+    @evacuation_advisory = EvacuationAdvisory.mode_in(@project).new
   end
   
   # 避難勧告･指示登録・更新画面
@@ -122,7 +122,7 @@ class EvacuationAdvisoriesController < ApplicationController
   # ==== Return
   # ==== Raise
   def edit
-    @evacuation_advisory = EvacuationAdvisory.find(params[:id])
+    @evacuation_advisory = EvacuationAdvisory.mode_in(@project).find(params[:id])
   end
   
   # 避難勧告･指示登録・更新画面
@@ -131,7 +131,7 @@ class EvacuationAdvisoriesController < ApplicationController
   # ==== Return
   # ==== Raise
   def create
-    @evacuation_advisory = EvacuationAdvisory.new()
+    @evacuation_advisory = EvacuationAdvisory.mode_in(@project).new()
     @evacuation_advisory.assign_attributes(params[:evacuation_advisory])
 
     if @evacuation_advisory.save
@@ -148,7 +148,7 @@ class EvacuationAdvisoriesController < ApplicationController
   # ==== Return
   # ==== Raise
   def update
-    @evacuation_advisory = EvacuationAdvisory.find(params[:id])
+    @evacuation_advisory = EvacuationAdvisory.mode_in(@project).find(params[:id])
     @evacuation_advisory.assign_attributes(params[:evacuation_advisory])
     if @evacuation_advisory.save
       flash[:notice] = l(:notice_successful_update)
@@ -164,7 +164,7 @@ class EvacuationAdvisoriesController < ApplicationController
   # ==== Return
   # ==== Raise
   def destroy
-    @evacuation_advisory = EvacuationAdvisory.find(params[:id])
+    @evacuation_advisory = EvacuationAdvisory.mode_in(@project).find(params[:id])
     if @evacuation_advisory.destroy
       flash[:notice] = l(:notice_successful_delete)
     end

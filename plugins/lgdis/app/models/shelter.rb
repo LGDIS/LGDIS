@@ -33,6 +33,7 @@ class Shelter < ActiveRecord::Base
   
   acts_as_paranoid
   validates_as_paranoid
+  acts_as_mode_switchable Project
   
   validates :name, :presence => true,
                 :length => {:maximum => 30}
@@ -173,7 +174,7 @@ class Shelter < ActiveRecord::Base
     doc.add_element("_避難所") # Root
     
     # 避難所を取得しXMLを生成する
-    shelters = Shelter.all.each do |shelter|
+    shelters = Shelter.mode_in(project).all.each do |shelter|
       node_shelter = doc.root.add_element("_避難所情報")
       
       node_shelter.add_element("災害識別情報").add_text("#{project.disaster_code}")
@@ -270,7 +271,7 @@ class Shelter < ActiveRecord::Base
     doc  = REXML::Document.new
     
     # 避難人数、避難世帯数の集計値および避難所件数の取得
-    summary  = Shelter.select("SUM(head_count) AS head_count_sum, SUM(head_count_voluntary) AS head_count_voluntary_sum,
+    summary  = Shelter.mode_in(project).select("SUM(head_count) AS head_count_sum, SUM(head_count_voluntary) AS head_count_voluntary_sum,
       SUM(households) AS households_sum, SUM(households_voluntary) AS households_voluntary_sum, COUNT(*) AS count").where(:shelter_sort => ["2","5"]).first
     
     # Shelter要素の追加
@@ -301,7 +302,7 @@ class Shelter < ActiveRecord::Base
     node_informations = node_shelter.add_element("pcx_sh:Informations")
     
     # 避難所を取得しXMLを生成する
-    @shelters = Shelter.scoped.order(:shelter_code)
+    @shelters = Shelter.mode_in(project).order(:shelter_code)
     @shelters.each do |shelter|
       node_information = node_informations.add_element("pcx_sh:Information")
       

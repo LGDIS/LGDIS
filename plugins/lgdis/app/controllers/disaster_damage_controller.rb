@@ -33,7 +33,7 @@ class DisasterDamageController < ApplicationController
     when "ticket"
       ticket
     else
-      @disaster_damage = DisasterDamage.first_or_initialize
+      @disaster_damage = DisasterDamage.mode_in(@project).first_or_initialize
     end
   end
   
@@ -43,7 +43,7 @@ class DisasterDamageController < ApplicationController
   # ==== Return
   # ==== Raise
   def save
-    @disaster_damage = DisasterDamage.has_no_issues.first_or_initialize
+    @disaster_damage = DisasterDamage.mode_in(@project).has_no_issues.first_or_initialize
     @disaster_damage.assign_attributes(params[:disaster_damage])
     if @disaster_damage.save
       flash[:notice] = l(:notice_disaster_damage_successful_save)
@@ -61,7 +61,7 @@ class DisasterDamageController < ApplicationController
   def ticket
     if params[:tracker_id].blank?
       flash[:error] = l(:text_select_tracker)
-    elsif (dd = DisasterDamage.first).present?
+    elsif (dd = DisasterDamage.mode_in(@project).first).present?
       begin
         issues = dd.create_issues(@project, params[:tracker_id])
         links = []
@@ -87,7 +87,7 @@ class DisasterDamageController < ApplicationController
   # ==== Return
   # ==== Raise
   def show
-    @disaster_damage = DisasterDamage.find(params[:id])
+    @disaster_damage = DisasterDamage.mode_in(@project).find(params[:id])
     render :action  => :index
   rescue ActiveRecord::RecordNotFound
     render_404

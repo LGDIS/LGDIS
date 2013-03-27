@@ -26,6 +26,7 @@ EVACUATIONADVISORY_MAP = YAML.load_file("#{Rails.root}/plugins/lgdis/config/evac
 VERSION     = YAML.load_file("#{Rails.root}/plugins/lgdis/config/version.yml")
 
 # library, plugin
+require_dependency 'lgdis/acts/acts_as_mode_switchable'
 require_dependency 'lgdis/acts/acts_as_csv_creatable'
 require_dependency 'lgdis/acts/acts_as_customizable_patch'
 
