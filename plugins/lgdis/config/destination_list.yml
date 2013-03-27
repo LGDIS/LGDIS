@@ -153,6 +153,12 @@ delivery_place_group_all: &delivery_place_group_all
   - *urgent_mail_docomo
   - *urgent_mail_au
   - *urgent_mail_sb
+# 公共情報コモンズ
+delivery_place_group_commons: &delivery_place_group_commons
+  - *commons
+  - *urgent_mail_docomo
+  - *urgent_mail_au
+  - *urgent_mail_sb
 # 緊急即報メール
 delivery_place_group_urgent_mail: &delivery_place_group_urgent_mail
   - *urgent_mail_docomo
@@ -977,6 +983,12 @@ commons_xml_field:
   area_name: 石巻市                         # 事象の起きた場所
   organization_code: '042021'               # 作成部署情報(組織コード)
   organization_name: 石巻市                 # 作成部署情報(組織名)
+
+# コントロールプレーン部更新種別群
+type_update:
+  1: Report
+  2: Update
+  3: Cancel
 
 # 配信内容にあたるカスタムフィールドID
 custom_field_delivery:

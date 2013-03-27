@@ -156,10 +156,11 @@ module ExtOut
       else
         # [情報の更新種別]が取消の場合、ステータスは1(新規)に戻る、それ以外は2(更新)
         edition_status = type_update == "3" ? 1 : 2
-        # 配信管理側で生成したUUID(documentID), 版番号(documentRevision) を設定
-        edition_mng.update_attributes(status:       edition_status,
-                                      uuid:         xml_body.elements["//pcx_ib:Head/commons:documentID"].text,
-                                      edition_num:  xml_body.elements["//pcx_ib:Head/commons:documentRevision"].text)
+        # 配信管理側で生成したstatus, UUID(documentID), 版番号(documentRevision) を設定
+        edition_mng.update_attributes(status:      DST_LIST['type_update'].invert[xml_body.elements["//edxlde:EDXLDistribution/edxlde:distributionType"].text],
+                                      issue_id:    issue.id,
+                                      uuid:        xml_body.elements["//pcx_ib:Head/commons:documentID"].text,
+                                      edition_num: xml_body.elements["//pcx_ib:Head/commons:documentRevision"].text.to_i)
       end
     end
 
