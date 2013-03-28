@@ -90,14 +90,24 @@ class EvacuationAdvisoriesController < ApplicationController
     # 避難勧告･指示情報が存在しない場合、処理しない
     if EvacuationAdvisory.mode_in(@project).limit(1).present?
       begin
-        issues = EvacuationAdvisory.create_issues(@project)
+        # 発令区分の遷移履歴を更新する
+        @search = EvacuationAdvisory.mode_in(@project).search(params[:search])
+        @evacuation_advisories = EvacuationAdvisory.mode_in(@project).paginate(:page => params[:page]).order("identifier ASC")
+        sort_criteria_history = EvacuationAdvisory.update_sort_criteria_history(@evacuation_advisories)
+        if @evacuation_advisories.map{|ea| ea.errors.any? }.include?(true)
+          render :action => :index
+          return
+        end
+
+        # チケット作成
+        issues = EvacuationAdvisory.create_issues(@project, :description => sort_criteria_history)
         links = []
         issues.each do |issue|
           links << view_context.link_to("##{issue.id}", issue_path(issue), :title => issue.subject)
         end
         flash[:notice] = l(:notice_issue_successful_create, :id => links.join(","))
       rescue ParamsException
-        flash[:error] = l("error_not_exists_announcement")
+        flash[:error] = l(:error_not_exists_announcement)
       rescue ActiveRecord::RecordInvalid => e
         flash[:error] = e.record.errors.full_messages.join("<br>")
       end

@@ -226,6 +226,21 @@ module Lgdis
         self.init_journal(delivery_history.respond_user, notes.join("\n"))
         self.save!
       end
+      
+      # RSS情報配信開始履歴書き込み処理
+      # ==== Args
+      # _delivery_history_ :: DeliveryHistoryオブジェクト
+      # ==== Return
+      # ==== Raise
+      def register_issue_journal_rss_deliver(delivery_history)
+        notes = []
+        delivery_name = (DST_LIST["delivery_place"][delivery_history.delivery_place_id]||{})["name"].to_s
+        delivery_process_date = delivery_history.process_date.strftime("%Y/%m/%d %H:%M:%S")
+        notes << "#{delivery_process_date}に、 #{delivery_name}配信を開始しました。"
+        notes << delivery_history.summary
+        self.init_journal(delivery_history.respond_user, notes.join("\n"))
+        self.save!
+      end
 
       # 配信内容作成処理
       # ==== Args
