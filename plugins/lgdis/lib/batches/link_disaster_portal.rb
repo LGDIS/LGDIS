@@ -25,7 +25,7 @@ class Batches::LinkDisasterPortal
       next if DST_LIST["link_disaster_portal_tracker_group"][tracker_id].blank? # 出力項目定義が取得できない場合はスキップ
       
       # 対象トラッカーのチケット取得
-      issues = Issue.where({:tracker_id => tracker_id}).where("project_id not in (?)", reject_project_ids).order("updated_on DESC") # TODO 対象外プロジェクトの条件を追加する
+      issues = Issue.where({:tracker_id => tracker_id}).where("project_id not in (?)", reject_project_ids).order("updated_on DESC") 
       
       # 出力対象の条件にあてはまらないチケットを削除
       issues.delete_if do |issue|
