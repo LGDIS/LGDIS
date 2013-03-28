@@ -150,13 +150,14 @@ class Shelter < ActiveRecord::Base
   # チケット登録処理
   # ==== Args
   # _project_ :: Projectオブジェクト
+  # _options_ :: チケット情報
   # ==== Return
   # Issueオブジェクト配列
   # ==== Raise
-  def self.create_issues(project)
+  def self.create_issues(project, options)
     issues = []
     ### 公共コモンズ用チケット登録
-    issues << self.create_commons_issue(project)
+    issues << self.create_commons_issue(project, options)
     ### Applic用チケット登録
 #     issues << self.create_applic_issue(project)
     return issues
@@ -263,10 +264,11 @@ class Shelter < ActiveRecord::Base
   # 公共コモンズ用チケット登録処理
   # ==== Args
   # _project_ :: Projectオブジェクト
+  # _options_ :: チケット情報
   # ==== Return
   # Issueオブジェクト
   # ==== Raise
-  def self.create_commons_issue(project)
+  def self.create_commons_issue(project, options)
     # Xmlドキュメントの生成
     doc  = REXML::Document.new
     
@@ -397,6 +399,7 @@ class Shelter < ActiveRecord::Base
     # 一時ファイルの削除
     tf.close(true)
     
+    issue.description = options[:description]
     issue.save!
     
     return issue
@@ -431,6 +434,20 @@ class Shelter < ActiveRecord::Base
   # ==== Raise
   def execute_release_all_data
     self.class.release_all_data
+  end
+  
+  # 後続処理で登録するチケットの説明文を作成
+  # ==== Args
+  # _target_selves_ :: 更新対象
+  # ==== Return
+  # 公共コモンズ用チケットの説明フィールドに入力する文言
+  # ==== Raise
+  def self.get_description(target_selves)
+    description = []
+    target_selves.each do |shelter|
+      description << "|#{[shelter.name, CONST[:shelter_type.to_s][shelter.shelter_type], CONST[:shelter_sort.to_s][shelter.shelter_sort]].join("|")}|"
+    end
+    return description.compact.join("\n")
   end
   
   private

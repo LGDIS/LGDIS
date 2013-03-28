@@ -100,7 +100,8 @@ class SheltersController < ApplicationController
     # 避難所情報が存在しない場合、処理しない
     if Shelter.mode_in(@project).limit(1).present?
       begin
-        issues = Shelter.create_issues(@project)
+        ticket_description = Shelter.get_description(Shelter.mode_in(@project).order(:shelter_code))
+        issues = Shelter.create_issues(@project, :description => ticket_description)
         links = []
         issues.each do |issue|
           links << view_context.link_to("##{issue.id}", issue_path(issue), :title => issue.subject)
