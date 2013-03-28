@@ -1,5 +1,6 @@
 # encoding: utf-8
 require_dependency 'issue'
+# require 'resque_scheduler'
 
 module Lgdis
   module IssuePatch
@@ -85,17 +86,21 @@ module Lgdis
 
     module InstanceMethods
       # 更新種別
-      TYPE_UPDATE = { '1' => 'Report',
-                      '2' => 'Update',
-                      '3' => 'Cancel'
-                    }.freeze
+      TYPE_UPDATE = DST_LIST['type_update']
+
       # 緊急速報メール の定義用トラッカーid(実在しないトラッカー)
       # destination_list.yml commons_xml、tracker_title に紐付くID
       UGENT_MAIL_ID = 0
+      # 公共情報コモンズの外部配信先ID配列
+      COMMONS_PLACE_IDS = DST_LIST['delivery_place_group_commons'].map{|o| o["id"]}
       # 緊急速報メールの外部配信先ID配列
       UGENT_MAIL_PLACE_IDS = DST_LIST['delivery_place_group_urgent_mail'].map{|o| o["id"]}
       # ** 号配備メールの外部配信先ID配列
       DEPLOYED_MAIL_PLACE_IDS = DST_LIST['delivery_place_group_deployed_mail'].map{|o| o["id"]}
+      # 版番号管理ステータス
+      NEW_STATUS    = 1
+      UPDATE_STATUS = 2
+      CANCEL_STATUS = 3
 
       # チケット情報のコピー
       # チケット位置情報もコピーするように処理追加
@@ -177,6 +182,15 @@ module Lgdis
             test_flag = DST_LIST['test_prj'][self.project_id]
             delivery_history.update_attributes({:status => status_to, :respond_user_id => User.current.id, :process_date => Time.now})
             Resque.enqueue(delivery_job_class, delivery_history.id, summary, test_flag)
+            # TODO
+            # Resque-Scheduler 対応
+            # 公共情報コモンズ以外の配信は、アプリ側で公開時間の制御を行う
+            # if COMMONS_PLACE_IDS.include?(delivery_place_id)
+            #   Resque.enqueue(delivery_job_class, delivery_history.id, summary, test_flag)
+            # else
+            #   Resque-Scheduler に登録する時間（que に入れる時間）を第一引数に設定
+            #   Resque.enqueue_at(self.opened_at, delivery_job_class, delivery_history.id, summary, test_flag)
+            # end
             unless self.save
              # TODO
              # log 出力内容
@@ -184,7 +198,6 @@ module Lgdis
             end
           elsif status_to == 'reject'
             delivery_history.update_attributes({:status => status_to, :respond_user_id => User.current.id, :process_date => Time.now})
-            
             # チケットへの配信要求却下履歴書き込み
             register_issue_journal_reject(delivery_history)
           end
@@ -402,7 +415,7 @@ module Lgdis
 
         # status(更新種別), uuid, edition_num(版番号)を設定
         edition_mng = find_edition_mng(delivery_place_id)
-        edition_fields_map = set_edition_mng_field(edition_mng)
+        edition_fields_map = set_edition_mng_field(edition_mng, delivery_place_id)
         edition_num = edition_fields_map['edition_num']
 
         # 運用種別フラグ
@@ -417,7 +430,7 @@ module Lgdis
         operation_flg = DST_LIST['commons_xml_field']['edxl_status'][prj_mode]
 
         # 更新種別設定処理
-        type_update = TYPE_UPDATE[self.type_update]
+        type_update = TYPE_UPDATE[self.type_update.to_i]
 
         # 情報の配信対象地域を設定
         area_ary = []
@@ -623,20 +636,43 @@ module Lgdis
       # 版番号管理テーブル用フィールド設定処理
       # UUID, 更新種別(status), 版番号(edition_num) を
       # ハッシュで返却します
+      #
+      # project_id = 1, tracker_id = 1, issue_id = 1
+      # edition_num(版番号) = 2, status = 2(update), uuid = aaa
+      # 上記のレコードがある前提で、同じproject_id, tracker_id のチケットを作成した場合
+      # 「緊急速報メール・お知らせ」とその他のコモンズ配信では、
+      # edition_num(版番号), status, uuid の生成方法が異なる。
+      # 例1) 「緊急速報メール・お知らせ」の場合
+      # project_id = 1, tracker_id = 1, issue_id = 2
+      # edition_num(版番号) = 3, status = 2(update), uuid = aaa
+      # 例2) その他のコモンズ配信の場合
+      # project_id = 1, tracker_id = 1, issue_id = 2
+      # edition_num(版番号) = 1, status = 1(update), uuid = bbb
       # ==== Args
       # _edition_mng_ :: 版番号管理オブジェクト
       # ==== Return
       # _edition_field_map_ :: uuid, status, edition_num のハッシュ
       # ==== Raise
-      def set_edition_mng_field(edition_mng)
-        # 新規配信許可時、更新種別が新規の場合、UUID を新規生成
-        uuid        = edition_mng.blank? || self.type_update == '1' ? \
+      def set_edition_mng_field(edition_mng, delivery_place_id)
+        status_flag = false
+        # 緊急速報メールか、お知らせ・イベントのトラッカーで更新種別が新規の場合
+        # uuid, status, edition_num を新規作成する
+        if UGENT_MAIL_PLACE_IDS.include?(delivery_place_id) ||
+           DST_LIST['general_info_ids'].include?(self.tracker_id)
+          status_flag = self.type_update == NEW_STATUS.to_s ? true : false
+        end
+        # 新規配信許可時、更新種別が新規、緊急速報メールか、お知らせ・イベントのトラッカーの場合、UUID を新規生成
+        uuid        = edition_mng.blank? || edition_mng.status == CANCEL_STATUS || status_flag ? \
                       UUIDTools::UUID.random_create.to_s : edition_mng.uuid
 
-        status      = self.type_update.to_i
+        # 新規配信許可時、更新種別が新規、緊急速報メールか、お知らせ・イベントのトラッカー、
+        # 画面より情報の更新種別「取消」を選択した場合、画面の入力値を設定
+        # それ以外は版番号の値を引き継ぐ
+        status      = edition_mng.blank? || edition_mng.status == CANCEL_STATUS || status_flag || self.type_update.to_i == CANCEL_STATUS ? \
+                      self.type_update.to_i : edition_mng.status
 
-        # 新規配信許可時、更新種別が新規の場合、版番号を1に設定
-        edition_num = edition_mng.blank? || self.type_update == '1' ? \
+        # 新規配信許可時、更新種別が新規、緊急速報メールか、お知らせ・イベントのトラッカーの場合、版番号を1に設定
+        edition_num = edition_mng.blank? || edition_mng.status == CANCEL_STATUS || status_flag ? \
                       1 : edition_mng.edition_num + 1
 
         edition_field_map = Hash.new

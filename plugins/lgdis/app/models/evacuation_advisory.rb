@@ -23,6 +23,7 @@ class EvacuationAdvisory < ActiveRecord::Base
 
   acts_as_paranoid
   validates_as_paranoid
+  acts_as_mode_switchable Project
 
   #Data base NOT-NULL項目validations
   validates :advisory_type, 
@@ -151,7 +152,7 @@ class EvacuationAdvisory < ActiveRecord::Base
     doc.add_element("_避難勧告･指示") # Root
     
     #避難勧告･指示を取得しXMLを生成する
-    evacuation_advisories = EvacuationAdvisory.all
+    evacuation_advisories = EvacuationAdvisory.mode_in(project).all
     evacuation_advisories.each do |eva|
       node_eva = doc.root.add_element("_避難勧告･指示情報")
       node_eva.add_element("災害識別情報").add_text("#{project.disaster_code}")
@@ -221,14 +222,14 @@ class EvacuationAdvisory < ActiveRecord::Base
     # XML出力対象をしぼって出力順にコレクションとして準備 
     # 明確に避難準備/避難勧告/避難指示/警戒区域として発令または解除された情報に限定
     evas=[]
-    evas << EvacuationAdvisory.where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '5')
-    evas << EvacuationAdvisory.where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '4')
-    evas << EvacuationAdvisory.where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '3')
-    evas << EvacuationAdvisory.where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '2')
-    evas << EvacuationAdvisory.where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '5')
-    evas << EvacuationAdvisory.where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '4')
-    evas << EvacuationAdvisory.where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '3')
-    evas << EvacuationAdvisory.where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '2')
+    evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '5')
+    evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '4')
+    evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '3')
+    evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '2')
+    evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '5')
+    evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '4')
+    evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '3')
+    evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '2')
     
     # XML出力対象が存在しない場合は例外を発生させる
     raise EvacuationAdvisoriesController::ParamsException if evas.flatten.blank?
@@ -241,7 +242,7 @@ class EvacuationAdvisory < ActiveRecord::Base
     node_evas.add_element("pcx_ev:ComplementaryInfo")
 
     # 避難人数、避難世帯数の合計値処理
-    summary = EvacuationAdvisory.select("SUM(households) as households_sum, SUM(head_count) as head_count_sum").where(:issueorlift => [ISSUEORLIFT_ISSUE,ISSUEORLIFT_LIFT]).where(:sort_criteria=> ['2','3','4','5']).first
+    summary = EvacuationAdvisory.mode_in(project).select("SUM(households) as households_sum, SUM(head_count) as head_count_sum").where(:issueorlift => [ISSUEORLIFT_ISSUE,ISSUEORLIFT_LIFT]).where(:sort_criteria=> ['2','3','4','5']).first
     if summary.households_sum.present? || summary.head_count_sum.present?
       node_total_number = node_evas.add_element("pcx_ev:TotalNumber")
       # 総世帯数

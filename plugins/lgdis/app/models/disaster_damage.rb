@@ -11,6 +11,8 @@ class DisasterDamage < ActiveRecord::Base
   # コンスタント存在チェック用
   CONST = Constant::hash_for_table(self.table_name).freeze
   
+  acts_as_mode_switchable Project
+  
   validates :disaster_occurred_location,
                 :length => {:maximum => 100}
   validates :disaster_occurred_at,

@@ -2,12 +2,12 @@
   <thead>
     <tr>
 <!--       <th style="text-align: center;">発令・解除地区名称（中域）</th> -->
-      <th style="text-align: center;">発令・解除地区名称</th>
-      <th style="text-align: center;">発令区分</th>
-      <th style="text-align: center;">発令日時</th>
-      <th style="text-align: center;">解除日時</th>
-      <th style="text-align: center;">対象世帯数</th>
-      <th style="text-align: center;">対象人数</th>
+      <th style="text-align: center;"><%= sort_link @search, :area,                  "発令・解除地区名称", {page: params[:page]}%></th>
+      <th style="text-align: center;"><%= sort_link @search, :current_sort_criteria, "発令区分", {page: params[:page]}%></th>
+      <th style="text-align: center;"><%= sort_link @search, :issued_at,             "発令日時", {page: params[:page]}%></th>
+      <th style="text-align: center;"><%= sort_link @search, :lifted_at,             "解除日時", {page: params[:page]}%></th>
+      <th style="text-align: center;"><%= sort_link @search, :households,            "対象世帯数", {page: params[:page]}%></th>
+      <th style="text-align: center;"><%= sort_link @search, :head_count,            "対象人数", {page: params[:page]}%></th>
     </tr>
   </thead>
   <tbody>

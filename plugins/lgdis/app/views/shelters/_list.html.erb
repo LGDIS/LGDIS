@@ -1,18 +1,18 @@
 <table class="list">
   <thead>
     <tr>
-      <th style="text-align: center;">避難所名</th>
-      <th style="text-align: center;">避難所種別</th>
-      <th style="text-align: center;">地区名</th>
-      <th style="text-align: center;">TEL</th>
-      <th style="text-align: center;">管理者</th>
-      <th style="text-align: center;">開設状況</th>
-      <th style="text-align: center;">開設日時</th>
-      <th style="text-align: center;">閉鎖日時</th>
-      <th style="text-align: center;">最大収容人数</th>
-      <th style="text-align: center;">収容人数</th>
-      <th style="text-align: center;">登録者名</th>
-      <th style="text-align: center;">登録日</th>
+      <th style="text-align: center;"><%= sort_link @search, :name,           "避難所名", {page: params[:page]}%></th>
+      <th style="text-align: center;"><%= sort_link @search, :shelter_type,   "避難所種別", {page: params[:page]}%></th>
+      <th style="text-align: center;"><%= sort_link @search, :area,           "地区名", {page: params[:page]}%></th>
+      <th style="text-align: center;"><%= sort_link @search, :phone,          "TEL", {page: params[:page]}%></th>
+      <th style="text-align: center;"><%= sort_link @search, :manager_name,   "管理者", {page: params[:page]}%></th>
+      <th style="text-align: center;"><%= sort_link @search, :shelter_sort,   "開設状況", {page: params[:page]}%></th>
+      <th style="text-align: center;"><%= sort_link @search, :opened_at,      "開設日時", {page: params[:page]}%></th>
+      <th style="text-align: center;"><%= sort_link @search, :closed_at,      "閉鎖日時", {page: params[:page]}%></th>
+      <th style="text-align: center;"><%= sort_link @search, :capacity,       "最大収容人数", {page: params[:page]}%></th>
+      <th style="text-align: center;"><%= sort_link @search, :head_count,     "収容人数", {page: params[:page]}%></th>
+      <th style="text-align: center;"><%= sort_link @search, :created_by,     "登録者名", {page: params[:page]}%></th>
+      <th style="text-align: center;"><%= sort_link @search, :created_at,     "登録日", {page: params[:page]}%></th>
     </tr>
   </thead>
   <tbody>

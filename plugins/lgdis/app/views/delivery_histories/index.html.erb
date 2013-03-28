@@ -13,14 +13,14 @@
   <table class="list issues">
     <thead>
       <tr>
-        <th style="text-align: center;">チケット番号</th>
-        <th style="text-align: center;">配信先</th>
-        <th style="text-align: center;">ステータス</th>
-        <th style="text-align: center;">要求日時</th>
-        <th style="text-align: center;">要求者</th>
-        <th style="text-align: center;">題名</th>
-        <th style="text-align: center;">処理日</th>
-        <th style="text-align: center;">処理者</th>
+        <th style="text-align: center;"><%= sort_link @search, :issue_id,                "チケット番号", {page: params[:page]}%></th>
+        <th style="text-align: center;"><%= sort_link @search, :delivery_place_id,       "配信先", {page: params[:page]}%></th>
+        <th style="text-align: center;"><%= sort_link @search, :status,                  "ステータス", {page: params[:page]}%></th>
+        <th style="text-align: center;"><%= sort_link @search, :created_at,              "要求日時", {page: params[:page]}%></th>
+        <th style="text-align: center;"><%= sort_link @search, :request_user_lastname,   "要求者", {page: params[:page]}%></th>
+        <th style="text-align: center;"><%= sort_link @search, :issue_subject,           "題名", {page: params[:page]}%></th>
+        <th style="text-align: center;"><%= sort_link @search, :process_date,            "処理日", {page: params[:page]}%></th>
+        <th style="text-align: center;"><%= sort_link @search, :respond_user_lastname,   "処理者", {page: params[:page]}%></th>
       </tr>
     </thead>
     <tbody>

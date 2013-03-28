@@ -3,7 +3,7 @@ class SheltersController < ApplicationController
   unloadable
   
   accept_api_auth :index, :update
-  before_filter :find_project, :authorize
+  before_filter :find_project_by_project_id, :authorize
   before_filter :init
   
   # 共通初期処理
@@ -31,13 +31,13 @@ class SheltersController < ApplicationController
   def index
     case params["commit_kind"]
     when "search"
-      @search   = Shelter.search(params[:search])
+      @search   = Shelter.mode_in(@project).search(params[:search])
       @shelters = @search.paginate(:page => params[:page], :per_page => 30).order("shelter_code ASC")
       render :action => :index
     when "new"
       redirect_to :action => :new
     when "clear"
-      @search   = Shelter.search
+      @search   = Shelter.mode_in(@project).search
       @shelters = @search.paginate(:page => params[:page], :per_page => 30).order("shelter_code ASC")
       render :action => :index
     when "bulk_update"
@@ -47,12 +47,12 @@ class SheltersController < ApplicationController
     else
       respond_to do |format|
         format.html {
-          @search   = Shelter.search(params[:search])
+          @search   = Shelter.mode_in(@project).search(params[:search])
           @shelters = @search.paginate(:page => params[:page], :per_page => 30).order("shelter_code ASC")
           render :action => :index
         }
         format.api  {
-          render :xml => Shelter.all.to_xml
+          render :xml => Shelter.mode_in(@project).all.to_xml
         }
       end
     end
@@ -67,7 +67,7 @@ class SheltersController < ApplicationController
   def bulk_update
     if params[:shelters].present?
       shelter_id = params[:shelters].keys
-      @search    = Shelter.search(:id_in => shelter_id)
+      @search    = Shelter.mode_in(@project).search(:id_in => shelter_id)
       @shelters  = @search.paginate(:page => params[:page], :per_page => 30).order("shelter_code ASC")
       begin
         Shelter.skip_callback(:save, :after, :execute_release_all_data)
@@ -84,7 +84,7 @@ class SheltersController < ApplicationController
       # エラーが存在しない場合メッセージを出力する
       flash.now[:notice] = l(:notice_successful_update) unless @shelters.map{|sh| sh.errors.any? }.include?(true)
     else
-      @search   = Shelter.search(params[:search])
+      @search   = Shelter.mode_in(@project).search(params[:search])
       @shelters = @search.paginate(:page => params[:page], :per_page => 30).order("shelter_code ASC")
     end
     
@@ -98,7 +98,7 @@ class SheltersController < ApplicationController
   # ==== Raise
   def ticket
     # 避難所情報が存在しない場合、処理しない
-    if Shelter.limit(1).present?
+    if Shelter.mode_in(@project).limit(1).present?
       begin
         issues = Shelter.create_issues(@project)
         links = []
@@ -121,7 +121,7 @@ class SheltersController < ApplicationController
   # ==== Return
   # ==== Raise
   def new
-    @shelter = Shelter.new
+    @shelter = Shelter.mode_in(@project).new
   end
   
   # 避難所登録・更新画面
@@ -130,7 +130,7 @@ class SheltersController < ApplicationController
   # ==== Return
   # ==== Raise
   def edit
-    @shelter = Shelter.find(params[:id])
+    @shelter = Shelter.mode_in(@project).find(params[:id])
   end
   
   # 避難所登録・更新画面
@@ -139,7 +139,7 @@ class SheltersController < ApplicationController
   # ==== Return
   # ==== Raise
   def create
-    @shelter = Shelter.new()
+    @shelter = Shelter.mode_in(@project).new()
     @shelter.assign_attributes(params[:shelter], :as => :shelter)
     if @shelter.save
       flash[:notice] = l(:notice_shelter_successful_create, :id => "##{@shelter.id} #{@shelter.name}")
@@ -155,7 +155,7 @@ class SheltersController < ApplicationController
   # ==== Return
   # ==== Raise
   def update
-    @shelter = Shelter.find(params[:id])
+    @shelter = Shelter.mode_in(@project).find(params[:id])
     @shelter.assign_attributes(params[:shelter], :as => :shelter)
     if @shelter.save
       flash[:notice] = l(:notice_successful_update)
@@ -177,22 +177,11 @@ class SheltersController < ApplicationController
   # ==== Return
   # ==== Raise
   def destroy
-    @shelter = Shelter.find(params[:id])
+    @shelter = Shelter.mode_in(@project).find(params[:id])
     if @shelter.destroy
       flash[:notice] = l(:notice_successful_delete)
     end
     redirect_to :action  => :index
-  end
-  
-  private
-  
-  # プロジェクト情報取得
-  # ==== Args
-  # ==== Return
-  # ==== Raise
-  def find_project
-    # authorize filterの前に、@project にセットする
-    @project = Project.find(params[:project_id])
   end
   
 end

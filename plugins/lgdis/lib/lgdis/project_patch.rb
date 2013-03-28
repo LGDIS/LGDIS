@@ -5,12 +5,20 @@ module Lgdis
   module ProjectPatch
     IDENTIFER_PREFIX = "I"
     
+    # 動作種別
+    RUN_MODE = {
+      normal:   0,  # 通常モード
+      training: 1,  # 災害訓練モード
+      test:     2   # 通信試験モード
+    }.freeze
+    
     def self.included(base)
       base.extend(ClassMethods)
       base.send(:include, InstanceMethods)
       
       base.class_eval do
         unloadable
+        has_many :delivery_histories
         validate :skip_identifer_validation, :on => :create
         before_create :set_identifer
         alias_method_chain :identifier_frozen?, :always_freeze
@@ -73,6 +81,21 @@ module Lgdis
       # ==== Raise
       def disaster_code
         self.identifier.delete(IDENTIFER_PREFIX)
+      end
+      
+      # 動作種別を取得
+      # 設定ファイルにより決定されます
+      # ==== Args
+      # ==== Return
+      # 動作種別
+      # * \RUN_MODE[:normal]
+      # * \RUN_MODE[:training]
+      # * \RUN_MODE[:test]
+      # ==== Raise
+      def current_mode
+        return RUN_MODE[:test]      if DST_LIST["test_prj"][self.id]
+        return RUN_MODE[:training]  if DST_LIST["training_prj"][self.id]
+        return RUN_MODE[:normal]
       end
       
     end

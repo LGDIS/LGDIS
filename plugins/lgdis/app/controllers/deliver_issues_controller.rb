@@ -2,7 +2,7 @@
 class DeliverIssuesController < ApplicationController
   unloadable
 
-  before_filter :find_project #, :authorize
+  before_filter :find_project_by_project_id #, :authorize
 
   def index
     issue_id = params['issue'].to_i
@@ -47,16 +47,6 @@ class DeliverIssuesController < ApplicationController
                                   :id         => issue_id.to_i})
       end
     end
-  end
-
-  private
-
-  # プロジェクト情報取得
-  # ==== Args
-  # ==== Return
-  # ==== Raise
-  def find_project
-    @project = Project.find(params[:project_id])
   end
 
 end
