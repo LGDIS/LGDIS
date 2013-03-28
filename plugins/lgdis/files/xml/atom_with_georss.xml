@@ -2,8 +2,6 @@
 <feed xmlns="http://www.w3.org/2005/Atom" 
 	xmlns:georss="http://www.georss.org/georss">
 	<title></title>
-	<subtitle>ref: http://georss.org/simple</subtitle>
-	<link href="http://www.w3.org/2005/Atom"/>
 	<updated></updated>
 	<author>
 		<name></name>

@@ -1039,16 +1039,311 @@ custom_field_list:
     id: 3
 
 # 災害情報ポータル連携バッチ処理
-# 連携対象プロジェクトID
-link_disaster_portal_project_id: 1
+# 対象外プロジェクトID
+link_disaster_portal_reject_project_ids:
+#  - 2
+  - 3
 
 # 災害情報ポータル連携バッチ処理
-# feed情報 auther名
-link_disaster_portal_auther_name: "石巻市市役所"
+# 取得対象範囲 発表からXX日以内
+link_disaster_portal_limit_days: 30
 
 # 災害情報ポータル連携バッチ処理
-# feed情報 auther E-MAIL
-link_disaster_portal_auther_email: "email@email"
+# １ファイルあたりの最大取得件数
+link_disaster_portal_max_num: 5
+
+# 災害情報ポータル連携バッチ処理
+# トラッカーごとにタイトル、autherの名前、autherのメールアドレスを指定する
+#
+link_disaster_portal_tracker_constants:
+  77:  # 【システム】J-ALERT 発信（内閣官房）
+    title: "トラッカー77固定タイトル"
+    name: "auther名77"
+    email: "email77@email"
+  78:  # 【システム】J-ALERT 発信（気象庁）
+    title: "トラッカー78固定タイトル"
+    name: "auther名78"
+    email: "email78@email"
+  4:   # 【システム】気象庁発信（警報・注意報）
+    title: "トラッカー4固定タイトル"
+    name: "auther名4"
+    email: "email4@email"
+  3:   # 【システム】気象庁発信（その他）
+    title: "トラッカー3固定タイトル"
+    name: "auther名3"
+    email: "email3@email"
+  6:   # 【システム】河川管理者発信（警報・注意報）
+    title: "トラッカー6固定タイトル"
+    name: "auther名6"
+    email: "email6@email"
+  5:   # 【システム】河川管理者発信（その他）
+    title: "トラッカー5固定タイトル"
+    name: "auther名5"
+    email: "email5@email"
+  16:  # 【システム】災害対策本部設置
+    title: "トラッカー16固定タイトル"
+    name: "auther名16"
+    email: "email16@email"
+  1:   # 【システム】避難勧告・指示
+    title: "トラッカー1固定タイトル"
+    name: "auther名1"
+    email: "email1@email"
+  2:   # 【システム】避難所開設・閉鎖
+    title: "トラッカー2固定タイトル"
+    name: "auther名2"
+    email: "email2@email"
+  17:  # 【システム】被害要約（概況）
+    title: "トラッカー17固定タイトル"
+    name: "auther名17"
+    email: "email17@email"
+  18:  # 【システム】被害要約（状況）
+    title: "トラッカー18固定タイトル"
+    name: "auther名18"
+    email: "email18@email"
+  7:   # 【被害報告】人的
+    title: "トラッカー7固定タイトル"
+    name: "auther名7"
+    email: "email7@email"
+  8:   # 【被害報告】住家建物
+    title: "トラッカー8固定タイトル"
+    name: "auther名8"
+    email: "email8@email"
+  33:  # 【被害報告】非住家建物
+    title: "トラッカー33固定タイトル"
+    name: "auther名33"
+    email: "email33@email"
+  9:   # 【被害報告】道路
+    title: "トラッカー9固定タイトル"
+    name: "auther名9"
+    email: "email9@email"
+  10:  # 【被害報告】橋梁
+    title: "トラッカー10固定タイトル"
+    name: "auther名10"
+    email: "email10@email"
+  76:  # 【被害報告】電気
+    title: "トラッカー76固定タイトル"
+    name: "auther名76"
+    email: "email76@email"
+  11:  # 【被害報告】上水道
+    title: "トラッカー11固定タイトル"
+    name: "auther名11"
+    email: "email11@email"
+  12:  # 【被害報告】下水道
+    title: "トラッカー12固定タイトル"
+    name: "auther名12"
+    email: "email12@email"
+  13:  # 【被害報告】ガス設備
+    title: "トラッカー13固定タイトル"
+    name: "auther名13"
+    email: "email13@email"
+  14:  # 【被害報告】通信網
+    title: "トラッカー14固定タイトル"
+    name: "auther名14"
+    email: "email14@email"
+  34:  # 【被害報告】高等学校
+    title: "トラッカー34固定タイトル"
+    name: "auther名34"
+    email: "email34@email"
+  35:  # 【被害報告】中学校
+    title: "トラッカー35固定タイトル"
+    name: "auther名35"
+    email: "email35@email"
+  36:  # 【被害報告】小学校
+    title: "トラッカー36固定タイトル"
+    name: "auther名36"
+    email: "email36@email"
+  37:  # 【被害報告】幼稚園
+    title: "トラッカー37固定タイトル"
+    name: "auther名37"
+    email: "email37@email"
+  38:  # 【被害報告】保育所
+    title: "トラッカー38固定タイトル"
+    name: "auther名38"
+    email: "email38@email"
+  39:  # 【被害報告】災害弱者関連施設
+    title: "トラッカー39固定タイトル"
+    name: "auther名39"
+    email: "email39@email"
+  40:  # 【被害報告】医療施設
+    title: "トラッカー40固定タイトル"
+    name: "auther名40"
+    email: "email40@email"
+  41:  # 【被害報告】災害重要施設
+    title: "トラッカー41固定タイトル"
+    name: "auther名41"
+    email: "email41@email"
+  15:  # 【被害報告】その他
+    title: "トラッカー15固定タイトル"
+    name: "auther名15"
+    email: "email15@email"
+  22:  # 道路交通事故に関する情報
+    title: "トラッカー22固定タイトル"
+    name: "auther名22"
+    email: "email22@email"
+  23:  # 路上故障車に関する情報
+    title: "トラッカー23固定タイトル"
+    name: "auther名23"
+    email: "email23@email"
+  24:  # 路上障害物に関する情報
+    title: "トラッカー24固定タイトル"
+    name: "auther名24"
+    email: "email24@email"
+  26:  # 道路火災に関する情報
+    title: "トラッカー26固定タイトル"
+    name: "auther名26"
+    email: "email26@email"
+  67:  # 火災・救急・救助の要請
+    title: "トラッカー67固定タイトル"
+    name: "auther名67"
+    email: "email67@email"
+  68:  # 海上に関する情報
+    title: "トラッカー68固定タイトル"
+    name: "auther名68"
+    email: "email68@email"
+  69:  # 河川に関する情報
+    title: "トラッカー69固定タイトル"
+    name: "auther名69"
+    email: "email69@email"
+  70:  # 広域圏災害に関する情報
+    title: "トラッカー70固定タイトル"
+    name: "auther名70"
+    email: "email70@email"
+  28:  # 被災者からの要望（生活全般）
+    title: "トラッカー28固定タイトル"
+    name: "auther名28"
+    email: "email28@email"
+  71:  # 被災者からの要望（食料）
+    title: "トラッカー71固定タイトル"
+    name: "auther名71"
+    email: "email71@email"
+  29:  # 被災者からの要望（物資・資材）
+    title: "トラッカー29固定タイトル"
+    name: "auther名29"
+    email: "email29@email"
+  48:  # その他の災害関連情報
+    title: "トラッカー48固定タイトル"
+    name: "auther名48"
+    email: "email48@email"
+  20:  # 【広報-交通】道路通行規制に関する情報
+    title: "トラッカー20固定タイトル"
+    name: "auther名20"
+    email: "email20@email"
+  21:  # 【広報-交通】道路渋滞に関する情報
+    title: "トラッカー21固定タイトル"
+    name: "auther名21"
+    email: "email21@email"
+  25:  # 【広報-交通】道路工事に関する情報
+    title: "トラッカー25固定タイトル"
+    name: "auther名25"
+    email: "email25@email"
+  27:  # 【広報-交通】道路路面状況に関する情報
+    title: "トラッカー27固定タイトル"
+    name: "auther名27"
+    email: "email27@email"
+  42:  # 【広報-交通】鉄道の運行に関する情報
+    title: "トラッカー42固定タイトル"
+    name: "auther名42"
+    email: "email42@email"
+  72:  # 【広報-交通】バスの運行に関する情報
+    title: "トラッカー72固定タイトル"
+    name: "auther名72"
+    email: "email72@email"
+  73:  # 【広報-交通】航空路の運行に関する情報
+    title: "トラッカー73固定タイトル"
+    name: "auther名73"
+    email: "email73@email"
+  74:  # 【広報-交通】船舶路の運行に関する情報
+    title: "トラッカー74固定タイトル"
+    name: "auther名74"
+    email: "email74@email"
+  75:  # 【広報-交通】その他公共交通の運行に関する情報
+    title: "トラッカー75固定タイトル"
+    name: "auther名75"
+    email: "email75@email"
+  55:  # 【広報-ライフライン】給水に関する情報
+    title: "トラッカー55固定タイトル"
+    name: "auther名55"
+    email: "email55@email"
+  50:  # 【広報-ライフライン】電気に関する情報
+    title: "トラッカー50固定タイトル"
+    name: "auther名50"
+    email: "email50@email"
+  43:  # 【広報-ライフライン】上水道に関する情報
+    title: "トラッカー43固定タイトル"
+    name: "auther名43"
+    email: "email43@email"
+  44:  # 【広報-ライフライン】下水道に関する情報
+    title: "トラッカー44固定タイトル"
+    name: "auther名44"
+    email: "email44@email"
+  45:  # 【広報-ライフライン】ガスに関する情報
+    title: "トラッカー45固定タイトル"
+    name: "auther名45"
+    email: "email45@email"
+  46:  # 【広報-ライフライン】通信網に関する情報
+    title: "トラッカー46固定タイトル"
+    name: "auther名46"
+    email: "email46@email"
+  51:  # 【広報-ライフライン】臨時災害放送に関する情報
+    title: "トラッカー51固定タイトル"
+    name: "auther名51"
+    email: "email51@email"
+  52:  # 【広報-生活情報】行政手続きに関する情報
+    title: "トラッカー52固定タイトル"
+    name: "auther名52"
+    email: "email52@email"
+  62:  # 【広報-生活情報】安置所に関する情報
+    title: "トラッカー62固定タイトル"
+    name: "auther名62"
+    email: "email62@email"
+  63:  # 【広報-生活情報】災害習得物に関する情報
+    title: "トラッカー63固定タイトル"
+    name: "auther名63"
+    email: "email63@email"
+  60:  # 【広報-生活情報】炊き出し・物資配布に関する情報
+    title: "トラッカー60固定タイトル"
+    name: "auther名60"
+    email: "email60@email"
+  61:  # 【広報-生活情報】入浴サービスに関する情報
+    title: "トラッカー61固定タイトル"
+    name: "auther名61"
+    email: "email61@email"
+  66:  # 【広報-生活情報】営業店舗に関する情報
+    title: "トラッカー66固定タイトル"
+    name: "auther名66"
+    email: "email66@email"
+  59:  # 【広報-生活情報】医療に関する情報
+    title: "トラッカー59固定タイトル"
+    name: "auther名59"
+    email: "email59@email"
+  56:  # 【広報-生活情報】健康・福祉・介護に関する情報
+    title: "トラッカー56固定タイトル"
+    name: "auther名56"
+    email: "email56@email"
+  54:  # 【広報-生活情報】学校・幼稚園・保育所に関する情報
+    title: "トラッカー54固定タイトル"
+    name: "auther名54"
+    email: "email54@email"
+  57:  # 【広報-生活情報】環境に関する情報
+    title: "トラッカー57固定タイトル"
+    name: "auther名57"
+    email: "email57@email"
+  58:  # 【広報-生活情報】防犯に関する情報
+    title: "トラッカー58固定タイトル"
+    name: "auther名58"
+    email: "email58@email"
+  64:  # 【広報-生活情報】ボランティアの支援を受けたい方への情報
+    title: "トラッカー64固定タイトル"
+    name: "auther名64"
+    email: "email64@email"
+  65:  # 【広報-生活情報】ボランティア活動をしたい方への情報
+    title: "トラッカー65固定タイトル"
+    name: "auther名65"
+    email: "email65@email"
+  53:  # 【広報-生活情報】その他の被災者支援に関する情報
+    title: "トラッカー53固定タイトル"
+    name: "auther名53"
+    email: "email53@email"
 
 # 災害情報ポータル連携バッチ処理
 # 連携対象トラッカーID
