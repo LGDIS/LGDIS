@@ -357,7 +357,8 @@ class EvacuationAdvisory < ActiveRecord::Base
 
   # 発令解除区分ごとの世帯数と対象人数の小計を求めて配列に代入
   # ==== Args
-  # _str_digit_issueorlift_ :: 発令解除区分値文字列｡constants.rbで定義｡
+  # _issueorlift_ :: 集計対象とする発令区分
+  # _sort_criteria_ :: 集計対象とする発令・解除区分
   # ==== Return
   # _[tmp.issueorlift_hcsum, tmp.issueorlift_hhsum]_ :: 発令解除区分ごとの対象人数と世帯数 小計の配列
   # ==== Raise
