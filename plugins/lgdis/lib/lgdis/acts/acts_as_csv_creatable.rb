@@ -32,24 +32,26 @@ module Lgdis
           # ボディ部の設定
           objects.each do |object|
             values = []
-            object.attributes.each_pair do |key, value|
-              next unless columns.include?(key.to_sym)
-              case
-              # Constantテーブルに存在する項目である場合
-              when object_const[key.to_s].present?
-                values << object_const[key.to_s][value]
-              # Date型の項目である場合
-              when object[key].is_a?(Date)
-                values << format_date(value)
-              # Time型の項目である場合
-              when object[key].is_a?(Time)
-                values << format_time(value)
-              # ブロックが受け渡されている場合
-              when block_given?
-                values << yield(key, value)
-              # その他の場合
-              else
-                values << value
+            columns.each do |column|
+              object.attributes.each_pair do |key, value|
+                next if column != key.to_sym
+                case
+                # Constantテーブルに存在する項目である場合
+                when object_const[key.to_s].present?
+                  values << object_const[key.to_s][value]
+                # Date型の項目である場合
+                when object[key].is_a?(Date)
+                  values << format_date(value)
+                # Time型の項目である場合
+                when object[key].is_a?(Time)
+                  values << format_time(value)
+                # ブロックが受け渡されている場合
+                when block_given?
+                  values << yield(key, value)
+                # その他の場合
+                else
+                  values << value
+                end
               end
             end
             row << values
