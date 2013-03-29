@@ -8,14 +8,15 @@
   $(function(){
     // input support by google-maps for 3 areas
     <% urlpart_prefix = ENV['RAILS_RELATIVE_URL_ROOT'].to_s %>
-    <% CF_ADDRESS.each do |cf_value|
-       cf_value[0,3].zip(['dai','tyu','syo']).each do |fid, type|
+    <% CF_ADDRESS["custom_field_address"].each do |cf_value|
+       cf_value[0,3].zip(['dai','tyu','syo']).each_with_index do |item, index|
+         fid, type = item
          fid_map = "#{fid}_map"
          fid_text = "issue_custom_field_values_#{fid}"
     %>
     $("#<%= fid_text %>").after("\
        <span id=\"<%= fid_map %>_show_link\">\
-         <img class=\"ui-datepicker-trigger\" src=\"<%= urlpart_prefix -%>/plugin_assets/lgdis/images/gmap.png\" alt=\"<%= l(:button_map_show) %>\" onclick=\"showMap('<%= fid_map %>','issue_custom_field_values_<%= cf_value[0] %>','issue_custom_field_values_<%= cf_value[1] %>','issue_custom_field_values_<%= cf_value[2] %>', '<%= type %>'); return false;\">\
+         <img class=\"ui-datepicker-trigger\" src=\"<%= urlpart_prefix -%>/plugin_assets/lgdis/images/gmap.png\" alt=\"<%= l(:button_map_show) %>\" onclick=\"showMap('<%= fid_map %>',<%= CF_ADDRESS["zoom_rate"][index] %>,'issue_custom_field_values_<%= cf_value[0] %>','issue_custom_field_values_<%= cf_value[1] %>','issue_custom_field_values_<%= cf_value[2] %>', '<%= type %>'); return false;\">\
        </span>\
        <span id=\"<%= fid_map %>_hide_link\" style=\"display: none\">\
          <img class=\"ui-datepicker-trigger\" src=\"<%= urlpart_prefix -%>/images/cancel.png\" alt=\"<%= l(:button_map_hide) %>\" onclick=\"clearMap('<%= fid_map %>'); return false;\">\

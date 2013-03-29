@@ -63,8 +63,8 @@ function createMap(map_id, center_pos, zoom) {
 /** 
  * マップにクリックイベントセット
  */
-function initMap(map_id, field1_id, field2_id, field3_id, type) {
-	var target = createMap(map_id);
+function initMap(map_id, zoom_rate, field1_id, field2_id, field3_id, type) {
+	var target = createMap(map_id, DEFAULT_MAP_CENTER, zoom_rate);
 	if (!target) return;
 
 	// レイヤークリックイベントリスナ登録
@@ -142,10 +142,10 @@ function setNewLayer(event, target, field1_id, field2_id, field3_id, type) {
 // map_id: element-id of google-map
 // fieldn_id: element-id of text field
 // type: "dai", "tyu", "syo"
-function showMap(map_id, field1_id, field2_id, field3_id, type) {
+function showMap(map_id, zoom_rate, field1_id, field2_id, field3_id, type) {
 	toggleMap(map_id);
 	if (!map_initialized[map_id]) {
-		initMap(map_id, field1_id, field2_id, field3_id, type);
+		initMap(map_id, zoom_rate, field1_id, field2_id, field3_id, type);
 		map_initialized[map_id] = true;
 	}
 }

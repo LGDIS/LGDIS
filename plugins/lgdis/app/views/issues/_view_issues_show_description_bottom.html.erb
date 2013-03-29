@@ -92,7 +92,7 @@ end %>
 
 <%
 area_dai_value, area_tyu_value, area_syo_value = nil, nil, nil
-custom_map_fields_ids = CF_ADDRESS.first
+custom_map_fields_ids = CF_ADDRESS["custom_field_address"].first
 @issue.custom_field_values.each do |cf_v|
   case cf_v.custom_field.id
   when custom_map_fields_ids[0]
