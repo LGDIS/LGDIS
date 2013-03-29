@@ -67,7 +67,7 @@ class DisasterDamageController < ApplicationController
         links = []
         issues.each do |issue|
           links << view_context.link_to("##{issue.id}", issue_path(issue), :title => issue.subject)
-          issue.init_journal(User.current, "\"第４号様式へのリンク\":#{url_for(controller: 'disaster_damage', action: 'show', id: dd.id)}") # 履歴
+          issue.init_journal(User.current, "第４号様式へのリンク:\n#{url_for(controller: 'disaster_damage', action: 'show', id: dd.id)}") # 履歴
           issue.save!
         end
         flash[:notice] = l(:notice_issue_successful_create, :id => links.join(","))
