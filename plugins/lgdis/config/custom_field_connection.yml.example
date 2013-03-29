@@ -9,6 +9,9 @@ custom_field_connection:
     - 1005
 
 # カスタムフィールド(マップ入力機能)の設定
+# Google Fusion Tables
+google_fusion_tables:
+  id: 1wVRsRYtnqjtYd4tMVAJt_zlS9TnOznTQdlGk9_g
 # 対象項目設定
 # * すべて「テキスト」であること
 # * 下記書式で「大分類」「中分類」「小分類」「住所」のカスタムフィールドIDを記載すること

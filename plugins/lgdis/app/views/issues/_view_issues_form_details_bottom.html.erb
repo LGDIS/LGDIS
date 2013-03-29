@@ -1,6 +1,9 @@
 <% content_for :header_tags do %>
   <%= javascript_include_tag "http://www.google.com/jsapi" %>
   <%= javascript_include_tag "http://maps.googleapis.com/maps/api/js?sensor=false&language=ja&v=3&client=#{API_KEY["google_map"]["client_id"]}" %>
+  <%= javascript_tag do %>
+    var GOOGLE_FT_KEY = '<%= CF_ADDEESS["google_fusion_tables"]["id"] %>'; // FusionTablesのテーブルID
+  <% end %>
   <%= javascript_include_tag "gmap", :plugin => "lgdis" %>
 <% end %>
 <%= javascript_tag do %>

@@ -1,6 +1,5 @@
 // google maps api
 var DEFAULT_MAP_ZOOM = 13;
-var GOOGLE_FT_KEY = '1wVRsRYtnqjtYd4tMVAJt_zlS9TnOznTQdlGk9_g'; // FusionTablesのテーブルID
 
 // key: map_id, value: boolean
 var map_initialized = {};
