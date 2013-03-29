@@ -37,7 +37,7 @@ class Shelter < ActiveRecord::Base
   
   validates :name, :presence => true,
                 :length => {:maximum => 30}
-  validates_uniqueness_of_without_deleted :name
+  validates_uniqueness_of_without_deleted :name, :scope => :record_mode
   validates :name_kana,
                 :length => {:maximum => 60}
   validates :area, :presence => true
