@@ -45,6 +45,17 @@ class DeliveryHistory < ActiveRecord::Base
     l("field_#{name.underscore.gsub('/', '_')}_#{attr}", :default => ["field_#{attr}".to_sym, attr])
   end
 
+  # 配信履歴テーブル作成処理
+  # 外部配信先により、バリデーションが異なる為issue では
+  # バリデーション処理が行えないものがある。
+  # その為、配信履歴テーブルにsave しバリデーションを行う
+  # issue の拡張項目と同じものを登録
+  # ==== Args
+  # _issue_ :: チケットオブジェクト
+  # _ary_ :: 外部配信先ID の配列
+  # ==== Return
+  # 項目名
+  # ==== Raise
   def self.create_for_history(issue, ary)
     deliver_histories = []
     ary.each do |e|

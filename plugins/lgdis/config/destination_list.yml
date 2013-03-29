@@ -11,13 +11,17 @@ training_prj:
 test_prj:
   3: true
 
+# issue_patch.rb 配信メッセージ作成処理メソッド群
+# 外部配信先が追加になった場合追加必要
 create_msg_method:
   - &create_msg_method_1 create_commons_msg
   - &create_msg_method_2 create_smtp_msg
   - &create_msg_method_3 create_twitter_msg
   - &create_msg_method_4 create_facebook_msg
   - &create_msg_method_5 create_atom_msg
-  
+
+# plugins/lgdis/app/workers/ext_out 以下worker 群
+# 外部配信先が追加になった場合追加必要
 delivery_job_class:
   - &delivery_job_class_1 "ExtOut::CommonsRequestJob"
   - &delivery_job_class_2 "ExtOut::SmtpRequestJob"
@@ -57,6 +61,8 @@ smtp_server: # SMTPサーバー
     password:   JBC03142
     charset:    utf-8
 
+# 外部配信先設定値
+# 外部配信先が追加になった場合追加必要
 delivery_place:
   &id 1: &commons
     id: *id
@@ -159,7 +165,7 @@ delivery_place_group_commons: &delivery_place_group_commons
   - *urgent_mail_docomo
   - *urgent_mail_au
   - *urgent_mail_sb
-# 緊急即報メール
+# 公共情報コモンズ 緊急速報メール
 delivery_place_group_urgent_mail: &delivery_place_group_urgent_mail
   - *urgent_mail_docomo
   - *urgent_mail_au
@@ -172,6 +178,8 @@ delivery_place_group_deployed_mail: &delivery_place_group_deployed_mail
   - *smtp_3
 
 # 自動配信時先リスト
+# *号配備の際に自動配信する外部配信先を設定
+# 外部配信先が追加削除された際は修正必要
 # 記載例
 # auto_destination:
 #   *号配備番号:
@@ -192,6 +200,11 @@ auto_destination:
   3:  # ３号配備
     [*smtp_3, *twitter, *facebook, *urgent_mail_docomo]
 
+# 外部配信先設定
+# ロール、トラッカーが追加削除された際は修正必要
+# ロールのトラッカーに紐付く外部配信先を設定
+# 変更時は上記「配信先グループ」にグループを追加するか
+# 以下記載例に基づき記載すること
 # 記載例
 # destination:
 #   role_id:
@@ -257,9 +270,9 @@ destination:
       *delivery_place_group_all
     27: # 道路路面状況に関する情報
       *delivery_place_group_all
-    28: #
+    28: # 被災者からの要望（生活全般）
       *delivery_place_group_all
-    29: #
+    29: # 被災者からの要望（物資・資材）
       *delivery_place_group_all
     33: # 非住家建物被害報告
       *delivery_place_group_all
@@ -323,15 +336,15 @@ destination:
       *delivery_place_group_all
     66: # 営業店舗に関する情報
       *delivery_place_group_all
-    67: # 
+    67: # 火災・救急・救助の要請
       *delivery_place_group_all
-    68: # 
+    68: # 海上に関する情報
       *delivery_place_group_all
-    69: # 
+    69: # 河川に関する情報
       *delivery_place_group_all
-    70: # 
+    70: # 広域圏災害に関する情報
       *delivery_place_group_all
-    71: # 
+    71: # 被災者からの要望（食料）
       *delivery_place_group_all
     72: # バスの運行に関する情報
       *delivery_place_group_all
@@ -341,9 +354,9 @@ destination:
       *delivery_place_group_all
     75: # その他公共交通の運行に関する情報
       *delivery_place_group_all
-    77: # 
+    77: # 【システム】J-ALERT 発信（内閣官房）
       *delivery_place_group_all
-    78: # 
+    78: # 【システム】J-ALERT 発信（気象庁）
       *delivery_place_group_all
   6: # モデレータ
     1: # 避難勧告指示・指示情報(公共コモンズ配信用)
@@ -590,6 +603,7 @@ destination:
       *delivery_place_group_all
 
 # トラッカーごとの配信先にデフォルトでチェックを入れる
+# トラッカー、外部配信先が追加削除された場合は修正必要
 # 記載例
 # チェックを入れる配信先のみを記載する
 #:delivery_place_default
@@ -619,6 +633,9 @@ delivery_place_default:
   9: # 【被害報告】道路
     *delivery_place_group_all
 
+# 公共情報コモンズ配信で使用するテンプレート群
+# plugins/lgdis/files/xml 以下のファイルが
+# 削除、rename、追加された際は修正必要
 commons_xml:
   0: commons_urgent_mail.xml                     # 緊急速報メール
   1: commons_evacuation.xml                      # 避難勧告・指示
@@ -674,6 +691,8 @@ commons_xml:
   65: commons_event_announcements.xml            # ボランティア活動をしたい方への情報
   66: commons_event_announcements.xml            # 営業店舗に関する情報
 
+# 公共情報コモンズ配信時に使用するタイトル群
+# plugins/lgdis/lib/lgdis/issue_patch.rb で使用
 tracker_title:
   0: 緊急速報メール        # 緊急速報メール
   1: 避難勧告・指示        # 避難勧告・指示
@@ -729,6 +748,9 @@ tracker_title:
   74: イベント・お知らせ   # 船舶路の運行に関する情報
   75: イベント・お知らせ   # その他公共交通の運行に関する情報
 
+# 公共情報コモンズ配信（イベント・お知らせ）で使用するカテゴリー群
+# イベント・お知らせのトラッカーが追加、削除された際は修正必要
+# plugins/lgdis/lib/lgdis/issue_patch.rb で使用
 tracker_grouping:
   20: # 道路通行規制に関する情報
     - 交通
@@ -821,6 +843,10 @@ tracker_grouping:
     - 交通
     - その他
 
+# 公共情報コモンズ配信（イベント・お知らせ）で使用するトラッカーID群
+# カレントのトラッカーID がイベント・お知らせか判定する為用いる
+# イベント・お知らせのトラッカーが追加、削除された際は修正必要
+# plugins/lgdis/lib/lgdis/issue_patch.rb で使用
 general_info_ids:
   - 20 # 道路通行規制に関する情報
   - 21 # 道路渋滞に関する情報
@@ -855,6 +881,9 @@ general_info_ids:
 
 # ComplementaryInfo(補足情報)に設定が必要なトラッカーID
 # 避難勧告・指示、避難所情報、被害情報 のトラッカーID の配列
+# 避難勧告・指示、避難所情報、被害情報のトラッカーが
+# 追加、削除された際は修正必要
+# plugins/lgdis/lib/lgdis/issue_patch.rb で使用
 comp_info_trackers:
   - 1  # 避難勧告・指示
   - 2  # 避難所情報
@@ -878,12 +907,18 @@ comp_info_trackers:
   - 40 # 医療施設被害報告
   - 41 # 災害重要施設被害報告
 
+# 公共情報コモンズ外部配信先ID群
+# 公共情報コモンズ配信先ID が追加、削除された際修正必要
+# plugins/lgdis/app/workers/ext_out/job_base.rb の版番号管理処理で使用
 commons_delivery_ids:
   - 1  # 公共情報コモンズ
   - 10 # 緊急速報メール（NTTDocomo）
   - 11 # 緊急速報メール（KDDI）
   - 12 # 緊急速報メール（ソフトバンク）
 
+# 公共情報コモンズ配信 Control部のトラッカーIDに紐付くtitle群
+# トラッカーID が追加、削除された際修正必要
+# plugins/lgdis/lib/lgdis/issue_patch.rb で使用
 destination_xpath:
   1: 'pcx_ev:EvacuationOrder'          # 避難勧告・指示
   2: 'pcx_sh:Shelter'                  # 避難所情報
@@ -939,8 +974,10 @@ destination_xpath:
   65: 'pcx_gi:GeneralInformation'      # ボランティア活動をしたい方への情報
   66: 'pcx_gi:GeneralInformation'      # 営業店舗に関する情報
 
-# ComplementaryInfo(補足情報)設定時xpath
+# 公共情報コモンズ配信 ComplementaryInfo(補足情報)設定時xpath
 # 避難勧告・指示、避難所情報、被害情報 時のみ設定
+# トラッカーID が追加、削除された際修正必要
+# plugins/lgdis/lib/lgdis/issue_patch.rb で使用
 comp_info_xpath:
   1: 'pcx_ev:ComplementaryInfo'  # 避難勧告・指示
   2: 'pcx_sh:ComplementaryInfo'  # 避難所情報
@@ -966,6 +1003,7 @@ comp_info_xpath:
   41: 'pcx_di:ComplementaryInfo' # 災害重要施設被害報告
 
 # 公共コモンズ配信用XML 設定値
+# plugins/lgdis/lib/lgdis/issue_patch.rb で使用
 commons_xml_field:
   namespace_start_tag: <body_namespace xmlns:pcx_di="http://xml.publiccommons.ne.jp/pcxml1/body/DamageInformation3" xmlns:pcx_en="http://xml.publiccommons.ne.jp/pcxml1/body/event3" xmlns:pcx_sh="http://xml.publiccommons.ne.jp/pcxml1/body/shelter3" xmlns:pcx_um="http://xml.publiccommons.ne.jp/pcxml1/body/UrgentMail3" xmlns:pcx_ev="http://xml.publiccommons.ne.jp/pcxml1/body/evacuation3" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:edxlde="urn:oasis:names:tc:emergency:EDXL:DE:1.0" xmlns:commons="http://xml.publiccommons.ne.jp/xml/edxl/" xmlns:pcxml="http://xml.publiccommons.ne.jp/pcxml1/3" xmlns:pcx_eb="http://xml.publiccommons.ne.jp/pcxml1/elementBasis3/" xmlns:pcx_ib="http://xml.publiccommons.ne.jp/pcxml1/informationBasis3/" xmlns:pcx_gi="http://xml.publiccommons.ne.jp/pcxml1/body/GeneralInformation3" xmlns:pcx_ah="http://xml.publiccommons.ne.jp/pcxml1/body/AntidisasterHeadquarter3"> # 名前空間定義
   namespace_end_tag: </body_namespace>
@@ -984,24 +1022,25 @@ commons_xml_field:
   organization_code: '042021'               # 作成部署情報(組織コード)
   organization_name: 石巻市                 # 作成部署情報(組織名)
 
-# コントロールプレーン部更新種別群
+# 公共情報コモンズ配信 更新種別群
+# plugins/lgdis/lib/lgdis/issue_patch.rb で使用
 type_update:
   1: Report
   2: Update
   3: Cancel
 
-# 配信内容にあたるカスタムフィールドID
+# 公共情報コモンズ配信 配信時に使用するカスタムフィールドID
 custom_field_delivery:
   related_url: 37     # 関連するホームページ
   comp_info: 5        # 補足情報
 
 # 公共情報コモンズへの発信
  # NOTE:
- # endpoint below have to point to a URL 
+ # endpoint below have to point to a URL
  # where COMMONS web server process is running on.
  # In other word, IP address of non-router (including virtualizer router).
 #ie commons_endpoint: http://192.168.43.186/commons/subscriber/soap/testservice.example.com/
-#sha 
+#sha
 commons_connection:
   endpoint: https://lgdis.local/commons/subscriber/soap/testservice.example.com/
   #sha centos_ssh: commons_endpoint: https://localhost:443/commons/subscriber/soap/testservice.example.com/
@@ -1011,14 +1050,15 @@ commons_connection:
   namespace: http://soap.publiccommons.ne.jp/
   ssl_ca_cert: /opt/fix/SOAPdev/etc/pki/CA/cacert.pem
 
-# Atom出力先
+# 災害情報ポータル連携
+# Atom出力先ディレクトリ設定
 atom:
   output_dir: ./public/atom
 
 # 災害情報ポータルURL
 disaster_portal_url: "下記リンクより、災害情報を確認して下さい。\n http://www.jice.or.jp/sinsai/sinsai_result.php"
 
-# LGDSF URL
+# *号配備メールに添付するLGDSF URL 設定
 lgdsf_url: "下記リンクより、位置情報、参集場所の報告を行ってください。\n http://203.138.187.89/LGDSF/staffs/send/"
 
 # 外部出力

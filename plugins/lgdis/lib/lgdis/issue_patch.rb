@@ -445,7 +445,7 @@ module Lgdis
         operation_flg = DST_LIST['commons_xml_field']['edxl_status'][prj_mode]
 
         # 更新種別設定処理
-        type_update = TYPE_UPDATE[self.type_update.to_i]
+        type_update = TYPE_UPDATE[edition_fields_map['status']]
 
         # 情報の配信対象地域を設定
         area_ary = []
@@ -652,15 +652,16 @@ module Lgdis
       # UUID, 更新種別(status), 版番号(edition_num) を
       # ハッシュで返却します
       #
+      # 例:
       # project_id = 1, tracker_id = 1, issue_id = 1
       # edition_num(版番号) = 2, status = 2(update), uuid = aaa
       # 上記のレコードがある前提で、同じproject_id, tracker_id のチケットを作成した場合
       # 「緊急速報メール・お知らせ」とその他のコモンズ配信では、
       # edition_num(版番号), status, uuid の生成方法が異なる。
-      # 例1) 「緊急速報メール・お知らせ」の場合
+      # ケース 1) 「緊急速報メール・お知らせ」の場合
       # project_id = 1, tracker_id = 1, issue_id = 2
       # edition_num(版番号) = 3, status = 2(update), uuid = aaa
-      # 例2) その他のコモンズ配信の場合
+      # ケース 2) その他のコモンズ配信の場合
       # project_id = 1, tracker_id = 1, issue_id = 2
       # edition_num(版番号) = 1, status = 1(update), uuid = bbb
       # ==== Args
@@ -680,11 +681,11 @@ module Lgdis
         uuid        = edition_mng.blank? || edition_mng.status == CANCEL_STATUS || status_flag ? \
                       UUIDTools::UUID.random_create.to_s : edition_mng.uuid
 
-        # 新規配信許可時、更新種別が新規、緊急速報メールか、お知らせ・イベントのトラッカー、
+        # 新規配信許可時、更新種別が新規、緊急速報メールか、お知らせ・イベントのトラッカーで
         # 画面より情報の更新種別「取消」を選択した場合、画面の入力値を設定
-        # それ以外は版番号の値を引き継ぐ
+        # それ以外は更新ステータス
         status      = edition_mng.blank? || edition_mng.status == CANCEL_STATUS || status_flag || self.type_update.to_i == CANCEL_STATUS ? \
-                      self.type_update.to_i : edition_mng.status
+                      self.type_update.to_i : UPDATE_STATUS
 
         # 新規配信許可時、更新種別が新規、緊急速報メールか、お知らせ・イベントのトラッカーの場合、版番号を1に設定
         edition_num = edition_mng.blank? || edition_mng.status == CANCEL_STATUS || status_flag ? \

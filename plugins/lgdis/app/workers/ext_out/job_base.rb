@@ -23,6 +23,9 @@ module ExtOut
     # チケット履歴出力項目（初期値）
     @@output_issue_journal_fields = []
 
+    # 緊急速報メールの外部配信先ID配列
+    UGENT_MAIL_PLACE_IDS = DST_LIST['delivery_place_group_urgent_mail'].map{|o| o["id"]}
+
     # Lgdis 外部出力 I/F呼出の共通処理
     # ※非同期処理ワーカー処理（Resque向け）
     # ※各外部出力I/Fの呼出処理は、本関数に実処理をブロックで渡すこと
@@ -133,7 +136,8 @@ module ExtOut
       return outputs.join("\n")
     end
 
-    # 文書改版管理処理｡取り消しされた場合は、版番号を1にリセットする｡
+    # 文書改版管理処理
+    # 取り消しされた場合は、版番号を1にリセットする｡
     # ==== Args
     # _delivery_history_ :: DeliveryHistoryオブジェクト
     # ==== Return
@@ -143,7 +147,16 @@ module ExtOut
       project_id = issue.project_id
       tracker_id = issue.tracker_id
       type_update = issue.type_update
-      edition_mng = EditionManagement.find_by_project_id_and_tracker_id_and_delivery_place_id(project_id, tracker_id, delivery_history.delivery_place_id)
+      # 新規配信時、緊急速報メール、イベント・お知らせのトラッカーID の場合
+      # 版番号管理レコードも新規作成される
+      # それ以外のコモンズ配信時の版番号管理レコードは、
+      # プロジェクトとトラッカーで一意に管理する
+      if UGENT_MAIL_PLACE_IDS.include?(delivery_history.delivery_place_id) ||
+         DST_LIST['general_info_ids'].include?(tracker_id)
+        edition_mng = EditionManagement.find_by_issue_id_and_delivery_place_id(issue.id, delivery_history.delivery_place_id)
+      else
+        edition_mng = EditionManagement.find_by_project_id_and_tracker_id_and_delivery_place_id(project_id, tracker_id, delivery_history.delivery_place_id)
+      end
       xml_body = REXML::Document.new(content)
 
       # 新規追加処理
