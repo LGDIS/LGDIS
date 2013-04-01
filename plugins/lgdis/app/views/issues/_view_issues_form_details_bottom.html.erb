@@ -2,7 +2,7 @@
   <%= javascript_include_tag "http://www.google.com/jsapi" %>
   <%= javascript_include_tag "http://maps.googleapis.com/maps/api/js?sensor=false&language=ja&v=3&client=#{API_KEY["google_map"]["client_id"]}" %>
   <%= javascript_tag do %>
-    var GOOGLE_FT_KEY = '<%= CF_ADDEESS["google_fusion_tables"]["id"] %>'; // FusionTablesのテーブルID
+    var GOOGLE_FT_KEY = '<%= CF_ADDRESS["google_fusion_tables"]["id"] %>'; // FusionTablesのテーブルID
   <% end %>
   <%= javascript_include_tag "gmap", :plugin => "lgdis" %>
 <% end %>
@@ -28,11 +28,16 @@
     ");
     <% end -%>
     // convert address to area
+    <% fid_map = "#{cf_value[3]}_map" %>
     <% fid_text = "issue_custom_field_values_#{cf_value[3]}" %>
     $("#<%= fid_text %>").after("\
-       <span>\
-         <img class=\"ui-datepicker-trigger\" src=\"<%= urlpart_prefix -%>/plugin_assets/lgdis/images/gmap.png\" alt=\"<%= l(:button_area_get) %>\" onclick=\"getArea('<%= fid_text %>','issue_custom_field_values_<%= cf_value[0] %>', 'issue_custom_field_values_<%= cf_value[1] %>','issue_custom_field_values_<%= cf_value[2] %>'); return false;\">\
+       <span id=\"<%= fid_map %>_show_link\">\
+         <img class=\"ui-datepicker-trigger\" src=\"<%= urlpart_prefix -%>/plugin_assets/lgdis/images/gmap.png\" alt=\"<%= l(:button_map_show) %>\" onclick=\"showMapSelectPosition('<%= fid_map %>', DEFAULT_MAP_ZOOM, '<%= fid_text %>'); return false;\">\
        </span>\
+       <span id=\"<%= fid_map %>_hide_link\" style=\"display: none\">\
+         <img class=\"ui-datepicker-trigger\" src=\"<%= urlpart_prefix -%>/images/cancel.png\" alt=\"<%= l(:button_map_hide) %>\" onclick=\"clearMap('<%= fid_map %>'); return false;\">\
+       </span>\
+       <div id=\"<%= fid_map %>\" class=\"input_map\" style=\"display: none\"></div>\
     ");
     <% end -%>
   });

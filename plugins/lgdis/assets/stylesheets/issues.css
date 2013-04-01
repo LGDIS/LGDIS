@@ -38,3 +38,7 @@ tr.like_hr td{
   text-align: left;
   width: 180px;
 }
+
+/* 発生場所のテキストエリア */
+/* ※textarea.text_cfのスタイルを包含していること */
+textarea.text_cf_address {width:90%; height: 6em;}

@@ -10,6 +10,7 @@ module Lgdis
       base.class_eval do
         unloadable
         alias_method_chain :custom_field_tag, :time_status
+        alias_method_chain :custom_field_tag, :address
         alias_method_chain :custom_field_tag_for_bulk_edit, :time
         alias_method_chain :format_value, :time
       end
@@ -65,6 +66,32 @@ module Lgdis
         end
 
         return custom_field_tag_without_time_status(name, custom_value)
+      end
+
+      # カスタムフィールド項目の作成処理
+      # 長いテキスト形式で、マップ入力補助(事象の発生場所)の場合は高さを拡張する
+      # ==== Args
+      # _name_ :: フォーム名
+      # _custom_value_ :: CustomValueオブジェクト
+      # ==== Return
+      # 作成した入力部品
+      # ==== Raise
+      def custom_field_tag_with_address(name, custom_value)
+        custom_field = custom_value.custom_field
+        field_name = "#{name}[custom_field_values][#{custom_field.id}]"
+        field_name << "[]" if custom_field.multiple?
+        field_id = "#{name}_custom_field_values_#{custom_field.id}"
+
+        tag_options = {:id => field_id, :class => "#{custom_field.field_format}_cf"}
+
+        field_format = Redmine::CustomFieldFormat.find_by_name(custom_field.field_format)
+        case field_format.try(:edit_as)
+        when "text"
+          if CF_ADDRESS["custom_field_address"].map{|cfa| cfa[3]}.include?(custom_field.id)
+            return text_area_tag(field_name, custom_value.value, tag_options.merge(:rows => 3, :class => "#{custom_field.field_format}_cf_address"))
+          end
+        end
+        custom_field_tag_without_address(name, custom_value)
       end
 
       # カスタムフィールド項目の作成処理（複数チケットの一括変更での編集画面向け）
