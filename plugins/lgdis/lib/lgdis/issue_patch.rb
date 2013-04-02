@@ -97,6 +97,8 @@ module Lgdis
       UGENT_MAIL_PLACE_IDS = DST_LIST['delivery_place_group_urgent_mail'].map{|o| o["id"]}
       # ** 号配備メールの外部配信先ID配列
       DEPLOYED_MAIL_PLACE_IDS = DST_LIST['delivery_place_group_deployed_mail'].map{|o| o["id"]}
+      # RSS情報の外部配信先ID
+      RSS_PLACE_ID = DST_LIST['delivery_place_rss'].map{|o| o["id"]}
       # 版番号管理ステータス
       NEW_STATUS    = 1
       UPDATE_STATUS = 2
@@ -181,7 +183,7 @@ module Lgdis
             delivery_job_class = eval(DST_LIST['delivery_place'][delivery_place_id]['delivery_job_class'])
             test_flag = DST_LIST['test_prj'][self.project_id]
             delivery_history.update_attributes({:status => status_to, :respond_user_id => User.current.id, :process_date => Time.now})
-            Resque.enqueue(delivery_job_class, delivery_history.id, summary, test_flag)
+            Resque.enqueue(delivery_job_class, delivery_history.id, summary, test_flag) unless delivery_place_id == RSS_PLACE_ID # RSSの時は配信しない
             # TODO
             # Resque-Scheduler 対応
             # 公共情報コモンズ以外の配信は、アプリ側で公開時間の制御を行う
@@ -299,69 +301,13 @@ module Lgdis
       # 配信内容
       # ==== Raise
       def create_atom_msg(delivery_place_id)
-        # テンプレートの読み込み
-        file = File.new("#{Rails.root}/plugins/lgdis/files/xml/atom_with_georss.xml")
-        # Xmlドキュメントの生成
-        doc  = REXML::Document.new(file)
-
-        feed = doc.elements["feed"]
-        feed.elements["title"].text = self.project.name
-
-        #CGI off-line mode回避用ダミーコード:最後にコントロールDを入れる作業を回避
-        ARGV.replace(%w(abc=001 def=002))
-        cgi = CGI.new
-        feed.elements["link"].attributes["href"] += "#{cgi.server_name}/r/feed/"
-
-        time = Time.now
-        feed.elements["updated"].text = time.xmlschema
-
-        author = feed.elements["author"]
-        author.elements["name"].text = self.author.name
-        author.elements["email"].text = self.author.mail
-
-        feed.elements["id"].text += UUIDTools::UUID.random_create.to_s
-
-        entry = feed.elements["entry"]
-        # TODO
-        # コントロールプレーン部の対応で作成内容(参照情報)が
-        # 変更になった可能性があり、確認必要
-        # entry.elements["title"].text = "#{self.mail_subject}"
-        # entry.elements["summary"].text = self.summary.to_s[0,140]
-        entry.elements["title"].text = "#{self.tracker.name} ##{self.id}: #{self.subject}"
-        entry.elements["id"].text += UUIDTools::UUID.random_create.to_s
-        entry.elements["updated"].text = time.xmlschema
-        entry.elements["summary"].text = self.description.to_s[0,140]
-
-        cnt = 0
-        self.points_for_map.each do |point|
-          cnt += 1
-          REXML::Comment.new("-------- 本件についての地理情報 No." + cnt.to_s + " --------", entry)
-          entry.add_element("georss:point").text = point["points"].join(" ")
-          entry.add_element("georss:relationshipTag").text = "iconfile=#{rand(16)}-dot.png"
+        issue = self # evelの中でissueが使われている為
+        content = ""
+        DST_LIST["link_disaster_portal_tracker_group"][self.tracker_id].each do | label_value |
+          # content 内容作成
+          content += label_value["label"] + ':' + eval(label_value["value"]) + "\n"
         end
-
-        self.lines_for_map.each do |line|
-          cnt += 1
-          REXML::Comment.new("-------- 本件についての地理情報 No." + cnt.to_s + " --------", entry)
-          entry.add_element("georss:line").text = line["points"].flatten.join(" ")
-          entry.add_element("georss:relationshipTag").text = "iconfile=#{rand(16)}-dot.png"
-        end
-
-        self.polygons_for_map.each do |polygon|
-          cnt += 1
-          REXML::Comment.new("-------- 本件についての地理情報 No." + cnt.to_s + " --------", entry)
-          entry.add_element("georss:polygon").text = polygon["points"].flatten.join(" ")
-          entry.add_element("georss:relationshipTag").text = "iconfile=#{rand(16)}-dot.png"
-        end
-
-        self.locations_for_map.each do |location|
-          cnt += 1
-          REXML::Comment.new("-------- 本件についての地理情報 No." + cnt.to_s + " --------", entry)
-          entry.add_element("georss:featureTypeTag").text = location["location"]
-          entry.add_element("georss:relationshipTag").text = "iconfile=#{rand(16)}-dot.png"
-        end
-
-        return doc.to_s
+        return {'message' => content}
       end
 
       # 災害訓練,URL 追加処理

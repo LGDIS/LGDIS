@@ -30,6 +30,11 @@ class DeliveryHistory < ActiveRecord::Base
   U_MAIL_SB_ID  = 11
   U_MAIL_AU_ID  = 12
 
+  # 更新種別ステータス
+  NEW_STATUS    = '1'
+  UPDATE_STATUS = '2'
+  CANCEL_STATUS = '3'
+
   # 属性のローカライズ名取得
   # validateエラー時のメッセージに使用されます。
   # "field_" + 属性名 でローカライズします。
@@ -88,6 +93,8 @@ class DeliveryHistory < ActiveRecord::Base
   # ==== Return
   # ==== Raise
   def for_commons
+    edition_mng = EditionManagement.find_by_issue_id self.issue.id
+
     if ([SMTP_0_ID, SMTP_1_ID, SMTP_2_ID, SMTP_3_ID, SMTP_AUTH_ID, ATOM_ID,
          U_MAIL_DCM_ID, U_MAIL_SB_ID, U_MAIL_AU_ID].include?(self.delivery_place_id)) && self.mail_subject.blank?
       errors.add(:mail_subject, "を入力して下さい")
@@ -112,6 +119,11 @@ class DeliveryHistory < ActiveRecord::Base
 
     if ([COMMONS_ID, U_MAIL_DCM_ID, U_MAIL_SB_ID, U_MAIL_AU_ID].include?(self.delivery_place_id)) && self.type_update.blank?
       errors.add(:type_update, "を選択して下さい")
+    end
+
+    if ([COMMONS_ID, U_MAIL_DCM_ID, U_MAIL_SB_ID, U_MAIL_AU_ID].include?(self.delivery_place_id)) &&
+       edition_mng.blank? && self.issue.type_update != NEW_STATUS
+      errors.add(:type_update, "の「新規」を選択して下さい")
     end
 
     if ([COMMONS_ID, U_MAIL_DCM_ID, U_MAIL_SB_ID, U_MAIL_AU_ID].include?(self.delivery_place_id)) && self.delivered_area.blank?

@@ -177,6 +177,10 @@ delivery_place_group_deployed_mail: &delivery_place_group_deployed_mail
   - *smtp_2
   - *smtp_3
 
+# RSS情報
+delivery_place_rss: &delivery_place_rss
+  - *atom
+
 # 自動配信時先リスト
 # *号配備の際に自動配信する外部配信先を設定
 # 外部配信先が追加削除された際は修正必要
