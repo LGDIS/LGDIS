@@ -298,16 +298,9 @@ class EvacuationAdvisory < ActiveRecord::Base
     fmtdoc = "\n" + doc.to_s.gsub(/></,">\n<").gsub("<pcx_ev:De","\n\n<pcx_ev:De")
       fmtdoc = fmtdoc.gsub("<commons:areaName>","\n<commons:areaName>")
     issue.xml_body   = fmtdoc
-     # チケットにcsvファイルを添付する
-    tf = create_csv(evas.flatten, "避難勧告･指示",
-        [:sort_criteria,:issueorlift,:area,:area_kana,:district,:section,
-         :issued_at,:changed_at,:lifted_at,:households,:head_count]) do |key, value|
-      if key == "area"
-        Area.all.select{|v| v.area_code == value}.first.try(:name)
-      else
-        value
-      end
-    end
+    # チケットにcsvファイルを添付する
+    tf = create_csv(EvacuationAdvisory.mode_in(project).order(:identifier), "避難勧告･指示",
+        [:area,:area_kana,:current_sort_criteria,:issued_at,:lifted_at,:households,:head_count])
     issue.save_attachments(["file"=> tf, "description" => "全ての避難勧告･指示CSVファイル ※チケット作成時点"])
     # 一時ファイルの削除
     tf.close(true)
