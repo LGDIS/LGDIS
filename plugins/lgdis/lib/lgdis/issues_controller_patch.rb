@@ -15,6 +15,7 @@ module Lgdis
         before_filter :init, :only => [:show, :request_delivery]
         before_filter :get_delivery_histories, :only => [:show, :request_delivery]
         before_filter :get_destination_list, :only => [:show, :request_delivery]
+        before_filter :set_znettown_cookie, :only => [:new, :show]
       end
     end
 
@@ -152,6 +153,31 @@ module Lgdis
           issue_attr['delivered_area'] = code_str
         end
         issue_attr
+      end
+
+      # ZNET TOWN(住宅地図)サービス用に認証済みCookieを発行する
+      # ==== Args
+      # ==== Return
+      # ==== Raise
+      def set_znettown_cookie
+        begin
+          if ZNETTOWNService.enable?
+            znt = ZNETTOWNService.login
+            znt[:cookies][:cookie].each do |cookie_name, cookie_value|
+              cookie_options = {
+                :value => cookie_value,
+                :expires => Time.at(znt[:cookies][:expires].to_i),
+                :path => znt[:cookies][:path],
+                #:secure => true,
+                :httponly => false,
+                :domain => nil,
+              }
+              cookies[cookie_name] = cookie_options
+            end if znt
+          end
+        rescue ZNETTOWNService::LoginError
+          nil # 何もしない
+        end
       end
 
     end

@@ -1,6 +1,19 @@
 <% content_for :header_tags do %>
   <%= javascript_include_tag "http://www.google.com/jsapi" %>
   <%= javascript_include_tag "http://maps.googleapis.com/maps/api/js?sensor=false&language=ja&v=3&client=#{API_KEY["google_map"]["client_id"]}" %>
+  <% if ZNETTOWNService.enable? %>
+    <%= javascript_tag do %>
+      var zmap_lng    = '<%= ZNETTOWN["lng"] %>';
+      var zmap_lat    = '<%= ZNETTOWN["lat"] %>';
+      var zmap_zoom   = '<%= ZNETTOWN["zoom"] %>';
+      var zmap_view   = '<%= ZNETTOWN["viewmode"] %>';
+      var zmap_drag   = '<%= ZNETTOWN["dragmode"] %>';
+      var zmap_loupe  = '<%= ZNETTOWN["loupemode"] %>';
+      var zmap_submap = '<%= ZNETTOWN["submapmode"] %>';
+    <% end %>
+    <%= javascript_include_tag "http://lab.zapi.znet-town.net/znettown/api/loadapi.php?mobile=0&enc=utf8&cnt=1" %>
+    <%= javascript_include_tag "zmap", :plugin => "lgdis" %>
+  <% end %>
   <%= javascript_tag do %>
     var GOOGLE_FT_KEY = '<%= CF_ADDRESS["google_fusion_tables"]["id"] %>'; // FusionTablesのテーブルID
   <% end %>
@@ -38,7 +51,27 @@
          <img class=\"ui-datepicker-trigger\" src=\"<%= urlpart_prefix -%>/images/cancel.png\" alt=\"<%= l(:button_map_hide) %>\" onclick=\"clearMap('<%= fid_map %>'); return false;\">\
        </span>\
        <div id=\"<%= fid_map %>\" class=\"input_map\" style=\"display: none\"></div>\
+       <% if ZNETTOWNService.enable? %>
+         <br/><a href=\"#\" id=\"zmap_open\">住宅地図を開く</a>\
+         <a href=\"#\" id=\"zmap_close\" style=\"display: none\">住宅地図を閉じる</a>\
+         <div id=\"zmap_id\" class=\"input_map\" style=\"display: none\"></div>\
+       <% end %>
     ");
+    <% if ZNETTOWNService.enable? %>
+      $("#zmap_open").click(function(){
+        $("#zmap_open").hide();
+        $("#zmap_close").show();
+        z_showMap("zmap_id");
+        $("#zmap_id").show();
+        return false;
+      });
+      $("#zmap_close").click(function(){
+        $("#zmap_id").hide();
+        $("#zmap_open").show();
+        $("#zmap_close").hide();
+        return false;
+      });
+    <% end %>
     <% end -%>
   });
 
