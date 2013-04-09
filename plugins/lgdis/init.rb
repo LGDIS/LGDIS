@@ -25,6 +25,7 @@ STATISTICS_SQL  = YAML.load_file("#{Rails.root}/plugins/lgdis/config/statistics_
 EVACUATIONADVISORY_MAP = YAML.load_file("#{Rails.root}/plugins/lgdis/config/evacuation_advisory.yml")
 VERSION     = YAML.load_file("#{Rails.root}/plugins/lgdis/config/version.yml")
 SETTINGS     = YAML.load_file("#{Rails.root}/plugins/lgdis/config/lgdis.yml")
+ZNETTOWN = YAML.load_file("#{Rails.root}/plugins/lgdis/config/znettown_key.yml")
 
 # library, plugin
 require_dependency 'lgdis/acts/acts_as_mode_switchable'
