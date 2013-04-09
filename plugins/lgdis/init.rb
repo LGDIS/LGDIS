@@ -24,6 +24,7 @@ CF_ADDRESS  = YAML.load_file("#{Rails.root}/plugins/lgdis/config/custom_field_co
 STATISTICS_SQL  = YAML.load_file("#{Rails.root}/plugins/lgdis/config/statistics_sql_query.yml")
 EVACUATIONADVISORY_MAP = YAML.load_file("#{Rails.root}/plugins/lgdis/config/evacuation_advisory.yml")
 VERSION     = YAML.load_file("#{Rails.root}/plugins/lgdis/config/version.yml")
+SETTINGS     = YAML.load_file("#{Rails.root}/plugins/lgdis/config/lgdis.yml")
 
 # library, plugin
 require_dependency 'lgdis/acts/acts_as_mode_switchable'
@@ -61,6 +62,8 @@ Redmine::Plugin.register :lgdis do
   # トップメニュー/ホームの削除
   Redmine::MenuManager.map :top_menu do |menu|
     menu.delete :home
+    menu.delete :help
+    menu.push :help, SETTINGS["manual_url"], :last => true
   end
 
   # トップメニュー/アカウント登録の削除
