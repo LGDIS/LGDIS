@@ -68,7 +68,14 @@ Redmine::Plugin.register :lgdis do
   # トップメニュー/マニュアルの削除・上書き
   Redmine::MenuManager.map :top_menu do |menu|
     menu.delete :help
-    menu.push :help, SETTINGS["manual_url"], :last => true
+    
+    manual_url = SETTINGS["manual_url"]
+    unless /\Ahttp/ =~ manual_url
+      prefix = ENV['RAILS_RELATIVE_URL_ROOT'].to_s
+      manual_url = prefix + manual_url
+    end
+    
+    menu.push :help, manual_url, :last => true
   end
 
   # トップメニュー/アカウント登録の削除
