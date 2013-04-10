@@ -93,7 +93,12 @@ class DeliveryHistory < ActiveRecord::Base
   # ==== Return
   # ==== Raise
   def for_commons
-    edition_mng = EditionManagement.find_by_issue_id self.issue.id
+    if ((DST_LIST['general_info_ids'].include?(self.issue.tracker_id)) && [COMMONS_ID].include?(self.delivery_place_id)) ||
+       ([U_MAIL_DCM_ID, U_MAIL_AU_ID, U_MAIL_SB_ID].include?(self.delivery_place_id))
+    	edition_mng = EditionManagement.find_by_issue_id_and_delivery_place_id(self.issue.id, self.delivery_place_id)
+    else
+    	edition_mng = EditionManagement.find_by_project_id_and_tracker_id_and_delivery_place_id(self.issue.project_id, self.issue.tracker_id, self.delivery_place_id)
+    end
 
     if ([SMTP_0_ID, SMTP_1_ID, SMTP_2_ID, SMTP_3_ID, SMTP_AUTH_ID, ATOM_ID,
          U_MAIL_DCM_ID, U_MAIL_SB_ID, U_MAIL_AU_ID].include?(self.delivery_place_id)) && self.mail_subject.blank?
