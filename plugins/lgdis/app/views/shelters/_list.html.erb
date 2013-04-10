@@ -19,15 +19,15 @@
     <% shelters.each do |shelter| %>
       <tr class="<%= cycle("even", "odd") -%>">
         <%= hidden_field_tag "shelters[#{shelter.id}][updated_by]", User.current.login %>
-        <td style="text-align: center;">
+        <td style="text-align: left;">
           <a href=<%= edit_project_shelter_path(@project, shelter) %> >
             <%= shelter.name %>
           </a>
         </td>
-        <td style="text-align: center;"><%= @shelter_const["shelter_type"][shelter.shelter_type] %></td>
-        <td style="text-align: center;"><%= @areas.select{|v| v.area_code == shelter.area}.first.try(:name) %></td>
-        <td style="text-align: center;"><%= shelter.phone %></td>
-        <td style="text-align: center;"><%= shelter.manager_name %></td>
+        <td style="text-align: left;"><%= @shelter_const["shelter_type"][shelter.shelter_type] %></td>
+        <td style="text-align: left;"><%= @areas.select{|v| v.area_code == shelter.area}.first.try(:name) %></td>
+        <td style="text-align: left;"><%= shelter.phone %></td>
+        <td style="text-align: left;"><%= shelter.manager_name %></td>
         <td style="text-align: center;">
           <%= select_tag "shelters[#{shelter.id}][shelter_sort]", options_for_select(@shelter_const["shelter_sort"].invert,
             shelter.shelter_sort), {:include_blank => true, :disabled => @disabled} %>
@@ -40,10 +40,10 @@
           <%= text_field_tag "shelters[#{shelter.id}][closed_at]",format_time_for_input(shelter, :closed_at), :size => "16", :disabled => @disabled %>
           <%= calendar_with_time_for("shelters_#{shelter.id}_closed_at") %>
         </td>
-        <td style="text-align: right;"><%= shelter.capacity %></td>
-        <td style="text-align: right;"><%= shelter.head_count %></td>
-        <td style="text-align: center;"><%= shelter.created_by %></td>
-        <td style="text-align: center;"><%= format_date(shelter.created_at) %></td>
+        <td style="text-align: left;"><%= shelter.capacity %></td>
+        <td style="text-align: left;"><%= shelter.head_count %></td>
+        <td style="text-align: left;"><%= shelter.created_by %></td>
+        <td style="text-align: left;"><%= format_date(shelter.created_at) %></td>
       </tr>
     <% end if shelters.present? %>
   </tbody>
