@@ -1,7 +1,16 @@
 <p>
-  <label><%= l('external_auth.field_enable') %>:</label>
-  <%= check_box_tag("settings[enable_external_auth]", true, (@settings.present? && @settings[:enable_external_auth])) %>
+  <label><%= l('external_auth.field_enable_google') %>:</label>
+  <%= check_box_tag("settings[enable_external_auth_google]", true, (@settings.present? && @settings[:enable_external_auth_google])) %>
 </p>
+<p>
+  <label><%= l('external_auth.field_enable_twitter') %>:</label>
+  <%= check_box_tag("settings[enable_external_auth_twitter]", true, (@settings.present? && @settings[:enable_external_auth_twitter])) %>
+</p>
+<p>
+  <label><%= l('external_auth.field_enable_facebook') %>:</label>
+  <%= check_box_tag("settings[enable_external_auth_facebook]", true, (@settings.present? && @settings[:enable_external_auth_facebook])) %>
+</p>
+
 <p>
   <label><%= l('auto_launch_project.field_term') %>:</label>
   <%= text_field_tag("settings[term_auto_launch_project]", @settings[:term_auto_launch_project]) %>

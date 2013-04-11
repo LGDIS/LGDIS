@@ -31,11 +31,17 @@ ja:
 
   # 認証
   external_auth:
-    field_enable: 'OpenID(Google)/OAuth(Twitter,facebook)/SAMLを有効にする'
+    field_enable_google: 'Googleアカウントでログイン機能を有効にする'
+    field_enable_twitter: 'Twitterアカウントでログイン機能を有効にする'
+    field_enable_facebook: 'Facebookアカウントでログイン機能を有効にする'
     sign_in_via: '%{kind}アカウントでログイン'
     result:
       success: '%{kind} アカウントによる個人認証に成功しました。'
       failure: '%{kind} アカウントによる個人認証に失敗しました。'
+  # 認証
+  google: 'Google'
+  teitter: 'Twitter'
+  facebook: 'Facebook'
 
   # 認証(redmine設定値の上書き)
   lgdis_notice_account_register_done: 仮登録メールを送信しました。メールの内容をご確認ください。

@@ -31,7 +31,7 @@ module Lgdis
       # ExternalAuthDisabled :: プラグイン設定で機能が無効化されているとき
       def find_for_open_id(access_token, signed_in_resource=nil)
         raise InvalidAuthProvider, "illegal authorizer: #{access_token.provider}" unless access_token.provider == 'google'
-        if !(Setting.plugin_lgdis.present? && Setting.plugin_lgdis[:enable_external_auth])
+        if !(Setting.plugin_lgdis.present? && Setting.plugin_lgdis[:enable_external_auth_google])
           raise ExternalAuthDisabled, "currently disabled sign-in via #{access_token.provider}"
         end
         user = self.find_or_initialize_by_provider_and_uid(GOOGLE_IDENTIFIER, access_token.uid)
@@ -49,7 +49,7 @@ module Lgdis
       # InvalidAuthProvider :: 想定しないプロバイダによる認可のとき
       # ExternalAuthDisabled :: プラグイン設定で機能が無効化されているとき
       def find_for_oauth(access_token, signed_in_resource=nil)
-        if !(Setting.plugin_lgdis.present? && Setting.plugin_lgdis[:enable_external_auth])
+        if !(Setting.plugin_lgdis.present? && (Setting.plugin_lgdis[:enable_external_auth_twitter] || Setting.plugin_lgdis[:enable_external_auth_facebook]))
           raise ExternalAuthDisabled, "currently disabled sign-in via #{access_token.provider}"
         end
         case access_token.provider
