@@ -5,6 +5,9 @@
 # 実行環境の指定 :: -e production
 
 require 'cgi'
+
+include ApplicationHelper
+
 ATOM = 9 # RSS配信(Atom)のdelivery_place_id
 
 class Batches::LinkDisasterPortal
@@ -120,7 +123,7 @@ class Batches::LinkDisasterPortal
       
       # fileに書き出し
       output_dir_path  = Pathname(DST_LIST["atom"]["output_dir"])
-      output_file_name = "Tracker#{tracker_id}-#{Time.now.strftime("%Y%m%d_%H%M%S")}-geoatom.xml" # TODO: ファイル名未決定
+      output_file_name = format_message(DST_LIST["atom"]["output_filename"], {:trackerid => tracker_id, :date => Time.now.strftime("%Y%m%d%H%M%S")})
       
       FileUtils::mkdir_p(output_dir_path) unless File.exist?(output_dir_path) # 出力先ディレクトリを作成
       File.binwrite(output_dir_path.join(output_file_name.force_encoding("UTF-8")), CGI::unescapeHTML(doc.to_s)) # &amp;→& の為unescapeする
