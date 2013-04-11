@@ -30,11 +30,11 @@ delivery_job_class:
   - &delivery_job_class_5 "ExtOut::AtomRequestJob"
 
 to: # 配送先メールアドレス、メーリングリスト
-  - &to_err testpcdisads@yahoo.co.jp # Resqueジョブエラー通知
-  - &to_1   testpcdisads@yahoo.co.jp # 自治体職員向けメール（０号配備）
-  - &to_2   testpcdisads@yahoo.co.jp # 自治体職員向けメール（１号配備）
-  - &to_3   testpcdisads@gmail.com # 自治体職員向けメール（２号配備）
-  - &to_4   testpcdisads@gmail.com # 自治体職員向けメール（３号配備）
+  - &to_err apl@localhost.localdomain # Resqueジョブエラー通知
+  - &to_1   apl@localhost.localdomain # 自治体職員向けメール（０号配備）
+  - &to_2   to2@localhost.localdomain # 自治体職員向けメール（１号配備）
+  - &to_3   to3@localhost.localdomain # 自治体職員向けメール（２号配備）
+  - &to_4   to4@localhost.localdomain # 自治体職員向けメール（３号配備）
   - &to_5   to5@localhost.localdomain # まちcomi向けメール
 
 from: # 送信元メールアドレス、メーリングリスト
@@ -980,7 +980,7 @@ commons_connection:
   #sha centos_ssh: commons_endpoint: https://localhost:443/commons/subscriber/soap/testservice.example.com/
   username: user1@example.com
   password: password
-  wsdl: /home/apl/develop/LGDIS/plugins/lgdis/lib/lgdis/ext_out/wsdl/MQService.wsdl
+  wsdl: /home/rails/LGDIS/plugins/lgdis/lib/lgdis/ext_out/wsdl/MQService.wsdl
   namespace: http://soap.publiccommons.ne.jp/
   ssl_ca_cert: /opt/fix/SOAPdev/etc/pki/CA/cacert.pem
 
