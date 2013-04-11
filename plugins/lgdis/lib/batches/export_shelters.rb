@@ -4,7 +4,7 @@
 
 require 'csv'
 
-class Batches::ExportShelters < ActiveRecord::Base
+class Batches::ExportShelters
 
   FILE_PREFIX = "_xA9z94_"
   EXPORT_TARGET = "#{Rails.root}/public/exportdata/"
@@ -16,11 +16,11 @@ class Batches::ExportShelters < ActiveRecord::Base
       Dir::mkdir(EXPORT_TARGET) unless File.exist?(EXPORT_TARGET)
       Shelter.transaction do
         CSV.open(output_file, "w", csv_option) do |csv_writer|
-          Shelter.order(:id).all.each do |row|
+          Shelter.scoped.order(:id).all.each do |row| # 動作種別を問わず全件出力する
             csv_writer << ActiveSupport::JSON.decode(row.to_json)["shelter"]
           end
         end
-        rows_count = Shelter.count
+        rows_count = Shelter.scoped.count
         puts " exported.(#{rows_count} rows)"
       end
     rescue => e
