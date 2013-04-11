@@ -16,7 +16,7 @@
 <!--         <td style="text-align: center;"> -->
 <!--           <%= @sections.select{|v| v.section_code == evacuation_advisory.section}.first.try(:name) %> -->
 <!--         </td> -->
-        <td style="text-align: center;">
+        <td style="text-align: left;">
           <a href=<%= edit_project_evacuation_advisory_path(@project, evacuation_advisory) %> >
             <%= evacuation_advisory.area %>
           </a>
@@ -35,8 +35,8 @@
           <%= text_field_tag "evacuation_advisories[#{evacuation_advisory.id}][lifted_at]", format_time_for_input(evacuation_advisory, :lifted_at), :size => "16", :disabled => @disabled %>
           <%= calendar_with_time_for("evacuation_advisories_#{evacuation_advisory.id}_lifted_at") %>
         </td>
-        <td style="text-align: center;"><%= evacuation_advisory.households %></td>
-        <td style="text-align: center;"><%= evacuation_advisory.head_count%></td>
+        <td style="text-align: left;"><%= evacuation_advisory.households %></td>
+        <td style="text-align: left;"><%= evacuation_advisory.head_count%></td>
       </tr>
     <% end if evacuation_advisories.present? %>
   </tbody>
