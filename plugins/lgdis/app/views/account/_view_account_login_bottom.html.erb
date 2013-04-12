@@ -1,5 +1,4 @@
-<% external_auth_enables = [Setting.plugin_lgdis[:enable_external_auth_google], Setting.plugin_lgdis[:enable_external_auth_twitter],Setting.plugin_lgdis[:enable_external_auth_facebook]].count("true") %>
-<% if Setting.plugin_lgdis.present? && external_auth_enables > 0 %>
+<% if Setting.plugin_lgdis.present? && (external_auth_enables = [Setting.plugin_lgdis[:enable_external_auth_google], Setting.plugin_lgdis[:enable_external_auth_twitter],Setting.plugin_lgdis[:enable_external_auth_facebook]].count("true")) > 0 %>
 <div id="login-form2">
   <table>
     <tr>
