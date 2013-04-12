@@ -217,6 +217,14 @@ auto_destination:
   3:  # ３号配備
     [*smtp_3, *twitter, *facebook, *urgent_mail_docomo]
 
+# 自動配信除外設定
+# JMAとJ-Alertから送信されてくる同じXMLの二重配信さけるための措置
+# 記載例
+# auto_destination_out:
+#  - 除外トラッカーID
+auto_destination_out:
+ - 78
+
 # 外部配信先設定
 # ロール、トラッカーが追加削除された際は修正必要
 # ロールのトラッカーに紐付く外部配信先を設定
@@ -367,14 +375,14 @@ destination:
       *delivery_place_group_report
     71: # 被災者からの要望（食料）
       *delivery_place_group_report
-    72: # バスの運行に関する情報
-      *delivery_place_group_report
-    73: # 航空路の運行に関する情報
-      *delivery_place_group_report
-    74: # 船舶路の運行に関する情報
-      *delivery_place_group_report
-    75: # その他公共交通の運行に関する情報
-      *delivery_place_group_report
+    72: # 【広報-交通】バスの運行に関する情報
+      *delivery_place_group_all
+    73: # 【広報-交通】航空路の運行に関する情報
+      *delivery_place_group_all
+    74: # 【広報-交通】船舶路の運行に関する情報
+      *delivery_place_group_all
+    75: # 【広報-交通】その他公共交通の運行に関する情報
+      *delivery_place_group_all
     77: # 【システム】J-ALERT 発信（内閣官房）
       *delivery_place_group_report
     78: # 【システム】J-ALERT 発信（気象庁）
