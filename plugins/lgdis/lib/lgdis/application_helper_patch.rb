@@ -63,6 +63,22 @@ module Lgdis
         return ""
       end
 
+      # 文字列中の変数部分を置換する
+      # 例) replace_paramsに{:user_name => "maria"}を指定すると、文字列"my name is ${user_name}."から
+      #    "my name is maria."を作成して返却する。
+      # ==== Args
+      # _message_ :: 対象文字列(String)
+      # _replace_params_ :: 流し込むキーと値の組み合わせ(Hash)
+      # ==== Return
+      # 置換結果(String)
+      # ==== Raise
+      def format_message(message, replace_params = {})
+        replace_params.each do |key, value|
+          message.gsub!("${#{key}}", value.to_s)
+        end
+        return message
+      end
+
     end
 
   end

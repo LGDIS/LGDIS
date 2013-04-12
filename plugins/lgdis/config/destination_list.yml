@@ -30,11 +30,11 @@ delivery_job_class:
   - &delivery_job_class_5 "ExtOut::AtomRequestJob"
 
 to: # 配送先メールアドレス、メーリングリスト
-  - &to_err testpcdisads@yahoo.co.jp # Resqueジョブエラー通知
-  - &to_1   testpcdisads@yahoo.co.jp # 自治体職員向けメール（０号配備）
-  - &to_2   testpcdisads@yahoo.co.jp # 自治体職員向けメール（１号配備）
-  - &to_3   testpcdisads@gmail.com # 自治体職員向けメール（２号配備）
-  - &to_4   testpcdisads@gmail.com # 自治体職員向けメール（３号配備）
+  - &to_err apl@localhost.localdomain # Resqueジョブエラー通知
+  - &to_1   apl@localhost.localdomain # 自治体職員向けメール（０号配備）
+  - &to_2   to2@localhost.localdomain # 自治体職員向けメール（１号配備）
+  - &to_3   to3@localhost.localdomain # 自治体職員向けメール（２号配備）
+  - &to_4   to4@localhost.localdomain # 自治体職員向けメール（３号配備）
   - &to_5   to5@localhost.localdomain # まちcomi向けメール
 
 from: # 送信元メールアドレス、メーリングリスト
@@ -276,11 +276,11 @@ destination:
     15: # 【被害報告】その他
       *delivery_place_group_report
     16: # 【システム】災害対策本部設置
-      *delivery_place_group_report
+      *delivery_place_group_all
     17: # 【システム】被害要約（概況）
       *delivery_place_group_report
     18: # 【システム】被害要約（状況）
-      *delivery_place_group_report
+      *delivery_place_group_all
     20: # 【広報-交通】道路交通規制に関する情報
       *delivery_place_group_all
     21: # 【広報-交通】道路渋滞に関する情報
@@ -398,29 +398,29 @@ destination:
     2: # 避難所情報
       *delivery_place_group_all
     3: # 気象環境変化
-      *delivery_place_group_all
+      *delivery_place_group_report
     7: # 人的被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     8: # 住家建物被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     9: # 道路被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     10: # 橋梁被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     11: # 上水道被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     12: # 下水道被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     13: # ガス設備被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     14: # 通信網被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     15: # その他被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     16: # 災害対策本部設置報告
       *delivery_place_group_all
     17: # 被害者要約報告(概況)
-      *delivery_place_group_all
+      *delivery_place_group_report
     18: # 被害者要約報告(状況)
       *delivery_place_group_all
     20: # 道路交通規制に関する情報
@@ -432,23 +432,23 @@ destination:
     27: # 道路路面状況に関する情報
       *delivery_place_group_all
     33: # 非住家建物被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     34: # 高等学校被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     35: # 中学校被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     36: # 小学校被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     37: # 幼稚園被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     38: # 保育所被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     39: # 災害弱者関連施設被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     40: # 医療施設被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     41: # 災害重要施設被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     42: # 鉄道の運行に関する情報
       *delivery_place_group_all
     43: # 上水道に関する情報
@@ -507,29 +507,29 @@ destination:
     2: # 避難所情報
       *delivery_place_group_all
     3: # 気象環境変化
-      *delivery_place_group_all
+      *delivery_place_group_report
     7: # 人的被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     8: # 住家建物被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     9: # 道路被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     10: # 橋梁被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     11: # 上水道被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     12: # 下水道被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     13: # ガス設備被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     14: # 通信網被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     15: # その他被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     16: # 災害対策本部設置報告
       *delivery_place_group_all
     17: # 被害者要約報告(概況)
-      *delivery_place_group_all
+      *delivery_place_group_report
     18: # 被害者要約報告(状況)
       *delivery_place_group_all
     20: # 道路交通規制に関する情報
@@ -541,23 +541,23 @@ destination:
     27: # 道路路面状況に関する情報
       *delivery_place_group_all
     33: # 非住家建物被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     34: # 高等学校被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     35: # 中学校被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     36: # 小学校被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     37: # 幼稚園被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     38: # 保育所被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     39: # 災害弱者関連施設被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     40: # 医療施設被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     41: # 災害重要施設被害報告
-      *delivery_place_group_all
+      *delivery_place_group_report
     42: # 鉄道の運行に関する情報
       *delivery_place_group_all
     43: # 上水道に関する情報
@@ -661,25 +661,7 @@ commons_xml:
   0: commons_urgent_mail.xml                     # 緊急速報メール
   1: commons_evacuation.xml                      # 避難勧告・指示
   2: commons_shelter.xml                         # 避難所情報
-  7: commons_damage_information.xml              # 人的被害報告
-  8: commons_damage_information.xml              # 住家建物被害報告
-  9: commons_damage_information.xml              # 道路被害報告
-  10: commons_damage_information.xml             # 橋梁被害報告
-  11: commons_damage_information.xml             # 上水道被害報告
-  12: commons_damage_information.xml             # 下水道被害報告
-  13: commons_damage_information.xml             # ガス設備被害報告
-  14: commons_damage_information.xml             # 通信網被害報告
-  15: commons_damage_information.xml             # その他被害報告
   18: commons_damage_information.xml             # 被害要約報告(状況)
-  33: commons_damage_information.xml             # 非住家建物被害報告
-  34: commons_damage_information.xml             # 高等学校被害報告
-  35: commons_damage_information.xml             # 中学校被害報告
-  36: commons_damage_information.xml             # 小学校被害報告
-  37: commons_damage_information.xml             # 幼稚園被害報告
-  38: commons_damage_information.xml             # 保育所被害報告
-  39: commons_damage_information.xml             # 災害弱者関連施設被害報告
-  40: commons_damage_information.xml             # 医療施設被害報告
-  41: commons_damage_information.xml             # 災害重要施設被害報告
   16: commons_disaster_response_headquarters.xml # 災害対策本部設置報告
   20: commons_event_announcements.xml            # 道路通行規制に関する情報
   21: commons_event_announcements.xml            # 道路渋滞に関する情報
@@ -711,6 +693,7 @@ commons_xml:
   64: commons_event_announcements.xml            # ボランティアの支援を受けたい方への情報
   65: commons_event_announcements.xml            # ボランティア活動をしたい方への情報
   66: commons_event_announcements.xml            # 営業店舗に関する情報
+  48: commons_events.xml                         # その他の災害関連情報
 
 # 公共情報コモンズ配信時に使用するタイトル群
 # plugins/lgdis/lib/lgdis/issue_patch.rb で使用
@@ -718,25 +701,7 @@ tracker_title:
   0: 緊急速報メール        # 緊急速報メール
   1: 避難勧告・指示        # 避難勧告・指示
   2: 避難所情報            # 避難所情報
-  7: 被害状況              # 人的被害報告
-  8: 被害状況              # 住家建物被害報告
-  9: 被害状況              # 道路被害報告
-  10: 被害状況             # 橋梁被害報告
-  11: 被害状況             # 上水道被害報告
-  12: 被害状況             # 下水道被害報告
-  13: 被害状況             # ガス設備被害報告
-  14: 被害状況             # 通信網被害報告
-  15: 被害状況             # その他被害報告
   18: 被害状況             # 被害要約報告(状況)
-  33: 被害状況             # 非住家建物被害報告
-  34: 被害状況             # 高等学校被害報告
-  35: 被害状況             # 中学校被害報告
-  36: 被害状況             # 小学校被害報告
-  37: 被害状況             # 幼稚園被害報告
-  38: 被害状況             # 保育所被害報告
-  39: 被害状況             # 災害弱者関連施設被害報告
-  40: 被害状況             # 医療施設被害報告
-  41: 被害状況             # 災害重要施設被害報告
   16: 災害対策本部設置状況 # 災害対策本部設置報告
   20: イベント・お知らせ   # 道路通行規制に関する情報
   21: イベント・お知らせ   # 道路渋滞に関する情報
@@ -768,6 +733,7 @@ tracker_title:
   73: イベント・お知らせ   # 航空路の運行に関する情報
   74: イベント・お知らせ   # 船舶路の運行に関する情報
   75: イベント・お知らせ   # その他公共交通の運行に関する情報
+  48: イベント・お知らせ   # その他の災害関連情報
 
 # 公共情報コモンズ配信（イベント・お知らせ）で使用するカテゴリー群
 # イベント・お知らせのトラッカーが追加、削除された際は修正必要
@@ -899,6 +865,8 @@ general_info_ids:
   - 73 # 航空路の運行に関する情報
   - 74 # 船舶路の運行に関する情報
   - 75 # その他公共交通の運行に関する情報
+events_ids:
+  - 48 # その他の災害関連情報
 
 # ComplementaryInfo(補足情報)に設定が必要なトラッカーID
 # 避難勧告・指示、避難所情報、被害情報 のトラッカーID の配列
@@ -908,25 +876,7 @@ general_info_ids:
 comp_info_trackers:
   - 1  # 避難勧告・指示
   - 2  # 避難所情報
-  - 7  # 人的被害報告
-  - 8  # 住家建物被害報告
-  - 9  # 道路被害報告
-  - 10 # 橋梁被害報告
-  - 11 # 上水道被害報告
-  - 12 # 下水道被害報告
-  - 13 # ガス設備被害報告
-  - 14 # 通信網被害報告
-  - 15 # その他被害報告
   - 18 # 被害要約報告(状況)
-  - 33 # 非住家建物被害報告
-  - 34 # 高等学校被害報告
-  - 35 # 中学校被害報告
-  - 36 # 小学校被害報告
-  - 37 # 幼稚園被害報告
-  - 38 # 保育所被害報告
-  - 39 # 災害弱者関連施設被害報告
-  - 40 # 医療施設被害報告
-  - 41 # 災害重要施設被害報告
 
 # 公共情報コモンズ外部配信先ID群
 # 公共情報コモンズ配信先ID が追加、削除された際修正必要
@@ -943,26 +893,7 @@ commons_delivery_ids:
 destination_xpath:
   1: 'pcx_ev:EvacuationOrder'          # 避難勧告・指示
   2: 'pcx_sh:Shelter'                  # 避難所情報
-  7: 'pcx_di:DamageInformation'        # 人的被害報告
-  8: 'pcx_di:DamageInformation'        # 住家建物被害報告
-  9: 'pcx_di:DamageInformation'        # 道路被害報告
-  10: 'pcx_di:DamageInformation'       # 橋梁被害報告
-  11: 'pcx_di:DamageInformation'       # 上水道被害報告
-  12: 'pcx_di:DamageInformation'       # 下水道被害報告
-  13: 'pcx_di:DamageInformation'       # ガス設備被害報告
-  14: 'pcx_di:DamageInformation'       # 通信網被害報告
-  15: 'pcx_di:DamageInformation'       # その他被害報告
-  17: 'pcx_di:DamageInformation'       # 被害要約報告(概況)
   18: 'pcx_di:DamageInformation'       # 被害要約報告(状況)
-  33: 'pcx_di:DamageInformation'       # 非住家建物被害報告
-  34: 'pcx_di:DamageInformation'       # 高等学校被害報告
-  35: 'pcx_di:DamageInformation'       # 中学校被害報告
-  36: 'pcx_di:DamageInformation'       # 小学校被害報告
-  37: 'pcx_di:DamageInformation'       # 幼稚園被害報告
-  38: 'pcx_di:DamageInformation'       # 保育所被害報告
-  39: 'pcx_di:DamageInformation'       # 災害弱者関連施設被害報告
-  40: 'pcx_di:DamageInformation'       # 医療施設被害報告
-  41: 'pcx_di:DamageInformation'       # 災害重要施設被害報告
   16: 'pcx_ah:AntidisasterHeadquarter' # 災害対策本部設置報告
   20: 'pcx_gi:GeneralInformation'      # 道路通行規制に関する情報
   21: 'pcx_gi:GeneralInformation'      # 道路渋滞に関する情報
@@ -994,6 +925,7 @@ destination_xpath:
   64: 'pcx_gi:GeneralInformation'      # ボランティアの支援を受けたい方への情報
   65: 'pcx_gi:GeneralInformation'      # ボランティア活動をしたい方への情報
   66: 'pcx_gi:GeneralInformation'      # 営業店舗に関する情報
+  48: 'pcx_en:Event'                   # その他の災害関連情報
 
 # 公共情報コモンズ配信 ComplementaryInfo(補足情報)設定時xpath
 # 避難勧告・指示、避難所情報、被害情報 時のみ設定
@@ -1002,26 +934,7 @@ destination_xpath:
 comp_info_xpath:
   1: 'pcx_ev:ComplementaryInfo'  # 避難勧告・指示
   2: 'pcx_sh:ComplementaryInfo'  # 避難所情報
-  7: 'pcx_di:ComplementaryInfo'  # 人的被害報告
-  8: 'pcx_di:ComplementaryInfo'  # 住家建物被害報告
-  9: 'pcx_di:ComplementaryInfo'  # 道路被害報告
-  10: 'pcx_di:ComplementaryInfo' # 橋梁被害報告
-  11: 'pcx_di:ComplementaryInfo' # 上水道被害報告
-  12: 'pcx_di:ComplementaryInfo' # 下水道被害報告
-  13: 'pcx_di:ComplementaryInfo' # ガス設備被害報告
-  14: 'pcx_di:ComplementaryInfo' # 通信網被害報告
-  15: 'pcx_di:ComplementaryInfo' # その他被害報告
-  17: 'pcx_di:ComplementaryInfo' # 被害要約報告(概況)
   18: 'pcx_di:ComplementaryInfo' # 被害要約報告(状況)
-  33: 'pcx_di:ComplementaryInfo' # 非住家建物被害報告
-  34: 'pcx_di:ComplementaryInfo' # 高等学校被害報告
-  35: 'pcx_di:ComplementaryInfo' # 中学校被害報告
-  36: 'pcx_di:ComplementaryInfo' # 小学校被害報告
-  37: 'pcx_di:ComplementaryInfo' # 幼稚園被害報告
-  38: 'pcx_di:ComplementaryInfo' # 保育所被害報告
-  39: 'pcx_di:ComplementaryInfo' # 災害弱者関連施設被害報告
-  40: 'pcx_di:ComplementaryInfo' # 医療施設被害報告
-  41: 'pcx_di:ComplementaryInfo' # 災害重要施設被害報告
 
 # 公共コモンズ配信用XML 設定値
 # plugins/lgdis/lib/lgdis/issue_patch.rb で使用
@@ -1072,15 +985,19 @@ commons_connection:
   ssl_ca_cert: /opt/fix/SOAPdev/etc/pki/CA/cacert.pem
 
 # 災害情報ポータル連携
-# Atom出力先ディレクトリ設定
+# Atom出力先設定
 atom:
+  # 出力ディレクトリ名
   output_dir: ./public/atom
+  # 出力ファイル名
+  # ※文字列中の「${trackerid}」は該当のトラッカーIDに、「${date}」は作成年月日時分秒(YYYYMMDDHHMMSS)に置換されます
+  output_filename: "track_${trackerid}.rss"
 
 # 災害情報ポータルURL
 disaster_portal_url: "下記リンクより、災害情報を確認して下さい。\n http://www.jice.or.jp/sinsai/sinsai_result.php"
 
 # *号配備メールに添付するLGDSF URL 設定
-lgdsf_url: "下記リンクより、位置情報、参集場所の報告を行ってください。\n http://203.138.187.89/LGDSF/staffs/send/"
+lgdsf_url: "下記リンクより、位置情報、参集場所の報告を行ってください。\n http://XXX.XXX.XXX.XXX/LGDSF/staffs/send/"
 
 # 外部出力
 ext_out:

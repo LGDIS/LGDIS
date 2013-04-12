@@ -320,13 +320,13 @@ class EvacuationAdvisory < ActiveRecord::Base
 
   # 発令区分の遷移履歴を更新する
   # ==== Args
-  # _target_selves_ :: 更新対象
+  # _project_ :: Projectオブジェクト
   # ==== Return
   # 公共コモンズ用チケットの説明フィールドに入力する文言
   # ==== Raise
-  def self.update_sort_criteria_history(target_selves)
+  def self.update_sort_criteria_history(project)
     histories = []
-    target_selves.each do |eva|
+    EvacuationAdvisory.mode_in(project).order("identifier ASC").each do |eva|
       # 公共コモンズ用の発令区分と発令解除区分を決定
       eva.sort_criteria, eva.issueorlift = EVACUATIONADVISORY_MAP["sort_criteria_map"][eva.previous_sort_criteria || SORT_ISSUE_NONE][eva.current_sort_criteria]
       # 後続処理で登録するチケットの説明文を作成
@@ -349,9 +349,9 @@ class EvacuationAdvisory < ActiveRecord::Base
     case
     when [nil, SORT_ISSUE_NONE].include?(previous_sort_criteria) && current_sort_criteria != SORT_ISSUE_NONE
       result =  [area, CONST["current_sort_criteria"][current_sort_criteria],  "発令"]
-    when previous_sort_criteria != SORT_ISSUE_NONE && current_sort_criteria == SORT_ISSUE_NONE
+    when previous_sort_criteria && previous_sort_criteria != SORT_ISSUE_NONE && current_sort_criteria == SORT_ISSUE_NONE
       result =  [area, CONST["current_sort_criteria"][previous_sort_criteria], "解除"]
-    when previous_sort_criteria != SORT_ISSUE_NONE && previous_sort_criteria == current_sort_criteria
+    when previous_sort_criteria && previous_sort_criteria != SORT_ISSUE_NONE && previous_sort_criteria == current_sort_criteria
       result =  [area, CONST["current_sort_criteria"][current_sort_criteria],  "継続"]
     when previous_sort_criteria == SORT_ISSUE_NONE && previous_sort_criteria == current_sort_criteria
       result = nil
