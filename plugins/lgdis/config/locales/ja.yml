@@ -130,9 +130,9 @@ ja:
   button_reject: 配信却下
 
   notice_delivery_request_successful: 配信要求を行いました。
-  notice_delivery_request_reject: 配信要求を却下しました。
+  notice_delivery_request_reject: 配信要求を取り消しました。
   notice_delivery_request_failed: 配信要求に失敗しました。
-  notice_delivery_successful: 配信を行いました。
+  notice_delivery_successful: 配信要求を許可しました。
   notice_delivery_unselected: 配信先が選択されていません。
   notice_delivery_failed: 配信に失敗しました。
 
