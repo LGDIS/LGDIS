@@ -89,6 +89,8 @@ module Lgdis
       issue = context[:issue]
       raise "配備番号が未設定です" if (auto_target = context[:params][:issue][:send_target]).blank?
 
+      return if DST_LIST['auto_destination_out'].include?(issue.tracker_id) 
+
       place_id_ary = []
       (DST_LIST['auto_destination'][auto_target.to_i] || {}).each do |destination|
          place_id_ary.push destination['id']
