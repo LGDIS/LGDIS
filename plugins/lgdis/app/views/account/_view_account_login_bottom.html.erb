@@ -1,17 +1,23 @@
-<% if Setting.plugin_lgdis.present? && Setting.plugin_lgdis[:enable_external_auth] %>
+<% if Setting.plugin_lgdis.present? && (external_auth_enables = [Setting.plugin_lgdis[:enable_external_auth_google], Setting.plugin_lgdis[:enable_external_auth_twitter],Setting.plugin_lgdis[:enable_external_auth_facebook]].count("true")) > 0 %>
 <div id="login-form2">
   <table>
     <tr>
-      <th colspan="3">普段お使いのアカウントでログインをされる場合はこちら</th>
+      <th colspan="<%= external_auth_enables %>">普段お使いのアカウントでログインをされる場合はこちら</th>
     </tr>
     <tr>
       <td></td>
     </tr>
     <tr>
       <% prefix = ENV['RAILS_RELATIVE_URL_ROOT'].to_s %>
+      <% if Setting.plugin_lgdis[:enable_external_auth_google] %>
       <td><%= link_to image_tag('/plugin_assets/lgdis/images/google-16x16.png', :alt => l('external_auth.sign_in_via', :kind => 'Google'), :size => '48x48'), prefix + '/auth/google' %></td>
+      <% end %>
+      <% if Setting.plugin_lgdis[:enable_external_auth_twitter] %>
       <td><%= link_to image_tag('/plugin_assets/lgdis/images/twitter-16x16.png', :alt => l('external_auth.sign_in_via', :kind => 'Twitter'), :size => '48x48'), prefix + '/auth/twitter' %></td>
+      <% end %>
+      <% if Setting.plugin_lgdis[:enable_external_auth_facebook] %>
       <td><%= link_to image_tag('/plugin_assets/lgdis/images/facebook-16x16.png', :alt => l('external_auth.sign_in_via', :kind => 'Facebook'), :size => '48x48'), prefix + '/auth/facebook' %></td>
+      <% end %>
       <!-- <td><%= link_to image_tag('/plugin_assets/lgdis/images/openam-16x16.png', :alt => l('external_auth.sign_in_via', :kind => 'OpenAM')), prefix + '/auth/openam' %></td> -->
     </tr>
   </table>
