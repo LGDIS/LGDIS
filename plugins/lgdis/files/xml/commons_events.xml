@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<edxlde:EDXLDistribution
+	xmlns:pcx_en="http://xml.publiccommons.ne.jp/pcxml1/body/event3"
+	xmlns:pcx_ev="http://xml.publiccommons.ne.jp/pcxml1/body/evacuation3"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:edxlde="urn:oasis:names:tc:emergency:EDXL:DE:1.0"
+	xmlns:commons="http://xml.publiccommons.ne.jp/xml/edxl/"
+	xmlns:pcxml="http://xml.publiccommons.ne.jp/pcxml1/3"
+	xmlns:pcx_eb="http://xml.publiccommons.ne.jp/pcxml1/elementBasis3/"
+	xmlns:pcx_ib="http://xml.publiccommons.ne.jp/pcxml1/informationBasis3/">
+
+	<!-- EDXL 部 -->
+	<edxlde:distributionID></edxlde:distributionID>
+	<edxlde:senderID>"editor.lgdis.city.ishinomaki"</edxlde:senderID><!-- 固定値 -->
+	<edxlde:dateTimeSent></edxlde:dateTimeSent>
+	<edxlde:distributionStatus></edxlde:distributionStatus>
+	<edxlde:distributionType></edxlde:distributionType>
+	<edxlde:combinedConfidentiality></edxlde:combinedConfidentiality>
+
+	<commons:contentObject>
+		<edxlde:contentDescription></edxlde:contentDescription>
+
+		<edxlde:xmlContent>
+			<edxlde:embeddedXMLContent>
+				<Report xmlns="http://xml.publiccommons.ne.jp/pcxml1/3">
+
+					<!-- Control 部 -->
+					<Control>
+						<Title>Event</Title>
+						<edxlde:distributionStatus></edxlde:distributionStatus>
+						<EditorialOffice>
+							<pcx_eb:OrganizationCode></pcx_eb:OrganizationCode>
+							<pcx_eb:OfficeName></pcx_eb:OfficeName>
+							<pcx_eb:OrganizationName></pcx_eb:OrganizationName>
+						</EditorialOffice>
+						<PublishingOffice>
+							<pcx_eb:OfficeInfo>
+								<pcx_eb:OrganizationCode></pcx_eb:OrganizationCode>
+								<pcx_eb:ContactInfo pcx_eb:contactType="phone"></pcx_eb:ContactInfo>
+								<pcx_eb:OfficeName></pcx_eb:OfficeName>
+								<pcx_eb:OfficeNameKana></pcx_eb:OfficeNameKana>
+								<pcx_eb:OfficeLocation>
+									<commons:areaName></commons:areaName>
+								</pcx_eb:OfficeLocation>
+								<pcx_eb:OfficeDomainName></pcx_eb:OfficeDomainName>
+								<pcx_eb:OrganizationName></pcx_eb:OrganizationName>
+							</pcx_eb:OfficeInfo>
+						</PublishingOffice>
+					</Control>
+
+					<!-- Head 部 -->
+					<pcx_ib:Head>
+						<pcx_ib:Title></pcx_ib:Title>
+						<pcx_ib:CreateDateTime></pcx_ib:CreateDateTime>
+						<pcx_ib:FirstCreateDateTime></pcx_ib:FirstCreateDateTime>
+						<pcx_ib:ReportDateTime></pcx_ib:ReportDateTime>
+						<edxlde:distributionID></edxlde:distributionID>
+						<edxlde:distributionType></edxlde:distributionType>
+						<commons:documentRevision></commons:documentRevision>
+						<commons:previousDocumentRevision></commons:previousDocumentRevision>
+						<commons:documentID></commons:documentID>
+						<pcx_ib:Headline>
+							<pcx_ib:Text></pcx_ib:Text>
+							<pcx_ib:Areas>
+								<pcx_ib:Area>
+									<commons:areaName></commons:areaName>
+								</pcx_ib:Area>
+							</pcx_ib:Areas>
+						</pcx_ib:Headline>
+					</pcx_ib:Head>
+				</Report>
+			</edxlde:embeddedXMLContent>
+		</edxlde:xmlContent>
+		
+		<!-- EDXL 部 -->
+		<commons:publishingOfficeName></commons:publishingOfficeName>
+		<commons:publishingOfficeID></commons:publishingOfficeID>
+		<commons:publishingOfficeDomainName></commons:publishingOfficeDomainName>
+		<commons:previousDocumentRevision></commons:previousDocumentRevision>
+		<commons:documentRevision></commons:documentRevision>
+		<commons:documentID></commons:documentID>
+		<commons:category>Event</commons:category>
+
+	</commons:contentObject>
+</edxlde:EDXLDistribution>

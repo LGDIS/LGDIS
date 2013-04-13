@@ -94,6 +94,7 @@ class DeliveryHistory < ActiveRecord::Base
   # ==== Raise
   def for_commons
     if ((DST_LIST['general_info_ids'].include?(self.issue.tracker_id)) && [COMMONS_ID].include?(self.delivery_place_id)) ||
+       ((DST_LIST['events_ids'].include?(self.issue.tracker_id)) && [COMMONS_ID].include?(self.delivery_place_id)) ||
        ([U_MAIL_DCM_ID, U_MAIL_AU_ID, U_MAIL_SB_ID].include?(self.delivery_place_id))
     	edition_mng = EditionManagement.find_by_issue_id_and_delivery_place_id(self.issue.id, self.delivery_place_id)
     else
@@ -150,5 +151,12 @@ class DeliveryHistory < ActiveRecord::Base
         self.issue.disaster_info_type.blank?
       errors.add(:disaster_info_type, "を入力して下さい")
     end
+    
+    if ((DST_LIST['general_info_ids'].include?(self.issue.tracker_id)) || (DST_LIST['events_ids'].include?(self.issue.tracker_id))) && 
+        [COMMONS_ID].include?(self.delivery_place_id) &&
+        self.issue.description.blank?
+      errors.add(:description, "を入力して下さい")
+    end
+    
   end
 end
