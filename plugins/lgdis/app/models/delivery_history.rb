@@ -158,6 +158,7 @@ class DeliveryHistory < ActiveRecord::Base
       errors.add(:description, "を入力して下さい")
     end
     
+    # 公開開始日時未設定の場合に、現在時刻を設定。
     if ([SMTP_0_ID, SMTP_1_ID, SMTP_2_ID, SMTP_3_ID, SMTP_AUTH_ID, TWITTER_ID, FACEBOOK_ID, ATOM_ID].include?(self.delivery_place_id)) && self.opened_at.blank?
 		self.opened_at = Time.now
     end
