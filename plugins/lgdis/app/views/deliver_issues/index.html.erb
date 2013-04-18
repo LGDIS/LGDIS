@@ -15,9 +15,51 @@
       </th>
     </tr>
     <tr>
-      <th style="text-align: left">配信内容 :</th>
+      <th style="text-align: left">情報のタイトル :</th>
+      <th style="text-align: left"><%= @issue.mail_subject %></th>
+    </tr>
+    <tr>
+      <th style="text-align: left">情報の見出し要約文 :</th>
       <th style="text-align: left">
-        <%= text_area_tag 'contents', @summary, {:readonly=>true,:size => "100x30"} %>
+        <%= text_area_tag '', @issue.summary, {:readonly=>true,:size => "100x30"} %>
+      </th>
+    </tr>
+    <tr>
+      <th style="text-align: left">情報の更新種別 :</th>
+      <th style="text-align: left"><%= @issue_const["type_update"][@issue.type_update] %></th>
+    </tr>
+  <% if DST_LIST["general_info_ids"].include?(@issue.tracker_id) %>
+    <tr>
+      <th style="text-align: left">情報の識別区分 :</th>
+      <th style="text-align: left"><%= @issue_const["disaster_info_type"][@issue.disaster_info_type] %></th>
+    </tr>
+  <% end %>
+    <tr>
+      <th style="text-align: left">情報の発表日時 :</th>
+      <th style="text-align: left">
+      <%= format_time(@issue.published_at) %>
+      </th>
+    </tr>
+    <tr>
+      <th style="text-align: left">情報の配信対象地域 :</th>
+      <th style="text-align: left"><%== format_delivered_area %></th>
+    </tr>
+    <tr>
+      <th style="text-align: left">情報の公開開始日時 :</th>
+      <th style="text-align: left">
+      <%= format_time(@issue.opened_at) %>
+      </th>
+    </tr>
+    <tr>
+      <th style="text-align: left">情報の公開終了日時 :</th>
+      <th style="text-align: left">
+      <%= format_time(@issue.closed_at) %>
+      </th>
+    </tr>
+    <tr>
+      <th style="text-align: left">情報の取消時の説明文 :</th>
+      <th style="text-align: left">
+        <%= text_area_tag '', @issue.description_cancel, {:readonly=>true,:size => "100x30"} %>
       </th>
     </tr>
     <tr>
@@ -26,12 +68,24 @@
         <%= format_time(@issue.created_on) %>
       </th>
     </tr>
+    <tr>
+      <th style="text-align: left">要求者 :</th>
+      <th style="text-align: left"><%= User.current.name %></th>
+    </tr>
   <thead>
 </table>
-  <% if check_admin(@issue) %>
-    <%= submit_tag l(:button_allow), :name=>'allow' %>
+  <% if (@delivery_history.status == "reserve" && check_admin(@issue)) %>
+    <input class="sbutton" value="戻る" onclick="history.back()" type="button" />
+  <% elsif check_admin(@issue) %>
+    <%= submit_tag l(:button_allow), :name=>'allow', :confirm => l(:button_delivery_confirm_allow) %>
   <% else %>
-    <input class="sbutton" value="登録" onclick="history.back()" type="button" />
+    <input class="sbutton" value="戻る" onclick="history.back()" type="button" />
   <% end %>
-  <%= submit_tag l(:button_reject), :name=>'reject' %>
+  <% if (@delivery_history.status == "reserve" && check_admin(@issue))%>
+    <%= submit_tag l(:button_cancellation), :name=>'reject', :confirm => l(:button_delivery_confirm_cancellation) %>
+  <% elsif check_admin(@issue) %>
+    <%= submit_tag l(:button_reject), :name=>'reject', :confirm => l(:button_delivery_confirm_reject) %>
+  <% else %>
+    <%= submit_tag l(:button_cancellation), :name=>'reject', :confirm => l(:button_delivery_confirm_cancellation) %>
+  <% end %>
 <% end %>

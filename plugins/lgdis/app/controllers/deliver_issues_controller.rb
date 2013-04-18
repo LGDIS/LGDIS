@@ -9,6 +9,7 @@ class DeliverIssuesController < ApplicationController
     delivery_history_id = params['delivery_history_id'].to_i
     @issue = Issue.find_by_id issue_id
     @delivery_history = DeliveryHistory.find_by_id delivery_history_id
+    @issue_const = Constant::hash_for_table(Issue.table_name)
     # 配信内容作成処理
     contents = @issue.create_summary(@delivery_history.delivery_place_id)
 

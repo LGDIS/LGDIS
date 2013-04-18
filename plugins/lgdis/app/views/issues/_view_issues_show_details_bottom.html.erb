@@ -38,7 +38,6 @@
       </div>
     </div>
 
-    <fieldset class="collapsible"><legend><%= l(:label_commons) %></legend>
 
     <div class="search_condition tabular">
       <div class="splitcontent">
@@ -104,11 +103,10 @@
     <div class="search_condition tabular">
       <div class="splitcontent">
         <div class="splitcontentleft">
-          <%= submit_tag l(:request_delivery) %>
+          <input type='submit'  value='<%= l(:request_delivery) %>' onclick='return confirm("<%= l(:button_delivery_confirm) %>");'/>
         </div>
       </div>
     </div>
-    </fieldset>
   <% end %>
 
 

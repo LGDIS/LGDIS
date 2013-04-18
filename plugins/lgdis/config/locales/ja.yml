@@ -34,6 +34,7 @@ ja:
     field_enable_google: 'Googleアカウントでログイン機能を有効にする'
     field_enable_twitter: 'Twitterアカウントでログイン機能を有効にする'
     field_enable_facebook: 'Facebookアカウントでログイン機能を有効にする'
+    field_enable_openam: 'OpenAMアカウントでログイン機能を有効にする'
     sign_in_via: '%{kind}アカウントでログイン'
     result:
       success: '%{kind} アカウントによる個人認証に成功しました。'
@@ -42,6 +43,7 @@ ja:
   google: 'Google'
   teitter: 'Twitter'
   facebook: 'Facebook'
+  openam: 'OpenAM'
 
   # 認証(redmine設定値の上書き)
   lgdis_notice_account_register_done: 仮登録メールを送信しました。メールの内容をご確認ください。
@@ -128,6 +130,12 @@ ja:
 
   button_allow: 配信許可
   button_reject: 配信却下
+  button_cancellation: 配信取消
+
+  button_delivery_confirm: 配信要求をしてもよろしいですか？
+  button_delivery_confirm_allow: 配信要求を許可してもよろしいですか？
+  button_delivery_confirm_reject: 配信要求を却下してもよろしいですか？
+  button_delivery_confirm_cancellation: 配信を取り消してもよろしいですか？
 
   notice_delivery_request_successful: 配信要求を行いました。
   notice_delivery_request_reject: 配信要求を取り消しました。
@@ -148,7 +156,7 @@ ja:
   delivery_status:
     request: 配信要求中
     done: 配信完了
-    reject: 配信却下
+    reject: 配信取消
     failed: 配信失敗
     runtime: 配信中
 
