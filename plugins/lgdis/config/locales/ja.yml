@@ -41,7 +41,7 @@ ja:
       failure: '%{kind} アカウントによる個人認証に失敗しました。'
   # 認証
   google: 'Google'
-  teitter: 'Twitter'
+  twitter: 'Twitter'
   facebook: 'Facebook'
   openam: 'OpenAM'
 
