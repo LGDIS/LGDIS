@@ -152,7 +152,8 @@ module ExtOut
       # それ以外のコモンズ配信時の版番号管理レコードは、
       # プロジェクトとトラッカーで一意に管理する
       if UGENT_MAIL_PLACE_IDS.include?(delivery_history.delivery_place_id) ||
-         DST_LIST['general_info_ids'].include?(tracker_id)
+         DST_LIST['general_info_ids'].include?(tracker_id) ||
+         DST_LIST['events_ids'].include?(tracker_id)
         edition_mng = EditionManagement.find_by_issue_id_and_delivery_place_id(issue.id, delivery_history.delivery_place_id)
       else
         edition_mng = EditionManagement.find_by_project_id_and_tracker_id_and_delivery_place_id(project_id, tracker_id, delivery_history.delivery_place_id)

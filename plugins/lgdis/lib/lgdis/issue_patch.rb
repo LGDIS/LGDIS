@@ -133,6 +133,10 @@ module Lgdis
               ext_out_target.include?(DST_LIST['delivery_place'][1]['id'].to_s)
             self.xml_body = create_commons_event_body
           end
+          if DST_LIST['events_ids'].include?(self.tracker_id) &&
+              ext_out_target.include?(DST_LIST['delivery_place'][1]['id'].to_s)
+            self.xml_body = create_commons_event_info_body
+          end
           raise ActiveRecord::Rollback unless self.save
 
           error_messages = []
@@ -576,6 +580,24 @@ module Lgdis
         return doc.to_s
       end
 
+      # 公共コモンズ用XML 作成処理(イベントBody部)
+      # ==== Args
+      # ==== Return
+      # _doc_ :: REXML::Document
+      # ==== Raise
+      def create_commons_event_info_body
+        doc =  REXML::Document.new
+        doc.add_element("pcx_en:Event") # root
+
+        doc.elements["//pcx_en:Event"].add_element("pcx_en:Name").add_text("#{self.subject}")
+        doc.elements["//pcx_en:Event"].add_element("pcx_en:Description").add_text("#{self.description}")
+        doc.elements["//pcx_en:Event"].add_element("pcx_en:URL").add_text(
+            "#{self.name_in_custom_field_value(DST_LIST['custom_field_delivery']['related_url'])}"
+            ) if self.name_in_custom_field_value(DST_LIST['custom_field_delivery']['related_url']).present?
+
+        return doc.to_s
+      end
+
       # カスタムフィールドのエリア名取得処理
       # ==== Args
       # _code_ :: エリアコード
@@ -634,7 +656,8 @@ module Lgdis
         # 緊急速報メールか、お知らせ・イベントのトラッカーで更新種別が新規の場合
         # uuid, status, edition_num を新規作成する
         if UGENT_MAIL_PLACE_IDS.include?(delivery_place_id) ||
-           DST_LIST['general_info_ids'].include?(self.tracker_id)
+           DST_LIST['general_info_ids'].include?(self.tracker_id) ||
+           DST_LIST['events_ids'].include?(self.tracker_id)
           status_flag = self.type_update == NEW_STATUS.to_s ? true : false
         end
         # 新規配信許可時、更新種別が新規、緊急速報メールか、お知らせ・イベントのトラッカーの場合、UUID を新規生成
@@ -673,7 +696,8 @@ module Lgdis
       def find_edition_mng(delivery_place_id)
         condition_str = ''
         condition_ary = []
-        if DST_LIST['general_info_ids'].include?(self.tracker_id)
+        if DST_LIST['general_info_ids'].include?(self.tracker_id) ||
+           DST_LIST['events_ids'].include?(self.tracker_id)
           condition_str = 'issue_id = ?'
           condition_ary.push self.id
         else

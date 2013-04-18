@@ -1,0 +1,96 @@
+# ActiveRecord extension to get more from PostgreSQL.
+gem 'pg_power'
+
+# acts_as_paranoid is Active Record (~>3.2) plugin which allows you to
+# hide and restore records without actually deleting them.
+gem 'acts_as_paranoid'
+
+# oauth is a RubyGem for implementing both OAuth clients and servers in Ruby applications.
+gem 'oauth'
+
+# twitter is a Ruby interface to the Twitter API.
+gem 'twitter'
+
+# Koala is a Facebook library for Ruby, supporting the Graph API (including the batch requests and photo uploads),
+# the REST API, realtime updates, test users, and OAuth validation.
+gem 'koala'
+
+# Nokogiri (鋸) is an HTML, XML, SAX, and Reader parser.
+# Among Nokogiri’s many features is the ability to search documents via XPath or CSS3 selectors.
+gem 'nokogiri'
+
+# Resque is a Redis-backed Ruby library for creating background jobs,
+# placing those jobs on multiple queues, and processing them later.
+gem 'resque', :require => 'resque/server'
+
+# TODO
+# resque-scheduler 対応
+# Light weight job scheduling on top of Resque. Adds methods enqueue_at/enqueue_in to schedule jobs in the future.
+# Also supports queueing jobs on a fixed, cron-like schedule.
+# gem 'resque-scheduler'
+
+# meta_search is Allows simple search forms to be created against an AR3
+# model and its associations, has useful view helpers for sort links and
+# multiparameter fields as well.
+gem 'meta_search'
+
+# will_paginate provides a simple API for performing paginated queries with
+# Active Record, DataMapper and Sequel, and includes helpers for rendering
+#  pagination links in Rails, Sinatra and Merb web apps.
+gem 'will_paginate'
+
+# Ruby 1.9.2 compatible soap4r library
+gem 'soap4r-ruby1.9'
+
+# Delicious SOAP for the Ruby community
+gem 'savon'
+
+# A simple universally unique ID generation library.
+gem 'uuidtools'
+
+# A generalized Rack framework for multiple-provider authentication.
+gem 'omniauth'
+
+# OpenID strategy for OmniAuth. Using for Google.
+gem 'omniauth-openid'
+
+# A generic OAuth (1.0/1.0a) strategy for OmniAuth.
+gem 'omniauth-oauth'
+
+# An abstract OAuth2 strategy for OmniAuth. Using for Facebook.
+gem 'omniauth-oauth2'
+
+# A generic SAML strategy for OmniAuth.
+gem 'omniauth-saml', :git => 'https://github.com/ruvr/omniauth-saml.git'
+
+# OmniAuth strategy for Twitter.
+gem 'omniauth-twitter'
+
+# Facebook strategy for OmniAuth.
+gem 'omniauth-facebook'
+
+# jpmobile is Rails plugin for Japanese mobile-phones.
+gem 'jpmobile'
+
+# Iconv is a wrapper class for the UNIX 95 iconv() function family,
+# which translates string between various encoding systems.
+=begin
+platforms :mri_20 do
+  gem "iconv"
+end
+=end
+
+group :development, :test do
+  # Rspec-2 meta-gem that depends on the other components.
+  gem 'rspec'
+
+  # rspec-rails 2 is a testing framework for Rails 3.x and 4.x. 
+  gem 'rspec-rails'
+
+  # factory_girl is a fixtures replacement with a straightforward
+  # definition syntax, support for multiple build strategies (saved
+  # instances, unsaved instances, attribute hashes, and stubbed objects),
+  # and support for multiple factories for the same class (user,
+  # admin_user, and so on), including factory inheritance.
+  gem 'factory_girl_rails'
+end
