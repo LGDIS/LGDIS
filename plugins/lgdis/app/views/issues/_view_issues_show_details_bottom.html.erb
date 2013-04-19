@@ -38,7 +38,6 @@
       </div>
     </div>
 
-    <fieldset class="collapsible"><legend><%= l(:label_commons) %></legend>
 
     <div class="search_condition tabular">
       <div class="splitcontent">
@@ -104,45 +103,44 @@
     <div class="search_condition tabular">
       <div class="splitcontent">
         <div class="splitcontentleft">
-          <%= submit_tag l(:request_delivery) %>
+          <input type='submit'  value='<%= l(:request_delivery) %>' onclick='return confirm("<%= l(:button_delivery_confirm) %>");'/>
         </div>
       </div>
     </div>
-    </fieldset>
   <% end %>
 
 
   <p><strong><label><%= l(:label_delivery_status) %>:</label></strong></p>
   <% if check_permissions(@issue) %>
     <% unless @delivery_histories.blank? %>
+      <table border="1px" cellspacing="0" cellpadding="0">
+    　  <tr align="center" valign="middle">
+          <th>要求日時</th>
+          <th>公開開始日時</th>
+          <th>配信先</th>
+          <th>ステータス</th>
+          <th>コマンド</th>
+        </tr>
       <% @delivery_histories.each do | d_h | %>
-          <div class="table_border">
-          <label><%= tm_fmt(d_h.updated_at) %></label>
-          <label style="position:absolute; left:240px;">
+        <tr align="left" valign="middle">
+          <td><label><%= tm_fmt_delivery(d_h.updated_at) %></label></td>
+          <td><label><%= tm_fmt_delivery(d_h.opened_at) %></label></td>
+          <td>
             <%= DST_LIST['delivery_place'][d_h.delivery_place_id]['name'] %>
-          </label>
-          <label style="position:absolute; left:450px;"><%= l(d_h.status, :scope => "delivery_status") %></label>
-          <% if d_h.status == 'request' || d_h.status == 'failed' %>
-          <label style="position:absolute; left:580px;">
+          </td>
+          <td><%= l(d_h.status, :scope => "delivery_status") %></td>
+          <td>
+            <% if d_h.status == 'request' || d_h.status == 'failed' || d_h.status == 'reserve' %>
             <%= link_to "配信確認", {:controller => "deliver_issues",
                                      :action => "index",
                                      :project_id => @project,
                                      :issue => @issue,
                                      :delivery_history_id=>d_h.id} %>
-          </label>
-          <% end %>
-          </div>
+            <% end %>
+          </td>
+        </tr>
       <% end %>
-    <% end %>
-  <% else %>
-    <% unless @delivery_history.blank? %>
-      <% @delivery_history.each do | d_h | %>
-        <p class="table_border">
-          <%= tm_fmt(d_h.process_date) %>
-          <%= DST_LIST['delivery_place'][d_h.delivery_place_id]['name'] %>
-          <%= l(d_h.status, :scope => "delivery_status") %>
-        </p>
-      <% end %>
+      </table>
     <% end %>
   <% end %>
   <hr />

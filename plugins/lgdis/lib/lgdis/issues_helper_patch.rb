@@ -51,6 +51,10 @@ module Lgdis
       def tm_fmt(time)
         time.strftime("%Y年%m月%d日 %H時%M分%S秒") if time.present?
       end
+      
+      def tm_fmt_delivery(time)
+        time.strftime("%Y/%m/%d %H:%M:%S") if time.present?
+      end
 
       # XML型フィールドの画面表示部生成
       # ==== Args

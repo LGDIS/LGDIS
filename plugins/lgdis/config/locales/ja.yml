@@ -2,7 +2,7 @@ ja:
   ####
   # 共通
   #
-  target_municipality: 石巻市
+  target_municipality: ××市
   label_search_condition_plural: 検索条件
   label_detail: 詳細
   button_new: 新規登録
@@ -34,19 +34,23 @@ ja:
     field_enable_google: 'Googleアカウントでログイン機能を有効にする'
     field_enable_twitter: 'Twitterアカウントでログイン機能を有効にする'
     field_enable_facebook: 'Facebookアカウントでログイン機能を有効にする'
+    field_enable_openam: 'OpenAMアカウントでログイン機能を有効にする'
     sign_in_via: '%{kind}アカウントでログイン'
     result:
       success: '%{kind} アカウントによる個人認証に成功しました。'
       failure: '%{kind} アカウントによる個人認証に失敗しました。'
   # 認証
   google: 'Google'
-  teitter: 'Twitter'
+  twitter: 'Twitter'
   facebook: 'Facebook'
+  openam: 'OpenAM'
 
   # 認証(redmine設定値の上書き)
   lgdis_notice_account_register_done: 仮登録メールを送信しました。メールの内容をご確認ください。
   lgdis_mail_subject_register: 仮登録完了メール
   lgdis_mail_body_register: 本人確認のため、下記URLへにアクセスしアカウントの本登録を完了させて下さい。
+  lgdis_mail_body_done: ××市災害対応管理システムへの仮登録が完了しました。
+  lgdis_mail_body_creater: ××市総務部防災対策課
 
   # カスタムフィールドリスト複数初期値設定
   text_custom_field_default_value_multiple_info: '初期値が複数の場合は、1行に1個ずつ記述してください。'
@@ -75,7 +79,7 @@ ja:
   # 課題管理機能
   #
   label_map: 地図
-  button_xml_view_sampling: 石巻市関連情報のみ
+  button_xml_view_sampling: ××市関連情報のみ
   button_ticket_update: チケットの更新
   button_ticket_delete: チケットの削除
   button_to_deliver: 配信画面へ
@@ -128,6 +132,12 @@ ja:
 
   button_allow: 配信許可
   button_reject: 配信却下
+  button_cancellation: 配信取消
+
+  button_delivery_confirm: 配信要求をしてもよろしいですか？
+  button_delivery_confirm_allow: 配信要求を許可してもよろしいですか？
+  button_delivery_confirm_reject: 配信要求を却下してもよろしいですか？
+  button_delivery_confirm_cancellation: 配信を取り消してもよろしいですか？
 
   notice_delivery_request_successful: 配信要求を行いました。
   notice_delivery_request_reject: 配信要求を取り消しました。
@@ -148,7 +158,7 @@ ja:
   delivery_status:
     request: 配信要求中
     done: 配信完了
-    reject: 配信却下
+    reject: 配信取消
     failed: 配信失敗
     runtime: 配信中
 

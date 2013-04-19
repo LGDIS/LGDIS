@@ -11,6 +11,14 @@
   <%= check_box_tag("settings[enable_external_auth_facebook]", true, (@settings.present? && @settings[:enable_external_auth_facebook])) %>
 </p>
 
+
+<% if false %>
+<p>
+  <label><%= l('external_auth.field_enable_openam') %>:</label>
+  <%= check_box_tag("settings[enable_external_auth_openam]", true, (@settings.present? && @settings[:enable_external_auth_openam] == "true")) %>
+</p>
+<% end %>
+
 <p>
   <label><%= l('auto_launch_project.field_term') %>:</label>
   <%= text_field_tag("settings[term_auto_launch_project]", @settings[:term_auto_launch_project]) %>

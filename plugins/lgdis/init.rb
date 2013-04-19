@@ -121,9 +121,10 @@ Redmine::Plugin.register :lgdis do
 
   # プラグイン設定
   settings :default => {
-    :enable_external_auth_google => true,
-    :enable_external_auth_twitter => true,
-    :enable_external_auth_facebook => true,
+    :enable_external_auth_google => "true",
+    :enable_external_auth_twitter => "true",
+    :enable_external_auth_facebook => "true",
+    :enable_external_auth_openam => "false",
     :term_auto_launch_project => 7,
     :issue_xml_visible => false
   }, :partial => 'settings/lgdis'

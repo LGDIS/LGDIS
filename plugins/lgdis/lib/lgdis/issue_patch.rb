@@ -598,6 +598,20 @@ module Lgdis
         return doc.to_s
       end
 
+      # カスタムフィールドのエリア名取得処理
+      # ==== Args
+      # _code_ :: エリアコード
+      # ==== Return
+      # _area :: エリアコード:エリア名の文字列
+      # ==== Raise
+      def get_area_name(code)
+        areas = IssueCustomField.find_by_id(DST_LIST["custom_field_list"]["area"]["id"]).possible_values
+        areas.each do |area|
+          key, value = area.split(":")
+          return area if key == code
+        end
+      end
+      
       private
 
       # 公共コモンズ用XML 作成処理(エリアメールBody部)
@@ -705,19 +719,6 @@ module Lgdis
         return edition_mng
       end
 
-      # カスタムフィールドのエリア名取得処理
-      # ==== Args
-      # _code_ :: エリアコード
-      # ==== Return
-      # _area :: エリアコード:エリア名の文字列
-      # ==== Raise
-      def get_area_name(code)
-        areas = IssueCustomField.find_by_id(DST_LIST["custom_field_list"]["area"]["id"]).possible_values
-        areas.each do |area|
-          key, value = area.split(":")
-          return area if key == code
-        end
-      end
     end
   end
 end

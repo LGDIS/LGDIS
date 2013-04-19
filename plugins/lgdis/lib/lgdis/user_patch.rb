@@ -76,6 +76,9 @@ module Lgdis
       # ExternalAuthDisabled :: プラグイン設定で機能が無効化されているとき
       def find_for_saml(access_token, signed_in_resource=nil)
         raise "illegal authorizer: #{access_token.provider}" unless access_token.provider == 'openam'
+        if !(Setting.plugin_lgdis.present? && Setting.plugin_lgdis[:enable_external_auth_openam])
+          raise ExternalAuthDisabled, "currently disabled sign-in via #{access_token.provider}"
+        end
         user = self.find_or_initialize_by_provider_and_uid(OPENAM_IDENTIFIER, access_token.uid)
         user.login = access_token.uid
         return user
