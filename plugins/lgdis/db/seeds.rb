@@ -1,26 +1,53 @@
 # encoding: utf-8
-p "lgdis plugin's seed executing..."
-# rake redmine:load_default_data は行われている前提
 
-seeds_dir_path="#{Rails.root}/plugins/lgdis/db/seeds"
+# rake redmine:load_default_data は行われている前提
+puts "lgdis plugin's seed executing..."
+
+def import(target)
+  seeds_dir_path = "#{Rails.root}/plugins/lgdis/db/seeds"
+  puts "importing: #{target}"
+  load("#{seeds_dir_path}/#{target}.rb")
+end
+
 
 # コンスタントテーブル
-load("#{seeds_dir_path}/constants.rb")
+import "constants"
 
 # 地区
-load("#{seeds_dir_path}/areas.rb")
+import "areas"
 
 # カスタムフィールド
-load("#{seeds_dir_path}/custom_fields.rb")
-load("#{seeds_dir_path}/custom_field_list_items.rb")
+import "custom_fields"
+import "custom_field_list_items"
 
 # トラッカー
-load("#{seeds_dir_path}/trackers.rb")
+import "trackers"
 
 # トラッカー <=> カスタムフィールド
-load("#{seeds_dir_path}/custom_fields_trackers.rb")
+import "custom_fields_trackers"
 
 # 各種初期設定
-load("#{seeds_dir_path}/default_settings.rb")
+import "default_settings"
 
-p "finished!"
+# # プロジェクト
+# import "projects"
+
+# # チケットステータス
+# import "issue_statuses"
+
+# # ロール
+# import "roles"
+
+# # グループ
+# import "groups"
+
+# # ワークフロー(ステータス遷移)
+# # TODO: ここに追加する
+
+# # ワークフロー(フィールドに対する権限)
+# # TODO: ここに追加する
+
+# # デフォルトプロジェクトへのグループ設定
+# import "groups_to_projects"
+
+puts "finished!"
