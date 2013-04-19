@@ -1,0 +1,7 @@
+"id","name","is_closed","is_default","position","default_done_ratio"
+1,"新規",False,True,1,
+2,"進行中",False,False,2,
+3,"解決",False,False,3,
+4,"フィードバック",False,False,4,
+5,"終了",True,False,5,
+6,"却下",True,False,6,
