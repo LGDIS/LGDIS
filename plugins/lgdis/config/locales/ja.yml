@@ -161,6 +161,7 @@ ja:
     reject: 配信取消
     failed: 配信失敗
     runtime: 配信中
+    reserve: 配信予定
 
   ####
   # 避難勧告･指示機能

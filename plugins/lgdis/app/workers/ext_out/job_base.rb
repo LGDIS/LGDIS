@@ -46,6 +46,8 @@ module ExtOut
       logger.debug("Processing queue of #{delivery_name} #{test_flag ? "TEST " : ""}at #{start_time}")
 
       begin
+        # 配信ステータスを信中に変更
+        delivery_history.set_runtime_status
         # 外部出力実行
         client = eval("#{@@client_class.to_s}.new")
         client.test_flag = test_flag  # 試験モードフラグ
