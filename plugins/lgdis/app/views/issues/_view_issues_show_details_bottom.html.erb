@@ -24,17 +24,15 @@
     <p><strong><label><%= l(:label_control_plane_settings) %>:</label></strong></p>
     <div class="search_condition tabular">
       <div class="splitcontent">
-        <div class="splitcontentleft">
           <p>
             <label>情報のタイトル</label>
-            <%= text_field_tag 'issue[mail_subject]',@issue.mail_subject %>
+            <%= text_field_tag 'issue[mail_subject]',@issue.mail_subject, {:size => "95"} %>
           </p>
 
           <p>
             <label>情報の見出し要約文</label>
-            <%= text_area_tag 'issue[summary]', @issue.summary, {:size => "20x5"} %>
+            <%= text_area_tag 'issue[summary]', @issue.summary, {:size => "95x5"} %>
           </p>
-        </div>
       </div>
     </div>
 
@@ -111,38 +109,36 @@
 
 
   <p><strong><label><%= l(:label_delivery_status) %>:</label></strong></p>
-  <% if check_permissions(@issue) %>
-    <% unless @delivery_histories.blank? %>
-      <table border="1px" cellspacing="0" cellpadding="0">
-    　  <tr align="center" valign="middle">
-          <th>要求日時</th>
-          <th>公開開始日時</th>
-          <th>配信先</th>
-          <th>ステータス</th>
-          <th>コマンド</th>
-        </tr>
-      <% @delivery_histories.each do | d_h | %>
-        <tr align="left" valign="middle">
-          <td><label><%= tm_fmt_delivery(d_h.updated_at) %></label></td>
-          <td><label><%= tm_fmt_delivery(d_h.opened_at) %></label></td>
-          <td>
+    <% if check_permissions(@issue) %>
+      <% unless @delivery_histories.blank? %>
+        <div class="table_border">
+          <label class="label_border_updated_title">要求日時</label>
+          <label class="label_border_opened_title">公開開始日時</label>
+          <label class="label_border_delivery_place_title">配信先</label>
+          <label class="label_border_status_title">ステータス</label>
+          <label class="label_border_command_title">コマンド</label>
+        </div>
+        <% @delivery_histories.each do | d_h | %>
+        <div class="table_border">
+          <label class="label_border_updated"><%= tm_fmt_delivery(d_h.updated_at) %></label>
+          <label class="label_border_opened"><%= tm_fmt_delivery(d_h.opened_at) %></label>
+          <label class="label_border_delivery_place">
             <%= DST_LIST['delivery_place'][d_h.delivery_place_id]['name'] %>
-          </td>
-          <td><%= l(d_h.status, :scope => "delivery_status") %></td>
-          <td>
-            <% if d_h.status == 'request' || d_h.status == 'failed' || d_h.status == 'reserve' %>
+          </label>
+          <label class="label_border_status"><%= l(d_h.status, :scope => "delivery_status") %></label>
+          <label class="label_border_command">
+            <% if d_h.status == 'request' || d_h.status == 'reserve' %>
             <%= link_to "配信確認", {:controller => "deliver_issues",
                                      :action => "index",
                                      :project_id => @project,
                                      :issue => @issue,
                                      :delivery_history_id=>d_h.id} %>
             <% end %>
-          </td>
-        </tr>
+          </label>
+        </div>
+        <% end %>
       <% end %>
-      </table>
     <% end %>
-  <% end %>
   <hr />
   </div>
 </fieldset>
