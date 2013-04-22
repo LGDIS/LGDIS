@@ -86,6 +86,89 @@ class DeliveryHistory < ActiveRecord::Base
     return deliver_histories
   end
 
+  # コモンズ向け配信か？
+  # ==== Args
+  # ==== Return
+  # true/false
+  # ==== Raise
+  def for_commons?
+    ids = DST_LIST['delivery_place_group_commons'].map{|i| i["id"]}
+    return ids.include?(delivery_place_id)
+  end
+  # 緊急速報メール向け配信か？
+  # ==== Args
+  # ==== Return
+  # true/false
+  # ==== Raise
+  def for_urgent_mail?
+    ids = DST_LIST['delivery_place_group_urgent_mail'].map{|i| i["id"]}
+    return ids.include?(delivery_place_id)
+  end
+  # ATOM(RSS)作成配信か？
+  # ==== Args
+  # ==== Return
+  # true/false
+  # ==== Raise
+  def for_atom?
+    ids = DST_LIST['delivery_place_rss'].map{|i| i["id"]}
+    return ids.include?(delivery_place_id)
+  end
+
+  # resque-schedulerへの配信可否を判定
+  # ==== Args
+  # ==== Return
+  # true/false
+  # ==== Raise
+  def schedulable?
+    case
+    when for_commons? || for_urgent_mail?
+      # コモンズ/緊急速報メールの場合、配信用宮中であれば許可
+      return (status == 'request')
+    when for_atom?
+      # ATOM(RSS)の場合は外部配信対象外なので不可
+      return false
+    else
+      # 上記以外(Twitter/Facebook)の場合、配信要求中であれば許可
+      return (status == 'request')
+    end
+  end
+
+  # 取り消し可否を判定
+  # ==== Args
+  # ==== Return
+  # true/false
+  # ==== Raise
+  def rejectable?
+    case
+    when for_commons? || for_urgent_mail?
+      # コモンズ/緊急速報メールの場合は不可
+      return false
+    when for_atom?
+      # ATOM(RSS)の場合は不可
+      return false
+    else
+      # 上記以外(Twitter/Facebook)の場合、取り消し可能なステータスであれば許可
+      return (status == 'request' || status == 'reserve')
+    end
+  end
+
+  # 配信確認リンク可否を判定
+  # ==== Args
+  # ==== Return
+  # true/false
+  # ==== Raise
+  def allow_delivery?
+    return (status == 'request' || status == 'reserve')
+  end
+
+  # ステータスを「配信中」に変更
+  # ==== Args
+  # ==== Return
+  # ==== Raise
+  def set_runtime_status
+    update_attributes!(status: 'runtime')
+  end
+
   private
 
   # コントロールプレーン部バリデーション処理

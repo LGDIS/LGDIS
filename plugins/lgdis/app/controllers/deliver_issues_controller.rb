@@ -25,7 +25,7 @@ class DeliverIssuesController < ApplicationController
   # ==== Raise
   def allow_delivery
     id        = params[:id].to_i
-    status_to = params[:allow].blank? ? 'reject' : 'runtime'
+    status_to = params[:allow].blank? ? 'reject' : 'reserve'
     issue_id  = params[:issue_id].to_i
 
     delivery_history = DeliveryHistory.find_by_id(id)

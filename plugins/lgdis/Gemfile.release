@@ -23,11 +23,9 @@ gem 'nokogiri'
 # placing those jobs on multiple queues, and processing them later.
 gem 'resque', :require => 'resque/server'
 
-# TODO
-# resque-scheduler 対応
 # Light weight job scheduling on top of Resque. Adds methods enqueue_at/enqueue_in to schedule jobs in the future.
 # Also supports queueing jobs on a fixed, cron-like schedule.
-# gem 'resque-scheduler'
+gem 'resque-scheduler'
 
 # meta_search is Allows simple search forms to be created against an AR3
 # model and its associations, has useful view helpers for sort links and

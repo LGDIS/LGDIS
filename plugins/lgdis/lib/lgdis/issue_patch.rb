@@ -1,6 +1,7 @@
 # encoding: utf-8
 require_dependency 'issue'
-# require 'resque_scheduler'
+require 'resque_scheduler'
+require 'resque_scheduler/server'
 
 module Lgdis
   module IssuePatch
@@ -97,8 +98,8 @@ module Lgdis
       UGENT_MAIL_PLACE_IDS = DST_LIST['delivery_place_group_urgent_mail'].map{|o| o["id"]}
       # ** 号配備メールの外部配信先ID配列
       DEPLOYED_MAIL_PLACE_IDS = DST_LIST['delivery_place_group_deployed_mail'].map{|o| o["id"]}
-      # RSS情報の外部配信先ID
-      RSS_PLACE_ID = DST_LIST['delivery_place_rss'].map{|o| o["id"]}
+      # RSS情報の外部配信先ID配列
+      RSS_PLACE_IDS = DST_LIST['delivery_place_rss'].map{|o| o["id"]}
       # 版番号管理ステータス
       NEW_STATUS    = 1
       UPDATE_STATUS = 2
@@ -181,31 +182,33 @@ module Lgdis
       # ==== Raise
       def deliver(delivery_history, status_to)
         begin
-          if status_to == 'runtime'
-            delivery_place_id = delivery_history.delivery_place_id
-            summary = create_summary(delivery_place_id)
-            delivery_job_class = eval(DST_LIST['delivery_place'][delivery_place_id]['delivery_job_class'])
-            test_flag = DST_LIST['test_prj'][self.project_id]
-            delivery_history.update_attributes({:status => status_to, :respond_user_id => User.current.id, :process_date => Time.now})
-            Resque.enqueue(delivery_job_class, delivery_history.id, summary, test_flag) unless delivery_place_id == RSS_PLACE_ID # RSSの時は配信しない
-            # TODO
-            # Resque-Scheduler 対応
-            # 公共情報コモンズ以外の配信は、アプリ側で公開時間の制御を行う
-            # if COMMONS_PLACE_IDS.include?(delivery_place_id)
-            #   Resque.enqueue(delivery_job_class, delivery_history.id, summary, test_flag)
-            # else
-            #   Resque-Scheduler に登録する時間（que に入れる時間）を第一引数に設定
-            #   Resque.enqueue_at(self.opened_at, delivery_job_class, delivery_history.id, summary, test_flag)
-            # end
-            unless self.save
-             # TODO
-             # log 出力内容
-             # Rails.logger.error
+          delivery_place_id = delivery_history.delivery_place_id
+          summary = create_summary(delivery_place_id)
+          delivery_job_class = eval(DST_LIST['delivery_place'][delivery_place_id]['delivery_job_class'])
+          test_flag = DST_LIST['test_prj'][self.project_id]
+          case status_to
+          when 'reserve'
+            # resque(resque-scheduler)で配信を行う
+            if delivery_history.schedulable?
+              enqueue_datetime = self.opened_at
+              if delivery_history.for_commons? || delivery_history.for_urgent_mail?
+                enqueue_datetime = Time.now
+              end
+              Resque.enqueue_at(enqueue_datetime, delivery_job_class, delivery_history.id, summary, test_flag)
+              delivery_history.update_attributes({:status => status_to, :respond_user_id => User.current.id, :process_date => Time.now})
+            else
+              status_to = delivery_history.status
             end
-          elsif status_to == 'reject'
-            delivery_history.update_attributes({:status => status_to, :respond_user_id => User.current.id, :process_date => Time.now})
-            # チケットへの配信要求却下履歴書き込み
-            register_issue_journal_reject(delivery_history)
+            self.save!
+          when 'reject'
+            # 配信予定のキューを取り消す
+            if delivery_history.rejectable?
+              Resque.remove_delayed_job_from_timestamp(self.opened_at, delivery_job_class, delivery_history.id, summary, test_flag)
+              delivery_history.update_attributes({:status => status_to, :respond_user_id => User.current.id, :process_date => Time.now})
+              register_issue_journal_reject(delivery_history) # チケットへの配信要求却下履歴書き込み
+            else
+              status_to = delivery_history.status
+            end
           end
         rescue
           # TODO
@@ -441,7 +444,8 @@ module Lgdis
         doc.elements["//PublishingOffice/pcx_eb:OfficeInfo/pcx_eb:OfficeLocation/commons:areaName"].add_text(DST_LIST['commons_xml_field']['area_address']) # 固定値
         doc.elements["//PublishingOffice/pcx_eb:OfficeInfo/pcx_eb:OfficeDomainName"].add_text(DST_LIST['commons_xml_field']['office_domain']) # 固定値
         doc.elements["//PublishingOffice/pcx_eb:OfficeInfo/pcx_eb:OrganizationName"].add_text(DST_LIST['commons_xml_field']['organization_name']) # 固定値
-        if edition_fields_map['status'] == 3 # 更新種別が取消の場合のみ
+        if edition_fields_map['status'] == CANCEL_STATUS ||
+           (edition_fields_map['status'] == UPDATE_STATUS && self.description_cancel.present?)
           doc.elements["//PublishingOffice"].next_sibling = REXML::Element.new("Errata")
           doc.elements["//Errata"].add_element("pcx_eb:Description").add_text(self.description_cancel)
           doc.elements["//Errata"].add_element("pcx_eb:DateTime").add_text(self.updated_on.xmlschema)

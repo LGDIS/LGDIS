@@ -127,7 +127,7 @@
           </label>
           <label class="label_border_status"><%= l(d_h.status, :scope => "delivery_status") %></label>
           <label class="label_border_command">
-            <% if d_h.status == 'request' || d_h.status == 'reserve' %>
+            <% if d_h.allow_delivery? %>
             <%= link_to "配信確認", {:controller => "deliver_issues",
                                      :action => "index",
                                      :project_id => @project,
