@@ -444,7 +444,8 @@ module Lgdis
         doc.elements["//PublishingOffice/pcx_eb:OfficeInfo/pcx_eb:OfficeLocation/commons:areaName"].add_text(DST_LIST['commons_xml_field']['area_address']) # 固定値
         doc.elements["//PublishingOffice/pcx_eb:OfficeInfo/pcx_eb:OfficeDomainName"].add_text(DST_LIST['commons_xml_field']['office_domain']) # 固定値
         doc.elements["//PublishingOffice/pcx_eb:OfficeInfo/pcx_eb:OrganizationName"].add_text(DST_LIST['commons_xml_field']['organization_name']) # 固定値
-        if edition_fields_map['status'] == 3 # 更新種別が取消の場合のみ
+        if edition_fields_map['status'] == CANCEL_STATUS ||
+           (edition_fields_map['status'] == UPDATE_STATUS && self.description_cancel.present?)
           doc.elements["//PublishingOffice"].next_sibling = REXML::Element.new("Errata")
           doc.elements["//Errata"].add_element("pcx_eb:Description").add_text(self.description_cancel)
           doc.elements["//Errata"].add_element("pcx_eb:DateTime").add_text(self.updated_on.xmlschema)
