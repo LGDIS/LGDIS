@@ -34,6 +34,12 @@ module Lgdis
         issue_attr = build_issue_attributes_for_request_delivery(params[:issue])
         @issue.assign_attributes(issue_attr)
 
+        if  @issue.opened_at.blank? && @issue.published_at.blank?
+          @issue.opened_at = Time.now
+        elsif @issue.opened_at.blank? && @issue.published_at.present?
+          @issue.opened_at = @issue.published_at
+        end
+
         if (@ext_out_target = params[:ext_out_target]).blank?
           flash.now[:error] = l(:notice_delivery_unselected)
 

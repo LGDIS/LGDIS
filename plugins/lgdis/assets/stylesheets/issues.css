@@ -7,7 +7,7 @@ div.xml_field td {
 }
 
 div.table_border {
-  width: 650px;
+  width: 700px;
   border: thin solid black;
   margin-top: -1px;
   margin-bottom: 0px;
@@ -37,6 +37,80 @@ tr.like_hr td{
   margin-left: 0px;
   text-align: left;
   width: 180px;
+}
+
+label.label_border_updated_title{
+  border-left-width: 1px;
+  padding-left: 50px;
+}
+
+label.label_border_opened_title{
+  border-left-style: solid;
+  border-left-width: 1px;
+  position: absolute;
+  left: 175px;
+  padding-left: 40px;
+}
+
+label.label_border_delivery_place_title{
+  border-left-style: solid;
+  border-left-width: 1px;
+  position: absolute;
+  left: 325px;
+  padding-left: 105px;
+}
+
+label.label_border_status_title{
+  border-left-style: solid;
+  border-left-width: 1px;
+  position: absolute;
+  left: 570px;
+  padding-left: 18px;
+}
+
+label.label_border_command_title{
+  border-left-style: solid;
+  border-left-width: 1px;
+  position: absolute;
+  left: 660px;
+  padding-left: 13px;
+}
+
+label.label_border_updated{
+  border-left-width: 1px;
+  padding-left: 2px;
+}
+
+label.label_border_opened{
+  border-left-style: solid;
+  border-left-width: 1px;
+  position: absolute;
+  left: 175px;
+  padding-left: 2px;
+}
+
+label.label_border_delivery_place{
+  border-left-style: solid;
+  border-left-width: 1px;
+  position: absolute;
+  left: 325px;
+  padding-left: 2px;
+}
+
+label.label_border_status{
+  border-left-style: solid;
+  border-left-width: 1px;
+  position: absolute;
+  left: 570px;
+  padding-left: 2px;
+}
+
+label.label_border_command{
+  border-left-style: solid;
+  border-left-width: 1px;
+  position: absolute;
+  left: 660px;
+  padding-left: 2px;
 }
 
 /* 発生場所のテキストエリア */
