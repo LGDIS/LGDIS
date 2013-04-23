@@ -86,6 +86,7 @@ module Lgdis
     end
 
     module InstanceMethods
+      class InvalidStatusTo < StandardError; end
       # 更新種別
       TYPE_UPDATE = DST_LIST['type_update']
 
@@ -181,6 +182,11 @@ module Lgdis
       # DeliveryHistoryオブジェクト
       # ==== Raise
       def deliver(delivery_history, status_to)
+        case status_to
+          when 'reject'
+            raise(InvalidStatusTo, delivery_history.status) unless ['request','reserve'].include?(delivery_history.status)
+        end
+
         begin
           delivery_place_id = delivery_history.delivery_place_id
           summary = create_summary(delivery_place_id)

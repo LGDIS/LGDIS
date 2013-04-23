@@ -33,14 +33,19 @@ class DeliverIssuesController < ApplicationController
 
     return if delivery_history.blank? || issue.blank?
 
-    case issue.deliver(delivery_history, status_to)
-    when 'reject'
-      flash[:notice] = l(:notice_delivery_request_reject)
-    when 'failed'
-      flash[:error] = l(:notice_delivery_failed)
-    else
-      flash[:notice] = l(:notice_delivery_successful)
+    begin
+      case issue.deliver(delivery_history, status_to)
+        when 'reject'
+          flash[:notice] = l(:notice_delivery_request_reject)
+        when 'failed'
+          flash[:error] = l(:notice_delivery_failed)
+        else
+          flash[:notice] = l(:notice_delivery_successful)
+        end
+    rescue Lgdis::IssuePatch::InstanceMethods::InvalidStatusTo => e
+      flash[:error] = l(:notice_delivery_status, :kind => l("delivery_status." + e.message))
     end
+
     respond_to do |format|
       format.html do
         redirect_back_or_default({:controller => 'issues',
