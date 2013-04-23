@@ -9,7 +9,7 @@ ja:
   button_curd_confirm: この内容で保存してよろしいですか？
   button_ticket_confirm: チケットを登録してよろしいですか？
   text_select_tracker: 登録するチケットのトラッカーを選んでください
-  button_serch: 検索
+  button_search: 検索
 
   activerecord:
     errors:
