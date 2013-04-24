@@ -26,7 +26,7 @@ class AddColumnsToIssues < ActiveRecord::Migration
     add_column :issues, :type_update,        :string
     add_column :issues, :description_cancel, :text
     add_column :issues, :published_at,       :datetime
-    add_column :issues, :delivered_area,     :string
+    add_column :issues, :delivered_area,     :text
     add_column :issues, :opened_at,          :datetime
     add_column :issues, :closed_at,          :datetime
     add_column :issues, :disaster_info_type, :string
