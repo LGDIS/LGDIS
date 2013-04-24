@@ -2,7 +2,7 @@
 
 <h2><%= l(:label_evacuation_advisory_plural) %></h2>
 
-<%= error_messages_for_evacuation_advisories(@evacuation_advisories) %>
+<%= error_messages_for_evacuation_advisories(@evacuation_advisories, @evacuation_advisories_for_ticket) %>
 
 <%= form_for @search, :url => project_evacuation_advisories_search_path, :html => {:method => :post} do |f| %>
   <%= hidden_field_tag "commit_kind" %>

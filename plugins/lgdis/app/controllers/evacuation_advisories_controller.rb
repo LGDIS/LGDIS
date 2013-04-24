@@ -93,8 +93,8 @@ class EvacuationAdvisoriesController < ApplicationController
         # 発令区分の遷移履歴を更新する
         @search = EvacuationAdvisory.mode_in(@project).search(params[:search])
         @evacuation_advisories = EvacuationAdvisory.mode_in(@project).paginate(:page => params[:page]).order("identifier ASC")
-        sort_criteria_history = EvacuationAdvisory.update_sort_criteria_history(@project)
-        if @evacuation_advisories.map{|ea| ea.errors.any? }.include?(true)
+        @evacuation_advisories_for_ticket, sort_criteria_history = EvacuationAdvisory.update_sort_criteria_history(@project)
+        if @evacuation_advisories_for_ticket.map{|ea| ea.errors.any? }.include?(true)
           render :action => :index
           return
         end
