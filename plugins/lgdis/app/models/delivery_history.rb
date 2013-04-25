@@ -128,7 +128,7 @@ class DeliveryHistory < ActiveRecord::Base
       # ATOM(RSS)の場合は外部配信対象外なので不可
       return false
     else
-      # 上記以外(Twitter/Facebook)の場合、配信要求中であれば許可
+      # 上記以外(Twitter/Facebook/各種メール)の場合、配信要求中であれば許可
       return (status == 'request')
     end
   end
@@ -147,7 +147,7 @@ class DeliveryHistory < ActiveRecord::Base
       # ATOM(RSS)の場合は不可
       return false
     else
-      # 上記以外(Twitter/Facebook)の場合、取り消し可能なステータスであれば許可
+      # 上記以外(Twitter/Facebook/各種メール)の場合、取り消し可能なステータスであれば許可
       return (status == 'request' || status == 'reserve')
     end
   end
@@ -159,6 +159,16 @@ class DeliveryHistory < ActiveRecord::Base
   # ==== Raise
   def allow_delivery?
     return (status == 'request' || status == 'reserve')
+  end
+
+  # 配信確認画面で「配信許可」「配信却下」ボタンの表示を許可するかを判定
+  # ※実際のボタン描画時には、ログインユーザに配信管理権限があるかの判定を加える必要がある
+  # ==== Args
+  # ==== Return
+  # true/false
+  # ==== Raise
+  def allow_delivery_control?
+    return (status == 'reserve')
   end
 
   # ステータスを「配信中」に変更
