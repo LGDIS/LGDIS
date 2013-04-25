@@ -74,18 +74,16 @@
     </tr>
   <thead>
 </table>
-  <% if (@delivery_history.status == "reserve" && check_admin(@issue)) %>
-    <input class="sbutton" value="戻る" onclick="history.back()" type="button" />
-  <% elsif check_admin(@issue) %>
-    <%= submit_tag l(:button_allow), :name=>'allow', :confirm => l(:button_delivery_confirm_allow) %>
+  <% if allow_delivery_permission?(@issue) %>
+    <% if @delivery_history.allow_delivery_control? %>
+      <input class="sbutton" value="戻る" onclick="history.back()" type="button" />
+      <%= submit_tag l(:button_cancellation), :name=>'reject', :confirm => l(:button_delivery_confirm_cancellation) %>
+    <% else %>
+      <%= submit_tag l(:button_allow), :name=>'allow', :confirm => l(:button_delivery_confirm_allow) %>
+      <%= submit_tag l(:button_reject), :name=>'reject', :confirm => l(:button_delivery_confirm_reject) %>
+    <% end %>
   <% else %>
     <input class="sbutton" value="戻る" onclick="history.back()" type="button" />
-  <% end %>
-  <% if (@delivery_history.status == "reserve" && check_admin(@issue))%>
-    <%= submit_tag l(:button_cancellation), :name=>'reject', :confirm => l(:button_delivery_confirm_cancellation) %>
-  <% elsif check_admin(@issue) %>
-    <%= submit_tag l(:button_reject), :name=>'reject', :confirm => l(:button_delivery_confirm_reject) %>
-  <% else %>
     <%= submit_tag l(:button_cancellation), :name=>'reject', :confirm => l(:button_delivery_confirm_cancellation) %>
   <% end %>
 <% end %>

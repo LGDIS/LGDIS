@@ -48,7 +48,7 @@ module EvacuationAdvisoriesHelper
   def error_messages_for_evacuation_advisories(*objects)
     html   = ""
     errors = nil
-    objects.each do |object|
+    objects.compact.each do |object|
       errors = object.map do |o|
         o.errors.full_messages.map do |m|
           "#{l('evacuation_advisories.field_area')}\"#{o.area}\"の#{m}"

@@ -14,7 +14,7 @@ class CreateDeliveryHistories < ActiveRecord::Migration
       t.text       "summary"
       t.string     "type_update"
       t.text       "description_cancel"
-      t.string     "delivered_area"
+      t.text       "delivered_area"
       t.timestamp  "published_at"
       t.timestamp  "opened_at"
       t.timestamp  "closed_at"

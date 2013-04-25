@@ -9,7 +9,7 @@ class EvacuationAdvisory < ActiveRecord::Base
                   :staff_no,:full_name,:alias,:headline,:message,
                   :emergency_hq_needed_prefecture,:emergency_hq_needed_city,
                   :alert,:alerting_area,:siren_area,:evacuation_order,
-                  :evacuate_from,:evacuate_to,:evacuation_steps_by_authorities,:remarks, 
+                  :evacuate_from,:evacuate_to,:evacuation_steps_by_authorities,:remarks,
                   :households,:head_count,:section, :disaster_overview,
                   :current_sort_criteria, :previous_sort_criteria
 
@@ -322,11 +322,12 @@ class EvacuationAdvisory < ActiveRecord::Base
   # ==== Args
   # _project_ :: Projectオブジェクト
   # ==== Return
-  # 公共コモンズ用チケットの説明フィールドに入力する文言
+  # [更新結果のselfの配列, 公共コモンズ用チケットの説明フィールドに入力する文言]
   # ==== Raise
   def self.update_sort_criteria_history(project)
     histories = []
-    EvacuationAdvisory.mode_in(project).order("identifier ASC").each do |eva|
+    updated_selves = EvacuationAdvisory.mode_in(project).order("identifier ASC").scoped
+    updated_selves.each do |eva|
       # 公共コモンズ用の発令区分と発令解除区分を決定
       eva.sort_criteria, eva.issueorlift = EVACUATIONADVISORY_MAP["sort_criteria_map"][eva.previous_sort_criteria || SORT_ISSUE_NONE][eva.current_sort_criteria]
       # 後続処理で登録するチケットの説明文を作成
@@ -335,28 +336,23 @@ class EvacuationAdvisory < ActiveRecord::Base
       eva.previous_sort_criteria = eva.current_sort_criteria
       eva.save
     end
-    return histories.compact.join("\n")
+    return updated_selves, histories.compact.join("\n")
   end
 
   # 発令区分の遷移文言を作成
   # ==== Args
   # ==== Return
-  # 公共コモンズ用チケットの説明フィールドに入力する文言(1件分)
+  # 公共コモンズ用チケットの説明フィールドに入力する文言(1件分;textile形式)
   # ただし出力対象外の場合はnil
   # ==== Raise
   def get_sort_criteria_changes
     result = nil
-    case
-    when [nil, SORT_ISSUE_NONE].include?(previous_sort_criteria) && current_sort_criteria != SORT_ISSUE_NONE
-      result =  [area, CONST["current_sort_criteria"][current_sort_criteria],  "発令"]
-    when previous_sort_criteria && previous_sort_criteria != SORT_ISSUE_NONE && current_sort_criteria == SORT_ISSUE_NONE
-      result =  [area, CONST["current_sort_criteria"][previous_sort_criteria], "解除"]
-    when previous_sort_criteria && previous_sort_criteria != SORT_ISSUE_NONE && previous_sort_criteria == current_sort_criteria
-      result =  [area, CONST["current_sort_criteria"][current_sort_criteria],  "継続"]
-    when previous_sort_criteria == SORT_ISSUE_NONE && previous_sort_criteria == current_sort_criteria
-      result = nil
+    if previous_sort_criteria && previous_sort_criteria != SORT_ISSUE_NONE && previous_sort_criteria == current_sort_criteria
+      result = [area, CONST["sort_criteria"][sort_criteria], "継続"]
+    else
+      result = [area, CONST["sort_criteria"][sort_criteria], CONST["issueorlift"][issueorlift]]
     end
-    return result ? "|#{result.join("|")}|" : nil
+    return result.all? ? "|#{result.join("|")}|" : nil
   end
 
   private

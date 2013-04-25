@@ -109,7 +109,6 @@
 
 
   <p><strong><label><%= l(:label_delivery_status) %>:</label></strong></p>
-    <% if check_permissions(@issue) %>
       <% unless @delivery_histories.blank? %>
         <div class="table_border">
           <label class="label_border_updated_title">要求日時</label>
@@ -139,7 +138,6 @@
         </div>
         <% end %>
       <% end %>
-    <% end %>
   <hr />
   </div>
 </fieldset>

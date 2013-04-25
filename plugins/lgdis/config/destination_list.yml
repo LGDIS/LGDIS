@@ -1,8 +1,3 @@
-# 配信許可権限者ID
-dst_admin_id:
-  - 3 # 管理者(プロトタイプ環境 admin)
-  - 7 # 管理者(開発環境 admin)
-
 # 災害訓練モードプロジェクトID
 training_prj:
   2: true
