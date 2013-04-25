@@ -40,8 +40,7 @@ class Batches::LinkDisasterPortal
         #以下の２つの条件以外の場合
         unless ( 
                  (dh.status == "done"    && (dh.closed_at.blank? ? true : time < dh.closed_at)) || # ステータス配信完了、かつ公開終了日時に至っていない
-                 (dh.status == "runtime" && time > dh.opened_at)                                   # ステータス配信予定、かつ公開開始日時に至っている
-                 # TODO ↑"runtime"は配信中だが、配信予定のステータスが追加される予定
+                 (dh.status == "reserve" && time > dh.opened_at)                                   # ステータス配信予定、かつ公開開始日時に至っている
                )
           next true
         end
@@ -74,7 +73,7 @@ class Batches::LinkDisasterPortal
         dh = issue.delivery_histories.where(:delivery_place_id => ATOM).order("updated_at DESC").find(:all, :conditions => ["opened_at > CURRENT_TIMESTAMP - interval '#{limit_days} days'"]).first
         
         # 配信管理更新、チケット履歴出力
-        if dh.status == "runtime" # TODO 今後「配信中(runtime)」が「配信予定」になるので要修正
+        if dh.status == "reserve"
           dh.status = "done"
           dh.process_date = Time.now
           dh.save!
