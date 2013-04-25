@@ -34,20 +34,6 @@ module Lgdis
         s.html_safe
       end
 
-      def check_permissions(issue)
-        # TODO
-        # 要求者と許可者の権限が増えた為修正必要
-        return true
-        flag = false
-        return false if issue.blank?
-        User.current.roles_for_project(issue.project).each do |r|
-          r.permissions.each do |st|
-             flag = true if st.equal?(:allow_delivery)
-          end
-        end
-        flag
-      end
-
       def tm_fmt(time)
         time.strftime("%Y年%m月%d日 %H時%M分%S秒") if time.present?
       end

@@ -79,6 +79,21 @@ module Lgdis
         return message
       end
 
+      # ログインユーザに配信管理権限があるか判定する
+      # ==== Args
+      # _issue_ :: 対象のチケット(Issue)
+      # ==== Return
+      # true/false
+      # ==== Raise
+      def allow_delivery_permission?(issue)
+        User.current.roles_for_project(issue.project).each do |roles|
+          roles.permissions.each do |permissions|
+            return true if [permissions].flatten.include?(:request_delivery)
+          end
+        end
+        return false
+      end
+
     end
 
   end

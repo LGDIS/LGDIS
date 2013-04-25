@@ -74,7 +74,7 @@
     </tr>
   <thead>
 </table>
-  <% if check_admin(@issue) %>
+  <% if allow_delivery_permission?(@issue) %>
     <% if @delivery_history.allow_delivery_control? %>
       <input class="sbutton" value="戻る" onclick="history.back()" type="button" />
       <%= submit_tag l(:button_cancellation), :name=>'reject', :confirm => l(:button_delivery_confirm_cancellation) %>
