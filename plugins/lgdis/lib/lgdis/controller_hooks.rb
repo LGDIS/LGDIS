@@ -98,7 +98,7 @@ module Lgdis
 
       deliver_historires = DeliveryHistory.create_for_history(issue, place_id_ary)
       (deliver_historires || {}).each do |d_h|
-        issue.deliver(d_h, 'runtime')
+        issue.deliver(d_h, 'reserve')
       end
     end
   end
