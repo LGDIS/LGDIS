@@ -89,6 +89,15 @@ module Lgdis
       # ==== Return
       # ==== Raise
       def init
+        if  @issue.mail_subject.blank?
+          @issue.mail_subject = @issue.subject
+        end
+
+        unless DST_LIST['tracker_id_evacuation'].include?(@issue.tracker_id)
+          if  @issue.summary.blank?
+            @issue.summary = @issue.description
+          end
+        end
         @issue_const = Constant::hash_for_table(Issue.table_name)
 
         @area = {}

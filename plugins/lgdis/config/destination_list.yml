@@ -703,6 +703,12 @@ commons_xml:
   66: commons_event_announcements.xml            # 営業店舗に関する情報
   48: commons_events.xml                         # その他の災害関連情報
 
+# 配信管理画面の見出し要約文欄を自動補完する為のトラッカーIDリスト
+# トラッカーIDの変更があった場合は合わせて変更すること
+tracker_id_evacuation:
+  - 1  # 避難勧告・指示
+  - 2  # 避難所情報
+
 # 公共情報コモンズ配信時に使用するタイトル群
 # plugins/lgdis/lib/lgdis/issue_patch.rb で使用
 tracker_title:
