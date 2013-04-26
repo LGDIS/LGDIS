@@ -126,7 +126,7 @@ describe Lgdis::ControllerHooks do
         @issue = mock_model(Issue)
         @issue.stub(:id).and_return("1")
         @issue.stub(:project_id).and_return("5")
-        @issue.should_receive(:deliver).with(dh_test, 'runtime').and_return("OK")
+        @issue.should_receive(:deliver).with(dh_test, 'reserve').and_return("OK")
         @context = {:issue=>@issue, :params=>{:issue=>{:send_target=>"send_target_exist"}}}
         DeliveryHistory.should_receive(:create!).and_return(dh_test)
       end
