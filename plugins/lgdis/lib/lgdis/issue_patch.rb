@@ -459,8 +459,8 @@ module Lgdis
 
         # Head 部要素追加
         doc.elements["//pcx_ib:Title"].add_text(I18n.t('target_municipality') + ' ' + self.project.name + ' ' +  (title.present? ? title : '緊急速報メール'))
-        doc.elements["//pcx_ib:CreateDateTime"].add_text(self.created_on.xmlschema)
-        doc.elements["//pcx_ib:FirstCreateDateTime"].add_text(self.created_on.xmlschema)
+        doc.elements["//pcx_ib:CreateDateTime"].add_text(edition_mng.updated_at.xmlschema)
+        doc.elements["//pcx_ib:FirstCreateDateTime"].add_text(edition_mng.created_at.xmlschema)
         doc.elements["//pcx_ib:ReportDateTime"].add_text(self.published_at.xmlschema) unless self.published_at.blank?
         unless self.closed_at.blank? # 公開終了日時が設定されている場合のみ
           doc.elements["//pcx_ib:ReportDateTime"].next_sibling = REXML::Element.new("pcx_ib:ValidDateTime")
