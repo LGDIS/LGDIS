@@ -15,10 +15,28 @@ function toggle(id) {
 }
 
 // Toggles the visibility of the map and the show/hide link.
-function toggleMap(map_id) {
-	toggle(map_id);
-	toggle(map_id + '_show_link');
-	toggle(map_id + '_hide_link');
+function toggleMap(mode, map_id) {
+console.log("toggleMap: mode=["+mode+"] map_id=["+map_id+"]");
+  switch(mode) {
+  case "":
+    $("#" + map_id).hide();
+    $("#" + map_id + '_g_show_link').show();
+    $("#" + map_id + '_z_show_link').show();
+    $("#" + map_id + '_hide_link').hide();
+    break;
+  case "g":
+    $("#" + map_id).show();
+    $("#" + map_id + '_g_show_link').hide();
+    $("#" + map_id + '_z_show_link').show();
+    $("#" + map_id + '_hide_link').show();
+    break;
+  case "z":
+    $("#" + map_id).show();
+    $("#" + map_id + '_g_show_link').show();
+    $("#" + map_id + '_z_show_link').hide();
+    $("#" + map_id + '_hide_link').show();
+    break;
+  }
 }
 
 /**
@@ -36,7 +54,7 @@ function createMap(map_id, center_pos, zoom) {
 	var marker = new google.maps.Marker({
 		position : center_pos || DEFAULT_MAP_CENTER,
 		map : map,
-        visible : false
+		visible : false
 	});
     var layer = new google.maps.FusionTablesLayer({
 	    query: {
@@ -143,7 +161,7 @@ function setNewLayer(event, target, field1_id, field2_id, field3_id, type) {
 // fieldn_id: element-id of text field
 // type: "dai", "tyu", "syo"
 function showMap(map_id, zoom_rate, field1_id, field2_id, field3_id, type) {
-	toggleMap(map_id);
+	toggleMap("g", map_id);
 	initMap(map_id, zoom_rate, field1_id, field2_id, field3_id, type);
 	map_initialized[map_id] = true;
 }
@@ -152,17 +170,21 @@ function showMap(map_id, zoom_rate, field1_id, field2_id, field3_id, type) {
  * マップ非表示
  */
 function clearMap(map_id) {
-	toggleMap(map_id);
+  $("#" + map_id).hide();
 	if (map_initialized[map_id]) {
 		map_initialized[map_id] = null;
 	}
+}
+function clearMap(mode, map_id) {
+  toggleMap("", map_id);
+  $("#"+map_id).empty();
 }
 
 /** 
  * マップ表示(発生場所入力用)
  */
 function showMapSelectPosition(map_id, zoom_rate, field_id) {
-		toggleMap(map_id);
+		toggleMap("g", map_id);
 		initMapSelectPosition(map_id, zoom_rate, field_id);
 		map_initialized[map_id] = true;
 }

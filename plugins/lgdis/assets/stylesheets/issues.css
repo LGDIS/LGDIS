@@ -115,4 +115,4 @@ label.label_border_command{
 
 /* 発生場所のテキストエリア */
 /* ※textarea.text_cfのスタイルを包含していること */
-textarea.text_cf_address {width:90%; height: 6em;}
+textarea.text_cf_address {width:80%; height: 6em;}

@@ -44,34 +44,19 @@
     <% fid_map = "#{cf_value[3]}_map" %>
     <% fid_text = "issue_custom_field_values_#{cf_value[3]}" %>
     $("#<%= fid_text %>").after("\
-       <span id=\"<%= fid_map %>_show_link\">\
+       <span id=\"<%= fid_map %>_g_show_link\">\
          <img class=\"ui-datepicker-trigger\" src=\"<%= urlpart_prefix -%>/plugin_assets/lgdis/images/gmap.png\" alt=\"<%= l(:button_map_show) %>\" onclick=\"showMapSelectPosition('<%= fid_map %>', DEFAULT_MAP_ZOOM, '<%= fid_text %>'); return false;\">\
        </span>\
+       <% if ZNETTOWNService.enable? %>
+         <span id=\"<%= fid_map %>_z_show_link\">\
+           <img class=\"ui-datepicker-trigger\" src=\"<%= urlpart_prefix -%>/plugin_assets/lgdis/images/zmap.png\" alt=\"<%= l(:button_map_show) %>\" onclick=\"showZMapSelectPosition('<%= fid_map %>', DEFAULT_MAP_ZOOM, '<%= fid_text %>'); return false;\">\
+         </span>\
+       <% end %>
        <span id=\"<%= fid_map %>_hide_link\" style=\"display: none\">\
-         <img class=\"ui-datepicker-trigger\" src=\"<%= urlpart_prefix -%>/images/cancel.png\" alt=\"<%= l(:button_map_hide) %>\" onclick=\"clearMap('<%= fid_map %>'); return false;\">\
+         <img class=\"ui-datepicker-trigger\" src=\"<%= urlpart_prefix -%>/images/cancel.png\" alt=\"<%= l(:button_map_hide) %>\" onclick=\"clearMap('', '<%= fid_map %>'); return false;\">\
        </span>\
        <div id=\"<%= fid_map %>\" class=\"input_map\" style=\"display: none\"></div>\
-       <% if ZNETTOWNService.enable? %>
-         <br/><a href=\"#\" id=\"zmap_open\">住宅地図を開く</a>\
-         <a href=\"#\" id=\"zmap_close\" style=\"display: none\">住宅地図を閉じる</a>\
-         <div id=\"zmap_id\" class=\"input_map\" style=\"display: none\"></div>\
-       <% end %>
     ");
-    <% if ZNETTOWNService.enable? %>
-      $("#zmap_open").click(function(){
-        $("#zmap_open").hide();
-        $("#zmap_close").show();
-        z_showMap("zmap_id");
-        $("#zmap_id").show();
-        return false;
-      });
-      $("#zmap_close").click(function(){
-        $("#zmap_id").hide();
-        $("#zmap_open").show();
-        $("#zmap_close").hide();
-        return false;
-      });
-    <% end %>
     <% end -%>
   });
 
