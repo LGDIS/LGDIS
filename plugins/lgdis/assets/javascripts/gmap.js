@@ -16,7 +16,6 @@ function toggle(id) {
 
 // Toggles the visibility of the map and the show/hide link.
 function toggleMap(mode, map_id) {
-console.log("toggleMap: mode=["+mode+"] map_id=["+map_id+"]");
   switch(mode) {
   case "":
     $("#" + map_id).hide();
