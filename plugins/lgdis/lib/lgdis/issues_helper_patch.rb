@@ -3,8 +3,6 @@ require_dependency 'issues_helper'
 
 module Lgdis
   module IssuesHelperPatch
-    # XMLデータ抽出文字列
-    XML_VIEW_SAMPLING_XPATH = %{//xmlns:Item[.//text()[contains(.,"石巻")]]}.freeze
 
     def self.included(base)
       base.extend(ClassMethods)
@@ -62,13 +60,17 @@ module Lgdis
             (xml_doc/"#{node.name}").remove
           end
         end
+        
+        # XMLの対象地域データ抽出文字列の設定
+        city_name = I18n.t("target_municipality")
+        xml_sampling = %{//xmlns:Item[.//text()[contains(.,"#{city_name}")]]}.freeze
 
         out = "<input type='checkbox' id='#{name}_view_sampling' checked>" +
               "<label for='#{name}_view_sampling'>#{l(:button_xml_view_sampling)}</label>"
 
         # 抽出データ表示
         begin
-          out << "<div class='xml_field #{name}' id='#{name}_sampling'>#{print_xml(xml_doc.xpath(XML_VIEW_SAMPLING_XPATH))}</div>"
+          out << "<div class='xml_field #{name}' id='#{name}_sampling'>#{print_xml(xml_doc.xpath(xml_sampling))}</div>"
         rescue
           out << ""
         end
