@@ -31,11 +31,11 @@
          fid_text = "issue_custom_field_values_#{fid}"
     %>
     $("#<%= fid_text %>").after("\
-       <span id=\"<%= fid_map %>_show_link\">\
+       <span id=\"<%= fid_map %>_g_show_link\">\
          <img class=\"ui-datepicker-trigger\" src=\"<%= urlpart_prefix -%>/plugin_assets/lgdis/images/gmap.png\" alt=\"<%= l(:button_map_show) %>\" onclick=\"showMap('<%= fid_map %>',<%= CF_ADDRESS["zoom_rate"][index] %>,'issue_custom_field_values_<%= cf_value[0] %>','issue_custom_field_values_<%= cf_value[1] %>','issue_custom_field_values_<%= cf_value[2] %>', '<%= type %>'); return false;\">\
        </span>\
        <span id=\"<%= fid_map %>_hide_link\" style=\"display: none\">\
-         <img class=\"ui-datepicker-trigger\" src=\"<%= urlpart_prefix -%>/images/cancel.png\" alt=\"<%= l(:button_map_hide) %>\" onclick=\"clearMap('<%= fid_map %>'); return false;\">\
+         <img class=\"ui-datepicker-trigger\" src=\"<%= urlpart_prefix -%>/images/cancel.png\" alt=\"<%= l(:button_map_hide) %>\" onclick=\"clearMap('', '<%= fid_map %>'); return false;\">\
        </span>\
        <div id=\"<%= fid_map %>\" class=\"input_map\" style=\"display: none\"></div>\
     ");
