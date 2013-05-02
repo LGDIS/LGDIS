@@ -124,7 +124,6 @@ function addZMarker(address, target, marker_bounds) {
  * 指定された地点にマーカをセットし、その地名を取得してテキストフィールドに追加(発生場所入力用)
  */
 function addClickedZAddress(latlng, target, field_id) {
-
   // クリック地点の地名を取得
   var sear = new ZntAddressStringSearch();
   var opts = new ZntAddressStringSearchSettings();
@@ -178,6 +177,5 @@ function extendRect(bounds, point) {
   } else {
     bounds = new ZntRect(point, point);
   }
-    bounds = new ZntRect(point, point);
   return bounds;
 }
