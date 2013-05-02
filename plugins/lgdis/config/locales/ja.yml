@@ -155,7 +155,10 @@ ja:
   field_delivered_area: 情報の配信対象地域
   field_opened_at: 情報の公開開始日時
   field_closed_at: 情報の公開終了日時
-  
+
+  summary_evacuation_advisory: 避難勧告指示の発令・解除の状況は以下の通りです。
+  summary_shelter: 避難所の開設・閉鎖の状況は以下の通りです。
+
   delivery_status:
     request: 配信要求中
     done: 配信完了
