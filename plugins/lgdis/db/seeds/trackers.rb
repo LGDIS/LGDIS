@@ -72,7 +72,7 @@ ActiveRecord::Base.connection.execute(%{INSERT INTO trackers (position, id, name
 
 ActiveRecord::Base.connection.execute(%{INSERT INTO trackers (position, id, name, is_in_chlog, is_in_roadmap, fields_bits) VALUES (59, 52, '【広報-生活情報】行政手続きに関する情報', false, true, 0)})
 ActiveRecord::Base.connection.execute(%{INSERT INTO trackers (position, id, name, is_in_chlog, is_in_roadmap, fields_bits) VALUES (60, 62, '【広報-生活情報】安置所に関する情報', false, true, 0)})
-ActiveRecord::Base.connection.execute(%{INSERT INTO trackers (position, id, name, is_in_chlog, is_in_roadmap, fields_bits) VALUES (61, 63, '【広報-生活情報】災害習得物に関する情報', false, true, 0)})
+ActiveRecord::Base.connection.execute(%{INSERT INTO trackers (position, id, name, is_in_chlog, is_in_roadmap, fields_bits) VALUES (61, 63, '【広報-生活情報】災害拾得物に関する情報', false, true, 0)})
 ActiveRecord::Base.connection.execute(%{INSERT INTO trackers (position, id, name, is_in_chlog, is_in_roadmap, fields_bits) VALUES (62, 60, '【広報-生活情報】炊き出し・物資配布に関する情報', false, true, 0)})
 ActiveRecord::Base.connection.execute(%{INSERT INTO trackers (position, id, name, is_in_chlog, is_in_roadmap, fields_bits) VALUES (63, 61, '【広報-生活情報】入浴サービスに関する情報', false, true, 0)})
 ActiveRecord::Base.connection.execute(%{INSERT INTO trackers (position, id, name, is_in_chlog, is_in_roadmap, fields_bits) VALUES (64, 66, '【広報-生活情報】営業店舗に関する情報', false, true, 0)})
