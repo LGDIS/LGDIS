@@ -93,6 +93,8 @@ module Lgdis
       # 緊急速報メール の定義用トラッカーid(実在しないトラッカー)
       # destination_list.yml commons_xml、tracker_title に紐付くID
       UGENT_MAIL_ID = 0
+      # 緊急速報メールDOCOMO
+      UGENT_MAIL_DOCOMO = 10
       # 公共情報コモンズの外部配信先ID配列
       COMMONS_PLACE_IDS = DST_LIST['delivery_place_group_commons'].map{|o| o["id"]}
       # 緊急速報メールの外部配信先ID配列
@@ -189,7 +191,7 @@ module Lgdis
 
         begin
           delivery_place_id = delivery_history.delivery_place_id
-          summary = create_summary(delivery_place_id)
+          summary = create_summary(delivery_history)
           delivery_job_class = eval(DST_LIST['delivery_place'][delivery_place_id]['delivery_job_class'])
           test_flag = DST_LIST['test_prj'][self.project_id]
           case status_to
@@ -259,61 +261,63 @@ module Lgdis
 
       # 配信内容作成処理
       # ==== Args
-      # _delivery_place_id_ :: 外部配信先ID
+      # _delivery_history_ :: DeliveryHistoryオブジェクト
       # ==== Return
       # 配信内容
       # ==== Raise
-      def create_summary(delivery_place_id)
-        return eval("self.#{DST_LIST['delivery_place'][delivery_place_id]['create_msg_method']}(delivery_place_id)")
+      def create_summary(delivery_history)
+        delivery_place_id = delivery_history.delivery_place_id
+        return eval("self.#{DST_LIST['delivery_place'][delivery_place_id]['create_msg_method']}(delivery_history)")
       end
 
       # Twitter 用配信メッセージ作成処理
       # ==== Args
-      # _delivery_place_id_ :: 外部配信先ID
+      # _delivery_history_ :: DeliveryHistoryオブジェクト
       # ==== Return
       # 配信内容文字列
       # ==== Raise
-      def create_twitter_msg(delivery_place_id)
-        summary = self.add_url_and_training(self.summary, delivery_place_id)
+      def create_twitter_msg(delivery_history)
+        summary = self.add_url_and_training(delivery_history.summary, delivery_history.delivery_place_id)
         return summary
       end
 
       # Facebook 用配信メッセージ作成処理
       # ==== Args
-      # _delivery_place_id_ :: 外部配信先ID
+      # _delivery_history_ :: DeliveryHistoryオブジェクト
       # ==== Return
       # 配信内容文字列
       # ==== Raise
-      def create_facebook_msg(delivery_place_id)
-        summary = self.add_url_and_training(self.summary, delivery_place_id)
+      def create_facebook_msg(delivery_history)
+        summary = self.add_url_and_training(delivery_history.summary, delivery_history.delivery_place_id)
         return summary
       end
 
       # メール用 配信メッセージ作成処理
       # ==== Args
-      # _delivery_place_id_ :: 外部配信先ID
+      # _delivery_history_ :: DeliveryHistoryオブジェクト
       # ==== Return
       # 配信内容ハッシュ
       # ==== Raise
-      def create_smtp_msg(delivery_place_id)
+      def create_smtp_msg(delivery_history)
         summary = Hash.new
         # TODO:件名、本文が未決
-        str = self.add_url_and_training(self.summary, delivery_place_id)
+        delivery_place_id = delivery_history.delivery_place_id
+        str = self.add_url_and_training(delivery_history.summary, delivery_place_id)
 
         raise "送信先アドレス設定がありません" unless to = DST_LIST['delivery_place'][delivery_place_id]['to']
         summary.store('mailing_list_name', to)
-        summary.store('title', self.mail_subject)
+        summary.store('title', delivery_history.mail_subject)
         summary.store('message', str)
         return summary
       end
 
       # ATOM 用 配信メッセージ作成処理
       # ==== Args
-      # _delivery_place_id_ :: 外部配信先ID
+      # _delivery_history_ :: DeliveryHistoryオブジェクト
       # ==== Return
       # 配信内容
       # ==== Raise
-      def create_atom_msg(delivery_place_id)
+      def create_atom_msg(delivery_history)
         issue = self # evelの中でissueが使われている為
         content = ""
         DST_LIST["link_disaster_portal_tracker_group"][self.tracker_id].each do | label_value |
@@ -346,21 +350,22 @@ module Lgdis
       # Control部, Head部, Body部を結合し
       # 配信内容を作成
       # ==== Args
-      # _delivery_place_id_ :: 外部配信先ID
+      # _delivery_history_ :: DeliveryHistoryオブジェクト
       # ==== Return
       # _doc_ :: 配信内容
       # ==== Raise
-      def create_commons_msg(delivery_place_id)
+      def create_commons_msg(delivery_history)
         # 緊急速報メールはどのトラッカーの情報も配信可能な為
         # 配信先ID で判定
         # テンプレート生成
         # XML Body 生成
         # Body root element 生成
+        delivery_place_id = delivery_history.delivery_place_id
         if UGENT_MAIL_PLACE_IDS.include?(delivery_place_id)
           element     = 'pcx_um:UrgentMail'
           commons_xml = DST_LIST['commons_xml'][UGENT_MAIL_ID]
           # 緊急速報メールのBody 部はxml_body に保持しない為生成
-          xml_body    = create_commons_area_mail_body
+          xml_body    = create_commons_area_mail_body(delivery_history)
           title  = DST_LIST['tracker_title'][UGENT_MAIL_ID]
         else
           element     = DST_LIST['destination_xpath'][self.tracker_id]
@@ -427,7 +432,7 @@ module Lgdis
           doc.elements["//commons:targetArea"].add_element("commons:jisX0402").add_text(area_code)
         end
 
-        doc.elements["//edxlde:contentDescription"].add_text(self.summary)
+        doc.elements["//edxlde:contentDescription"].add_text(delivery_history.summary)
         if UGENT_MAIL_PLACE_IDS.include? delivery_place_id # 緊急速報メールの場合のみ
           doc.elements["//edxlde:contentDescription"].next_sibling = REXML::Element.new("edxlde:consumerRole")
           doc.elements["//edxlde:consumerRole"].add_element("edxlde:valueListUrn").add_text('publicCommons:media:urgentmail:carrier')
@@ -451,31 +456,31 @@ module Lgdis
         doc.elements["//PublishingOffice/pcx_eb:OfficeInfo/pcx_eb:OfficeDomainName"].add_text(DST_LIST['commons_xml_field']['office_domain']) # 固定値
         doc.elements["//PublishingOffice/pcx_eb:OfficeInfo/pcx_eb:OrganizationName"].add_text(DST_LIST['commons_xml_field']['organization_name']) # 固定値
         if edition_fields_map['status'] == CANCEL_STATUS ||
-           (edition_fields_map['status'] == UPDATE_STATUS && self.description_cancel.present?)
+           (edition_fields_map['status'] == UPDATE_STATUS && delivery_history.description_cancel.present?)
           doc.elements["//PublishingOffice"].next_sibling = REXML::Element.new("Errata")
-          doc.elements["//Errata"].add_element("pcx_eb:Description").add_text(self.description_cancel)
-          doc.elements["//Errata"].add_element("pcx_eb:DateTime").add_text(self.updated_on.xmlschema)
+          doc.elements["//Errata"].add_element("pcx_eb:Description").add_text(delivery_history.description_cancel)
+          doc.elements["//Errata"].add_element("pcx_eb:DateTime").add_text(delivery_history.updated_on.xmlschema)
         end
 
         # Head 部要素追加
         doc.elements["//pcx_ib:Title"].add_text(I18n.t('target_municipality') + ' ' + self.project.name + ' ' +  (title.present? ? title : '緊急速報メール'))
-        doc.elements["//pcx_ib:CreateDateTime"].add_text(edition_mng.updated_at.xmlschema)
-        doc.elements["//pcx_ib:FirstCreateDateTime"].add_text(edition_mng.created_at.xmlschema)
-        doc.elements["//pcx_ib:ReportDateTime"].add_text(self.published_at.xmlschema) unless self.published_at.blank?
+        doc.elements["//pcx_ib:CreateDateTime"].add_text(Time.now.xmlschema)
+        doc.elements["//pcx_ib:FirstCreateDateTime"].add_text((edition_mng.blank? ? Time.now.xmlschema : edition_mng.created_at.xmlschema))
+        doc.elements["//pcx_ib:ReportDateTime"].add_text(delivery_history.published_at.xmlschema) unless delivery_history.published_at.blank?
         unless self.closed_at.blank? # 公開終了日時が設定されている場合のみ
           doc.elements["//pcx_ib:ReportDateTime"].next_sibling = REXML::Element.new("pcx_ib:ValidDateTime")
-          doc.elements["//pcx_ib:ValidDateTime"].add_text(self.closed_at.xmlschema)
+          doc.elements["//pcx_ib:ValidDateTime"].add_text(delivery_history.closed_at.xmlschema)
         end
         unless self.opened_at.blank? # 公開開始日時が設定されている場合のみ
           doc.elements["//pcx_ib:ReportDateTime"].next_sibling = REXML::Element.new("pcx_ib:TargetDateTime")
-          doc.elements["//pcx_ib:TargetDateTime"].add_text(self.opened_at.xmlschema)
+          doc.elements["//pcx_ib:TargetDateTime"].add_text(delivery_history.opened_at.xmlschema)
         end
         doc.elements["//pcx_ib:Head/edxlde:distributionID"].add_text(distribution_id)
         doc.elements["//pcx_ib:Head/edxlde:distributionType"].add_text(type_update)
         doc.elements["//pcx_ib:Head/commons:documentRevision"].add_text("#{edition_num}")
         doc.elements["//pcx_ib:Head/commons:previousDocumentRevision"].add_text("#{edition_num - 1}")
         doc.elements["//pcx_ib:Head/commons:documentID"].add_text(edition_fields_map['uuid'])
-        doc.elements["//pcx_ib:Text"].add_text(self.summary)
+        doc.elements["//pcx_ib:Text"].add_text(delivery_history.summary)
         doc.elements["//pcx_ib:Areas/pcx_ib:Area/commons:areaName"].add_text(DST_LIST['commons_xml_field']['area_name'])
 
         # Body 部
@@ -626,16 +631,24 @@ module Lgdis
 
       # 公共コモンズ用XML 作成処理(エリアメールBody部)
       # ==== Args
+      # _delivery_history_ :: DeliveryHistoryオブジェクト
       # ==== Return
       # _doc_ :: REXML::Document 文字列
       # ==== Raise
-      def create_commons_area_mail_body
+      def create_commons_area_mail_body(delivery_history)
+        delivery_place_id = delivery_history.delivery_place_id
+        if delivery_place_id == UGENT_MAIL_DOCOMO
+          summury = delivery_history.summary
+        else
+          summury = self.add_url_and_training(delivery_history.summary, delivery_place_id)
+        end
+        
         doc =  REXML::Document.new
         doc.add_element("pcx_um:UrgentMail") # root
         doc.elements["//pcx_um:UrgentMail"].add_element("pcx_um:Information")
 
-        doc.elements["//pcx_um:Information"].add_element("pcx_um:Title").add_text("#{self.mail_subject}")
-        doc.elements["//pcx_um:Information"].add_element("pcx_um:Message").add_text("#{self.summary}")
+        doc.elements["//pcx_um:Information"].add_element("pcx_um:Title").add_text(delivery_history.mail_subject)
+        doc.elements["//pcx_um:Information"].add_element("pcx_um:Message").add_text(summury)
 
         return doc.to_s
       end

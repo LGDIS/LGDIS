@@ -1,34 +1,9 @@
 "id","name","position","assignable","builtin","permissions","issues_visibility"
-1,"Non member",1,true,1,"---
-- :view_issues
-- :add_issues
-- :add_issue_notes
-- :save_queries
-- :view_gantt
-- :view_calendar
-- :view_time_entries
-- :comment_news
-- :view_documents
-- :view_wiki_pages
-- :view_wiki_edits
-- :add_messages
-- :view_files
-- :browse_repository
-- :view_changesets
+1,"Non member",1,false,1,"---
 ","default"
-2,"Anonymous",2,true,2,"---
-- :view_issues
-- :view_gantt
-- :view_calendar
-- :view_time_entries
-- :view_documents
-- :view_wiki_pages
-- :view_wiki_edits
-- :view_files
-- :browse_repository
-- :view_changesets
+2,"Anonymous",2,false,2,"---
 ","default"
-3,"管理者だよ",3,true,0,"---
+3,"管理者",3,true,0,"---
 - :add_project
 - :edit_project
 - :close_project
@@ -97,53 +72,93 @@
 - :manage_disaster_damage
 - :request_delivery
 ","all"
-4,"開発者",4,true,0,"---
-- :manage_versions
-- :manage_categories
+4,"開発者",4,false,0,"---
+","default"
+5,"報告者",5,false,0,"---
+","default"
+6,"防災業務管理",6,true,0,"---
+- :add_project
+- :edit_project
+- :close_project
+- :add_subprojects
 - :view_issues
 - :add_issues
 - :edit_issues
+- :set_own_issues_private
+- :add_issue_notes
+- :edit_issue_notes
+- :edit_own_issue_notes
 - :view_private_notes
 - :set_notes_private
-- :manage_issue_relations
-- :manage_subtasks
-- :add_issue_notes
+- :move_issues
+- :delete_issues
+- :manage_public_queries
 - :save_queries
-- :view_gantt
-- :view_calendar
-- :log_time
-- :view_time_entries
-- :comment_news
-- :view_documents
-- :view_wiki_pages
-- :view_wiki_edits
-- :edit_wiki_pages
-- :delete_wiki_pages
-- :add_messages
-- :edit_own_messages
-- :view_files
-- :manage_files
-- :browse_repository
-- :view_changesets
-- :commit_access
-- :manage_related_issues
-","default"
-5,"報告者",5,true,0,"---
+- :view_issue_watchers
+- :add_issue_watchers
+- :delete_issue_watchers
+- :view_evacuation_advisories
+- :manage_evacuation_advisories
+- :view_shelters
+- :manage_shelters
+- :view_disaster_damage
+- :manage_disaster_damage
+- :request_delivery
+","all"
+7,"防災業務担当",7,true,0,"---
+- :add_project
+- :edit_project
+- :manage_members
+- :add_subprojects
 - :view_issues
 - :add_issues
+- :edit_issues
+- :set_own_issues_private
 - :add_issue_notes
+- :edit_issue_notes
+- :edit_own_issue_notes
+- :view_private_notes
+- :set_notes_private
 - :save_queries
-- :view_gantt
-- :view_calendar
-- :log_time
-- :view_time_entries
-- :comment_news
-- :view_documents
-- :view_wiki_pages
-- :view_wiki_edits
-- :add_messages
-- :edit_own_messages
-- :view_files
-- :browse_repository
-- :view_changesets
-","default"
+- :view_issue_watchers
+- :add_issue_watchers
+- :delete_issue_watchers
+- :view_evacuation_advisories
+- :manage_evacuation_advisories
+- :view_shelters
+- :manage_shelters
+- :view_disaster_damage
+- :manage_disaster_damage
+","all"
+8,"配信管理",8,true,0,"---
+- :view_issues
+- :add_issues
+- :edit_issues
+- :set_own_issues_private
+- :add_issue_notes
+- :edit_issue_notes
+- :edit_own_issue_notes
+- :view_private_notes
+- :set_notes_private
+- :save_queries
+- :view_issue_watchers
+- :add_issue_watchers
+- :delete_issue_watchers
+- :view_disaster_damage
+- :manage_disaster_damage
+- :request_delivery
+","all"
+9,"新規登録/閲覧",9,true,0,"---
+- :view_issues
+- :add_issues
+- :edit_issues
+- :set_own_issues_private
+- :add_issue_notes
+- :edit_issue_notes
+- :edit_own_issue_notes
+- :view_private_notes
+- :set_notes_private
+- :view_issue_watchers
+- :add_issue_watchers
+- :delete_issue_watchers
+","all"

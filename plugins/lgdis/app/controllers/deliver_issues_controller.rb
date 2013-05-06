@@ -11,7 +11,7 @@ class DeliverIssuesController < ApplicationController
     @delivery_history = DeliveryHistory.find_by_id delivery_history_id
     @issue_const = Constant::hash_for_table(Issue.table_name)
     # 配信内容作成処理
-    contents = @issue.create_summary(@delivery_history.delivery_place_id)
+    contents = @issue.create_summary(@delivery_history)
 
     @summary = contents.instance_of?(Hash) ? contents['message'] : @issue.summary
   end
