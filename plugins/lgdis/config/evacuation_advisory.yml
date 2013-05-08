@@ -115,3 +115,11 @@ sort_criteria_map:
     "6": # 警戒区域(発令)
       - "5"
       - "1"
+
+# 大地区の設定
+big_area:
+ - ××
+
+# 中地区の設定
+middle_area:
+ - ○○
