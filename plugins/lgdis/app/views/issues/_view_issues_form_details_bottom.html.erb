@@ -49,7 +49,7 @@
        </span>\
        <% if ZNETTOWNService.enable? %>
          <span id=\"<%= fid_map %>_z_show_link\">\
-           <img class=\"ui-datepicker-trigger\" src=\"<%= urlpart_prefix -%>/plugin_assets/lgdis/images/zmap.png\" alt=\"<%= l(:button_map_show) %>\" onclick=\"showZMapSelectPosition('<%= fid_map %>', DEFAULT_MAP_ZOOM, '<%= fid_text %>'); return false;\">\
+           <img class=\"ui-datepicker-trigger\" src=\"<%= urlpart_prefix -%>/plugin_assets/lgdis/images/zmap.png\" alt=\"<%= l(:button_map_show) %>\" onclick=\"showZMapSelectPosition('<%= fid_map %>', DEFAULT_MAP_ZOOM, '<%= fid_text %>', '<%= urlpart_prefix -%>'); return false;\">\
          </span>\
        <% end %>
        <span id=\"<%= fid_map %>_hide_link\" style=\"display: none\">\

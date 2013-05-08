@@ -2,13 +2,13 @@
  * マップ表示
  * ※ブラウザ上に認証承認ID(ADI)cookie群が存在する前提
  */
-function showZMapSelectPosition(map_id, zoom_rate, field_id) {
+function showZMapSelectPosition(map_id, zoom_rate, field_id, url) {
   toggleMap("z", map_id);
-  initZMapSelectPosition(map_id, zoom_rate, field_id);
+  initZMapSelectPosition(map_id, zoom_rate, field_id, url);
   map_initialized[map_id] = true;
 }
 
-function initZMapSelectPosition(map_id, zoom_rate, field_id) {
+function initZMapSelectPosition(map_id, zoom_rate, field_id, url) {
   // ログインしていなかったら処理終了
   if(ZntAuth.getStatus() != ZntAuth.STATUS_LOGIN) {
     return;
@@ -65,20 +65,20 @@ function initZMapSelectPosition(map_id, zoom_rate, field_id) {
     var addresses = text_field_value.split("\n");
     for (var i = 0; i < addresses.length; i++) {
       // 入力された住所にマーカをセットする
-      addZMarker(addresses[i], target, marker_bounds);
+      addZMarker(addresses[i], target, marker_bounds,url);
     }
   }
 
   // クリックイベントリスナ登録
   target.map.addEventListener("click", function(event) {
-    addClickedZAddress(event.pos, target, field_id);
+    addClickedZAddress(event.pos, target, field_id, url);
   });
 }
 
-/** 
+/**
  * マップにマーカを表示(発生場所入力用)
  */
-function addZMarker(address, target, marker_bounds) {
+function addZMarker(address, target, marker_bounds, url) {
   if (!address) return;
 
   // 検索オブジェクトと検索条件指定オブジェクトを生成する
@@ -105,7 +105,7 @@ function addZMarker(address, target, marker_bounds) {
     if (result.status == "30200000") {
       if (result.itemsAddr.length > 0) {
         // 取得地点にマーカをセット
-        putMarker(target, result.itemsAddr[0].pos);
+        putMarker(target, result.itemsAddr[0].pos, url);
         // マップ表示をマーカ群を見渡せる範囲に拡張する
         marker_bounds = extendRect(marker_bounds, result.itemsAddr[0].pos);
         target.map.moveToRect(marker_bounds, new ZntSize(20, 20));
@@ -123,7 +123,7 @@ function addZMarker(address, target, marker_bounds) {
 /** 
  * 指定された地点にマーカをセットし、その地名を取得してテキストフィールドに追加(発生場所入力用)
  */
-function addClickedZAddress(latlng, target, field_id) {
+function addClickedZAddress(latlng, target, field_id, url) {
   // クリック地点の地名を取得
   var sear = new ZntAddressStringSearch();
   var opts = new ZntAddressStringSearchSettings();
@@ -136,7 +136,7 @@ function addClickedZAddress(latlng, target, field_id) {
     switch(result.status){
     case "30400000":
       // クリック地点にマーカをセット
-      putMarker(target, latlng);
+      putMarker(target, latlng, url);
       // クリック地点の地名をテキストフィールドに追加
       var text_field = $("#"+field_id);
       var text_field_value = text_field.val().replace(/(\n|\r)+$/, '');
@@ -154,10 +154,12 @@ function addClickedZAddress(latlng, target, field_id) {
   sear.search(opts);
 }
 
-function putMarker(target, latlng) {
+function putMarker(target, latlng, url) {
   var marker_option;
+  var marker_url;
+  marker_url = url
   marker_opts = new ZntMarkerOptions();
-  marker_opts.icon = '/plugin_assets/lgdis/images/red-dot.png';
+  marker_opts.icon = marker_url + '/plugin_assets/lgdis/images/red-dot.png';
   marker_opts.visible = true;
   marker_opts.opacity = 1.0;
   marker_opts.zIndex = 0;
