@@ -6,7 +6,7 @@
   <thead>
     <tr>
       <th style="text-align: left">チケット番号 :</th>
-      <th style="text-align: left"><%= @issue.id %></th>
+      <th style="text-align: left"><%= @delivery_history.issue_id %></th>
     </tr>
     <tr>
       <th style="text-align: left">配信先 :</th>
@@ -16,28 +16,28 @@
     </tr>
     <tr>
       <th style="text-align: left">情報のタイトル :</th>
-      <th style="text-align: left"><%= @issue.mail_subject %></th>
+      <th style="text-align: left"><%= @delivery_history.mail_subject %></th>
     </tr>
     <tr>
       <th style="text-align: left">情報の見出し要約文 :</th>
       <th style="text-align: left">
-        <%= text_area_tag '', @issue.summary, {:readonly=>true,:size => "100x30"} %>
+        <%= text_area_tag '', @delivery_history.summary, {:readonly=>true,:size => "100x30"} %>
       </th>
     </tr>
     <tr>
       <th style="text-align: left">情報の更新種別 :</th>
-      <th style="text-align: left"><%= @issue_const["type_update"][@issue.type_update] %></th>
+      <th style="text-align: left"><%= @issue_const["type_update"][@delivery_history.type_update] %></th>
     </tr>
   <% if DST_LIST["general_info_ids"].include?(@issue.tracker_id) %>
     <tr>
       <th style="text-align: left">情報の識別区分 :</th>
-      <th style="text-align: left"><%= @issue_const["disaster_info_type"][@issue.disaster_info_type] %></th>
+      <th style="text-align: left"><%= @issue_const["disaster_info_type"][@delivery_history.disaster_info_type] %></th>
     </tr>
   <% end %>
     <tr>
       <th style="text-align: left">情報の発表日時 :</th>
       <th style="text-align: left">
-      <%= format_time(@issue.published_at) %>
+      <%= format_time(@delivery_history.published_at) %>
       </th>
     </tr>
     <tr>
@@ -47,19 +47,19 @@
     <tr>
       <th style="text-align: left">情報の公開開始日時 :</th>
       <th style="text-align: left">
-      <%= format_time(@issue.opened_at) %>
+      <%= format_time(@delivery_history.opened_at) %>
       </th>
     </tr>
     <tr>
       <th style="text-align: left">情報の公開終了日時 :</th>
       <th style="text-align: left">
-      <%= format_time(@issue.closed_at) %>
+      <%= format_time(@delivery_history.closed_at) %>
       </th>
     </tr>
     <tr>
       <th style="text-align: left">情報の取消時の説明文 :</th>
       <th style="text-align: left">
-        <%= text_area_tag '', @issue.description_cancel, {:readonly=>true,:size => "100x30"} %>
+        <%= text_area_tag '', @delivery_history.description_cancel, {:readonly=>true,:size => "100x30"} %>
       </th>
     </tr>
     <tr>
