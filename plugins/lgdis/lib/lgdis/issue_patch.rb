@@ -218,13 +218,17 @@ module Lgdis
               status_to = delivery_history.status
             end
           end
+#        rescue
+
         rescue
+
           # TODO
           # log 出力
           p $!
           status_to = 'failed'
           delivery_history.update_attribute(:status, status_to)
         ensure
+
           return status_to
         end
       end
@@ -243,7 +247,7 @@ module Lgdis
         self.init_journal(delivery_history.respond_user, notes.join("\n"))
         self.save!
       end
-      
+
       # RSS情報配信開始履歴書き込み処理
       # ==== Args
       # _delivery_history_ :: DeliveryHistoryオブジェクト
@@ -322,7 +326,14 @@ module Lgdis
         content = ""
         DST_LIST["link_disaster_portal_tracker_group"][self.tracker_id].each do | label_value |
           # content 内容作成
-          content += label_value["label"] + ':' + eval(label_value["value"]) + "\n"
+          #日付などの変換処理で 空の値をstrftime 処理をするとエラーでおちるのを防ぐため
+         begin
+           label_value_tmp = eval(label_value["value"])
+         rescue
+           label_value_tmp = ""
+         end
+
+          content += label_value["label"] + ':' + label_value_tmp + "\n"
         end
         return {'message' => content}
       end
@@ -626,7 +637,7 @@ module Lgdis
           return area if key == code
         end
       end
-      
+
       private
 
       # 公共コモンズ用XML 作成処理(エリアメールBody部)
@@ -642,7 +653,7 @@ module Lgdis
         else
           summury = self.add_url_and_training(delivery_history.summary, delivery_place_id)
         end
-        
+
         doc =  REXML::Document.new
         doc.add_element("pcx_um:UrgentMail") # root
         doc.elements["//pcx_um:UrgentMail"].add_element("pcx_um:Information")
