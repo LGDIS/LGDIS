@@ -120,7 +120,7 @@
         <% @delivery_histories.each do | d_h | %>
         <div class="table_border">
           <label class="label_border_updated"><%= tm_fmt_delivery(d_h.updated_at) %></label>
-          <label class="label_border_opened"><%= tm_fmt_delivery(d_h.opened_at) %></label>
+          <label class="label_border_opened"><%= tm_fmt_delivery(d_h.opened_at) %><br></label>
           <label class="label_border_delivery_place">
             <%= DST_LIST['delivery_place'][d_h.delivery_place_id]['name'] %>
           </label>
