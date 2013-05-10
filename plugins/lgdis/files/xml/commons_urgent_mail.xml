@@ -11,7 +11,7 @@
 
 	<!-- EDXL 部 -->
 	<edxlde:distributionID></edxlde:distributionID>
-	<edxlde:senderID>"editor.lgdis.city.ishinomaki"</edxlde:senderID><!-- 固定値 -->
+	<edxlde:senderID>"lgdis.ishinomaki-city.test"</edxlde:senderID><!-- 固定値 -->
 	<edxlde:dateTimeSent></edxlde:dateTimeSent>
 	<edxlde:distributionStatus></edxlde:distributionStatus>
 	<edxlde:distributionType></edxlde:distributionType>
