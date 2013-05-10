@@ -125,8 +125,8 @@ class DeliveryHistory < ActiveRecord::Base
       # コモンズ/緊急速報メールの場合、配信用宮中であれば許可
       return (status == 'request')
     when for_atom?
-      # ATOM(RSS)の場合は外部配信対象外なので不可
-      return false
+      #以前は配信対象外だったが仕様変更のため配信対象に変更
+      return true
     else
       # 上記以外(Twitter/Facebook/各種メール)の場合、配信要求中であれば許可
       return (status == 'request')
@@ -144,8 +144,8 @@ class DeliveryHistory < ActiveRecord::Base
       # コモンズ/緊急速報メールの場合は不可
       return false
     when for_atom?
-      # ATOM(RSS)の場合は不可
-      return false
+      # ATOM(RSS)の場合に許可する
+      return true
     else
       # 上記以外(Twitter/Facebook/各種メール)の場合、取り消し可能なステータスであれば許可
       return (status == 'request' || status == 'reserve')
@@ -244,13 +244,13 @@ class DeliveryHistory < ActiveRecord::Base
         self.issue.disaster_info_type.blank?
       errors.add(:disaster_info_type, "を入力して下さい")
     end
-    
-    if ((DST_LIST['general_info_ids'].include?(self.issue.tracker_id)) || (DST_LIST['events_ids'].include?(self.issue.tracker_id))) && 
+
+    if ((DST_LIST['general_info_ids'].include?(self.issue.tracker_id)) || (DST_LIST['events_ids'].include?(self.issue.tracker_id))) &&
         [COMMONS_ID].include?(self.delivery_place_id) &&
         self.issue.description.blank?
       errors.add(:description, "を入力して下さい")
     end
-    
+
     # 公開開始日時未設定の場合に、現在時刻を設定。
     if ([SMTP_0_ID, SMTP_1_ID, SMTP_2_ID, SMTP_3_ID, SMTP_AUTH_ID, TWITTER_ID, FACEBOOK_ID, ATOM_ID].include?(self.delivery_place_id)) && self.opened_at.blank?
 		self.opened_at = Time.now
