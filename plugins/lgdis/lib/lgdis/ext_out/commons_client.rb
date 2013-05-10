@@ -84,6 +84,7 @@ module Lgdis
             #ssl_cert_key_file "
         end
         doc = create_soap_document(data)
+        p doc
         response = client.call(:publish) do
           xml doc
         end
@@ -122,7 +123,7 @@ module Lgdis
       def create_wsse_header
         wsse_username = @username
         wsse_nonce = Base64.encode64((rand() * 1000000000).to_i.to_s).chomp
-        wsse_created = XSD::XSDDateTime.new(Time.now.utc - 30).to_s.gsub(/\..*/, "") + 'Z'
+        wsse_created = XSD::XSDDateTime.new(Time.now.utc).to_s.slice(0,19) + 'Z'
         wssePassword = Base64.encode64(Digest::SHA1.digest(Base64.decode64(wsse_nonce) + wsse_created + @password)).chomp
         # security
         security_element = REXML::Element.new WS_SECURITY_PREFIX + ':Security'
