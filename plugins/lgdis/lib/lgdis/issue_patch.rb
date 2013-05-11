@@ -430,6 +430,7 @@ module Lgdis
 
         # edxl 部要素追加
         doc.elements["//edxlde:distributionID"].add_text(distribution_id)
+        doc.elements["//edxlde:senderID"].add_text(DST_LIST['commons_xml_field']['sender_id'])
         doc.elements["//edxlde:dateTimeSent"].add_text(Time.now.xmlschema)
         doc.elements["//edxlde:EDXLDistribution/edxlde:distributionStatus"].add_text(operation_flg)
         doc.elements["//edxlde:EDXLDistribution/edxlde:distributionType"].add_text(type_update)
