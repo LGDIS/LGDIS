@@ -26,12 +26,12 @@
       <div class="splitcontent">
           <p>
             <label>情報のタイトル</label>
-            <%= text_field_tag 'issue[mail_subject]',@issue.mail_subject, {:size => "95"} %>
+            <%= text_field_tag 'issue[mail_subject]',@issue.mail_subject, {:size => "85"} %>
           </p>
 
           <p>
             <label>情報の見出し要約文</label>
-            <%= text_area_tag 'issue[summary]', @issue.summary, {:size => "95x5"} %>
+            <%= text_area_tag 'issue[summary]', @issue.summary, {:size => "85x5"} %>
           </p>
       </div>
     </div>
@@ -120,7 +120,7 @@
         <% @delivery_histories.each do | d_h | %>
         <div class="table_border">
           <label class="label_border_updated"><%= tm_fmt_delivery(d_h.updated_at) %></label>
-          <label class="label_border_opened"><%= tm_fmt_delivery(d_h.opened_at) %></label>
+          <label class="label_border_opened"><%= tm_fmt_delivery(d_h.opened_at) %><br></label>
           <label class="label_border_delivery_place">
             <%= DST_LIST['delivery_place'][d_h.delivery_place_id]['name'] %>
           </label>
