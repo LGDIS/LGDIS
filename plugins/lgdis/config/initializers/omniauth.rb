@@ -5,7 +5,7 @@ OpenID.fetcher.ca_file = '/etc/pki/tls/certs/ca-bundle.crt'
 Rails.application.config.middleware.use OmniAuth::Builder do
   provider :open_id, :name => 'google', :identifier => 'https://www.google.com/accounts/o8/id'
   provider :twitter, API_KEY['twitter']['consumer_key'], API_KEY['twitter']['consumer_secret']
-  provider :facebook, API_KEY['facebook']['user_id'], API_KEY['facebook']['app_token']
+  provider :facebook, API_KEY['facebook']['app_id'], API_KEY['facebook']['app_secret']
   provider :saml,
   {
     :name                           => 'openam',
