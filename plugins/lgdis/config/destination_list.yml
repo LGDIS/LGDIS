@@ -26,7 +26,7 @@ delivery_job_class:
 
 to: # 配送先メールアドレス、メーリングリスト
   - &to_err apl@localhost.localdomain # Resqueジョブエラー通知
-  - &to_1   apl@localhost.localdomain # 自治体職員向けメール（０号配備）
+  - &to_1   to1@localhost.localdomain # 自治体職員向けメール（０号配備）
   - &to_2   to2@localhost.localdomain # 自治体職員向けメール（１号配備）
   - &to_3   to3@localhost.localdomain # 自治体職員向けメール（２号配備）
   - &to_4   to4@localhost.localdomain # 自治体職員向けメール（３号配備）
@@ -204,13 +204,13 @@ delivery_place_rss: &delivery_place_rss
 #     [配信先1, 配信先2, 配信先3,配信先4
 auto_destination:
   0:  # ０号配備
-    [*smtp_0, *twitter, *facebook, *urgent_mail_docomo]
+    [*smtp_0, *twitter, *facebook]
   1:  # １号配備
-    [*smtp_1, *twitter, *facebook, *urgent_mail_docomo]
+    [*smtp_1, *twitter, *facebook]
   2:  # ２号配備
-    [*smtp_2, *twitter, *facebook, *urgent_mail_docomo]
+    [*smtp_2, *twitter, *facebook]
   3:  # ３号配備
-    [*smtp_3, *twitter, *facebook, *urgent_mail_docomo]
+    [*smtp_3, *twitter, *facebook]
 
 # 自動配信除外設定
 # JMAとJ-Alertから送信されてくる同じXMLの二重配信さけるための措置
@@ -238,16 +238,8 @@ auto_destination_out:
 #       [配信先1, 配信先2, 配信先3, 配信先4]
 destination:
   1: # Non member
-    1: # 避難勧告指示・指示情報(公共コモンズ配信用)
-      *delivery_place_group_all
-    2: # 避難所情報
-      *delivery_place_group_all
   2: # Anonymous
-    1: # 避難勧告指示・指示情報(公共コモンズ配信用)
-      *delivery_place_group_all
-    2: # 避難所情報
-      *delivery_place_group_all
-  3: # 管理者(プロトタイプ環境 admin)
+  3: # 管理者
     1: # 【システム】避難勧告・指示
       *delivery_place_group_all
     2: # 【システム】避難所開設・閉鎖
@@ -382,250 +374,586 @@ destination:
       *delivery_place_group_report
     78: # 【システム】J-ALERT 発信（気象庁）
       *delivery_place_group_report
-  6: # モデレータ
+  6: # 防災業務管理
     1: # 【システム】避難勧告・指示
       *delivery_place_group_all
     2: # 【システム】避難所開設・閉鎖
       *delivery_place_group_all
+    3: # 【システム】気象庁発信（その他）
+      *delivery_place_group_report
+    4: # 【システム】気象庁発信（警報・注意報）
+      *delivery_place_group_report
+    5: # 【システム】河川管理者発信（その他）
+      *delivery_place_group_report
+    6: # 【システム】河川管理者発信（警報・注意報）
+      *delivery_place_group_report
+    7: # 【被害報告】人的
+      *delivery_place_group_report
+    8: # 【被害報告】住家建物
+      *delivery_place_group_report
+    9: # 【被害報告】道路
+      *delivery_place_group_report
+    10: # 【被害報告】橋梁
+      *delivery_place_group_report
+    11: # 【被害報告】上水道
+      *delivery_place_group_report
+    12: # 【被害報告】下水道
+      *delivery_place_group_report
+    13: # 【被害報告】ガス設備
+      *delivery_place_group_report
+    14: # 【被害報告】通信網
+      *delivery_place_group_report
+    15: # 【被害報告】その他
+      *delivery_place_group_report
+    16: # 【システム】災害対策本部設置
+      *delivery_place_group_all
+    17: # 【システム】被害要約（概況）
+      *delivery_place_group_all
     18: # 【システム】被害要約（状況）
+      *delivery_place_group_all
+    20: # 【広報-交通】道路交通規制に関する情報
+      *delivery_place_group_all
+    21: # 【広報-交通】道路渋滞に関する情報
+      *delivery_place_group_all
+    22: # 道路交通事故に関する情報
+      *delivery_place_group_report
+    23: # 路上故障車に関する情報
+      *delivery_place_group_report
+    24: # 路上障害物に関する情報
+      *delivery_place_group_report
+    25: # 【道路-交通】道路工事に関する情報
+      *delivery_place_group_all
+    26: # 道路火災に関する情報
+      *delivery_place_group_report
+    27: # 【道路-交通】道路路面状況に関する情報
+      *delivery_place_group_all
+    28: # 被災者からの要望（生活全般）
+      *delivery_place_group_report
+    29: # 被災者からの要望（物資・資材）
+      *delivery_place_group_report
+    33: # 【被害報告】非住家建物
+      *delivery_place_group_report
+    34: # 【被害報告】高等学校
+      *delivery_place_group_report
+    35: # 【被害報告】中学校
+      *delivery_place_group_report
+    36: # 【被害報告】小学校
+      *delivery_place_group_report
+    37: # 【被害報告】幼稚園
+      *delivery_place_group_report
+    38: # 【被害報告】保育所
+      *delivery_place_group_report
+    39: # 【被害報告】災害弱者関連施設
+      *delivery_place_group_report
+    40: # 【被害報告】医療施設
+      *delivery_place_group_report
+    41: # 【被害報告】災害重要施設
+      *delivery_place_group_report
+    42: # 【広報-交通】鉄道の運行に関する情報
+      *delivery_place_group_all
+    43: # 【広報-ライフライン】上水道に関する情報
       *delivery_place_group_all
     44: # 【広報-ライフライン】下水道に関する情報
       *delivery_place_group_all
+    45: # 【広報-ライフライン】ガスに関する情報
+      *delivery_place_group_all
+    46: # 【広報-ライフライン】通信網に関する情報
+      *delivery_place_group_all
+    48: # その他の災害関連情報
+      *delivery_place_group_report
+    50: # 【広報-ライフライン】電気に関する情報
+      *delivery_place_group_all
+    51: # 【広報-ライフライン】臨時災害放送に関する情報
+      *delivery_place_group_all
+    52: # 【広報-生活情報】行政手続きに関する情報
+      *delivery_place_group_all
+    53: # 【広報-生活情報】その他の被災者支援に関する情報
+      *delivery_place_group_all
+    54: # 【広報-生活情報】学校・幼稚園・保育所に関する情報
+      *delivery_place_group_all
+    55: # 【広報-ライフライン】給水に関する情報
+      *delivery_place_group_all
+    56: # 【広報-生活情報】健康・福祉・介護に関する情報
+      *delivery_place_group_all
+    57: # 【広報-生活情報】環境に関する情報
+      *delivery_place_group_all
+    58: # 【広報-生活情報】防犯に関する情報
+      *delivery_place_group_all
+    59: # 【広報-生活情報】医療に関する情報
+      *delivery_place_group_all
+    60: # 【広報-生活情報】炊き出し・物資配布に関する情報
+      *delivery_place_group_all
+    61: # 【広報-生活情報】入浴サービスに関する情報
+      *delivery_place_group_all
+    62: # 【広報-生活情報】安置所に関する情報
+      *delivery_place_group_all
+    63: # 【広報-生活情報】災害習得物に関する情報
+      *delivery_place_group_all
+    64: # 【広報-生活情報】ボランティアの支援を受けたい方への情報
+      *delivery_place_group_all
+    65: # 【広報-生活情報】ボランティア活動をしたい方への情報
+      *delivery_place_group_all
+    66: # 【広報-生活情報】営業店舗に関する情報
+      *delivery_place_group_all
+    67: # 火災・救急・救助の要請
+      *delivery_place_group_report
+    68: # 海上に関する情報
+      *delivery_place_group_report
+    69: # 河川に関する情報
+      *delivery_place_group_report
+    70: # 広域圏災害に関する情報
+      *delivery_place_group_report
     71: # 被災者からの要望（食料）
       *delivery_place_group_report
-##
-##added by NTTPC ここから
-  7: # 災害対策本部(プロトタイプ環境 xxxxx)
-    1: # 避難勧告指示・指示情報(公共コモンズ配信用)
+    72: # 【広報-交通】バスの運行に関する情報
       *delivery_place_group_all
-    2: # 避難所情報
+    73: # 【広報-交通】航空路の運行に関する情報
       *delivery_place_group_all
-    3: # 気象環境変化
+    74: # 【広報-交通】船舶路の運行に関する情報
+      *delivery_place_group_all
+    75: # 【広報-交通】その他公共交通の運行に関する情報
+      *delivery_place_group_all
+    76: # 【被害報告】電気
+      *delivery_place_group_all
+    77: # 【システム】J-ALERT 発信（内閣官房）
       *delivery_place_group_report
-    7: # 人的被害報告
+    78: # 【システム】J-ALERT 発信（気象庁）
       *delivery_place_group_report
-    8: # 住家建物被害報告
+  7: # 防災業務担当
+    1: # 【システム】避難勧告・指示
+      *delivery_place_group_all
+    2: # 【システム】避難所開設・閉鎖
+      *delivery_place_group_all
+    3: # 【システム】気象庁発信（その他）
       *delivery_place_group_report
-    9: # 道路被害報告
+    4: # 【システム】気象庁発信（警報・注意報）
       *delivery_place_group_report
-    10: # 橋梁被害報告
+    5: # 【システム】河川管理者発信（その他）
       *delivery_place_group_report
-    11: # 上水道被害報告
+    6: # 【システム】河川管理者発信（警報・注意報）
       *delivery_place_group_report
-    12: # 下水道被害報告
+    7: # 【被害報告】人的
       *delivery_place_group_report
-    13: # ガス設備被害報告
+    8: # 【被害報告】住家建物
       *delivery_place_group_report
-    14: # 通信網被害報告
+    9: # 【被害報告】道路
       *delivery_place_group_report
-    15: # その他被害報告
+    10: # 【被害報告】橋梁
       *delivery_place_group_report
-    16: # 災害対策本部設置報告
-      *delivery_place_group_all
-    17: # 被害者要約報告(概況)
+    11: # 【被害報告】上水道
       *delivery_place_group_report
-    18: # 被害者要約報告(状況)
-      *delivery_place_group_all
-    20: # 道路交通規制に関する情報
-      *delivery_place_group_all
-    21: # 道路渋滞に関する情報
-      *delivery_place_group_all
-    25: # 道路工事に関する情報
-      *delivery_place_group_all
-    27: # 道路路面状況に関する情報
-      *delivery_place_group_all
-    33: # 非住家建物被害報告
+    12: # 【被害報告】下水道
       *delivery_place_group_report
-    34: # 高等学校被害報告
+    13: # 【被害報告】ガス設備
       *delivery_place_group_report
-    35: # 中学校被害報告
+    14: # 【被害報告】通信網
       *delivery_place_group_report
-    36: # 小学校被害報告
+    15: # 【被害報告】その他
       *delivery_place_group_report
-    37: # 幼稚園被害報告
+    16: # 【システム】災害対策本部設置
+      *delivery_place_group_all
+    17: # 【システム】被害要約（概況）
+      *delivery_place_group_all
+    18: # 【システム】被害要約（状況）
+      *delivery_place_group_all
+    20: # 【広報-交通】道路交通規制に関する情報
+      *delivery_place_group_all
+    21: # 【広報-交通】道路渋滞に関する情報
+      *delivery_place_group_all
+    22: # 道路交通事故に関する情報
       *delivery_place_group_report
-    38: # 保育所被害報告
+    23: # 路上故障車に関する情報
       *delivery_place_group_report
-    39: # 災害弱者関連施設被害報告
+    24: # 路上障害物に関する情報
       *delivery_place_group_report
-    40: # 医療施設被害報告
+    25: # 【道路-交通】道路工事に関する情報
+      *delivery_place_group_all
+    26: # 道路火災に関する情報
       *delivery_place_group_report
-    41: # 災害重要施設被害報告
+    27: # 【道路-交通】道路路面状況に関する情報
+      *delivery_place_group_all
+    28: # 被災者からの要望（生活全般）
       *delivery_place_group_report
-    42: # 鉄道の運行に関する情報
-      *delivery_place_group_all
-    43: # 上水道に関する情報
-      *delivery_place_group_all
-    44: # 下水道に関する情報
-      *delivery_place_group_all
-    45: # ガスに関する情報
-      *delivery_place_group_all
-    46: # 通信網に関する情報
-      *delivery_place_group_all
-    50: # 電気に関する情報
-      *delivery_place_group_all
-    51: # 臨時災害放送に関する情報
-      *delivery_place_group_all
-    52: # 行政手続きに関する情報
-      *delivery_place_group_all
-    53: # その他の被災者支援に関する情報
-      *delivery_place_group_all
-    54: # 学校・幼稚園・保育所に関する情報
-      *delivery_place_group_all
-    55: # 給水に関する情報
-      *delivery_place_group_all
-    56: # 健康・福祉・介護に関する情報
-      *delivery_place_group_all
-    57: # 環境に関する情報
-      *delivery_place_group_all
-    58: # 防犯に関する情報
-      *delivery_place_group_all
-    59: # 医療に関する情報
-      *delivery_place_group_all
-    60: # 炊き出し・物資配布に関する情報
-      *delivery_place_group_all
-    61: # 入浴サービスに関する情報
-      *delivery_place_group_all
-    62: # 安置所に関する情報
-      *delivery_place_group_all
-    63: # 災害習得物に関する情報
-      *delivery_place_group_all
-    64: # ボランティアの支援を受けたい方への情報
-      *delivery_place_group_all
-    65: # ボランティア活動をしたい方への情報
-      *delivery_place_group_all
-    66: # 営業店舗に関する情報
-      *delivery_place_group_all
-    72: # バスの運行に関する情報
-      *delivery_place_group_all
-    73: # 航空路の運行に関する情報
-      *delivery_place_group_all
-    74: # 船舶路の運行に関する情報
-      *delivery_place_group_all
-    75: # その他公共交通の運行に関する情報
-      *delivery_place_group_all
-  8: # 広報担当(プロトタイプ環境)
-    1: # 避難勧告指示・指示情報(公共コモンズ配信用)
-      *delivery_place_group_all
-    2: # 避難所情報
-      *delivery_place_group_all
-    3: # 気象環境変化
+    29: # 被災者からの要望（物資・資材）
       *delivery_place_group_report
-    7: # 人的被害報告
+    33: # 【被害報告】非住家建物
       *delivery_place_group_report
-    8: # 住家建物被害報告
+    34: # 【被害報告】高等学校
       *delivery_place_group_report
-    9: # 道路被害報告
+    35: # 【被害報告】中学校
       *delivery_place_group_report
-    10: # 橋梁被害報告
+    36: # 【被害報告】小学校
       *delivery_place_group_report
-    11: # 上水道被害報告
+    37: # 【被害報告】幼稚園
       *delivery_place_group_report
-    12: # 下水道被害報告
+    38: # 【被害報告】保育所
       *delivery_place_group_report
-    13: # ガス設備被害報告
+    39: # 【被害報告】災害弱者関連施設
       *delivery_place_group_report
-    14: # 通信網被害報告
+    40: # 【被害報告】医療施設
       *delivery_place_group_report
-    15: # その他被害報告
+    41: # 【被害報告】災害重要施設
       *delivery_place_group_report
-    16: # 災害対策本部設置報告
+    42: # 【広報-交通】鉄道の運行に関する情報
       *delivery_place_group_all
-    17: # 被害者要約報告(概況)
+    43: # 【広報-ライフライン】上水道に関する情報
+      *delivery_place_group_all
+    44: # 【広報-ライフライン】下水道に関する情報
+      *delivery_place_group_all
+    45: # 【広報-ライフライン】ガスに関する情報
+      *delivery_place_group_all
+    46: # 【広報-ライフライン】通信網に関する情報
+      *delivery_place_group_all
+    48: # その他の災害関連情報
       *delivery_place_group_report
-    18: # 被害者要約報告(状況)
+    50: # 【広報-ライフライン】電気に関する情報
       *delivery_place_group_all
-    20: # 道路交通規制に関する情報
+    51: # 【広報-ライフライン】臨時災害放送に関する情報
       *delivery_place_group_all
-    21: # 道路渋滞に関する情報
+    52: # 【広報-生活情報】行政手続きに関する情報
       *delivery_place_group_all
-    25: # 道路工事に関する情報
+    53: # 【広報-生活情報】その他の被災者支援に関する情報
       *delivery_place_group_all
-    27: # 道路路面状況に関する情報
+    54: # 【広報-生活情報】学校・幼稚園・保育所に関する情報
       *delivery_place_group_all
-    33: # 非住家建物被害報告
+    55: # 【広報-ライフライン】給水に関する情報
+      *delivery_place_group_all
+    56: # 【広報-生活情報】健康・福祉・介護に関する情報
+      *delivery_place_group_all
+    57: # 【広報-生活情報】環境に関する情報
+      *delivery_place_group_all
+    58: # 【広報-生活情報】防犯に関する情報
+      *delivery_place_group_all
+    59: # 【広報-生活情報】医療に関する情報
+      *delivery_place_group_all
+    60: # 【広報-生活情報】炊き出し・物資配布に関する情報
+      *delivery_place_group_all
+    61: # 【広報-生活情報】入浴サービスに関する情報
+      *delivery_place_group_all
+    62: # 【広報-生活情報】安置所に関する情報
+      *delivery_place_group_all
+    63: # 【広報-生活情報】災害習得物に関する情報
+      *delivery_place_group_all
+    64: # 【広報-生活情報】ボランティアの支援を受けたい方への情報
+      *delivery_place_group_all
+    65: # 【広報-生活情報】ボランティア活動をしたい方への情報
+      *delivery_place_group_all
+    66: # 【広報-生活情報】営業店舗に関する情報
+      *delivery_place_group_all
+    67: # 火災・救急・救助の要請
       *delivery_place_group_report
-    34: # 高等学校被害報告
+    68: # 海上に関する情報
       *delivery_place_group_report
-    35: # 中学校被害報告
+    69: # 河川に関する情報
       *delivery_place_group_report
-    36: # 小学校被害報告
+    70: # 広域圏災害に関する情報
       *delivery_place_group_report
-    37: # 幼稚園被害報告
+    71: # 被災者からの要望（食料）
       *delivery_place_group_report
-    38: # 保育所被害報告
+    72: # 【広報-交通】バスの運行に関する情報
+      *delivery_place_group_all
+    73: # 【広報-交通】航空路の運行に関する情報
+      *delivery_place_group_all
+    74: # 【広報-交通】船舶路の運行に関する情報
+      *delivery_place_group_all
+    75: # 【広報-交通】その他公共交通の運行に関する情報
+      *delivery_place_group_all
+    76: # 【被害報告】電気
+      *delivery_place_group_all
+    77: # 【システム】J-ALERT 発信（内閣官房）
       *delivery_place_group_report
-    39: # 災害弱者関連施設被害報告
+    78: # 【システム】J-ALERT 発信（気象庁）
       *delivery_place_group_report
-    40: # 医療施設被害報告
+  8: # 配信管理者
+    1: # 【システム】避難勧告・指示
+      *delivery_place_group_all
+    2: # 【システム】避難所開設・閉鎖
+      *delivery_place_group_all
+    3: # 【システム】気象庁発信（その他）
       *delivery_place_group_report
-    41: # 災害重要施設被害報告
+    4: # 【システム】気象庁発信（警報・注意報）
       *delivery_place_group_report
-    42: # 鉄道の運行に関する情報
+    5: # 【システム】河川管理者発信（その他）
+      *delivery_place_group_report
+    6: # 【システム】河川管理者発信（警報・注意報）
+      *delivery_place_group_report
+    7: # 【被害報告】人的
+      *delivery_place_group_report
+    8: # 【被害報告】住家建物
+      *delivery_place_group_report
+    9: # 【被害報告】道路
+      *delivery_place_group_report
+    10: # 【被害報告】橋梁
+      *delivery_place_group_report
+    11: # 【被害報告】上水道
+      *delivery_place_group_report
+    12: # 【被害報告】下水道
+      *delivery_place_group_report
+    13: # 【被害報告】ガス設備
+      *delivery_place_group_report
+    14: # 【被害報告】通信網
+      *delivery_place_group_report
+    15: # 【被害報告】その他
+      *delivery_place_group_report
+    16: # 【システム】災害対策本部設置
       *delivery_place_group_all
-    43: # 上水道に関する情報
+    17: # 【システム】被害要約（概況）
       *delivery_place_group_all
-    44: # 下水道に関する情報
+    18: # 【システム】被害要約（状況）
       *delivery_place_group_all
-    45: # ガスに関する情報
+    20: # 【広報-交通】道路交通規制に関する情報
       *delivery_place_group_all
-    46: # 通信網に関する情報
+    21: # 【広報-交通】道路渋滞に関する情報
       *delivery_place_group_all
-    50: # 電気に関する情報
+    22: # 道路交通事故に関する情報
+      *delivery_place_group_report
+    23: # 路上故障車に関する情報
+      *delivery_place_group_report
+    24: # 路上障害物に関する情報
+      *delivery_place_group_report
+    25: # 【道路-交通】道路工事に関する情報
       *delivery_place_group_all
-    51: # 臨時災害放送に関する情報
+    26: # 道路火災に関する情報
+      *delivery_place_group_report
+    27: # 【道路-交通】道路路面状況に関する情報
       *delivery_place_group_all
-    52: # 行政手続きに関する情報
+    28: # 被災者からの要望（生活全般）
+      *delivery_place_group_report
+    29: # 被災者からの要望（物資・資材）
+      *delivery_place_group_report
+    33: # 【被害報告】非住家建物
+      *delivery_place_group_report
+    34: # 【被害報告】高等学校
+      *delivery_place_group_report
+    35: # 【被害報告】中学校
+      *delivery_place_group_report
+    36: # 【被害報告】小学校
+      *delivery_place_group_report
+    37: # 【被害報告】幼稚園
+      *delivery_place_group_report
+    38: # 【被害報告】保育所
+      *delivery_place_group_report
+    39: # 【被害報告】災害弱者関連施設
+      *delivery_place_group_report
+    40: # 【被害報告】医療施設
+      *delivery_place_group_report
+    41: # 【被害報告】災害重要施設
+      *delivery_place_group_report
+    42: # 【広報-交通】鉄道の運行に関する情報
       *delivery_place_group_all
-    53: # その他の被災者支援に関する情報
+    43: # 【広報-ライフライン】上水道に関する情報
       *delivery_place_group_all
-    54: # 学校・幼稚園・保育所に関する情報
+    44: # 【広報-ライフライン】下水道に関する情報
       *delivery_place_group_all
-    55: # 給水に関する情報
+    45: # 【広報-ライフライン】ガスに関する情報
       *delivery_place_group_all
-    56: # 健康・福祉・介護に関する情報
+    46: # 【広報-ライフライン】通信網に関する情報
       *delivery_place_group_all
-    57: # 環境に関する情報
+    48: # その他の災害関連情報
+      *delivery_place_group_report
+    50: # 【広報-ライフライン】電気に関する情報
       *delivery_place_group_all
-    58: # 防犯に関する情報
+    51: # 【広報-ライフライン】臨時災害放送に関する情報
       *delivery_place_group_all
-    59: # 医療に関する情報
+    52: # 【広報-生活情報】行政手続きに関する情報
       *delivery_place_group_all
-    60: # 炊き出し・物資配布に関する情報
+    53: # 【広報-生活情報】その他の被災者支援に関する情報
       *delivery_place_group_all
-    61: # 入浴サービスに関する情報
+    54: # 【広報-生活情報】学校・幼稚園・保育所に関する情報
       *delivery_place_group_all
-    62: # 安置所に関する情報
+    55: # 【広報-ライフライン】給水に関する情報
       *delivery_place_group_all
-    63: # 災害習得物に関する情報
+    56: # 【広報-生活情報】健康・福祉・介護に関する情報
       *delivery_place_group_all
-    64: # ボランティアの支援を受けたい方への情報
+    57: # 【広報-生活情報】環境に関する情報
       *delivery_place_group_all
-    65: # ボランティア活動をしたい方への情報
+    58: # 【広報-生活情報】防犯に関する情報
       *delivery_place_group_all
-    66: # 営業店舗に関する情報
+    59: # 【広報-生活情報】医療に関する情報
       *delivery_place_group_all
-    72: # バスの運行に関する情報
+    60: # 【広報-生活情報】炊き出し・物資配布に関する情報
       *delivery_place_group_all
-    73: # 航空路の運行に関する情報
+    61: # 【広報-生活情報】入浴サービスに関する情報
       *delivery_place_group_all
-    74: # 船舶路の運行に関する情報
+    62: # 【広報-生活情報】安置所に関する情報
       *delivery_place_group_all
-    75: # その他公共交通の運行に関する情報
+    63: # 【広報-生活情報】災害習得物に関する情報
       *delivery_place_group_all
-## added by NTTPC ここまで
-##
-  9: # 外部入力者
-    1: # 避難勧告指示・指示情報(公共コモンズ配信用)
+    64: # 【広報-生活情報】ボランティアの支援を受けたい方への情報
       *delivery_place_group_all
-    2: # 避難所情報
+    65: # 【広報-生活情報】ボランティア活動をしたい方への情報
       *delivery_place_group_all
-  10: # 閲覧者
-    1: # 避難勧告指示・指示情報(公共コモンズ配信用)
+    66: # 【広報-生活情報】営業店舗に関する情報
       *delivery_place_group_all
-    2: # 避難所情報
+    67: # 火災・救急・救助の要請
+      *delivery_place_group_report
+    68: # 海上に関する情報
+      *delivery_place_group_report
+    69: # 河川に関する情報
+      *delivery_place_group_report
+    70: # 広域圏災害に関する情報
+      *delivery_place_group_report
+    71: # 被災者からの要望（食料）
+      *delivery_place_group_report
+    72: # 【広報-交通】バスの運行に関する情報
       *delivery_place_group_all
-
+    73: # 【広報-交通】航空路の運行に関する情報
+      *delivery_place_group_all
+    74: # 【広報-交通】船舶路の運行に関する情報
+      *delivery_place_group_all
+    75: # 【広報-交通】その他公共交通の運行に関する情報
+      *delivery_place_group_all
+    76: # 【被害報告】電気
+      *delivery_place_group_all
+    77: # 【システム】J-ALERT 発信（内閣官房）
+      *delivery_place_group_report
+    78: # 【システム】J-ALERT 発信（気象庁）
+      *delivery_place_group_report
+  9: # 新規登録／閲覧
+    1: # 【システム】避難勧告・指示
+      *delivery_place_group_all
+    2: # 【システム】避難所開設・閉鎖
+      *delivery_place_group_all
+    3: # 【システム】気象庁発信（その他）
+      *delivery_place_group_report
+    4: # 【システム】気象庁発信（警報・注意報）
+      *delivery_place_group_report
+    5: # 【システム】河川管理者発信（その他）
+      *delivery_place_group_report
+    6: # 【システム】河川管理者発信（警報・注意報）
+      *delivery_place_group_report
+    7: # 【被害報告】人的
+      *delivery_place_group_report
+    8: # 【被害報告】住家建物
+      *delivery_place_group_report
+    9: # 【被害報告】道路
+      *delivery_place_group_report
+    10: # 【被害報告】橋梁
+      *delivery_place_group_report
+    11: # 【被害報告】上水道
+      *delivery_place_group_report
+    12: # 【被害報告】下水道
+      *delivery_place_group_report
+    13: # 【被害報告】ガス設備
+      *delivery_place_group_report
+    14: # 【被害報告】通信網
+      *delivery_place_group_report
+    15: # 【被害報告】その他
+      *delivery_place_group_report
+    16: # 【システム】災害対策本部設置
+      *delivery_place_group_all
+    17: # 【システム】被害要約（概況）
+      *delivery_place_group_all
+    18: # 【システム】被害要約（状況）
+      *delivery_place_group_all
+    20: # 【広報-交通】道路交通規制に関する情報
+      *delivery_place_group_all
+    21: # 【広報-交通】道路渋滞に関する情報
+      *delivery_place_group_all
+    22: # 道路交通事故に関する情報
+      *delivery_place_group_report
+    23: # 路上故障車に関する情報
+      *delivery_place_group_report
+    24: # 路上障害物に関する情報
+      *delivery_place_group_report
+    25: # 【道路-交通】道路工事に関する情報
+      *delivery_place_group_all
+    26: # 道路火災に関する情報
+      *delivery_place_group_report
+    27: # 【道路-交通】道路路面状況に関する情報
+      *delivery_place_group_all
+    28: # 被災者からの要望（生活全般）
+      *delivery_place_group_report
+    29: # 被災者からの要望（物資・資材）
+      *delivery_place_group_report
+    33: # 【被害報告】非住家建物
+      *delivery_place_group_report
+    34: # 【被害報告】高等学校
+      *delivery_place_group_report
+    35: # 【被害報告】中学校
+      *delivery_place_group_report
+    36: # 【被害報告】小学校
+      *delivery_place_group_report
+    37: # 【被害報告】幼稚園
+      *delivery_place_group_report
+    38: # 【被害報告】保育所
+      *delivery_place_group_report
+    39: # 【被害報告】災害弱者関連施設
+      *delivery_place_group_report
+    40: # 【被害報告】医療施設
+      *delivery_place_group_report
+    41: # 【被害報告】災害重要施設
+      *delivery_place_group_report
+    42: # 【広報-交通】鉄道の運行に関する情報
+      *delivery_place_group_all
+    43: # 【広報-ライフライン】上水道に関する情報
+      *delivery_place_group_all
+    44: # 【広報-ライフライン】下水道に関する情報
+      *delivery_place_group_all
+    45: # 【広報-ライフライン】ガスに関する情報
+      *delivery_place_group_all
+    46: # 【広報-ライフライン】通信網に関する情報
+      *delivery_place_group_all
+    48: # その他の災害関連情報
+      *delivery_place_group_report
+    50: # 【広報-ライフライン】電気に関する情報
+      *delivery_place_group_all
+    51: # 【広報-ライフライン】臨時災害放送に関する情報
+      *delivery_place_group_all
+    52: # 【広報-生活情報】行政手続きに関する情報
+      *delivery_place_group_all
+    53: # 【広報-生活情報】その他の被災者支援に関する情報
+      *delivery_place_group_all
+    54: # 【広報-生活情報】学校・幼稚園・保育所に関する情報
+      *delivery_place_group_all
+    55: # 【広報-ライフライン】給水に関する情報
+      *delivery_place_group_all
+    56: # 【広報-生活情報】健康・福祉・介護に関する情報
+      *delivery_place_group_all
+    57: # 【広報-生活情報】環境に関する情報
+      *delivery_place_group_all
+    58: # 【広報-生活情報】防犯に関する情報
+      *delivery_place_group_all
+    59: # 【広報-生活情報】医療に関する情報
+      *delivery_place_group_all
+    60: # 【広報-生活情報】炊き出し・物資配布に関する情報
+      *delivery_place_group_all
+    61: # 【広報-生活情報】入浴サービスに関する情報
+      *delivery_place_group_all
+    62: # 【広報-生活情報】安置所に関する情報
+      *delivery_place_group_all
+    63: # 【広報-生活情報】災害習得物に関する情報
+      *delivery_place_group_all
+    64: # 【広報-生活情報】ボランティアの支援を受けたい方への情報
+      *delivery_place_group_all
+    65: # 【広報-生活情報】ボランティア活動をしたい方への情報
+      *delivery_place_group_all
+    66: # 【広報-生活情報】営業店舗に関する情報
+      *delivery_place_group_all
+    67: # 火災・救急・救助の要請
+      *delivery_place_group_report
+    68: # 海上に関する情報
+      *delivery_place_group_report
+    69: # 河川に関する情報
+      *delivery_place_group_report
+    70: # 広域圏災害に関する情報
+      *delivery_place_group_report
+    71: # 被災者からの要望（食料）
+      *delivery_place_group_report
+    72: # 【広報-交通】バスの運行に関する情報
+      *delivery_place_group_all
+    73: # 【広報-交通】航空路の運行に関する情報
+      *delivery_place_group_all
+    74: # 【広報-交通】船舶路の運行に関する情報
+      *delivery_place_group_all
+    75: # 【広報-交通】その他公共交通の運行に関する情報
+      *delivery_place_group_all
+    76: # 【被害報告】電気
+      *delivery_place_group_all
+    77: # 【システム】J-ALERT 発信（内閣官房）
+      *delivery_place_group_report
+    78: # 【システム】J-ALERT 発信（気象庁）
+      *delivery_place_group_report
 # トラッカーごとの配信先にデフォルトでチェックを入れる
 # トラッカー、外部配信先が追加削除された場合は修正必要
 # 記載例
@@ -643,18 +971,16 @@ delivery_place_default:
   1: # 【システム】避難勧告・指示
     [*commons]
   2: # 【システム】避難所開設・閉鎖
-    [*smtp_0]
+    [*commons]
   3: # 【システム】気象庁発信（その他）
-    [*commons, *smtp_0]
-  5: # 【システム】河川管理者発信（その他）
-    [*commons, *smtp_1]
-  6: # 【システム】河川管理者発信（警報・注意報）
-    [*smtp_0, *smtp_1]
-  7: # 【被害報告】人的
-    [*commons, *smtp_0, *smtp_1]
-  8: # 【被害報告】住家建物
-    [*smtp_2]
-  9: # 【被害報告】道路
+    [*smtp_0]
+  4: # 【システム】気象庁発信（警報・注意報）
+    [*smtp_0]
+  16: # 【システム】災害対策本部設置
+    [*commons]
+  18: # 【システム】被害要約（状況）
+    [*commons]
+  20: # 【広報-交通】道路交通規制に関する情報
     *delivery_place_group_all
 
 # 公共情報コモンズ配信で使用するテンプレート群
@@ -950,16 +1276,17 @@ comp_info_xpath:
 commons_xml_field:
   namespace_start_tag: <body_namespace xmlns:pcx_di="http://xml.publiccommons.ne.jp/pcxml1/body/DamageInformation3" xmlns:pcx_en="http://xml.publiccommons.ne.jp/pcxml1/body/event3" xmlns:pcx_sh="http://xml.publiccommons.ne.jp/pcxml1/body/shelter3" xmlns:pcx_um="http://xml.publiccommons.ne.jp/pcxml1/body/UrgentMail3" xmlns:pcx_ev="http://xml.publiccommons.ne.jp/pcxml1/body/evacuation3" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:edxlde="urn:oasis:names:tc:emergency:EDXL:DE:1.0" xmlns:commons="http://xml.publiccommons.ne.jp/xml/edxl/" xmlns:pcxml="http://xml.publiccommons.ne.jp/pcxml1/3" xmlns:pcx_eb="http://xml.publiccommons.ne.jp/pcxml1/elementBasis3/" xmlns:pcx_ib="http://xml.publiccommons.ne.jp/pcxml1/informationBasis3/" xmlns:pcx_gi="http://xml.publiccommons.ne.jp/pcxml1/body/GeneralInformation3" xmlns:pcx_ah="http://xml.publiccommons.ne.jp/pcxml1/body/AntidisasterHeadquarter3"> # 名前空間定義
   namespace_end_tag: </body_namespace>
+  sender_id: lgdis.xxxxxxxxxx-city.test # 発信者ID
   confidential_message: UNCLASSIFIED AND NOTSENSITIVE # メッセージの機密性
   edxl_status:  # 運用種別
-    normal:   Actual   # 通常モード
+    normal:   Actual     # 通常モード
     training: Exercise # 災害訓練モード
     test:     System   # 通信試験モード
   editorial_office: ××市総務部防災対策課  # 作成部署情報(部署名)
   publishing_office: ××市総務部防災対策課 # 発表部署情報(部署名)
-  publishing_office_kana: ××しそうむぶぼうさいたいさくか # 発表部署情報(部署名かな)
+  publishing_office_kana: △△△△△しそうむぶぼうさいたいさくか # 発表部署情報(部署名かな)
   contact_type: '09012345678'               # 発表部署情報(電話番号)
-  area_address: ○○県石××市穀町１４－１    # 発表部署情報(住所)
+  area_address: ○○県××市穀町１４－１    # 発表部署情報(住所)
   office_domain: city.xxxxxxxxxx.lg.jp      # 発表部署情報(ドメイン)
   area_name: ××市                         # 事象の起きた場所
   organization_code: '042021'               # 作成部署情報(組織コード)
@@ -978,18 +1305,18 @@ custom_field_delivery:
   comp_info: 5        # 補足情報
 
 # 公共情報コモンズへの発信
- # NOTE:
- # endpoint below have to point to a URL
- # where COMMONS web server process is running on.
- # In other word, IP address of non-router (including virtualizer router).
-#ie commons_endpoint: http://192.168.43.186/commons/subscriber/soap/testservice.example.com/
-#sha
+# NOTE:
+# endpoint below have to point to a URL
+# where COMMONS web server process is running on.
+# In other word, IP address of non-router (including virtualizer router).
+# ie commons_endpoint: http://XXX.XXX.XXX.XXX/commons/subscriber/soap/testservice.example.com/
+# sha
 commons_connection:
   endpoint: https://lgdis.local/commons/subscriber/soap/testservice.example.com/
   #sha centos_ssh: commons_endpoint: https://localhost:443/commons/subscriber/soap/testservice.example.com/
   username: user1@example.com
   password: password
-  wsdl: /home/rails/LGDIS/plugins/lgdis/lib/lgdis/ext_out/wsdl/MQService.wsdl
+  wsdl: /home/apl/develop/LGDIS/plugins/lgdis/lib/lgdis/ext_out/wsdl/MQService.wsdl
   namespace: http://soap.publiccommons.ne.jp/
   ssl_ca_cert: /opt/fix/SOAPdev/etc/pki/CA/cacert.pem
 
@@ -1006,7 +1333,7 @@ atom:
 disaster_portal_url: "下記リンクより、災害情報を確認して下さい。\n http://www.jice.or.jp/sinsai/sinsai_result.php"
 
 # *号配備メールに添付するLGDSF URL 設定
-lgdsf_url: "下記リンクより、位置情報、参集場所の報告を行ってください。\n http://XXX.XXX.XXX.XXX/LGDSF/staffs/send/"
+lgdsf_url: "下記リンクより、位置情報、参集場所の報告を行ってください。\n http://XXX.XXX.XXX.XXX/staffs/send/"
 
 # 外部出力
 ext_out:

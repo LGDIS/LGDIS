@@ -12,7 +12,7 @@
 
 	<!-- EDXL 部 -->
 	<edxlde:distributionID></edxlde:distributionID>
-	<edxlde:senderID>"lgdis.ishinomaki-city.test"</edxlde:senderID><!-- 固定値 -->
+	<edxlde:senderID></edxlde:senderID>
 	<edxlde:dateTimeSent></edxlde:dateTimeSent>
 	<edxlde:distributionStatus></edxlde:distributionStatus>
 	<edxlde:distributionType></edxlde:distributionType>

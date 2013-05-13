@@ -9,6 +9,8 @@ twitter:
 facebook:
   app_token: ""
   user_id: ""
+  app_id: ""
+  app_secret: ""
 
 # OpenAM(SAML) define
 openam:
