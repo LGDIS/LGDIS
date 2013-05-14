@@ -141,8 +141,8 @@ class DeliveryHistory < ActiveRecord::Base
   def rejectable?
     case
     when for_commons? || for_urgent_mail?
-      # コモンズ/緊急速報メールの場合は不可
-      return false
+      # コモンズ/緊急速報メールの場合、取り消し可能なステータスであれば許可
+      return (status == 'request' || status == 'reserve')
     when for_atom?
       # ATOM(RSS)の場合に許可する
       return true
