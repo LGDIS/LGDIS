@@ -173,7 +173,7 @@ end
       dh.respond_user_id = 1
       dh.save!
 
-      #          issue.register_issue_journal_rss_deliver(dh)
+                issue.register_issue_journal_rss_deliver(dh)
       end
 
       # XML main entry
@@ -194,9 +194,8 @@ end
           tmp_label_value = ""
         end
 
-#        content += '&lt;p&gt;' + label_value["label"] + ':' + tmp_label_value + '&lt;/p&gt;&lt;br&nbsp;/&gt;\n'
 #xml では &nbsp; は認識されないので文字コードを直接入力（＆#x00A0;）
-        content += '&lt;p&gt;' + label_value["label"] + ':' + tmp_label_value + '&lt;/p&gt;&lt;br&#x00A0;/&gt;\n'
+        content += '&lt;p&gt;' + label_value["label"] + ':' + tmp_label_value + '&lt;/p&gt;&lt;br&#x00A0;/&gt;'
 
       end
 
@@ -205,11 +204,33 @@ end
       ele_content.add_text(content)
 
       # XML geo
+
+
+     points_flag = false
+
+
       points_for_map(issue).each do |point|
         new_entry.add_element("georss:point").text = point["points"].join(" ")
+        points_flag = true
       end
 
-#データに geo がない場合には、事象の発生場所のgeo 情報
+
+    #データに geo がない場合には、事象の発生場所のgeo 情報
+    begin
+      if points_flag then
+      else
+         address = issue.custom_field_value(30)
+         hash = geocode(address)
+         new_entry.add_element("georss:point").text = hash['lng'].to_s + ' ' + hash['lat'].to_s
+      end
+    rescue
+         new_entry.add_element("georss:point").text = ""
+    end
+
+
+
+
+
 
 
 =begin
@@ -239,7 +260,7 @@ end
 
 #    output_file_name = format_message(DST_LIST["atom"]["output_filename"], {:trackerid => tracker_id, :date => Time.now.strftime("%Y%m%d%H%M%S")})
 
-    output_file_name =  "track_#{tracker_id}.rss"
+    output_file_name =  "#{tracker_id}_track.rss"
 
     FileUtils::mkdir_p(output_dir_path) unless File.exist?(output_dir_path) # 出力先ディレクトリを作成
 
