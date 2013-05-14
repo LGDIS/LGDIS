@@ -430,6 +430,7 @@ module Lgdis
 
         # edxl 部要素追加
         doc.elements["//edxlde:distributionID"].add_text(distribution_id)
+        doc.elements["//edxlde:senderID"].add_text(DST_LIST['commons_xml_field']['sender_id'])
         doc.elements["//edxlde:dateTimeSent"].add_text(Time.now.xmlschema)
         doc.elements["//edxlde:EDXLDistribution/edxlde:distributionStatus"].add_text(operation_flg)
         doc.elements["//edxlde:EDXLDistribution/edxlde:distributionType"].add_text(type_update)
@@ -470,7 +471,7 @@ module Lgdis
            (edition_fields_map['status'] == UPDATE_STATUS && delivery_history.description_cancel.present?)
           doc.elements["//PublishingOffice"].next_sibling = REXML::Element.new("Errata")
           doc.elements["//Errata"].add_element("pcx_eb:Description").add_text(delivery_history.description_cancel)
-          doc.elements["//Errata"].add_element("pcx_eb:DateTime").add_text(delivery_history.updated_on.xmlschema)
+          doc.elements["//Errata"].add_element("pcx_eb:DateTime").add_text(delivery_history.updated_at.xmlschema)
         end
 
         # Head 部要素追加

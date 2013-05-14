@@ -1,11 +1,11 @@
 # encoding: utf-8
 class DisasterDamageController < ApplicationController
   unloadable
-  
+
   before_filter :find_project_by_project_id
   before_filter :authorize, :except => :show
   before_filter :init
-  
+
   # 共通初期処理
   # ==== Args
   # ==== Return
@@ -13,7 +13,7 @@ class DisasterDamageController < ApplicationController
   def init
     @disaster_damage_const = Constant::hash_for_table(DisasterDamage.table_name)
   end
-  
+
   # 災害被害情報（第４号様式）画面
   # 初期表示処理
   # 押下されたボタンにより処理を分岐
@@ -36,7 +36,7 @@ class DisasterDamageController < ApplicationController
       @disaster_damage = DisasterDamage.mode_in(@project).first_or_initialize
     end
   end
-  
+
   # 災害被害情報（第４号様式）画面
   # 保存処理
   # ==== Args
@@ -47,18 +47,28 @@ class DisasterDamageController < ApplicationController
     @disaster_damage.assign_attributes(params[:disaster_damage])
     if @disaster_damage.save
       flash[:notice] = l(:notice_disaster_damage_successful_save)
-      redirect_to :action  => :index
+#      redirect_to :action  => :index
+      return true
     else
-      render :action  => :index
+#      render :action  => :index
+      return false
+
     end
   end
-  
+
   # 災害被害情報（第４号様式）画面
   # チケット登録処理
   # ==== Args
   # ==== Return
   # ==== Raise
   def ticket
+
+    #4号様式の保存とチケット作成を同時に行いたいという要望に応じるため。
+    if ! save then
+      render :action  => :index
+      exit
+    end
+
     if params[:tracker_id].blank?
       flash[:error] = l(:text_select_tracker)
     elsif (dd = DisasterDamage.mode_in(@project).first).present?
@@ -80,7 +90,7 @@ class DisasterDamageController < ApplicationController
     end
     redirect_to :action => :index
   end
-  
+
   # 災害被害情報（第４号様式）画面
   # 照会処理
   # ==== Args
@@ -92,5 +102,5 @@ class DisasterDamageController < ApplicationController
   rescue ActiveRecord::RecordNotFound
     render_404
   end
-  
+
 end
