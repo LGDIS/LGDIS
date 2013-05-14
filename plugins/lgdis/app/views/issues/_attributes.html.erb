@@ -15,7 +15,10 @@
 <% end %>
 
 <% if @issue.safe_attribute? 'assigned_to_id' %>
-<p><%= f.select :assigned_to_id, principals_options_for_select(@issue.assignable_users, @issue.assigned_to), :include_blank => true, :required => @issue.required_attribute?('assigned_to_id') %></p>
+<%
+  assignables = @issue.assignable_users.inject(Array.new) {|array, user| array << user if user.type == "Group"; array }
+%>
+<p><%= f.select :assigned_to_id, principals_options_for_select(assignables, @issue.assigned_to), :include_blank => true, :required => @issue.required_attribute?('assigned_to_id') %></p>
 <% end %>
 
 <% if @issue.safe_attribute?('category_id') && @issue.project.issue_categories.any? %>
