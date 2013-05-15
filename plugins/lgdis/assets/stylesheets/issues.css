@@ -15,9 +15,9 @@ div.table_border {
 }
 
 div.map_field {
-  width: auto;
-  margin-left: auto;
-  margin-right: 10px;
+  width: 910px;
+  margin-left: 5px;
+  margin-right: 5px;
   height: 500px;
 }
 
