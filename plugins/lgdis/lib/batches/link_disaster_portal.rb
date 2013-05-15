@@ -227,38 +227,12 @@ end
          new_entry.add_element("georss:point").text = ""
     end
 
-
-
-
-
-
-
-=begin
-      lines_for_map(issue).each do |line|
-        new_entry.add_element("georss:line").text = line["points"].flatten.join(" ")
-      end
-
-      polygons_for_map(issue).each do |polygon|
-        new_entry.add_element("georss:polygon").text = polygon["points"].flatten.join(" ")
-      end
-
-      locations_for_map(issue).each do |location|
-        new_entry.add_element("georss:featureTypeTag").text = location["location"]
-      end
-=end
-
       feed.add_text(new_entry)
 
     end
 
     # fileに書き出し
     output_dir_path  = Pathname(DST_LIST["atom"]["output_dir"])
-
-    Rails.logger.info(" #tracker_id ")
-    Rails.logger.info(tracker_id)
-    Rails.logger.info(" #tracker_id ")
-
-#    output_file_name = format_message(DST_LIST["atom"]["output_filename"], {:trackerid => tracker_id, :date => Time.now.strftime("%Y%m%d%H%M%S")})
 
     output_file_name =  "#{tracker_id}_track.rss"
 
@@ -285,9 +259,5 @@ require 'json'
    hash['lng'] = status['results'][0]['geometry']['location']['lng']
    return hash
 end
-
-
-
-
 
 end

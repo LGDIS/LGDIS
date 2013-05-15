@@ -53,7 +53,6 @@ class Batches::ShelterList
 
     # 対象トラッカーのチケット取得
 
-#    issues = Issue.where({:tracker_id => tracker_id}).order("updated_on DESC")
     issue = Issue.where({:tracker_id => tracker_id}).order("updated_on DESC").first
 
 
@@ -76,10 +75,7 @@ class Batches::ShelterList
 
           feed.elements["id"].text = "#{tracker_id}-#{time.strftime("%Y%m%d%H%M%S")}" # TODO 暫定でトラッカーID-YYYYMMDDHH24MISS
 
-    # チケットごとのループ
-#    issues.each do | issue |
-
-
+      #CSV データの取得
       csvArray = getAttachedCsvArray(issue)
 
       header = csvArray.take(1)[0]
@@ -91,22 +87,33 @@ class Batches::ShelterList
 
       tmpdata = Hash.new
       csvArray.each do |row|
-
         if !tmpdata.has_key?(row[2])
           tmpdata[row[2]] = []
         end
-
         tmpdata[row[2]]<< row
-
       end
+
 
       tmp = Array.new
       output = Array.new
 
+#上記のコードですでに地域ごとにソートされているので
+#ステータスのソートの順番を指定
+sort_array = ["常設","開設","未開設","閉鎖","不明"]
+
+
       tmpdata.each do |key,value|
-        tmp = tmpdata[key].sort{|p,q|p[10]<=>q[10]}
-        output.concat(tmp)
+        tmp = tmpdata[key]
+        sort_array.each do |sort_key|
+          tmp.each do |value2|
+            if value2[10].to_s == sort_key.to_s then
+
+              output << value2
+            end
+          end
+        end
       end
+
 
       csvArray = output
       #ソート処理 ここまで
@@ -123,11 +130,6 @@ csvArray.each do |row|
 
       new_entry.add_element("id").add_text("#{issue.id}-#{time.strftime("%Y%m%d%H%M%S")}") # TODO 暫定でチケットID-YYYYMMDDHH24MISS
 
-#row に opened_at を追加する
-#      new_entry.add_element("published").add_text(dh.opened_at.xmlschema)
-#      new_entry.add_element("updated").add_text(dh.opened_at.xmlschema)
-
-
 
 #content 追加開始
       content = ""
@@ -135,15 +137,15 @@ csvArray.each do |row|
 
 
 
-# 0 あり　避難所名
-#8 あり　避難所種別
-#2 あり　地区名
-#4 あり　TEL
-#10 あり　開設状況
-#11 あり　開設日時
-#12 あり　閉鎖日時
-#13 あり　最大収容人数
-#15 あり　収容人数
+# 0 あり 避難所名
+#8 あり 避難所種別
+#2 あり 地区名
+#4 あり TEL
+#10 あり 開設状況
+#11 あり 開設日時
+#12 あり 閉鎖日時
+#13 あり 最大収容人数
+#15 あり 収容人数
 
 #p row
 

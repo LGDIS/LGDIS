@@ -89,45 +89,65 @@ class Batches::EvacuationAdvisoriesList
       #ソート処理 ここから
       csvArray = csvArray.sort{|p,q|p[2]<=>q[2]}
 
+
+      sort_key1 = ["警戒区域" , "避難指示" , "避難勧告" , "避難準備情報" ,  "警戒情報" ]
+
+
       tmpdata = Hash.new
       csvArray.each do |row|
-
         if !tmpdata.has_key?(row[2])
           tmpdata[row[2]] = []
         end
-
         tmpdata[row[2]]<< row
-
       end
+
+      outtemp = Hash.new
+
+      sort_key1.each do |sort_key|
+        outtemp[sort_key] = tmpdata[sort_key]
+      end
+
+      tmpdata = outtemp
 
       tmp = Array.new
       output = Array.new
+      output_other = Array.new
+
+
+      #上記のコードですでに地域ごとにソートされているので
+      #ステータスのソートの順番を指定
+#      sort_array = ["発令","解除" ,""]
+      sort_array = ["発令","解除",""]
 
       tmpdata.each do |key,value|
-#        tmp = tmpdata[key].sort{|p,q|p[10]<=>q[10]}
+
         tmp = tmpdata[key]
-        output.concat(tmp)
+        sort_array.each do |sort_key|
+
+          if tmp.nil?
+          else
+            tmp.each do |value2|
+              if value2[7].to_s == sort_key.to_s then
+                output << value2
+              end
+            end
+          end
+        end
       end
 
-      csvArray = output
-      #ソート処理 ここまで
 
+
+      #ソート処理 ここまで
+csvArray = output
 
 
 csvArray.each do |row|
-
-
       # XML main entry
       new_entry = REXML::Element.new("entry")
 
       #避難所名
       new_entry.add_element("title").add_text("#{row[0]}")
       new_entry.add_element("id").add_text("#{issue.id}-#{time.strftime("%Y%m%d%H%M%S")}") # TODO 暫定でチケットID-YYYYMMDDHH24MISS
-
-#row に opened_at を追加する
-#      new_entry.add_element("published").add_text(dh.opened_at.xmlschema)
-#      new_entry.add_element("updated").add_text(dh.opened_at.xmlschema)
-
 
 
 #content 追加開始
@@ -146,11 +166,9 @@ csvArray.each do |row|
 #13 あり　最大収容人数
 #15 あり　収容人数
 
-#p row
 
 
-#row_order = [0,8,2,4,10,11,12,13,15,16,17,18]
-row_order = [0,2,3,4,5,6]
+row_order = [0,2,3,4,5,6,7]
       row_order.each do |order|
 
       #xml では &nbsp; は認識されないので文字コードを直接入力（＆#x00A0;）
@@ -162,7 +180,6 @@ row_order = [0,2,3,4,5,6]
       ele_content.add_attribute("type","html")
       ele_content.add_text(content)
 
-#p row[3]
 #避難勧告ではgercode は出力しない
 
       feed.add_text(new_entry)
