@@ -105,8 +105,22 @@ custom_map_fields_ids = CF_ADDRESS["custom_field_address"].first
 end
 %>
 <fieldset class="collapsible collapsed" >
-<legend onclick="toggleFieldset(this); init('<%= area_dai_value -%>','<%= area_tyu_value -%>','<%= area_syo_value -%>');"><%= l(:label_map) %></legend>
-    <div style="display: none;" id="map" class="map_field"></div>
+
+    <legend onclick="toggleFieldset(this); init('<%= area_dai_value -%>','<%= area_tyu_value -%>','<%= area_syo_value -%>');"><%= l(:label_map) %></legend>
+    <div style="display: none">
+    	<% urlpart_prefix = ENV['RAILS_RELATIVE_URL_ROOT'].to_s %>
+    	<% if ZNETTOWNService.enable? %>
+    	  <div style="float:right; margin-bottom:5px; margin-right:20px;" id="map_z_show_link">
+    	    <img class="ui-datepicker-trigger" src="<%= urlpart_prefix -%>/plugin_assets/lgdis/images/zmap.png" alt="<%= l(:button_map_show) %>" onclick="showZMapSelectPosition_display('map', DEFAULT_MAP_ZOOM, 'issue_custom_field_values_30', '<%= urlpart_prefix -%>'); return false;">
+    	  </div>
+　　　　　　　<% end %>
+    	  <div style="float:right; margin-bottom:5px; margin-right:20px;" id="map_g_show_link">
+    	    <img class="ui-datepicker-trigger" src="<%= urlpart_prefix -%>/plugin_assets/lgdis/images/gmap.png" alt="<%= l(:button_map_show) %>" onclick="init('<%= area_dai_value -%>','<%= area_tyu_value -%>','<%= area_syo_value -%>'); return false;">
+    	  </div>
+    	  <div class="clear"></div>
+    	<div id="map" class="map_field"></div>
+    </div>
+
 </fieldset>
 
 <script>
@@ -163,6 +177,199 @@ end
 
     // マップの中心を移動
     setCenterByKML(dai, tyu, syo, map);
+
+    //マップの表示とリンクの表示
+    toggleMap_display("g", 'map');
+
+    //事象の発生場所のポイントマーカー作成
+    initMapSelectPosition_display(map, DEFAULT_MAP_ZOOM, 'issue_custom_field_values_30');
+
+  }
+　　
+　　// Toggles the visibility of the map and the show/hide link.
+  function toggleMap_display(mode, map_id) {
+    switch(mode) {
+    case "g":
+      $("#" + map_id).show();
+      $("#" + map_id + '_g_show_link').hide();
+      $("#" + map_id + '_z_show_link').show();
+      break;
+    case "z":
+      $("#" + map_id).show();
+      $("#" + map_id + '_g_show_link').show();
+      $("#" + map_id + '_z_show_link').hide();
+      break;
+    }
+  }
+
+  /**
+   * 入力済み地名をマーカで表示する(事象の発生場所)
+   */
+  function initMapSelectPosition_display(map_id, zoom_rate, field_id) {
+  target = {map: map};
+
+  // 初期表示時には入力済み地名をマーカで表示する
+  var text_field = $("#"+field_id);
+  var text_field_value = text_field.val().replace(/(\n|\r)+$/, '');
+    if (text_field_value.length > 0) {
+      var marker_bounds = new google.maps.LatLngBounds();
+      var addresses = text_field_value.split("\n");
+      for (var i = 0; i < addresses.length; i++) {
+        // 入力された住所にマーカをセットする
+        addMarker_display(addresses[i], target, marker_bounds);
+      }
+    }
+  }
+  /**
+   * マップにマーカを表示(事象の発生場所)
+   */
+  function addMarker_display(address, target, marker_bounds) {
+    if (!address) return;
+
+    var geocoder = new google.maps.Geocoder();
+    geocoder.geocode({'address' : address}, function(results, status){
+      switch (status) {
+      case google.maps.GeocoderStatus.OK:
+        // 取得地点にマーカをセット
+        var marker = new google.maps.Marker({
+          position : results[0].geometry.location,
+          map : target.map
+        });
+        // マップ表示をマーカ群を見渡せる範囲に拡張する
+        marker_bounds.extend(results[0].geometry.location);
+        target.map.panToBounds(marker_bounds);
+        target.map.fitBounds(marker_bounds);
+        // fitBounds()ではズームし過ぎることがあるため調整
+        var fitted_zoom_rate = target.map.getZoom();
+        if (fitted_zoom_rate > DEFAULT_MAP_ZOOM_UPPER_LIMIT) {
+          target.map.setZoom(DEFAULT_MAP_ZOOM_UPPER_LIMIT);
+        }
+        break;
+
+      case google.maps.GeocoderStatus.ZERO_RESULTS:
+        break;
+
+      default:
+        console.log("ERROR:"+status);
+        break;
+      }
+    });
+  }
+
+  /**
+   * マップ表示
+   * ※ブラウザ上に認証承認ID(ADI)cookie群が存在する前提
+   */
+  function showZMapSelectPosition_display(map_id, zoom_rate, field_id, url) {
+    toggleMap_display("z", map_id);
+    initZMapSelectPosition_display(map_id, zoom_rate, field_id, url);
+    map_initialized[map_id] = true;
+  }
+
+  function initZMapSelectPosition_display(map_id, zoom_rate, field_id, url) {
+    // ログインしていなかったら処理終了
+    if(ZntAuth.getStatus() != ZntAuth.STATUS_LOGIN) {
+      return;
+    }
+
+    // マップ作成用パラメータ指定
+    var w = '910';
+    var h = '500';
+    var opts = new ZntMapOptions();
+
+    // 緯度経度を指定する
+    opts.initPos = new ZntPoint(zmap_lng, zmap_lat);
+    // 地図サイズを指定する
+    opts.size = new ZntSize(w,h);
+    // 地図倍率を指定する
+    opts.initZoomLevel = zmap_zoom;
+    // 地図表示モードを指定する
+    opts.viewMode = zmap_view;
+    // マウスドラッグモードを指定する
+    opts.dragMode = Number(zmap_drag);
+    // ８方向ボタンを指定する
+    opts.scrollButton = true;
+    // 虫めがねを指定する
+    if(zmap_loupe == "1") {
+      opts.loupe = true;
+      opts.loupeOpen = true;
+    } else if(zmap_loupe == "2") {
+      opts.loupe = true;
+      opts.loupeOpen = false;
+    } else {
+      opts.loupe = false;
+    }
+    // 広域ミニマップを指定する
+    if(zmap_submap == "1") {
+      opts.subMap = true;
+      opts.subMapOpen = true;
+    } else if(zmap_submap == "2") {
+      opts.subMap = true;
+      opts.subMapOpen = false;
+    } else {
+      opts.subMap = false;
+    }
+
+    //地図の初期化と表示
+    var map = new ZntMap();
+    map.initialize(document.getElementById(map_id), opts);
+    var target = {map: map};
+    // 初期表示時には入力済み地名をマーカで表示する
+    var text_field = $("#"+field_id);
+    var text_field_value = text_field.val().replace(/(\n|\r)+$/, '');
+    if (text_field_value.length > 0) {
+      var marker_bounds = null;
+      var addresses = text_field_value.split("\n");
+      for (var i = 0; i < addresses.length; i++) {
+        // 入力された住所にマーカをセットする
+        addZMarker_display(addresses[i], target, marker_bounds,url);
+      }
+    }
+  }
+
+  /**
+   * マップにマーカを表示(発生場所入力用)
+   */
+  function addZMarker_display(address, target, marker_bounds, url) {
+    if (!address) return;
+
+    // 検索オブジェクトと検索条件指定オブジェクトを生成する
+    var sear = new ZntAddressSearch();
+    var opts = new ZntAddressSearchSettings();
+
+    // 検索ワードを指定する
+    opts.freeWord = address;
+    // 都道府県コードを指定する
+    opts.prefCode = ""; // 全国
+    // 行政単位コードを指定する
+    opts.matchLv = "6"; // 6:枝版
+    // 上限数を指定する
+    opts.limit = "1";
+    // 部品図を指定する
+    opts.partMap = "false"; // false:含めない
+    // 開始位置を指定する
+    opts.startPos = "1";
+    // 最大件数を設定する
+    opts.maxCount = "1";
+
+    sear.addEventListener("receive", function(r){
+      var result = r.result;
+      if (result.status == "30200000") {
+        if (result.itemsAddr.length > 0) {
+          // 取得地点にマーカをセット
+          putMarker(target, result.itemsAddr[0].pos, url);
+          // マップ表示をマーカ群を見渡せる範囲に拡張する
+          marker_bounds = extendRect(marker_bounds, result.itemsAddr[0].pos);
+          target.map.moveToRect(marker_bounds, new ZntSize(20, 20));
+        } else {
+          // 成功だけど結果0件
+          console.log("no result retrieved.");
+        }
+      } else {
+        console.log("ERROR:"+result.status);
+      }
+    }, 0);
+    sear.search(opts);
   }
 
   /**
