@@ -168,12 +168,22 @@ end
 
       # 配信管理更新、チケット履歴出力
       if dh.status == "reserve"
+
+begin
         dh.status = "done"
         dh.process_date = Time.now
-      dh.respond_user_id = 1
-      dh.save!
+        dh.respond_user_id = 1
+        dh.save!
 
-                issue.register_issue_journal_rss_deliver(dh)
+        this_register_issue_journal_rss_deliver(dh,issue)
+
+rescue =>e
+  Rails.logger.info("ログの開始")
+  Rails.logger.info(e.message)
+  Rails.logger.info("ログの終了")
+
+end
+
       end
 
       # XML main entry
@@ -259,5 +269,20 @@ require 'json'
    hash['lng'] = status['results'][0]['geometry']['location']['lng']
    return hash
 end
+
+
+      def self.this_register_issue_journal_rss_deliver(delivery_history,issue)
+        notes = []
+        delivery_name = (DST_LIST["delivery_place"][delivery_history.delivery_place_id]||{})["name"].to_s
+        delivery_process_date = delivery_history.process_date.strftime("%Y/%m/%d %H:%M:%S")
+        notes << "#{delivery_process_date}に、 #{delivery_name}配信を開始しました。"
+        notes << delivery_history.summary
+
+        @current_journal ||= Journal.new(:journalized => issue, :user => delivery_history.respond_user, :notes => notes.join("\n"))
+        @current_journal.notify = false
+
+        @current_journal.save!
+      end
+
 
 end
