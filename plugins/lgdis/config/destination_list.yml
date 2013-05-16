@@ -1316,7 +1316,7 @@ commons_connection:
   #sha centos_ssh: commons_endpoint: https://localhost:443/commons/subscriber/soap/testservice.example.com/
   username: user1@example.com
   password: password
-  wsdl: /home/rails/develop/LGDIS/plugins/lgdis/lib/lgdis/ext_out/wsdl/MQService.wsdl
+  wsdl: /home/rals/LGDIS/plugins/lgdis/lib/lgdis/ext_out/wsdl/MQService.wsdl
   namespace: http://soap.publiccommons.ne.jp/
   ssl_ca_cert: /opt/fix/SOAPdev/etc/pki/CA/cacert.pem
 
