@@ -83,9 +83,8 @@ module Lgdis
             #ssl_cert_file "
             #ssl_cert_key_file "
         end
-        doc = create_soap_document(data)
-        p doc
-        response = client.call(:publish) do
+          doc = create_soap_document(data)
+          response = client.call(:publish) do
           xml doc
         end
         return true
