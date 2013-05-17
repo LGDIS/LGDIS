@@ -1282,9 +1282,9 @@ commons_xml_field:
     normal:   Actual     # 通常モード
     training: Exercise # 災害訓練モード
     test:     System   # 通信試験モード
-  editorial_office: ××市総務部防災対策課  # 作成部署情報(部署名)
-  publishing_office: ××市総務部防災対策課 # 発表部署情報(部署名)
-  publishing_office_kana: △△△△△しそうむぶぼうさいたいさくか # 発表部署情報(部署名かな)
+  editorial_office: 総務部防災対策課  # 作成部署情報(部署名)
+  publishing_office: 総務部防災対策課 # 発表部署情報(部署名)
+  publishing_office_kana: そうむぶぼうさいたいさくか # 発表部署情報(部署名かな)
   contact_type: '09012345678'               # 発表部署情報(電話番号)
   area_address: ○○県××市穀町１４－１    # 発表部署情報(住所)
   office_domain: city.xxxxxxxxxx.lg.jp      # 発表部署情報(ドメイン)
@@ -1316,7 +1316,7 @@ commons_connection:
   #sha centos_ssh: commons_endpoint: https://localhost:443/commons/subscriber/soap/testservice.example.com/
   username: user1@example.com
   password: password
-  wsdl: /home/apl/develop/LGDIS/plugins/lgdis/lib/lgdis/ext_out/wsdl/MQService.wsdl
+  wsdl: /home/rals/LGDIS/plugins/lgdis/lib/lgdis/ext_out/wsdl/MQService.wsdl
   namespace: http://soap.publiccommons.ne.jp/
   ssl_ca_cert: /opt/fix/SOAPdev/etc/pki/CA/cacert.pem
 
@@ -1843,4 +1843,3 @@ link_disaster_portal_tracker_group:
   64: *grp09  # 【広報-生活情報】ボランティアの支援を受けたい方への情報
   65: *grp09  # 【広報-生活情報】ボランティア活動をしたい方への情報
   53: *grp09  # 【広報-生活情報】その他の被災者支援に関する情報
-

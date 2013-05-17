@@ -56,7 +56,7 @@ require_dependency 'lgdis/view_hooks'
 
 Redmine::Plugin.register :lgdis do
   name 'LGDIS (Local Government Disaster Information System) plugin'
-  author '作成者XXX'
+  author '宮城県石巻市'
   description '災害発生時における地方公共団体向けの包括的メッセージング:LGDIS (Local Government Disaster Information System) をRedmineに追加するプラグインです。'
   version VERSION["version"]
 
