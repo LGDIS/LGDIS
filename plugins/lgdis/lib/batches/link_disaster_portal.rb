@@ -140,9 +140,9 @@ class Batches::LinkDisasterPortal
       false
     end
 
-if issues.blank? # 出力対象のチケットが存在しない場合は終了
-return
-end
+    if issues.blank? # 出力対象のチケットが存在しない場合は終了
+      return
+    end
 
     # 最大件数以内に絞り込み
     issues = issues[0..max_num-1]
@@ -168,17 +168,22 @@ end
 
       # 配信管理更新、チケット履歴出力
       if dh.status == "reserve"
-        dh.status = "done"
-        dh.process_date = Time.now
-      dh.respond_user_id = 1
-      dh.save!
 
-      #          issue.register_issue_journal_rss_deliver(dh)
+        begin
+          dh.status = "done"
+          dh.process_date = Time.now
+          dh.respond_user_id = 1
+          dh.save!
+          this_register_issue_journal_rss_deliver(dh,issue)
+        rescue =>e
+          Rails.logger.info(e.message)
+        end
+
       end
 
       # XML main entry
       new_entry = REXML::Element.new("entry")
-      training_header = DST_LIST["training_prj"][issue.project_id] ? "【訓練】" : ""
+      training_header = DST_LIST["training_prj"][issue.project_id] ? "【災害訓練】" : ""
       new_entry.add_element("title").add_text(training_header + "#{dh.mail_subject}")
 
       new_entry.add_element("id").add_text("#{issue.id}-#{time.strftime("%Y%m%d%H%M%S")}") # TODO 暫定でチケットID-YYYYMMDDHH24MISS
@@ -194,9 +199,8 @@ end
           tmp_label_value = ""
         end
 
-#        content += '&lt;p&gt;' + label_value["label"] + ':' + tmp_label_value + '&lt;/p&gt;&lt;br&nbsp;/&gt;\n'
 #xml では &nbsp; は認識されないので文字コードを直接入力（＆#x00A0;）
-        content += '&lt;p&gt;' + label_value["label"] + ':' + tmp_label_value + '&lt;/p&gt;&lt;br&#x00A0;/&gt;\n'
+        content += '&lt;p&gt;' + label_value["label"] + ':' + tmp_label_value + '&lt;/p&gt;&lt;br&#x00A0;/&gt;'
 
       end
 
@@ -205,26 +209,28 @@ end
       ele_content.add_text(content)
 
       # XML geo
+
+
+     points_flag = false
+
+
       points_for_map(issue).each do |point|
         new_entry.add_element("georss:point").text = point["points"].join(" ")
+        points_flag = true
       end
 
-#データに geo がない場合には、事象の発生場所のgeo 情報
 
-
-=begin
-      lines_for_map(issue).each do |line|
-        new_entry.add_element("georss:line").text = line["points"].flatten.join(" ")
+    #データに geo がない場合には、事象の発生場所のgeo 情報
+    begin
+      if points_flag then
+      else
+         address = issue.custom_field_value(30)
+         hash = geocode(address)
+         new_entry.add_element("georss:point").text = hash['lng'].to_s + ' ' + hash['lat'].to_s
       end
-
-      polygons_for_map(issue).each do |polygon|
-        new_entry.add_element("georss:polygon").text = polygon["points"].flatten.join(" ")
-      end
-
-      locations_for_map(issue).each do |location|
-        new_entry.add_element("georss:featureTypeTag").text = location["location"]
-      end
-=end
+    rescue
+         new_entry.add_element("georss:point").text = ""
+    end
 
       feed.add_text(new_entry)
 
@@ -232,41 +238,42 @@ end
 
     # fileに書き出し
     output_dir_path  = Pathname(DST_LIST["atom"]["output_dir"])
-
-    Rails.logger.info(" #tracker_id ")
-    Rails.logger.info(tracker_id)
-    Rails.logger.info(" #tracker_id ")
-
-#    output_file_name = format_message(DST_LIST["atom"]["output_filename"], {:trackerid => tracker_id, :date => Time.now.strftime("%Y%m%d%H%M%S")})
-
-    output_file_name =  "track_#{tracker_id}.rss"
-
+    output_file_name =  "#{tracker_id}_track.rss"
     FileUtils::mkdir_p(output_dir_path) unless File.exist?(output_dir_path) # 出力先ディレクトリを作成
-
     File.binwrite(output_dir_path.join(output_file_name.force_encoding("UTF-8")), CGI::unescapeHTML(doc.to_s)) # &amp;→& の為unescapeする
-
   end
 
 
 
 
-def self.geocode(address)
-require 'rubygems'
-require 'net/http'
-require 'json'
-   address = URI.encode(address)
-   hash = Hash.new
-   baseUrl = "http://maps.google.com/maps/api/geocode/json"
-   reqUrl = "#{baseUrl}?address=#{address}&sensor=false&language=ja"
-   response = Net::HTTP.get_response(URI.parse(reqUrl))
-   status = JSON.parse(response.body)
-   hash['lat'] = status['results'][0]['geometry']['location']['lat']
-   hash['lng'] = status['results'][0]['geometry']['location']['lng']
-   return hash
-end
+      def self.geocode(address)
+      require 'rubygems'
+      require 'net/http'
+      require 'json'
+         address = URI.encode(address)
+         hash = Hash.new
+         baseUrl = "http://maps.google.com/maps/api/geocode/json"
+         reqUrl = "#{baseUrl}?address=#{address}&sensor=false&language=ja"
+         response = Net::HTTP.get_response(URI.parse(reqUrl))
+         status = JSON.parse(response.body)
+         hash['lat'] = status['results'][0]['geometry']['location']['lat']
+         hash['lng'] = status['results'][0]['geometry']['location']['lng']
+         return hash
+      end
 
 
+      def self.this_register_issue_journal_rss_deliver(delivery_history,issue)
+        notes = []
+        delivery_name = (DST_LIST["delivery_place"][delivery_history.delivery_place_id]||{})["name"].to_s
+        delivery_process_date = delivery_history.process_date.strftime("%Y/%m/%d %H:%M:%S")
+        notes << "#{delivery_process_date}に、 #{delivery_name}配信を開始しました。"
+        notes << delivery_history.summary
 
+        @current_journal ||= Journal.new(:journalized => issue, :user => delivery_history.respond_user, :notes => notes.join("\n"))
+        @current_journal.notify = false
+
+        @current_journal.save!
+      end
 
 
 end

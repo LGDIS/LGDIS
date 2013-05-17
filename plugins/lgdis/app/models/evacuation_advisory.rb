@@ -18,7 +18,7 @@ class EvacuationAdvisory < ActiveRecord::Base
                       :greater_than_or_equal_to => 0,
                       :less_than_or_equal_to => 2147483647,
                       :allow_blank => true}.freeze
-  
+
   ##コンスタント存在チェック用
   CONST = Constant::hash_for_table(self.table_name).freeze
 
@@ -27,7 +27,7 @@ class EvacuationAdvisory < ActiveRecord::Base
   acts_as_mode_switchable Project
 
   #Data base NOT-NULL項目validations
-  validates :advisory_type, 
+  validates :advisory_type,
                 :inclusion => {:in => CONST[:advisory_type.to_s].keys, :allow_blank => true}
 
   #そのほかの項目チェック:DB定義順
@@ -38,8 +38,10 @@ class EvacuationAdvisory < ActiveRecord::Base
                 :presence => true, :if => Proc.new {|evacuation_advisory| evacuation_advisory.sort_criteria.to_i > 1}
   validates :current_sort_criteria, :presence => true,
                 :inclusion => {:in => CONST[:current_sort_criteria.to_s].keys, :allow_blank => true}
-  
+
   validates :area, :presence => true,
+                :length => {:maximum => 100}
+  validates :area_kana,
                 :length => {:maximum => 100}
   validates_uniqueness_of_without_deleted :area, :scope => :record_mode
 
@@ -56,7 +58,7 @@ class EvacuationAdvisory < ActiveRecord::Base
   validates :category,
                 :inclusion => {:in => CONST[:category.to_s].keys, :allow_blank => true}
   validates :cause,
-                :length => {:maximum => 4000} 
+                :length => {:maximum => 4000}
   validates :staff_no,
                 :length => {:maximum => 10}
   validates :full_name,
@@ -93,16 +95,16 @@ class EvacuationAdvisory < ActiveRecord::Base
                  :length => {:maximum => 4000}
 
   before_create :number_evacuation_advisory_code , :if => Proc.new { |evacuation_advisory| evacuation_advisory.identifier.nil? }
-  
+
   # 発令
   SORT_ISSUE_NONE   = "1" # 指示無し(解除含む)※この値以外は発令とみなす
   # 発令・解除区分
   ISSUEORLIFT_ISSUE = "1" # 発令
   ISSUEORLIFT_LIFT  = "0" # 解除
-  
+
   validates :issued_at, :presence => true, :if => "self.issueorlift == '#{ISSUEORLIFT_ISSUE}'"
   validates :lifted_at, :presence => true, :if => "self.issueorlift == '#{ISSUEORLIFT_LIFT}'"
-  
+
   # 属性のローカライズ名取得
   # validateエラー時のメッセージに使用されます。
   # "field_" + 属性名 でローカライズします。
@@ -124,7 +126,7 @@ class EvacuationAdvisory < ActiveRecord::Base
     localized ||= l("field_#{name.underscore.gsub('/', '_')}_#{attr}",
                     :default => ["field_#{attr}".to_sym, attr])
   end
-  
+
   # チケット登録処理
   # ==== Args
   # _project_ :: Projectオブジェクト
@@ -140,7 +142,7 @@ class EvacuationAdvisory < ActiveRecord::Base
 #     issues << self.create_applic_issue(project)
     return issues
   end
-  
+
   # Applic用チケット登録処理
   # ==== Args
   # _project_ :: Projectオブジェクト
@@ -151,7 +153,7 @@ class EvacuationAdvisory < ActiveRecord::Base
     doc =  REXML::Document.new
     doc << REXML::XMLDecl.new('1.0', 'UTF-8')
     doc.add_element("_避難勧告･指示") # Root
-    
+
     #避難勧告･指示を取得しXMLを生成する
     evacuation_advisories = EvacuationAdvisory.mode_in(project).all
     evacuation_advisories.each do |eva|
@@ -160,7 +162,7 @@ class EvacuationAdvisory < ActiveRecord::Base
       node_eva.add_element("災害名").add_text("#{project.name}")
       node_eva.add_element("都道府県").add_text("")
       node_eva.add_element("市町村_消防本部名").add_text("")
-      
+
       node_manager = node_eva.add_element("管理者")
       node_manager.add_element("職員番号").add_text("#{eva.staff_no}")
       node_name = node_manager.add_element("氏名")
@@ -174,7 +176,7 @@ class EvacuationAdvisory < ActiveRecord::Base
       node_issued.add_element("時").add_text("#{eva.issued_at.try(:hour)}")
       node_issued.add_element("分").add_text("#{eva.issued_at.try(:min)}")
       node_issued.add_element("秒").add_text("#{eva.issued_at.try(:sec)}")
-      
+
       node_change = node_eva.add_element("移行日時")
       node_change_date = node_change.add_element("日付")
       node_change_date.add_element("年").add_text("#{eva.changed_at.try(:year)}")
@@ -191,13 +193,13 @@ class EvacuationAdvisory < ActiveRecord::Base
       node_lifted.add_element("時").add_text("#{eva.lifted_at.try(:hour)}")
       node_lifted.add_element("分").add_text("#{eva.lifted_at.try(:min)}")
       node_lifted.add_element("秒").add_text("#{eva.lifted_at.try(:sec)}")
-      
+
       node_eva.add_element("対象人数").add_text("#{eva.head_count}")
       node_eva.add_element("対象世帯数").add_text("#{eva.households}")
-      
+
       node_eva.add_element("備考").add_text("#{eva.remarks}")
     end
-    
+
     issue = Issue.new
     issue.tracker_id = 30
     issue.project_id = project.id
@@ -205,10 +207,10 @@ class EvacuationAdvisory < ActiveRecord::Base
     issue.author_id  = User.current.id
     issue.xml_body   = doc.to_s
     issue.save!
-    
+
     return issue
   end
-  
+
   # 公共コモンズ用チケット登録処理
   # ==== Args
   # _project_ :: Projectオブジェクト
@@ -220,12 +222,12 @@ class EvacuationAdvisory < ActiveRecord::Base
     # Xmlドキュメントの生成
     doc  = REXML::Document.new
 
-    # XML出力対象をしぼって出力順にコレクションとして準備 
+    # XML出力対象をしぼって出力順にコレクションとして準備
     # 明確に避難準備/避難勧告/避難指示/警戒区域として発令または解除された情報に限定
     big_area = EVACUATIONADVISORY_MAP["big_area"]
     middle_area = []
     big_middle_area = []
-    
+
     evas=[]
     evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '5').where(:area => big_area)
     evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '4').where(:area => big_area)
@@ -265,7 +267,7 @@ class EvacuationAdvisory < ActiveRecord::Base
     raise EvacuationAdvisoriesController::ParamsException if evas.flatten.blank?
 
     # EvacuationAdvisory要素の取得
-    node_evas = doc.add_element("pcx_ev:EvacuationOrder",{"xmlns:pcx_ev" => 
+    node_evas = doc.add_element("pcx_ev:EvacuationOrder",{"xmlns:pcx_ev" =>
       "http://xml.publiccommons.ne.jp/pcxml1/body/evacuation3"}).add_text('')
     node_header = node_evas.add_element("pcx_eb:Disaster")
       node_header.add_element("pcx_eb:DisasterName").add_text("#{project.name}")
@@ -279,7 +281,7 @@ class EvacuationAdvisory < ActiveRecord::Base
     else
       summary = EvacuationAdvisory.mode_in(project).select("SUM(households) as households_sum, SUM(head_count) as head_count_sum").where(:issueorlift => [ISSUEORLIFT_ISSUE,ISSUEORLIFT_LIFT]).where(:sort_criteria=> ['2','3','4','5']).where(:area => big_area).first
     end
-    
+
     if summary.households_sum.present? || summary.head_count_sum.present?
       node_total_number = node_evas.add_element("pcx_ev:TotalNumber")
       # 総世帯数
@@ -287,7 +289,7 @@ class EvacuationAdvisory < ActiveRecord::Base
       # 避難総人数 自主避難人数を含む。
       node_total_number.add_element("pcx_ev:HeadCount").add_text("#{summary.head_count_sum}") if summary.head_count_sum.present?
     end
-    
+
     evas.each do |evas2|
       next if evas2.blank?
       node_detail = node_evas.add_element("pcx_ev:Detail")
@@ -324,14 +326,14 @@ class EvacuationAdvisory < ActiveRecord::Base
             date = nil
           end
           node_area.add_element("pcx_ev:DateTime").add_text(date.to_s) if date.present?
-      
+
           node_obj = node_area.add_element("pcx_ev:Object")
             # 対象人数と対象世帯数 自主避難人数を含む。不明の場合は要素を省略。
             node_obj.add_element("pcx_ev:Households", {"pcx_ev:unit" => "世帯"}).add_text("#{eva.households}") if eva.households.present?
             node_obj.add_element("pcx_ev:HeadCount").add_text("#{eva.head_count}") if eva.head_count.present?
       end
     end
-    
+
     issue = Issue.new
     issue.tracker_id = 1
     issue.project_id = project.id
@@ -342,7 +344,7 @@ class EvacuationAdvisory < ActiveRecord::Base
     issue.xml_body   = fmtdoc
     # チケットにcsvファイルを添付する
     tf = create_csv(EvacuationAdvisory.mode_in(project).order(:identifier), "避難勧告･指示",
-        [:area,:area_kana,:current_sort_criteria,:issued_at,:lifted_at,:households,:head_count])
+        [:area,:area_kana,:current_sort_criteria,:issued_at,:lifted_at,:households,:head_count,:issueorlift])
     issue.save_attachments(["file"=> tf, "description" => "全ての避難勧告･指示CSVファイル ※チケット作成時点"])
     # 一時ファイルの削除
     tf.close(true)
@@ -409,7 +411,7 @@ class EvacuationAdvisory < ActiveRecord::Base
   def self.subtotal(issueorlift, sort_criteria)
     subtotals =[]
     subtotals = connection.select_rows("
-      select SUM(households), SUM(head_count) from evacuation_advisories 
+      select SUM(households), SUM(head_count) from evacuation_advisories
       where issueorlift = '#{issueorlift}' AND sort_criteria = '#{sort_criteria}'
     ").first
     return subtotals

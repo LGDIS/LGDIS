@@ -66,7 +66,7 @@ class DisasterDamageController < ApplicationController
     #4号様式の保存とチケット作成を同時に行いたいという要望に応じるため。
     if ! save then
       render :action  => :index
-      exit
+      return
     end
 
     if params[:tracker_id].blank?

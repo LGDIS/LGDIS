@@ -166,7 +166,7 @@ ja:
     failed: 配信失敗
     runtime: 配信中
     reserve: 配信予定
-    
+
   notice_delivery_status: '%{kind}のため取り消しできません。'
 
   ####
@@ -179,7 +179,7 @@ ja:
   label_evacuation_advisory: 避難勧告･指示
   label_evacuation_advisory_plural: 避難勧告･指示一覧
   label_evacuation_advisory_new: 避難勧告･指示登録・更新
-  
+
   button_new_area: 新規地区
 
   notice_evacuation_advisory_successful_create: 避難勧告･指示が発令／解除されました。
@@ -300,6 +300,10 @@ ja:
     field_address_city: 市区町村
     field_address_street: 町名
     field_address_number: 番地
+
+    field_updated_by: 登録者名
+    field_updated_at: 登録日
+    field_manager_name: 管理者
 
   ####
   # 災害被害情報（第４号様式）機能
