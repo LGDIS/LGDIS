@@ -41,6 +41,8 @@ class EvacuationAdvisory < ActiveRecord::Base
 
   validates :area, :presence => true,
                 :length => {:maximum => 100}
+  validates :area_kana,
+                :length => {:maximum => 100}
   validates_uniqueness_of_without_deleted :area, :scope => :record_mode
 
   validates :issued_at,

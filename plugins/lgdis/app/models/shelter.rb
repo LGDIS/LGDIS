@@ -362,8 +362,20 @@ class Shelter < ActiveRecord::Base
       node_information.add_element("pcx_sh:Status").add_text("#{CONST['status'][shelter.status]}") if shelter.status.present?
 
       # 子要素がすべてブランクの場合、親要素を生成しない
-      if shelter.head_count.present? || shelter.head_count_voluntary.present? ||
-        shelter.households.present? || shelter.households_voluntary.present?
+      if shelter.shelter_sort == "1" || shelter.shelter_sort == "3"
+        # 親要素の追加
+        node_number_of = node_information.add_element("pcx_sh:NumberOf")
+        # 避難人数 自主避難人数を含む。不明の場合は要素を省略。
+        node_number_of.add_element("pcx_sh:HeadCount").add_text("0")
+        # 避難人数（うち自主避難）不明の場合は要素を省略。
+        node_number_of.add_element("pcx_sh:HeadCountVoluntary").add_text("0")
+        # 避難世帯数 自主避難人数を含む。不明の場合は要素を省略。
+        node_number_of.add_element("pcx_sh:Households", {"pcx_sh:unit" => "世帯"}).add_text("0")
+        # 避難世帯数（うち自主避難）
+        node_number_of.add_element("pcx_sh:HouseholdsVoluntary", {"pcx_sh:unit" => "世帯"}).add_text("0")
+      elsif (shelter.head_count.present? || shelter.head_count_voluntary.present? ||
+        shelter.households.present? || shelter.households_voluntary.present?) &&
+        shelter.shelter_sort != "4"
         # 親要素の追加
         node_number_of = node_information.add_element("pcx_sh:NumberOf")
         # 避難人数 自主避難人数を含む。不明の場合は要素を省略。
