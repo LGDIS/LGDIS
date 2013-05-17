@@ -1676,7 +1676,7 @@ link_disaster_portal_tracker_ids:
 #  - 2   # 【システム】避難所開設・閉鎖
 #  - 17  # 【システム】被害要約（概況）
 #  - 18  # 【システム】被害要約（状況）
-#  - 7   # 【被害報告】人的
+  - 7   # 【被害報告】人的
 #  - 8   # 【被害報告】住家建物
 #  - 33  # 【被害報告】非住家建物
 #  - 9   # 【被害報告】道路
@@ -1754,24 +1754,18 @@ link_disaster_portal_tracker_ids:
 link_disaster_portal_group:
   group_01: &grp01
     -
-      label: "発表日時"
-      value: "issue.published_at.strftime('%Y/%m/%d %H:%M:%S')"
-    -
-      label: "事象の発生場所"
-      value: "issue.custom_field_value(30)"
+      label: "情報の見出し要約文"
+      value: "issue.summary"
 
   group_02: &grp02
     -
-      label: "発表日時"
-      value: "issue.published_at.strftime('%Y/%m/%d %H:%M:%S')"
-    -
-      label: "在校者死亡数"
-      value: "issue.custom_field_value(286)"
+      label: "情報の見出し要約文"
+      value: "issue.summary"
 
   group_09: &grp09
     -
-      label: "発表日時"
-      value: "issue.published_at.strftime('%Y/%m/%d %H:%M:%S')"
+      label: "情報の見出し要約文"
+      value: "issue.summary"
 
 # 災害情報ポータル連携バッチ処理
 # トラッカーごとにグループを指定する
