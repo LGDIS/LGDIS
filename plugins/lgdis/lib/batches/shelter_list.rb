@@ -40,12 +40,9 @@ class Batches::ShelterList
   # ==== Raise
   def self.create_xml(tracker_id)
 
-
-
     time = Time.now # 時間取得
     limit_days = DST_LIST["link_disaster_portal_limit_days"] # 取得範囲発表からXX日以内
     reject_project_ids =DST_LIST["link_disaster_portal_reject_project_ids"] # 対象外プロジェクトID
-
 
     if DST_LIST["link_disaster_portal_tracker_group"][tracker_id].blank? # 出力項目定義が取得できない場合はスキップ
       return
@@ -54,7 +51,6 @@ class Batches::ShelterList
     # 対象トラッカーのチケット取得
 
     issue = Issue.where({:tracker_id => tracker_id}).order("updated_on DESC").first
-
 
     if issue.blank? # 出力対象のチケットが存在しない場合は終了
       return
@@ -73,7 +69,7 @@ class Batches::ShelterList
     author.elements["name"].text =  DST_LIST["link_disaster_portal_tracker_constants"][tracker_id]["name"]
     author.elements["email"].text = DST_LIST["link_disaster_portal_tracker_constants"][tracker_id]["email"]
 
-          feed.elements["id"].text = "#{tracker_id}-#{time.strftime("%Y%m%d%H%M%S")}" # TODO 暫定でトラッカーID-YYYYMMDDHH24MISS
+    feed.elements["id"].text = "#{tracker_id}-#{time.strftime("%Y%m%d%H%M%S")}" # TODO 暫定でトラッカーID-YYYYMMDDHH24MISS
 
       #CSV データの取得
       csvArray = getAttachedCsvArray(issue)
@@ -126,7 +122,9 @@ csvArray.each do |row|
       new_entry = REXML::Element.new("entry")
 
       #避難所名
-      new_entry.add_element("title").add_text("#{row[0]}")
+      training_header = DST_LIST["training_prj"][issue.project_id] ? "【災害訓練】" : ""
+
+      new_entry.add_element("title").add_text(training_header + "#{row[0]}")
 
       new_entry.add_element("id").add_text("#{issue.id}-#{time.strftime("%Y%m%d%H%M%S")}") # TODO 暫定でチケットID-YYYYMMDDHH24MISS
 

@@ -146,7 +146,11 @@ csvArray.each do |row|
       new_entry = REXML::Element.new("entry")
 
       #避難所名
-      new_entry.add_element("title").add_text("#{row[0]}")
+
+
+      training_header = DST_LIST["training_prj"][issue.project_id] ? "【災害訓練】" : ""
+
+      new_entry.add_element("title").add_text(training_header + "#{row[0]}")
       new_entry.add_element("id").add_text("#{issue.id}-#{time.strftime("%Y%m%d%H%M%S")}") # TODO 暫定でチケットID-YYYYMMDDHH24MISS
 
 

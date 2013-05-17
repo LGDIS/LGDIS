@@ -140,9 +140,9 @@ class Batches::LinkDisasterPortal
       false
     end
 
-if issues.blank? # 出力対象のチケットが存在しない場合は終了
-return
-end
+    if issues.blank? # 出力対象のチケットが存在しない場合は終了
+      return
+    end
 
     # 最大件数以内に絞り込み
     issues = issues[0..max_num-1]
@@ -169,26 +169,21 @@ end
       # 配信管理更新、チケット履歴出力
       if dh.status == "reserve"
 
-begin
-        dh.status = "done"
-        dh.process_date = Time.now
-        dh.respond_user_id = 1
-        dh.save!
-
-        this_register_issue_journal_rss_deliver(dh,issue)
-
-rescue =>e
-  Rails.logger.info("ログの開始")
-  Rails.logger.info(e.message)
-  Rails.logger.info("ログの終了")
-
-end
+        begin
+          dh.status = "done"
+          dh.process_date = Time.now
+          dh.respond_user_id = 1
+          dh.save!
+          this_register_issue_journal_rss_deliver(dh,issue)
+        rescue =>e
+          Rails.logger.info(e.message)
+        end
 
       end
 
       # XML main entry
       new_entry = REXML::Element.new("entry")
-      training_header = DST_LIST["training_prj"][issue.project_id] ? "【訓練】" : ""
+      training_header = DST_LIST["training_prj"][issue.project_id] ? "【災害訓練】" : ""
       new_entry.add_element("title").add_text(training_header + "#{dh.mail_subject}")
 
       new_entry.add_element("id").add_text("#{issue.id}-#{time.strftime("%Y%m%d%H%M%S")}") # TODO 暫定でチケットID-YYYYMMDDHH24MISS
@@ -243,32 +238,28 @@ end
 
     # fileに書き出し
     output_dir_path  = Pathname(DST_LIST["atom"]["output_dir"])
-
     output_file_name =  "#{tracker_id}_track.rss"
-
     FileUtils::mkdir_p(output_dir_path) unless File.exist?(output_dir_path) # 出力先ディレクトリを作成
-
     File.binwrite(output_dir_path.join(output_file_name.force_encoding("UTF-8")), CGI::unescapeHTML(doc.to_s)) # &amp;→& の為unescapeする
-
   end
 
 
 
 
-def self.geocode(address)
-require 'rubygems'
-require 'net/http'
-require 'json'
-   address = URI.encode(address)
-   hash = Hash.new
-   baseUrl = "http://maps.google.com/maps/api/geocode/json"
-   reqUrl = "#{baseUrl}?address=#{address}&sensor=false&language=ja"
-   response = Net::HTTP.get_response(URI.parse(reqUrl))
-   status = JSON.parse(response.body)
-   hash['lat'] = status['results'][0]['geometry']['location']['lat']
-   hash['lng'] = status['results'][0]['geometry']['location']['lng']
-   return hash
-end
+      def self.geocode(address)
+      require 'rubygems'
+      require 'net/http'
+      require 'json'
+         address = URI.encode(address)
+         hash = Hash.new
+         baseUrl = "http://maps.google.com/maps/api/geocode/json"
+         reqUrl = "#{baseUrl}?address=#{address}&sensor=false&language=ja"
+         response = Net::HTTP.get_response(URI.parse(reqUrl))
+         status = JSON.parse(response.body)
+         hash['lat'] = status['results'][0]['geometry']['location']['lat']
+         hash['lng'] = status['results'][0]['geometry']['location']['lng']
+         return hash
+      end
 
 
       def self.this_register_issue_journal_rss_deliver(delivery_history,issue)
