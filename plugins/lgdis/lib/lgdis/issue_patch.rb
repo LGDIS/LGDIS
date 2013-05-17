@@ -202,7 +202,10 @@ module Lgdis
               if delivery_history.for_commons? || delivery_history.for_urgent_mail?
                 enqueue_datetime = Time.now
               end
-              Resque.enqueue_at(enqueue_datetime, delivery_job_class, delivery_history.id, summary, test_flag)
+              # ATOMはresque対象外
+              unless delivery_history.for_atom?
+                Resque.enqueue_at(enqueue_datetime, delivery_job_class, delivery_history.id, summary, test_flag)
+              end
               delivery_history.update_attributes({:status => status_to, :respond_user_id => User.current.id, :process_date => Time.now})
             else
               status_to = delivery_history.status

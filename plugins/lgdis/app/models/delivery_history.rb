@@ -122,11 +122,11 @@ class DeliveryHistory < ActiveRecord::Base
   def schedulable?
     case
     when for_commons? || for_urgent_mail?
-      # コモンズ/緊急速報メールの場合、配信用宮中であれば許可
+      # コモンズ/緊急速報メールの場合、配信要求中であれば許可
       return (status == 'request')
     when for_atom?
-      #以前は配信対象外だったが仕様変更のため配信対象に変更
-      return true
+      #以前は配信対象外だったが仕様変更のため配信対象に変更、配信要求中であれば許可
+      return (status == 'request')
     else
       # 上記以外(Twitter/Facebook/各種メール)の場合、配信要求中であれば許可
       return (status == 'request')
@@ -144,8 +144,8 @@ class DeliveryHistory < ActiveRecord::Base
       # コモンズ/緊急速報メールの場合、取り消し可能なステータスであれば許可
       return (status == 'request' || status == 'reserve')
     when for_atom?
-      # ATOM(RSS)の場合に許可する
-      return true
+      # ATOM(RSS)の場合、取り消し可能なステータスであれば許可
+      return (status == 'request' || status == 'reserve')
     else
       # 上記以外(Twitter/Facebook/各種メール)の場合、取り消し可能なステータスであれば許可
       return (status == 'request' || status == 'reserve')
