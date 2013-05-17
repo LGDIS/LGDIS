@@ -320,9 +320,14 @@ end
     if (text_field_value.length > 0) {
       var marker_bounds = null;
       var addresses = text_field_value.split("\n");
+      var addresses_total = 0;
+      addresses_total = addresses.length;
       for (var i = 0; i < addresses.length; i++) {
+      	if (i == 0){
+          rect_Reset();
+        }
         // 入力された住所にマーカをセットする
-        addZMarker_display(addresses[i], target, marker_bounds,url);
+        addZMarker_display(addresses[i], target, marker_bounds, url, addresses_total);
       }
     }
   }
@@ -330,7 +335,7 @@ end
   /**
    * マップにマーカを表示(発生場所入力用)
    */
-  function addZMarker_display(address, target, marker_bounds, url) {
+  function addZMarker_display(address, target, marker_bounds, url, addresses_total) {
     if (!address) return;
 
     // 検索オブジェクトと検索条件指定オブジェクトを生成する
@@ -355,15 +360,53 @@ end
     sear.addEventListener("receive", function(r){
       var result = r.result;
       if (result.status == "30200000") {
-        if (result.itemsAddr.length > 0) {
-          // 取得地点にマーカをセット
+        if (addresses_total > 1) {
+      	  // 取得地点にマーカをセット
           putMarker(target, result.itemsAddr[0].pos, url);
           // マップ表示をマーカ群を見渡せる範囲に拡張する
-          marker_bounds = extendRect(marker_bounds, result.itemsAddr[0].pos);
-          target.map.moveToRect(marker_bounds, new ZntSize(20, 20));
+          // 矩形の変数の値が「0]なら初期値として一つめの発生場所の座標を設定する
+        if (x_max == 0){
+          x_max = result.itemsAddr[0].pos.x;
+          x_min = result.itemsAddr[0].pos.x;
+          y_max = result.itemsAddr[0].pos.y;
+          y_min = result.itemsAddr[0].pos.y;
         } else {
-          // 成功だけど結果0件
-          console.log("no result retrieved.");
+          if (x_max < result.itemsAddr[0].pos.x){
+            x_max = result.itemsAddr[0].pos.x;
+          }
+          if (x_min > result.itemsAddr[0].pos.x){
+            x_min = result.itemsAddr[0].pos.x;
+          }
+          if (y_max < result.itemsAddr[0].pos.y){
+            y_max = result.itemsAddr[0].pos.y;
+          }
+          if (y_min > result.itemsAddr[0].pos.y){
+            y_min = result.itemsAddr[0].pos.y;
+          }
+        }
+        marker_bounds = new ZntRect(new ZntPoint(x_min, y_min), new ZntPoint(x_max, y_max));
+          target.map.moveToRect(marker_bounds, new ZntSize(20, 20));
+
+        // マップ表示をマーカ群を見渡せる範囲に拡張する
+        ztmp_zoom = target.map.getZoomLevel();
+        if (ztmp_zoom > DEFAULT_ZMAP_ZOOM_UPPER_LIMIT) {
+          ztmp_zoom = DEFAULT_ZMAP_ZOOM_UPPER_LIMIT;
+          target.map.zoomTo(ztmp_zoom);
+        } else if (ztmp_zoom < DEFAULT_ZMAP_ZOOM_LOWER_LIMIT){
+          ztmp_zoom = DEFAULT_ZMAP_ZOOM_LOWER_LIMIT;
+          target.map.zoomTo(ztmp_zoom);
+        } else {
+        ztmp_zoom = ztmp_zoom - DEFAULT_ZMAP_ZOOM_CONTROL;
+        target.map.zoomTo(ztmp_zoom);
+        }
+      } else if (addresses_total == 1){
+      	// 取得地点にマーカをセット
+        putMarker(target, result.itemsAddr[0].pos, url);
+        // マーカが一つだけの時、マップ表示をマーカの位置に移動する
+        target.map.moveTo(result.itemsAddr[0].pos);
+      }	else {
+        // 成功だけど結果0件
+        console.log("no result retrieved.");
         }
       } else {
         console.log("ERROR:"+result.status);
