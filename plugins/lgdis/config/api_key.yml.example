@@ -1,0 +1,27 @@
+# Twitter API Key
+twitter:
+  consumer_key: ""
+  consumer_secret: ""
+  oauth_token: ""
+  oauth_token_secret: ""
+
+# Facebook API Key
+facebook:
+  app_token: ""
+  user_id: ""
+  app_id: ""
+  app_secret: ""
+
+# OpenAM(SAML) define
+openam:
+  assertion_consumer_service_url: "http://vmhost.example.com:3000/auth/openam/callback"
+  issuer: "http://vmhost.example.com:3000/"
+  idp_sso_target_url: "http://app.isk.local:8080/openam/SSORedirect/metaAlias/idp"
+  idp_cert_fingerprint: "DE:XX:...EE:33"
+  name_identifier_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddres"
+
+# Google Map API key
+# * 有償版を利用する場合は、購入したclient_idを設定する
+# * 無償版を利用する場合は、空文字を設定する
+google_map:
+  client_id: ""
