@@ -166,7 +166,7 @@ row_order = [0,8,2,4,10,11,12,13,15,16,17,18]
          address = row[3]
          hash = Array.new
          hash = geocode(address)
-         new_entry.add_element("georss:point").text = hash['lng'].to_s + ' ' + hash['lat'].to_s
+         new_entry.add_element("georss:point").text = hash['lat'].to_s + ' ' + hash['lng'].to_s
     rescue
          new_entry.add_element("georss:point").text = ""
     end
