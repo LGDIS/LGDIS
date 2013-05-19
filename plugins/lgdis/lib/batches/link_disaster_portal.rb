@@ -226,7 +226,7 @@ class Batches::LinkDisasterPortal
       else
          address = issue.custom_field_value(30)
          hash = geocode(address)
-         new_entry.add_element("georss:point").text = hash['lng'].to_s + ' ' + hash['lat'].to_s
+         new_entry.add_element("georss:point").text = hash['lat'].to_s + ' ' + hash['lng'].to_s
       end
     rescue
          new_entry.add_element("georss:point").text = ""
