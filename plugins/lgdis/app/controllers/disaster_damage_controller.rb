@@ -46,7 +46,7 @@ class DisasterDamageController < ApplicationController
     @disaster_damage = DisasterDamage.mode_in(@project).has_no_issues.first_or_initialize
     @disaster_damage.assign_attributes(params[:disaster_damage])
     if @disaster_damage.save
-      flash[:notice] = l(:notice_disaster_damage_successful_save)
+#      flash[:notice] = l(:notice_disaster_damage_successful_save)
 #      redirect_to :action  => :index
       return true
     else
