@@ -482,11 +482,11 @@ module Lgdis
         doc.elements["//pcx_ib:CreateDateTime"].add_text(Time.now.xmlschema)
         doc.elements["//pcx_ib:FirstCreateDateTime"].add_text((edition_mng.blank? ? Time.now.xmlschema : edition_mng.created_at.xmlschema))
         doc.elements["//pcx_ib:ReportDateTime"].add_text(delivery_history.published_at.xmlschema) unless delivery_history.published_at.blank?
-        unless self.closed_at.blank? # 公開終了日時が設定されている場合のみ
+        unless delivery_history.closed_at.blank? # 公開終了日時が設定されている場合のみ
           doc.elements["//pcx_ib:ReportDateTime"].next_sibling = REXML::Element.new("pcx_ib:ValidDateTime")
           doc.elements["//pcx_ib:ValidDateTime"].add_text(delivery_history.closed_at.xmlschema)
         end
-        unless self.opened_at.blank? # 公開開始日時が設定されている場合のみ
+        unless delivery_history.opened_at.blank? # 公開開始日時が設定されている場合のみ
           doc.elements["//pcx_ib:ReportDateTime"].next_sibling = REXML::Element.new("pcx_ib:TargetDateTime")
           doc.elements["//pcx_ib:TargetDateTime"].add_text(delivery_history.opened_at.xmlschema)
         end
