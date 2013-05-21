@@ -14,6 +14,7 @@ class DeliveryHistory < ActiveRecord::Base
   validates :published_at, :custom_format => {:type => :datetime}
   validates :opened_at, :custom_format => {:type => :datetime}
   validates :closed_at, :custom_format => {:type => :datetime}
+  validates :mail_subject, :length => {:maximum => 255}
   validate :for_commons
 
   # 外部配信先ID
@@ -204,7 +205,7 @@ class DeliveryHistory < ActiveRecord::Base
       errors.add(:summary, "を入力して下さい")
     end
 
-    if ([TWITTER_ID, ATOM_ID].include?(self.delivery_place_id)) && self.summary.size >= (142 - DST_LIST['disaster_portal_url'].size)
+    if ([TWITTER_ID].include?(self.delivery_place_id)) && self.summary.size >= (142 - DST_LIST['disaster_portal_url'].size)
       errors.add(:summary, "は#{142 - DST_LIST['disaster_portal_url'].size}文字以上入力できません")
     end
 
@@ -214,6 +215,10 @@ class DeliveryHistory < ActiveRecord::Base
 
     if ([U_MAIL_DCM_ID, U_MAIL_SB_ID, U_MAIL_AU_ID].include?(self.delivery_place_id)) && self.summary.size > 171
       errors.add(:summary, "は172文字以上入力できません")
+    end
+
+    if ([ATOM_ID].include?(self.delivery_place_id)) && self.summary.size > 2000
+      errors.add(:summary, "は2000文字以上入力できません")
     end
 
     if ([COMMONS_ID, U_MAIL_DCM_ID, U_MAIL_SB_ID, U_MAIL_AU_ID].include?(self.delivery_place_id)) && self.type_update.blank?

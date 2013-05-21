@@ -31,6 +31,7 @@ module Lgdis
         validates :published_at, :custom_format => {:type => :datetime}
         validates :opened_at, :custom_format => {:type => :datetime}
         validates :closed_at, :custom_format => {:type => :datetime}
+        validates :mail_subject, :length => {:maximum => 255}
 
         safe_attributes 'xml_control_status',
           'xml_control',
