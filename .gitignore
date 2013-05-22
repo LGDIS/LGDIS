@@ -31,6 +31,7 @@
 /vendor/rails
 /plugins/lgdis/config/settings.yml
 /plugins/lgdis/config/custom_field_connection.yml
+/plugins/lgdis/config/destination_list.yml
 *.rbc
 
 /.bundle
