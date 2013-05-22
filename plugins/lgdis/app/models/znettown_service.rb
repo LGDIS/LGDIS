@@ -114,7 +114,8 @@ class ZNETTOWNService
         :PWD => pwd,
         :CID => cid,
       }
-      request_param[:AID] = @@authorized_aid if @@authorized_aid
+      # 下の１行は複数の人がアクセスしても、宅地図が表示できるようにリクエストパラメータにAIDをつけないようにコメントアウトしてます(複数アクセス対応)
+      # request_param[:AID] = @@authorized_aid if @@authorized_aid
       response = conn.get uri_local, request_param
       if response.status == 200
         yield response.body
