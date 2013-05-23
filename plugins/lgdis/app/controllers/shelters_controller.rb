@@ -1,11 +1,11 @@
 # encoding: utf-8
 class SheltersController < ApplicationController
   unloadable
-  
+
   accept_api_auth :index, :update
   before_filter :find_project_by_project_id, :authorize
   before_filter :init
-  
+
   # 共通初期処理
   # ==== Args
   # ==== Return
@@ -14,7 +14,7 @@ class SheltersController < ApplicationController
     @shelter_const = Constant::hash_for_table(Shelter.table_name)
     @areas = Area.all
   end
-  
+
   # 避難所一覧検索画面
   # 初期表示処理
   # 押下されたボタンにより処理を分岐
@@ -57,7 +57,7 @@ class SheltersController < ApplicationController
       end
     end
   end
-  
+
   # 避難所一覧検索画面
   # ステータス更新処理
   # ==== Args
@@ -87,10 +87,10 @@ class SheltersController < ApplicationController
       @search   = Shelter.mode_in(@project).search(params[:search])
       @shelters = @search.paginate(:page => params[:page], :per_page => 30).order("shelter_code ASC")
     end
-    
+
     render :action => :index
   end
-  
+
   # 避難所一覧検索画面
   # チケット登録処理
   # ==== Args
@@ -115,7 +115,7 @@ class SheltersController < ApplicationController
     end
     redirect_to :action => :index
   end
-  
+
   # 避難所登録・更新画面
   # 初期表示処理（新規登録）
   # ==== Args
@@ -124,7 +124,7 @@ class SheltersController < ApplicationController
   def new
     @shelter = Shelter.mode_in(@project).new
   end
-  
+
   # 避難所登録・更新画面
   # 初期表示処理（編集）
   # ==== Args
@@ -133,7 +133,7 @@ class SheltersController < ApplicationController
   def edit
     @shelter = Shelter.mode_in(@project).find(params[:id])
   end
-  
+
   # 避難所登録・更新画面
   # 登録処理
   # ==== Args
@@ -143,13 +143,23 @@ class SheltersController < ApplicationController
     @shelter = Shelter.mode_in(@project).new()
     @shelter.assign_attributes(params[:shelter], :as => :shelter)
     if @shelter.save
+
+
+
+  #避難所の住所から緯度経度を求めてそれをテーブルに代入
+        geo = Hash.new
+        geo = geocode(@shelter.address)
+        setShelterGeoCsvArray(@shelter.name , geo)
+
+
+
       flash[:notice] = l(:notice_shelter_successful_create, :id => "##{@shelter.id} #{@shelter.name}")
       redirect_to :action  => :edit, :id => @shelter.id
     else
       render :action  => :new
     end
   end
-  
+
   # 避難所登録・更新画面
   # 更新処理
   # ==== Args
@@ -159,6 +169,13 @@ class SheltersController < ApplicationController
     @shelter = Shelter.mode_in(@project).find(params[:id])
     @shelter.assign_attributes(params[:shelter], :as => :shelter)
     if @shelter.save
+
+  #避難所の住所から緯度経度を求めてそれをテーブルに代入
+        geo = Hash.new
+        geo = geocode(@shelter.address)
+        setShelterGeoCsvArray(@shelter.name , geo)
+
+
       flash[:notice] = l(:notice_successful_update)
       respond_to do |format|
         format.html { redirect_to :action => :edit }
@@ -171,7 +188,7 @@ class SheltersController < ApplicationController
       end
     end
   end
-  
+
   # 避難所登録・更新画面
   # 削除処理
   # ==== Args
@@ -184,5 +201,102 @@ class SheltersController < ApplicationController
     end
     redirect_to :action  => :index
   end
-  
+
+  def geocode(address)
+
+  begin
+
+     require 'rubygems'
+     require 'net/http'
+     require 'json'
+
+     address = URI.encode(address)
+     hash = Hash.new
+     baseUrl = "http://maps.google.com/maps/api/geocode/json"
+     reqUrl = "#{baseUrl}?address=#{address}&sensor=false&language=ja"
+     response = Net::HTTP.get_response(URI.parse(reqUrl))
+     status = JSON.parse(response.body)
+     hash['lat'] = status['results'][0]['geometry']['location']['lat']
+     hash['lng'] = status['results'][0]['geometry']['location']['lng']
+
+     Rails.logger.info(hash)
+
+     return hash
+
+   rescue => e
+     Rails.logger.info("geocode-error")
+     Rails.logger.info(e.message)
+     Rails.logger.info("geocode-error")
+   end
+
+
+
+  end
+
+  def setShelterGeoCsvArray(shelter_name,geocodeArray)
+
+
+    begin
+      # fileに書き出し
+    csv_dir_path  = DST_LIST["atom"]["output_dir"]
+    csv_dir_path = csv_dir_path.gsub("./","")
+    csv_file_name =  "/shelters_geographies.csv"
+    csv_tmp_file_name =  "/shelters_geographies_tmp.csv"
+
+    disk_fullpath_filename = Rails.root.to_s + "/" + csv_dir_path.to_s + csv_file_name
+    new_csv_filename = Rails.root.to_s + "/" + csv_dir_path.to_s + csv_tmp_file_name
+
+    #csv ファイルを読み込む 文字コード変換を行う
+    reader = CSV.open(disk_fullpath_filename, "r" ,encoding: "SJIS:UTF-8")
+
+    rows=[]
+
+    new = true
+
+      #CSV に避難所データがあるかどうか探す
+      reader.each do |row|
+        if row[0] == shelter_name then
+          row[0] = row[0].to_s
+          row[1] = geocodeArray["lat"].to_s
+          row[2] = geocodeArray["lng"].to_s
+          new = false
+        end
+        rows << row
+      end
+
+      #csv にデータがない場合は追加する
+      if new then
+        row_temp = Array.new
+        row_temp[0] = shelter_name
+        row_temp[1] = geocodeArray["lat"].to_s
+        row_temp[2] = geocodeArray["lng"].to_s
+        rows << row_temp
+      end
+
+if FileTest.exist?(new_csv_filename) then
+   File::delete(new_csv_filename)
+end
+     Rails.logger.info("7")
+
+CSV.open(new_csv_filename, "a",encoding: "SJIS:UTF-8") do |csv|
+
+  rows.each do |row|
+  csv << row
+  end
+end
+
+
+File::delete(disk_fullpath_filename)
+
+
+File::rename(new_csv_filename ,disk_fullpath_filename)
+
+   rescue => e
+     Rails.logger.info("setShelterGeoCsvArray" + e.message)
+   end
+
+  end
+
+
+
 end

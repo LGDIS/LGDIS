@@ -140,6 +140,30 @@ class IssuesController < ApplicationController
     call_hook(:controller_issues_new_before_save, { :params => params, :issue => @issue })
     @issue.save_attachments(params[:attachments] || (params[:issue] && params[:issue][:uploads]))
     if @issue.save
+
+      #住所の項目からgeocode を読み取る
+      begin
+        address = @issue.custom_field_value(30)
+        hash = geocode(address)
+
+        @issue_geography ||= IssueGeography.new
+        @issue_geography.point = hash['lat'].to_s + "," + hash['lng'].to_s
+
+        Rails.logger.info("--issue--")
+        Rails.logger.info(@issue)
+        Rails.logger.info("--issue--")
+
+
+        @issue_geography.issue_id = @issue.id
+
+        @issue_geography.save
+      rescue => e
+        Rails.logger.info("---IssueGeography_update---")
+        Rails.logger.info(e.message)
+        Rails.logger.info("---IssueGeography_update---")
+      end
+
+
       call_hook(:controller_issues_new_after_save, { :params => params, :issue => @issue})
       respond_to do |format|
         format.html {
@@ -183,6 +207,36 @@ class IssuesController < ApplicationController
     end
 
     if saved
+
+
+      #住所の項目からgeocode を読み取る
+      begin
+        address = @issue.custom_field_value(30)
+        hash = geocode(address)
+
+        Rails.logger.info("--issue--")
+        Rails.logger.info(@issue)
+        Rails.logger.info("--issue--")
+
+        @issue_geography ||= IssueGeography.find_by_issue_id(@issue.id)
+
+        if @issue_geography.blank?
+          @issue_geography ||= IssueGeography.new
+        end
+
+
+        @issue_geography.point = hash['lat'].to_s + "," + hash['lng'].to_s
+
+        @issue_geography.issue_id = @issue.id
+        @issue_geography.save
+
+      rescue => e
+        Rails.logger.info("---IssueGeography_update---")
+        Rails.logger.info(e.message)
+        Rails.logger.info("---IssueGeography_update---")
+      end
+
+
       render_attachment_warning_if_needed(@issue)
       flash[:notice] = l(:notice_successful_update) unless @issue.current_journal.new_record?
 
@@ -428,4 +482,32 @@ class IssuesController < ApplicationController
     end
     attributes
   end
+
+  def geocode(address)
+
+  begin
+
+     require 'rubygems'
+     require 'net/http'
+     require 'json'
+
+     address = URI.encode(address)
+     hash = Hash.new
+     baseUrl = "http://maps.google.com/maps/api/geocode/json"
+     reqUrl = "#{baseUrl}?address=#{address}&sensor=false&language=ja"
+     response = Net::HTTP.get_response(URI.parse(reqUrl))
+     status = JSON.parse(response.body)
+     hash['lat'] = status['results'][0]['geometry']['location']['lat']
+     hash['lng'] = status['results'][0]['geometry']['location']['lng']
+
+     Rails.logger.info(hash)
+
+     return hash
+
+   rescue => e
+     Rails.logger.info("geocode-error")
+     Rails.logger.info(e.message)
+     Rails.logger.info("geocode-error")
+   end
+   end
 end

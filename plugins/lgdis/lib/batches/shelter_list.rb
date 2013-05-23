@@ -40,6 +40,14 @@ class Batches::ShelterList
   # ==== Raise
   def self.create_xml(tracker_id)
 
+
+
+#仕様変更により作り変えgeocode が入力されているCSVから
+#読み込むように修正
+geoArray = getShelterGeoCsvArray()
+
+p geoArray
+
     time = Time.now # 時間取得
     limit_days = DST_LIST["link_disaster_portal_limit_days"] # 取得範囲発表からXX日以内
     reject_project_ids =DST_LIST["link_disaster_portal_reject_project_ids"] # 対象外プロジェクトID
@@ -162,15 +170,22 @@ row_order = [0,8,2,4,10,11,12,13,15,16,17,18]
 
 #p row[3]
     # XML geo
-    begin
-         address = row[3]
-         hash = Array.new
-         hash = geocode(address)
-         new_entry.add_element("georss:point").text = hash['lat'].to_s + ' ' + hash['lng'].to_s
-    rescue
-         new_entry.add_element("georss:point").text = ""
-    end
+#    begin
+#         address = row[3]
+#         hash = Array.new
+#         hash = geocode(address)
+#         new_entry.add_element("georss:point").text = hash['lat'].to_s + ' ' + hash['lng'].to_s
+#    rescue
+#         new_entry.add_element("georss:point").text = ""
+#    end
 
+
+
+      if geoArray[row[0]].present? then
+        new_entry.add_element("georss:point").text = geoArray[row[0]]['lat'].to_s + ' ' + geoArray[row[0]]['lng'].to_s
+      else
+        new_entry.add_element("georss:point").text = ""
+      end
 
       feed.add_text(new_entry)
 
@@ -227,5 +242,32 @@ return reader
 
 
   end
+
+
+  def self.getShelterGeoCsvArray()
+
+      # fileに書き出し
+    csv_dir_path  = DST_LIST["atom"]["output_dir"]
+    csv_file_name =  "/shelters_geographies.csv"
+    disk_fullpath_filename = Rails.root.to_s + "/" + csv_dir_path.to_s + csv_file_name
+
+    #csv ファイルを読み込む 文字コード変換を行う
+    reader = CSV.open(disk_fullpath_filename, "r" ,encoding: "SJIS:UTF-8")
+    temp = Hash.new
+
+      reader.each do |row|
+
+        if !temp.has_key?(row[0])
+          temp[row[0]] = Hash.new
+        end
+
+        temp[row[0]]["lat"] = row[1]
+        temp[row[0]]["lng"] = row[2]
+      end
+
+    return temp
+
+  end
+
 
 end
