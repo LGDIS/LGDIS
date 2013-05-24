@@ -101,6 +101,8 @@ class EvacuationAdvisory < ActiveRecord::Base
   # 発令・解除区分
   ISSUEORLIFT_ISSUE = "1" # 発令
   ISSUEORLIFT_LIFT  = "0" # 解除
+  # 避難勧告指示トラッカーID
+  TRACKER_EVACUATION = 1
 
   validates :issued_at, :presence => true, :if => "self.issueorlift == '#{ISSUEORLIFT_ISSUE}'"
   validates :lifted_at, :presence => true, :if => "self.issueorlift == '#{ISSUEORLIFT_LIFT}'"
@@ -210,7 +212,6 @@ class EvacuationAdvisory < ActiveRecord::Base
 
     return issue
   end
-
   # 公共コモンズ用チケット登録処理
   # ==== Args
   # _project_ :: Projectオブジェクト
@@ -225,43 +226,59 @@ class EvacuationAdvisory < ActiveRecord::Base
     # XML出力対象をしぼって出力順にコレクションとして準備
     # 明確に避難準備/避難勧告/避難指示/警戒区域として発令または解除された情報に限定
     big_area = EVACUATIONADVISORY_MAP["big_area"]
-    middle_area = []
-    big_middle_area = []
 
+    issue_big_area = EvacuationAdvisory.mode_in(project).select("area").where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => ['2', '3', '4', '5']).where(:area => big_area)
+    
+    issue_middle_area = []
+    unless issue_big_area.blank?
+      issue_big_area.each do |barea|
+        issue_middle_area << EVACUATIONADVISORY_MAP["middle_area"]["#{barea.area}"]
+      end
+      issue_middle_area.delete(nil)
+    end
+    
     evas=[]
-    evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '5').where(:area => big_area)
-    evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '4').where(:area => big_area)
-    evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '3').where(:area => big_area)
-    evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '2').where(:area => big_area)
-    evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '5').where(:area => big_area)
-    evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '4').where(:area => big_area)
-    evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '3').where(:area => big_area)
-    evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '2').where(:area => big_area)
-
-	if evas.flatten.blank?
-	  middle_area = EVACUATIONADVISORY_MAP["middle_area"]
-	  evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '5').where(:area => middle_area)
-	  evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '4').where(:area => middle_area)
-	  evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '3').where(:area => middle_area)
-	  evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '2').where(:area => middle_area)
-	  evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '5').where(:area => middle_area)
-	  evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '4').where(:area => middle_area)
-	  evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '3').where(:area => middle_area)
-	  evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '2').where(:area => middle_area)
-	end
-
-    if evas.flatten.blank?
-      big_middle_area << big_area
-      big_middle_area << middle_area
-	  evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '5').where("area not in (?)", big_middle_area)
-	  evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '4').where("area not in (?)", big_middle_area)
-	  evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '3').where("area not in (?)", big_middle_area)
-	  evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '2').where("area not in (?)", big_middle_area)
-	  evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '5').where("area not in (?)", big_middle_area)
-	  evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '4').where("area not in (?)", big_middle_area)
-	  evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '3').where("area not in (?)", big_middle_area)
-	  evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '2').where("area not in (?)", big_middle_area)
-	end
+    if issue_middle_area.flatten.blank?
+      evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '5')
+      evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '4')
+      evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '3')
+      evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '2')
+    else
+      evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '5').where("area not in (?)", issue_middle_area.flatten)
+      evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '4').where("area not in (?)", issue_middle_area.flatten)
+      evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '3').where("area not in (?)", issue_middle_area.flatten)
+      evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria => '2').where("area not in (?)", issue_middle_area.flatten)
+    end
+    
+    lift_middle_area = EvacuationAdvisory.mode_in(project).select("area").where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => ['2', '3', '4', '5']).where("area not in (?)", big_area)
+  	
+	lift_big_area = []
+	unless lift_middle_area.blank?
+      lift_middle_area.each do |marea|
+        i = 0
+        while i < big_area.length
+          if EVACUATIONADVISORY_MAP["middle_area"]["#{big_area[i]}"].present? &&
+            EVACUATIONADVISORY_MAP["middle_area"]["#{big_area[i]}"].include?(marea.area)
+            lift_big_area << big_area[i]
+            break
+          end
+          i += 1
+        end
+      end
+    end
+    
+    if lift_big_area.flatten.blank?
+      evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '5')
+      evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '4')
+      evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '3')
+      evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '2')
+    else
+      lift_big_area.uniq
+      evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '5').where("area not in (?)", lift_big_area.flatten)
+      evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '4').where("area not in (?)", lift_big_area.flatten)
+      evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '3').where("area not in (?)", lift_big_area.flatten)
+      evas << EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_LIFT).where(:sort_criteria => '2').where("area not in (?)", lift_big_area.flatten)
+    end
 
     # XML出力対象が存在しない場合は例外を発生させる
     raise EvacuationAdvisoriesController::ParamsException if evas.flatten.blank?
@@ -274,12 +291,10 @@ class EvacuationAdvisory < ActiveRecord::Base
     node_evas.add_element("pcx_ev:ComplementaryInfo")
 
     # 避難人数、避難世帯数の合計値処理
-    if big_middle_area.present?
-      summary = EvacuationAdvisory.mode_in(project).select("SUM(households) as households_sum, SUM(head_count) as head_count_sum").where(:issueorlift => [ISSUEORLIFT_ISSUE,ISSUEORLIFT_LIFT]).where(:sort_criteria=> ['2','3','4','5']).where("area not in (?)", big_middle_area).first
-    elsif middle_area.present?
-      summary = EvacuationAdvisory.mode_in(project).select("SUM(households) as households_sum, SUM(head_count) as head_count_sum").where(:issueorlift => [ISSUEORLIFT_ISSUE,ISSUEORLIFT_LIFT]).where(:sort_criteria=> ['2','3','4','5']).where(:area => middle_area).first
+    if issue_middle_area.flatten.blank?
+      summary = EvacuationAdvisory.mode_in(project).select("SUM(households) as households_sum, SUM(head_count) as head_count_sum").where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria=> ['2','3','4','5']).first
     else
-      summary = EvacuationAdvisory.mode_in(project).select("SUM(households) as households_sum, SUM(head_count) as head_count_sum").where(:issueorlift => [ISSUEORLIFT_ISSUE,ISSUEORLIFT_LIFT]).where(:sort_criteria=> ['2','3','4','5']).where(:area => big_area).first
+      summary = EvacuationAdvisory.mode_in(project).select("SUM(households) as households_sum, SUM(head_count) as head_count_sum").where(:issueorlift => ISSUEORLIFT_ISSUE).where(:sort_criteria=> ['2','3','4','5']).where("area not in (?)", issue_middle_area.flatten).first
     end
 
     if summary.households_sum.present? || summary.head_count_sum.present?
@@ -298,44 +313,45 @@ class EvacuationAdvisory < ActiveRecord::Base
       node_detail.add_element("pcx_ev:Sort").add_text(CONST["sort_criteria"]["#{e20.sort_criteria}"]) if e20.sort_criteria.present?
       # 発令･解除区分
       node_detail.add_element("pcx_ev:IssueOrLift").add_text(CONST["issueorlift"]["#{e20.issueorlift}"]) if e20.issueorlift.present?
-      node_obj = node_detail.add_element("pcx_ev:Object")
-	    if big_middle_area.present?
-	      st = EvacuationAdvisory.mode_in(project).select("SUM(households) as households_sum, SUM(head_count) as head_count_sum").where(:issueorlift => e20.issueorlift).where(:sort_criteria=> e20.sort_criteria).where("area not in (?)", big_middle_area).first
-	    elsif middle_area.present?
-	      st = EvacuationAdvisory.mode_in(project).select("SUM(households) as households_sum, SUM(head_count) as head_count_sum").where(:issueorlift => e20.issueorlift).where(:sort_criteria=> e20.sort_criteria).where(:area => middle_area).first
-	    else
+      if e20.issueorlift == ISSUEORLIFT_ISSUE
+        node_obj = node_detail.add_element("pcx_ev:Object")
+        if issue_middle_area.flatten.blank?
 	      st = EvacuationAdvisory.mode_in(project).select("SUM(households) as households_sum, SUM(head_count) as head_count_sum").where(:issueorlift => e20.issueorlift).where(:sort_criteria=> e20.sort_criteria).where(:area => big_area).first
+	    else
+	      st = EvacuationAdvisory.mode_in(project).select("SUM(households) as households_sum, SUM(head_count) as head_count_sum").where(:issueorlift => e20.issueorlift).where(:sort_criteria=> e20.sort_criteria).where("area not in (?)", issue_middle_area.flatten).first
 	    end
         node_obj.add_element("pcx_ev:Households", {"pcx_ev:unit" => "世帯"}).add_text("#{st.households_sum}")  if st.households_sum.present?
         node_obj.add_element("pcx_ev:HeadCount").add_text("#{st.head_count_sum}") if summary.head_count_sum.present?
+      end
+      
       node_areas = node_detail.add_element("pcx_ev:Areas")
-
       evas2.each do |eva|
         node_area  = node_areas.add_element("pcx_ev:Area")
-          node_location = node_area.add_element("pcx_eb:Location")
-            # 発令・解除地区名称
-            node_location.add_element("commons:areaName").add_text("#{eva.area}") if eva.area.present?
-            node_location.add_element("commons:areaNameKana").add_text("#{eva.area_kana}") if eva.area_kana.present?
-          # 日時
-          case eva.issueorlift
-          when ISSUEORLIFT_ISSUE # 発令
-            date = eva.issued_at.xmlschema if eva.issued_at.present?
-          when ISSUEORLIFT_LIFT # 解除
-            date = eva.lifted_at.xmlschema if eva.lifted_at.present?
-          else
-            date = nil
-          end
-          node_area.add_element("pcx_ev:DateTime").add_text(date.to_s) if date.present?
-
+        node_location = node_area.add_element("pcx_eb:Location")
+        # 発令・解除地区名称
+        node_location.add_element("commons:areaName").add_text("#{eva.area}") if eva.area.present?
+        node_location.add_element("commons:areaNameKana").add_text("#{eva.area_kana}") if eva.area_kana.present?
+        # 日時
+        case eva.issueorlift
+        when ISSUEORLIFT_ISSUE # 発令
+          date = eva.issued_at.xmlschema if eva.issued_at.present?
+        when ISSUEORLIFT_LIFT # 解除
+          date = eva.lifted_at.xmlschema if eva.lifted_at.present?
+        else
+          date = nil
+        end
+        node_area.add_element("pcx_ev:DateTime").add_text(date.to_s) if date.present?
+        if eva.issueorlift == ISSUEORLIFT_ISSUE
           node_obj = node_area.add_element("pcx_ev:Object")
-            # 対象人数と対象世帯数 自主避難人数を含む。不明の場合は要素を省略。
-            node_obj.add_element("pcx_ev:Households", {"pcx_ev:unit" => "世帯"}).add_text("#{eva.households}") if eva.households.present?
-            node_obj.add_element("pcx_ev:HeadCount").add_text("#{eva.head_count}") if eva.head_count.present?
+          # 対象人数と対象世帯数 自主避難人数を含む。不明の場合は要素を省略。
+          node_obj.add_element("pcx_ev:Households", {"pcx_ev:unit" => "世帯"}).add_text("#{eva.households}") if eva.households.present?
+          node_obj.add_element("pcx_ev:HeadCount").add_text("#{eva.head_count}") if eva.head_count.present?
+        end
       end
     end
 
     issue = Issue.new
-    issue.tracker_id = 1
+    issue.tracker_id = TRACKER_EVACUATION
     issue.project_id = project.id
     issue.subject    = "避難勧告･指示 #{Time.now.strftime("%Y/%m/%d %H:%M:%S")}"
     issue.author_id  = User.current.id
@@ -371,14 +387,30 @@ class EvacuationAdvisory < ActiveRecord::Base
   def self.update_sort_criteria_history(project)
     histories = []
     updated_selves = EvacuationAdvisory.mode_in(project).order("identifier ASC").scoped
+    # 初期発令時に前回の解除が残っているデータをのsort_criteria等を初期化するためのカウントをとる。
+    eva_count = connection.select_value("select count(*) from evacuation_advisories")
+    issue_count = connection.select_value("select count(*) from evacuation_advisories where issueorlift = '#{ISSUEORLIFT_LIFT}' or issueorlift is null") 
+    prev_delivery_time = connection.select_value("select max(d.updated_at) from delivery_histories d, issues i
+                                              where d.issue_id = i.id and d.project_id = #{project.id} and i.tracker_id = #{TRACKER_EVACUATION} and d.delivery_place_id = 1 and d.status = 'done'")
+    if prev_delivery_time.nil?
+      prev_delivery_time = Time.now
+    else
+      prev_delivery_time = Time.parse(prev_delivery_time)
+    end
+    delivery_time = Time.now  - (EVACUATIONADVISORY_MAP["lift_term"].to_i * 3600)
     updated_selves.each do |eva|
-      # 公共コモンズ用の発令区分と発令解除区分を決定
-      eva.sort_criteria, eva.issueorlift = EVACUATIONADVISORY_MAP["sort_criteria_map"][eva.previous_sort_criteria || SORT_ISSUE_NONE][eva.current_sort_criteria]
-      # 後続処理で登録するチケットの説明文を作成
-      histories << eva.get_sort_criteria_changes
-      # 更新前の発令区分を保存
-      eva.previous_sort_criteria = eva.current_sort_criteria
-      eva.save
+      # 解除を発令してから数時間、発令解除区分の更新を回避する
+      if eva.current_sort_criteria == SORT_ISSUE_NONE && eva.issueorlift == ISSUEORLIFT_LIFT && delivery_time < prev_delivery_time && eva_count != issue_count
+        histories << eva.get_sort_criteria_changes
+      else
+	    # 公共コモンズ用の発令区分と発令解除区分を決定
+        eva.sort_criteria, eva.issueorlift = EVACUATIONADVISORY_MAP["sort_criteria_map"][eva.previous_sort_criteria || SORT_ISSUE_NONE][eva.current_sort_criteria]
+        # 後続処理で登録するチケットの説明文を作成
+        histories << eva.get_sort_criteria_changes
+        # 更新前の発令区分を保存
+        eva.previous_sort_criteria = eva.current_sort_criteria
+        eva.save
+      end
     end
     return updated_selves, histories.compact.join("\n")
   end
@@ -391,7 +423,7 @@ class EvacuationAdvisory < ActiveRecord::Base
   # ==== Raise
   def get_sort_criteria_changes
     result = nil
-    if previous_sort_criteria && previous_sort_criteria != SORT_ISSUE_NONE && previous_sort_criteria == current_sort_criteria
+    if previous_sort_criteria && previous_sort_criteria != SORT_ISSUE_NONE && previous_sort_criteria == current_sort_criteria && issueorlift == ISSUEORLIFT_ISSUE
       result = [area, CONST["sort_criteria"][sort_criteria], "継続"]
     else
       result = [area, CONST["sort_criteria"][sort_criteria], CONST["issueorlift"][issueorlift]]
