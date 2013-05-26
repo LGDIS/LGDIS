@@ -24,7 +24,8 @@ require 'jpmobile/datum_conv'
 class IssueGeography < ActiveRecord::Base
   unloadable
 
-  belongs_to :issue, :dependent => :destroy
+  belongs_to :project
+  belongs_to :issue
 
   attr_accessible :datum,:location,:point,:line,:polygon,:remarks
 
