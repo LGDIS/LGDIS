@@ -13,8 +13,21 @@ module Lgdis
       # 自動配信時のみ、141文字(Twitter のMAXついーと文字数)から
       # 災害ポータルのURL 文字数を引いた文字数を登録する
       if AUTO_FLAG[context[:params][:issue][:auto_send]]
-        context[:issue][:summary] = context[:issue][:summary].slice(0,(141 - DST_LIST['disaster_portal_url'].size))
-      end
+        send_target = context[:params][:issue][:send_target]
+        (DST_LIST['auto_destination'][send_target.to_i] || {}).each do |auto|
+          case auto['id'].to_s
+          when "7"
+            context[:issue][:summary] = context[:issue][:summary].slice(0,(141 - DST_LIST['disaster_portal_url'].size))
+          when "11", "12", "13"
+            context[:issue][:mail_subject] = context[:issue][:mail_subject].slice(0, 15)
+            if destination['id'] == "11"
+              context[:issue][:summary] = context[:issue][:summary].slice(0, 172)
+            else
+              context[:issue][:summary] = context[:issue][:summary].slice(0,(172 - DST_LIST['disaster_portal_url'].size))
+            end
+          end
+        end
+     end
     end
 
     # controller_issues_new_after_saveホック処理
@@ -87,9 +100,12 @@ module Lgdis
     # ==== Raise
     def deliver_issue(context={})
       issue = context[:issue]
-      raise "配備番号が未設定です" if (auto_target = context[:params][:issue][:send_target]).blank?
+      auto_target = context[:params][:issue][:send_target]
+      raise "配備番号が未設定です" if auto_target.blank?
 
-      return if DST_LIST['auto_destination_out'].include?(issue.tracker_id) 
+      return if DST_LIST['auto_destination_out'].include?(issue.tracker_id)
+      # 自動配信の場合に二重配信を防ぐ
+      return if DeliveryHistory.joins("INNER JOIN issues ON delivery_histories.issue_id = issues.id").where(:project_id => issue.project_id).where(:summary => issue.summary).where("issues.xml_head_eventid = (?)", issue.xml_head_eventid).exists?
 
       place_id_ary = []
       (DST_LIST['auto_destination'][auto_target.to_i] || {}).each do |destination|
