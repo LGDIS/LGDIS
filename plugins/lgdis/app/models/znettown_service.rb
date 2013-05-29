@@ -53,7 +53,7 @@ class ZNETTOWNService
   # ZNETTOWN CGIサーバにlogin要求を行う
   # 正常時はAID(認証承認ID)やCookie生成情報を返却する
   # ただし既存のAIDが有効の場合は生成済のCookie情報を返却する
-  # 既存のAIDが無効の場合は、ZNETTOWN CGIサーバにlogin要求をしてookie生成情報を返却する
+  # 既存のAIDが無効の場合は、ZNETTOWN CGIサーバにlogin要求をしてCookie生成情報を返却する
   # ==== Args
   # ==== Return
   # ZNETTOWN CGIレスポンス(Hash)
