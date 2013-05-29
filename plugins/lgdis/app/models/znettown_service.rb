@@ -39,6 +39,7 @@ class ZNETTOWNService
   COOKIE_NAMES = [:ZNT_AID, :ZNT_CID, :ZNT_UID, :ZNT_SID, :ZNT_USERNM, :ZNT_INIT_MAP_KIND, :ZNT_INIT_MAP_SCALE, :ZNT_INIT_X, :ZNT_INIT_Y, :ZNT_SSL, :ZNT_LAST_LOGIN_DT, :ZNT_LAST_LOGIN_RS]
 
   @@authorized_aid = nil
+  @@authorized_cookies = nil
 
   # ZNETTOWN機能の有効状態を取得する
   # ==== Args
@@ -51,7 +52,8 @@ class ZNETTOWNService
 
   # ZNETTOWN CGIサーバにlogin要求を行う
   # 正常時はAID(認証承認ID)やCookie生成情報を返却する
-  # ただし既存のAIDが有効の場合はnilを返却する ※この場合、Cookie発行は不要
+  # ただし既存のAIDが有効の場合は生成済のCookie情報を返却する
+  # 既存のAIDが無効の場合は、ZNETTOWN CGIサーバにlogin要求をしてookie生成情報を返却する
   # ==== Args
   # ==== Return
   # ZNETTOWN CGIレスポンス(Hash)
@@ -70,18 +72,21 @@ class ZNETTOWNService
         result = parse_xml(response)
         Rails.logger.info "ZNET TOWN API: #{STATUS[result[:status]]}(#{result[:status]})"
         Rails.logger.debug "parsed_result:" + result.inspect
+
         case result[:status]
         when SUCCESS_BEGIN_STATUS
           @@authorized_aid = result[:aid]
-          return result
+          @@authorized_cookies = result
+          return @@authorized_cookies
         when SUCCESS_CONTINUE_STATUS
-          return nil
+          return @@authorized_cookies
         end
       end
     rescue HTTPFailed, XMLParseFailed => e
       Rails.logger.error "#{e.class}: #{e.message}"
     rescue
       @@authorized_aid = nil
+      @@authorized_cookies = nil
       raise
     end
     raise LoginError.new
@@ -114,8 +119,8 @@ class ZNETTOWNService
         :PWD => pwd,
         :CID => cid,
       }
-      # 下の１行は複数の人がアクセスしても、宅地図が表示できるようにリクエストパラメータにAIDをつけないようにコメントアウトしてます(複数アクセス対応)
-      # request_param[:AID] = @@authorized_aid if @@authorized_aid
+
+      request_param[:AID] = @@authorized_aid if @@authorized_aid
       response = conn.get uri_local, request_param
       if response.status == 200
         yield response.body
