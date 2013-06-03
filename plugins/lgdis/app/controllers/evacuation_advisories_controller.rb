@@ -6,6 +6,7 @@ class EvacuationAdvisoriesController < ApplicationController
   before_filter :init
   
   class ParamsException < StandardError; end
+  class RequiredException < StandardError; end
 
   # 共通初期処理
   # ==== Args
@@ -91,21 +92,26 @@ class EvacuationAdvisoriesController < ApplicationController
     if EvacuationAdvisory.mode_in(@project).limit(1).present?
       begin
         # 発令区分の遷移履歴を更新する
-        @search = EvacuationAdvisory.mode_in(@project).search(params[:search])
-        @evacuation_advisories = EvacuationAdvisory.mode_in(@project).paginate(:page => params[:page]).order("identifier ASC")
-        @evacuation_advisories_for_ticket, sort_criteria_history = EvacuationAdvisory.update_sort_criteria_history(@project)
-        if @evacuation_advisories_for_ticket.map{|ea| ea.errors.any? }.include?(true)
-          render :action => :index
-          return
-        end
+        ActiveRecord::Base.transaction do
+          @search = EvacuationAdvisory.mode_in(@project).search(params[:search])
+          @evacuation_advisories = EvacuationAdvisory.mode_in(@project).paginate(:page => params[:page]).order("identifier ASC")
+          @evacuation_advisories_for_ticket, sort_criteria_history = EvacuationAdvisory.update_sort_criteria_history(@project)
+          if @evacuation_advisories_for_ticket.map{|ea| ea.errors.any? }.include?(true)
+            render :action => :index
+            raise RequiredException
+          end
 
-        # チケット作成
-        issues = EvacuationAdvisory.create_issues(@project, :description => sort_criteria_history)
-        links = []
-        issues.each do |issue|
-          links << view_context.link_to("##{issue.id}", issue_path(issue), :title => issue.subject)
+          # チケット作成
+          issues = EvacuationAdvisory.create_issues(@project, :description => sort_criteria_history)
+          links = []
+          issues.each do |issue|
+            links << view_context.link_to("##{issue.id}", issue_path(issue), :title => issue.subject)
+          end
+          flash[:notice] = l(:notice_issue_successful_create, :id => links.join(","))
         end
-        flash[:notice] = l(:notice_issue_successful_create, :id => links.join(","))
+      rescue RequiredException
+        ActiveRecord::Rollback
+        return
       rescue ParamsException
         flash[:error] = l(:error_not_exists_announcement)
       rescue ActiveRecord::RecordInvalid => e

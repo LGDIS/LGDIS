@@ -108,6 +108,8 @@ module Lgdis
       NEW_STATUS    = 1
       UPDATE_STATUS = 2
       CANCEL_STATUS = 3
+      # 訓練用メッセージ
+      TRAINING_MESSAGE = "【災害訓練】"
 
       # チケット情報のコピー
       # チケット位置情報もコピーするように処理追加
@@ -357,7 +359,7 @@ module Lgdis
 
         # 災害訓練モード判定
         DST_LIST['training_prj'][self.project_id] ? \
-          '【災害訓練】' + "\n" + DST_LIST['disaster_portal_url'] + "\n" + url.to_s + "\n" + contents.to_s : \
+          TRAINING_MESSAGE + "\n" + DST_LIST['disaster_portal_url'] + "\n" + url.to_s + "\n" + contents.to_s : \
           DST_LIST['disaster_portal_url'] + "\n" + url.to_s + "\n" + contents.to_s
       end
 
@@ -652,19 +654,17 @@ module Lgdis
       # _doc_ :: REXML::Document 文字列
       # ==== Raise
       def create_commons_area_mail_body(delivery_history)
-        delivery_place_id = delivery_history.delivery_place_id
-        if delivery_place_id == UGENT_MAIL_DOCOMO
-          summury = delivery_history.summary
+        if DST_LIST['training_prj'][self.project_id]
+          summary = TRAINING_MESSAGE + "\n" + delivery_history.summary
         else
-          summury = self.add_url_and_training(delivery_history.summary, delivery_place_id)
+          summary = delivery_history.summary
         end
-
         doc =  REXML::Document.new
         doc.add_element("pcx_um:UrgentMail") # root
         doc.elements["//pcx_um:UrgentMail"].add_element("pcx_um:Information")
 
         doc.elements["//pcx_um:Information"].add_element("pcx_um:Title").add_text(delivery_history.mail_subject)
-        doc.elements["//pcx_um:Information"].add_element("pcx_um:Message").add_text(summury)
+        doc.elements["//pcx_um:Information"].add_element("pcx_um:Message").add_text(summary)
 
         return doc.to_s
       end

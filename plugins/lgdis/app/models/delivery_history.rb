@@ -36,6 +36,10 @@ class DeliveryHistory < ActiveRecord::Base
   UPDATE_STATUS = '2'
   CANCEL_STATUS = '3'
 
+  # 正規表現
+  REGEXP_HTTP = /http(s)?:\/\//
+  REGEXP_MAIL = /[a-zA-Z0-9_\.\-]+@[A-Za-z0-9_\.\-]+\.[A-Za-z0-9_\.\-]+/
+
   # 属性のローカライズ名取得
   # validateエラー時のメッセージに使用されます。
   # "field_" + 属性名 でローカライズします。
@@ -205,20 +209,28 @@ class DeliveryHistory < ActiveRecord::Base
       errors.add(:summary, "を入力して下さい")
     end
 
-    if ([TWITTER_ID].include?(self.delivery_place_id)) && self.summary.size >= (142 - DST_LIST['disaster_portal_url'].size)
-      errors.add(:summary, "は#{142 - DST_LIST['disaster_portal_url'].size}文字以上入力できません")
+    if ([TWITTER_ID].include?(self.delivery_place_id)) && self.summary.size >= (141 - DST_LIST['disaster_portal_url'].size)
+      errors.add(:summary, "は#{141 - DST_LIST['disaster_portal_url'].size}文字以上入力できません")
     end
 
     if ([U_MAIL_DCM_ID, U_MAIL_SB_ID, U_MAIL_AU_ID].include?(self.delivery_place_id)) && self.mail_subject.size > 15
       errors.add(:mail_subject, "は16文字以上入力できません")
     end
 
-    if ([U_MAIL_DCM_ID, U_MAIL_SB_ID, U_MAIL_AU_ID].include?(self.delivery_place_id)) && self.summary.size > 171
-      errors.add(:summary, "は172文字以上入力できません")
+    if ([U_MAIL_DCM_ID, U_MAIL_SB_ID, U_MAIL_AU_ID].include?(self.delivery_place_id))
+      if self.summary.size + self.summary.count("\n") > 172
+        errors.add(:summary, "は173文字以上入力できません")
+      end
+      if self.summary =~ REGEXP_HTTP
+        errors.add(:summary, "にURLは指定できません")
+      end
+      if self.summary =~ REGEXP_MAIL
+        errors.add(:summary, "にメールアドレスは指定できません")
+      end
     end
 
     if ([ATOM_ID].include?(self.delivery_place_id)) && self.summary.size > 2000
-      errors.add(:summary, "は2000文字以上入力できません")
+      errors.add(:summary, "は2001文字以上入力できません")
     end
 
     if ([COMMONS_ID, U_MAIL_DCM_ID, U_MAIL_SB_ID, U_MAIL_AU_ID].include?(self.delivery_place_id)) && self.type_update.blank?

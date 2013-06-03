@@ -10,21 +10,18 @@ module Lgdis
     # ==== Return
     # ==== Raise
     def controller_issues_new_before_save(context={})
-      # 自動配信時のみ、141文字(Twitter のMAXついーと文字数)から
+      # 自動配信時のみ、141文字(Twitter のMAXついーとから
       # 災害ポータルのURL 文字数を引いた文字数を登録する
+      
       if AUTO_FLAG[context[:params][:issue][:auto_send]]
         send_target = context[:params][:issue][:send_target]
+        urgent_mail = DST_LIST['delivery_place_group_urgent_mail'].map{|o| o["id"]}
         (DST_LIST['auto_destination'][send_target.to_i] || {}).each do |auto|
-          case auto['id'].to_s
-          when "7"
-            context[:issue][:summary] = context[:issue][:summary].slice(0,(141 - DST_LIST['disaster_portal_url'].size))
-          when "11", "12", "13"
+          if urgent_mail.include?(auto['id'])
             context[:issue][:mail_subject] = context[:issue][:mail_subject].slice(0, 15)
-            if destination['id'] == "11"
-              context[:issue][:summary] = context[:issue][:summary].slice(0, 172)
-            else
-              context[:issue][:summary] = context[:issue][:summary].slice(0,(172 - DST_LIST['disaster_portal_url'].size))
-            end
+            context[:issue][:summary] = context[:issue][:summary].slice(0, 172)
+          elsif auto['id'].to_s == "7"
+            context[:issue][:summary] = context[:issue][:summary].slice(0,(140 - DST_LIST['disaster_portal_url'].size))
           end
         end
      end
