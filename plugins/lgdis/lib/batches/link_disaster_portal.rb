@@ -238,7 +238,7 @@ class Batches::LinkDisasterPortal
 
     # fileに書き出し
     output_dir_path  = Pathname(DST_LIST["atom"]["output_dir"])
-    output_file_name =  "#{tracker_id}_track.rss"
+    output_file_name =  "tracker_#{tracker_id}.rss"
     FileUtils::mkdir_p(output_dir_path) unless File.exist?(output_dir_path) # 出力先ディレクトリを作成
     File.binwrite(output_dir_path.join(output_file_name.force_encoding("UTF-8")), CGI::unescapeHTML(doc.to_s)) # &amp;→& の為unescapeする
   end
