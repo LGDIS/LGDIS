@@ -440,7 +440,7 @@ class Shelter < ActiveRecord::Base
     Shelter.all.each do |s|
       h[s.shelter_code] = s.name
     end
-    File.open(File.join(Rails.root,"public","shelter.json"), "w:utf-8") do |f|
+    File.open(File.join(Rails.root,"public","plugin_assets","lgdis","privates","shelter.json"), "w:utf-8") do |f|
       f.write(JSON.generate(h))
     end
   end

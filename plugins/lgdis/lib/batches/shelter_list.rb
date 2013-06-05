@@ -197,7 +197,7 @@ end
     # fileに書き出し
     output_dir_path  = Pathname(DST_LIST["atom"]["output_dir"])
 
-    output_file_name =  "#{tracker_id}_track.rss"
+    output_file_name =  "tracker_#{tracker_id}.rss"
 
     FileUtils::mkdir_p(output_dir_path) unless File.exist?(output_dir_path) # 出力先ディレクトリを作成
 

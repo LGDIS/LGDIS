@@ -4,6 +4,7 @@
 /config/configuration.yml
 /config/database.yml
 /config/email.yml
+/config/unicorn.rb
 /config/initializers/session_store.rb
 /config/initializers/secret_token.rb
 /coverage
@@ -14,12 +15,9 @@
 /lib/redmine/scm/adapters/mercurial/redminehelper.pyc
 /lib/redmine/scm/adapters/mercurial/redminehelper.pyo
 /log/*.log*
-/log/ext_out
 /log/mongrel_debug
 /public/dispatch.*
 /public/plugin_assets
-/public/atom
-/public/*.json
 /tmp/*
 /tmp/cache/*
 /tmp/pdf/*
@@ -32,6 +30,9 @@
 /plugins/lgdis/config/settings.yml
 /plugins/lgdis/config/custom_field_connection.yml
 /plugins/lgdis/config/destination_list.yml
+/plugins/lgdis/config/api_key.yml
+/plugins/lgdis/config/evacuation_advisory.yml
+/plugins/lgdis/config/znettown_key.yml
 *.rbc
 
 /.bundle

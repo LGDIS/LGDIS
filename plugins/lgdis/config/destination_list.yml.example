@@ -1324,10 +1324,10 @@ commons_connection:
 # Atom出力先設定
 atom:
   # 出力ディレクトリ名
-  output_dir: ./public/atom
+  output_dir: ./public/plugin_assets/lgdis/atomfeeds
   # 出力ファイル名
   # ※文字列中の「${trackerid}」は該当のトラッカーIDに、「${date}」は作成年月日時分秒(YYYYMMDDHHMMSS)に置換されます
-  output_filename: "track_${trackerid}.rss"
+  output_filename: "tracker_${trackerid}.rss"
 
 # 災害情報ポータルURL
 disaster_portal_url: "下記リンクより、災害情報を確認して下さい。\n http://www.jice.or.jp/sinsai/sinsai_result.php"
