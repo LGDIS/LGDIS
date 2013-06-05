@@ -201,7 +201,7 @@ module Lgdis
           when 'reserve'
             # resque(resque-scheduler)で配信を行う
             if delivery_history.schedulable?
-              enqueue_datetime = self.opened_at
+              enqueue_datetime = delivery_history.opened_at
               if delivery_history.for_commons? || delivery_history.for_urgent_mail?
                 enqueue_datetime = Time.now
               end
@@ -217,7 +217,12 @@ module Lgdis
           when 'reject'
             # 配信予定のキューを取り消す
             if delivery_history.rejectable?
-              Resque.remove_delayed_job_from_timestamp(self.opened_at, delivery_job_class, delivery_history.id, summary, test_flag)
+              # 職員招集メールはargsがハッシュ値のため、公開開始日時をkeyに削除する。
+              if DEPLOYED_MAIL_PLACE_IDS.include?(delivery_place_id)
+                Resque.next_item_for_timestamp(delivery_history.opened_at)
+              else
+                Resque.remove_delayed_job_from_timestamp(delivery_history.opened_at, delivery_job_class, delivery_history.id, summary, test_flag)
+              end
               delivery_history.update_attributes({:status => status_to, :respond_user_id => User.current.id, :process_date => Time.now})
               register_issue_journal_reject(delivery_history) # チケットへの配信要求却下履歴書き込み
             else

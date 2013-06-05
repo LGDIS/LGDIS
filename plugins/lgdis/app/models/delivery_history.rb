@@ -30,6 +30,9 @@ class DeliveryHistory < ActiveRecord::Base
   U_MAIL_DCM_ID = 10
   U_MAIL_SB_ID  = 11
   U_MAIL_AU_ID  = 12
+  SMTP_ID = DST_LIST['delivery_place_group_deployed_mail'].map{|o| o["id"]}
+  U_MAIL_ID = DST_LIST['delivery_place_group_urgent_mail'].map{|o| o["id"]}
+  COMMONS_ALL_ID = DST_LIST['delivery_place_group_commons'].map{|o| o["id"]}
 
   # 更新種別ステータス
   NEW_STATUS    = '1'
@@ -69,6 +72,7 @@ class DeliveryHistory < ActiveRecord::Base
   def self.create_for_history(issue, ary)
     deliver_histories = []
     ary.each do |e|
+      open_time = issue[:opened_at]
       x = self.new(
         :issue_id          => issue[:id],
         :project_id        => issue[:project_id],
@@ -82,7 +86,7 @@ class DeliveryHistory < ActiveRecord::Base
         :description_cancel=> issue[:description_cancel],
         :delivered_area    => issue[:delivered_area],
         :published_at      => issue[:published_at],
-        :opened_at         => issue[:opened_at],
+        :opened_at         => ((open_time.present? && SMTP_ID.include?(e.to_i)) ? (open_time + e.to_i) : open_time),
         :closed_at         => issue[:closed_at],
         :disaster_info_type=> issue[:disaster_info_type])
       x.save
@@ -193,7 +197,7 @@ class DeliveryHistory < ActiveRecord::Base
   def for_commons
     if ((DST_LIST['general_info_ids'].include?(self.issue.tracker_id)) && [COMMONS_ID].include?(self.delivery_place_id)) ||
        ((DST_LIST['events_ids'].include?(self.issue.tracker_id)) && [COMMONS_ID].include?(self.delivery_place_id)) ||
-       ([U_MAIL_DCM_ID, U_MAIL_AU_ID, U_MAIL_SB_ID].include?(self.delivery_place_id))
+       (U_MAIL_ID.include?(self.delivery_place_id))
     	edition_mng = EditionManagement.find_by_issue_id_and_delivery_place_id(self.issue.id, self.delivery_place_id)
     else
     	edition_mng = EditionManagement.find_by_project_id_and_tracker_id_and_delivery_place_id(self.issue.project_id, self.issue.tracker_id, self.delivery_place_id)
@@ -209,15 +213,15 @@ class DeliveryHistory < ActiveRecord::Base
       errors.add(:summary, "を入力して下さい")
     end
 
-    if ([TWITTER_ID].include?(self.delivery_place_id)) && self.summary.size >= (141 - DST_LIST['disaster_portal_url'].size)
+    if (TWITTER_ID == self.delivery_place_id && self.summary.size >= (141 - DST_LIST['disaster_portal_url'].size))
       errors.add(:summary, "は#{141 - DST_LIST['disaster_portal_url'].size}文字以上入力できません")
     end
 
-    if ([U_MAIL_DCM_ID, U_MAIL_SB_ID, U_MAIL_AU_ID].include?(self.delivery_place_id)) && self.mail_subject.size > 15
+    if (U_MAIL_ID.include?(self.delivery_place_id)) && self.mail_subject.size > 15
       errors.add(:mail_subject, "は16文字以上入力できません")
     end
 
-    if ([U_MAIL_DCM_ID, U_MAIL_SB_ID, U_MAIL_AU_ID].include?(self.delivery_place_id))
+    if (U_MAIL_ID.include?(self.delivery_place_id))
       if self.summary.size + self.summary.count("\n") > 172
         errors.add(:summary, "は173文字以上入力できません")
       end
@@ -229,29 +233,29 @@ class DeliveryHistory < ActiveRecord::Base
       end
     end
 
-    if ([ATOM_ID].include?(self.delivery_place_id)) && self.summary.size > 2000
+    if (ATOM_ID == self.delivery_place_id && self.summary.size > 2000)
       errors.add(:summary, "は2001文字以上入力できません")
     end
 
-    if ([COMMONS_ID, U_MAIL_DCM_ID, U_MAIL_SB_ID, U_MAIL_AU_ID].include?(self.delivery_place_id)) && self.type_update.blank?
+    if (COMMONS_ALL_ID.include?(self.delivery_place_id)) && self.type_update.blank?
       errors.add(:type_update, "を選択して下さい")
     end
 
-    if ([COMMONS_ID, U_MAIL_DCM_ID, U_MAIL_SB_ID, U_MAIL_AU_ID].include?(self.delivery_place_id)) &&
+    if (COMMONS_ALL_ID.include?(self.delivery_place_id)) &&
        edition_mng.blank? && self.issue.type_update != NEW_STATUS
       errors.add(:type_update, "の「新規」を選択して下さい")
     end
 
-    if ([COMMONS_ID, U_MAIL_DCM_ID, U_MAIL_SB_ID, U_MAIL_AU_ID].include?(self.delivery_place_id)) && self.delivered_area.blank?
+    if (COMMONS_ALL_ID.include?(self.delivery_place_id)) && self.delivered_area.blank?
       errors.add(:delivered_area, "を選択して下さい")
     end
 
-    if ([COMMONS_ID, U_MAIL_DCM_ID, U_MAIL_SB_ID, U_MAIL_AU_ID].include?(self.delivery_place_id)) &&
+    if (COMMONS_ALL_ID.include?(self.delivery_place_id)) &&
         self.type_update == "3" && self.description_cancel.blank?
       errors.add(:description_cancel, "を入力して下さい")
     end
 
-    if ([COMMONS_ID, U_MAIL_DCM_ID, U_MAIL_SB_ID, U_MAIL_AU_ID].include?(self.delivery_place_id)) && self.published_at.blank?
+    if (COMMONS_ALL_ID.include?(self.delivery_place_id)) && self.published_at.blank?
       errors.add(:published_at, "を入力して下さい")
     end
 
