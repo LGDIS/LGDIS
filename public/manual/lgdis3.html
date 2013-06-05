@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Script-Type" content="text/javascript" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta name="Description" content="" />
+    <meta name="Keywords" content="" />
+    <meta name="slurp" content="NOYDIR" />
+    <link rel="stylesheet" href="css/import.css" />
+    <title>石巻市災害に強い情報連携システム　マニュアル　災害情報管理機能：配信要求を承認する</title>
+  </head>
+  <body id="manual">
+    <div class="visual">
+      <div class="visual_wrapper">
+      <div class="v_content clearfix">
+          <div class="v_content_left">
+            <h1>
+              災害情報管理機能：配信要求を承認する
+            </h1>
+            <div class="vl_content">
+              <div class="info-box">
+                ログインし、「配信管理」タブメニューをクリックします。<br>
+                配信一覧画面より、「ステータス」より、「配信要求中」の「チケット番号」をクリックします。<br>
+                ・配信要求中：承認待ちの情報です。承認処理を行う必要があります。<br>
+                ・配信予定　：承認が完了し、配信待ちの情報です。配信前であれば、配信取消を行うことができます。<br>
+                ・配信取消　：配信要求後に、配信要求者により配信要求が取り消された、または、配信管理者により却下処理がされた情報です。<br>
+                ・配信中　　：配信処理中の情報です。<br>
+                ・配信失敗　：配信時に、エラー等により、配信が行えなかった情報です。<br>
+              </div>
+<img src = "img/lgdis3-1.png">
+              <div class="info-box">
+                配信要求のチケット詳細画面が表示され、①「コマンド」に表示されている「配信確認」をクリックします。
+              </div>
+<img src = "img/lgdis3-2.png">
+              <div class="info-box">
+                配信許可、配信却下、配信取消を行います。下部のボタン表示は、配信ステータスにより、下表のボタンが表示されます。
+                <table>
+                	<tr>
+                		<td nowrap>ステータス
+                		</td>
+                		<td nowrap>表示ボタン
+                		</td>
+                		<td nowrap>クリック時の動作
+                		</td>
+                	</tr>
+                	<tr>
+                		<td rowspan=2>配信要求中
+                		</td>
+                		<td>配信許可
+                		</td>
+                		<td>配信要求を許可します。許可された情報の配信ステータスは、配信予定または、配信中になります。
+                		</td>
+                	</tr>
+                	<tr>
+                		<td>配信却下
+                		</td>
+                		<td>配信要求を却下します。却下された情報の配信ステータスは、配信取消になります。
+                		</td>
+                	</tr>
+                	<tr>
+                		<td rowspan=2>配信予定
+                		</td>
+                		<td>戻る
+                		</td>
+                		<td>前の画面に戻ります。
+                		</td>
+                	</tr>
+                	<tr>
+                		<td>配信取消
+                		</td>
+                		<td>配信予定を取り消します。取り消しを行った情報の配信ステータスは、配信取消になります。
+                		</td>
+                	</tr>
+                </table>
+              </div>
+<img src = "img/lgdis3-3.png">
+            </div> <!-- vl_content end -->
+          </div> <!-- v_content_left -->
+          <script type="text/javascript" src="./js/menu.js" charset="UTF-8"></script>
+        </div> <!-- visual_content end -->
+      </div> <!-- visual_wrapper end -->
+    </div> <!-- visual end -->
+    	<div class="clearfix"></div>
+</body>
+</html>
