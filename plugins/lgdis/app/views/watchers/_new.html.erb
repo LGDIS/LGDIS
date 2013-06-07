@@ -1,0 +1,11 @@
+<h3 class="title"><%= l(:permission_add_issue_watcher_groups) %></h3>
+
+<%= form_tag({:controller => 'watchers',
+              :action => (watched ? 'create' : 'append'),
+              :object_type => watched.class.name.underscore,
+              :object_id => watched},
+             :remote => true,
+             :method => :post,
+             :id => 'new-watcher-form') do %>
+  <%= addable_watcher_groups_checkboxes(watched) %>
+<% end %>
