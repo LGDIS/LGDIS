@@ -70,6 +70,9 @@ gem 'omniauth-facebook'
 # jpmobile is Rails plugin for Japanese mobile-phones.
 gem 'jpmobile'
 
+# EXIF Reader is a module to read metadata from JPEG and TIFF images.
+gem 'exifr'
+
 # Iconv is a wrapper class for the UNIX 95 iconv() function family,
 # which translates string between various encoding systems.
 platforms :mri_20 do

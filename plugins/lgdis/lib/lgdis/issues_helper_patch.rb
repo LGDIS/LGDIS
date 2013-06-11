@@ -40,6 +40,56 @@ module Lgdis
         time.strftime("%Y/%m/%d %H:%M:%S") if time.present?
       end
 
+      # 画像から位置情報を取得
+      # ==== Args
+      # _issue_ :: Issueオブジェクト
+      # ==== Return
+      # 座標値（緯度、経度）
+      # ==== Raise
+      def get_image_latlng(issue)
+        texts = ""
+
+        issue.attachments.each do |attachment|
+          begin
+            # jpegファイルであるか判定
+            if attachment.filename =~ /\.(jpg|jpe|jpeg|tiff|jfif|jfi|jif)$/i
+
+              # 画像情報を取得
+              info = EXIFR::JPEG::new(attachment.diskfile)
+
+              # exif情報を持っているか判定
+              if info.exif?
+
+                # exif情報を格納
+                e = info.to_hash
+
+                # 位置情報を持っているか判定
+                if e.key?(:gps_latitude) && e.key?(:gps_longitude) && e.key?(:gps_latitude_ref) && e.key?(:gps_longitude_ref)
+
+                  # 緯度を世界測地系に変換する。
+                  lat = e[:gps_latitude]
+                  latitude = lat[0].to_f + lat[1]/60 + lat[2]/3600
+                  latitude *= -1 if e[:gps_latitude_ref] == "S" # 南緯の場合、緯度にマイナスを付加する。
+
+                  # 経度を世界測地系に変換する。
+                  lon = e[:gps_longitude]
+                  longitude = lon[0].to_f + lon[1]/60 + lon[2]/3600
+                  longitude *= -1 if e[:gps_longitude_ref] == "W" # 西経の場合、経度にマイナスを付加する。
+
+                  # 緯度経度を出力する。
+                  texts += sprintf("#{latitude},#{longitude}\n")
+
+                end
+              end
+            end
+          rescue
+            next
+          end
+        end
+
+        texts
+      end
+
       # XML型フィールドの画面表示部生成
       # ==== Args
       # _xml_ :: XML型フィールド値

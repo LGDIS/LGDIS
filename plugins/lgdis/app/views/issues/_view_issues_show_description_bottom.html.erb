@@ -109,16 +109,16 @@ end
     <legend onclick="toggleFieldset(this); init('<%= area_dai_value -%>','<%= area_tyu_value -%>','<%= area_syo_value -%>');"><%= l(:label_map) %></legend>
     <div style="display: none">
     	<% urlpart_prefix = ENV['RAILS_RELATIVE_URL_ROOT'].to_s %>
-    	<% if ZNETTOWNService.enable? %>
-    	  <div style="float:right; margin-bottom:5px; margin-right:20px;" id="map_z_show_link">
-    	    <img class="ui-datepicker-trigger" src="<%= urlpart_prefix -%>/plugin_assets/lgdis/images/zmap.png" alt="<%= l(:button_map_show) %>" onclick="showZMapSelectPosition_display('map', DEFAULT_MAP_ZOOM, 'issue_custom_field_values_30', '<%= urlpart_prefix -%>'); return false;">
-    	  </div>
-　　　　　　　<% end %>
-    	  <div style="float:right; margin-bottom:5px; margin-right:20px;" id="map_g_show_link">
-    	    <img class="ui-datepicker-trigger" src="<%= urlpart_prefix -%>/plugin_assets/lgdis/images/gmap.png" alt="<%= l(:button_map_show) %>" onclick="init('<%= area_dai_value -%>','<%= area_tyu_value -%>','<%= area_syo_value -%>'); return false;">
-    	  </div>
-    	  <div class="clear"></div>
-    	<div id="map" class="map_field"></div>
+        <% if ZNETTOWNService.enable? %>
+          <div style="float:right; margin-bottom:5px; margin-right:20px;" id="map_z_show_link">
+            <img class="ui-datepicker-trigger" src="<%= urlpart_prefix -%>/plugin_assets/lgdis/images/zmap.png" alt="<%= l(:button_map_show) %>" onclick="showZMapSelectPosition_display('map', DEFAULT_MAP_ZOOM, 'issue_custom_field_values_30', '<%= urlpart_prefix -%>'); return false;">
+          </div>
+        <% end %>
+          <div style="float:right; margin-bottom:5px; margin-right:20px;" id="map_g_show_link">
+            <img class="ui-datepicker-trigger" src="<%= urlpart_prefix -%>/plugin_assets/lgdis/images/gmap.png" alt="<%= l(:button_map_show) %>" onclick="init('<%= area_dai_value -%>','<%= area_tyu_value -%>','<%= area_syo_value -%>'); return false;">
+          </div>
+          <div class="clear"></div>
+        <div id="map" class="map_field"></div>
     </div>
 
 </fieldset>
@@ -184,9 +184,11 @@ end
     //事象の発生場所のポイントマーカー作成
     initMapSelectPosition_display(map, DEFAULT_MAP_ZOOM, 'issue_custom_field_values_30');
 
+    // 画像位置情報からマーカを表示
+    addMarker_image();
   }
-　　
-　　// Toggles the visibility of the map and the show/hide link.
+
+  // Toggles the visibility of the map and the show/hide link.
   function toggleMap_display(mode, map_id) {
     switch(mode) {
     case "g":
@@ -220,6 +222,32 @@ end
       }
     }
   }
+
+  // 画像位置情報からマーカを表示
+  function addMarker_image() {
+
+    // 表示するマップの指定用変数を設定
+    target = {map: map};
+
+    // 座標を取得する。
+    var field = $("#latlng_image_field").html();
+
+    // fieldが取得できたときに実行
+    if (field != null) {
+      var field_value = field.split("\n");
+
+      // 画像用のマーカを表示する。
+      for (var i = 0; i < field_value.length; i++) {
+        var point = field_value[i].split(",");
+        var marker = new google.maps.Marker({
+          icon : 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + '|0066FF|000000',
+          position : new google.maps.LatLng(point[0], point[1]),
+          map : target.map
+        });
+      }
+    }
+  }
+
   /**
    * マップにマーカを表示(事象の発生場所)
    */
