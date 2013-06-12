@@ -187,6 +187,7 @@ ja:
   text_evacuation_advisory_update_confirmation: '更新してよろしいですか？'
   error_not_exists_evacuation_advisories: 避難勧告･指示情報が存在しません。
   error_not_exists_announcement: 避難勧告等が発令された地区が存在しません。
+  error_update_not_entry: '更新ボタンを先に押してください'
 
   # 項目名
   evacuation_advisories:

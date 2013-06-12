@@ -90,7 +90,43 @@ class EvacuationAdvisoriesController < ApplicationController
   def ticket
     # 避難勧告･指示情報が存在しない場合、処理しない
     if EvacuationAdvisory.mode_in(@project).limit(1).present?
+      # 避難勧告一覧画面で入力情報が更新されてるか確認
+      evacuation_advisories_update_status = true
+      @evacuation_advisories = EvacuationAdvisory.mode_in(@project).order("identifier ASC")
+      @evacuation_advisories.each do |eva|
+        # 区分の確認
+        unless params[:evacuation_advisories]["#{eva.id}"][:current_sort_criteria] == eva[:current_sort_criteria]
+          evacuation_advisories_update_status = false
+        end
+        # 発令日時の確認
+        params_issued_at = nil
+        eva_issued_at = nil
+        unless params[:evacuation_advisories]["#{eva.id}"][:issued_at].blank?
+          params_issued_at = Time.parse(params[:evacuation_advisories]["#{eva.id}"][:issued_at]).strftime("%Y-%m-%d %H:%M:%S")
+        end
+        unless eva[:issued_at].blank?
+          eva_issued_at = eva[:issued_at].strftime("%Y-%m-%d %H:%M:%S")
+        end
+        unless params_issued_at == eva_issued_at
+          evacuation_advisories_update_status = false
+        end
+        # 解除日時の確認
+        params_lifted_at = nil
+        eva_lifted_at = nil
+        unless params[:evacuation_advisories]["#{eva.id}"][:lifted_at].blank?
+          params_lifted_at = Time.parse(params[:evacuation_advisories]["#{eva.id}"][:lifted_at]).strftime("%Y-%m-%d %H:%M:%S")
+        end
+        unless eva[:lifted_at].blank?
+          eva_lifted_at = eva[:lifted_at].strftime("%Y-%m-%d %H:%M:%S")
+        end
+        unless params_lifted_at == eva_lifted_at
+          evacuation_advisories_update_status = false
+        end
+      end
+
       begin
+      #　更新されているのに更新ボタンを押さないで登録ボタンを押した時にアラートを表示
+      if evacuation_advisories_update_status
         # 発令区分の遷移履歴を更新する
         ActiveRecord::Base.transaction do
           @search = EvacuationAdvisory.mode_in(@project).search(params[:search])
@@ -109,6 +145,9 @@ class EvacuationAdvisoriesController < ApplicationController
           end
           flash[:notice] = l(:notice_issue_successful_create, :id => links.join(","))
         end
+      else
+        flash[:error] = l(:error_update_not_entry)
+      end
       rescue RequiredException
         ActiveRecord::Rollback
         return

@@ -99,7 +99,43 @@ class SheltersController < ApplicationController
   def ticket
     # 避難所情報が存在しない場合、処理しない
     if Shelter.mode_in(@project).limit(1).present?
+      # 避難所一覧画面で入力情報が更新されてるか確認
+      shelters_update_status = true
+      @shelters = Shelter.mode_in(@project).order("shelter_code ASC")
+      @shelters.each do |shelter|
+        # 開設状況の確認
+        unless params[:shelters]["#{shelter.id}"][:shelter_sort] == shelter[:shelter_sort]
+          shelters_update_status = false
+        end
+        # 開設日時の確認
+        params_opened_at = nil
+        shelter_opened_at = nil
+        unless params[:shelters]["#{shelter.id}"][:opened_at].blank?
+          params_opened_at = Time.parse(params[:shelters]["#{shelter.id}"][:opened_at]).strftime("%Y-%m-%d %H:%M:%S")
+        end
+        unless shelter[:opened_at].blank?
+          shelter_opened_at = shelter[:opened_at].strftime("%Y-%m-%d %H:%M:%S")
+        end
+        unless params_opened_at == shelter_opened_at
+          shelters_update_status = false
+        end
+        # 閉鎖日時の確認
+        params_closed_at = nil
+        shelter_closed_at = nil
+        unless params[:shelters]["#{shelter.id}"][:closed_at].blank?
+          params_closed_at = Time.parse(params[:shelters]["#{shelter.id}"][:closed_at]).strftime("%Y-%m-%d %H:%M:%S")
+        end
+        unless shelter[:closed_at].blank?
+          shelter_closed_at = shelter[:closed_at].strftime("%Y-%m-%d %H:%M:%S")
+        end
+        unless params_closed_at == shelter_closed_at
+          shelters_update_status = false
+        end
+      end
+
       begin
+      #　更新されているのに更新ボタンを押さないで登録ボタンを押した時にアラートを表示
+      if shelters_update_status
         ticket_description = Shelter.get_description(Shelter.mode_in(@project).order(:shelter_code))
         issues = Shelter.create_issues(@project, :description => ticket_description)
         links = []
@@ -107,6 +143,9 @@ class SheltersController < ApplicationController
           links << view_context.link_to("##{issue.id}", issue_path(issue), :title => issue.subject)
         end
         flash[:notice] = l(:notice_issue_successful_create, :id => links.join(","))
+      else
+        flash[:error] = l(:error_update_not_entry)
+      end
       rescue ActiveRecord::RecordInvalid => e
         flash[:error] = e.record.errors.full_messages.join("<br>")
       end

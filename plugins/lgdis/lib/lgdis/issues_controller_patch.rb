@@ -16,6 +16,8 @@ module Lgdis
         before_filter :get_delivery_histories, :only => [:show, :request_delivery]
         before_filter :get_destination_list, :only => [:show, :request_delivery]
         before_filter :set_znettown_cookie, :only => [:new, :show]
+        after_filter  :geocode_create, :only => [:create]
+        after_filter  :geocode_update, :only => [:update]
       end
     end
 
@@ -50,6 +52,87 @@ module Lgdis
         find_issue
         @issue.assign_attributes(issue_attr)
         show  # IssuesController#showメソッドに委譲
+      end
+
+      # チケット新規登録時に事象の発生場所が入力されてたらissue_geographiesのレコードを更新
+      # issueのcreateのアクション時にジオコーディングして座標値を取得する
+      # ==== Args
+      # ==== Return
+      # ==== Raise
+      def geocode_create
+        #住所の項目が空じゃなければgeocode を読み取る
+        begin
+          unless @issue.custom_field_value(30).blank?
+
+            address = @issue.custom_field_value(30)
+            addresses = address.split("\r\n")
+
+            addresses.each do |ad|
+              unless ad.blank?
+                hash = geocode(ad)
+
+                @issue_geography = IssueGeography.new
+                @issue_geography.point = hash['lat'].to_s + "," + hash['lng'].to_s
+                # 手動入力された事象の発生場所を識別するため
+                @issue_geography.remarks = "事象の発生場所"
+
+                Rails.logger.info("--issue--")
+                Rails.logger.info(@issue)
+                Rails.logger.info("--issue--")
+
+                @issue_geography.issue_id = @issue.id
+
+                @issue_geography.save
+              end
+            end
+          end
+        rescue => e
+          Rails.logger.info("---IssueGeography_update---")
+          Rails.logger.info(e.message)
+          Rails.logger.info("---IssueGeography_update---")
+        end
+      end
+
+      # チケットの更新時にissue_geographiesのレコードを更新
+      # issueのupdateのアクション時にジオコーディングして座標値を取得する
+      # ==== Args
+      # ==== Return
+      # ==== Raise
+      def geocode_update
+        #住所の項目が空じゃなければgeocode を読み取る
+        begin
+          # 手動入力された対象レコードを削除
+          IssueGeography.where("remarks = ?", "事象の発生場所").where("issue_id = ?", @issue.id).destroy_all
+
+          unless @issue.custom_field_value(30).blank?
+
+            address = @issue.custom_field_value(30)
+            addresses = address.split("\r\n")
+
+            addresses.each do |ad|
+              unless ad.blank?
+                hash = geocode(ad)
+
+                @issue_geography = IssueGeography.new
+                @issue_geography.point = hash['lat'].to_s + "," + hash['lng'].to_s
+                # 手動入力された事象の発生場所を識別するため
+                @issue_geography.remarks = "事象の発生場所"
+
+                Rails.logger.info("--issue--")
+                Rails.logger.info(@issue)
+                Rails.logger.info("--issue--")
+
+                @issue_geography.issue_id = @issue.id
+
+                @issue_geography.save
+              end
+            end
+          end
+        rescue => e
+          Rails.logger.info("---IssueGeography_update---")
+          Rails.logger.info(e.message)
+          Rails.logger.info("---IssueGeography_update---")
+        end
       end
 
       private
@@ -196,6 +279,36 @@ module Lgdis
           end
         rescue ZNETTOWNService::LoginError
           nil # 何もしない
+        end
+      end
+
+      # 受け取った住所からジオコーディングして座標値を取得する
+      # ==== Args
+      # ==== Return
+      # ==== Raise
+      def geocode(address)
+        begin
+          require 'rubygems'
+          require 'net/http'
+          require 'json'
+
+          address = URI.encode(address)
+          hash = Hash.new
+          baseUrl = "http://maps.google.com/maps/api/geocode/json"
+          reqUrl = "#{baseUrl}?address=#{address}&sensor=false&language=ja"
+          response = Net::HTTP.get_response(URI.parse(reqUrl))
+          status = JSON.parse(response.body)
+          hash['lat'] = status['results'][0]['geometry']['location']['lat']
+          hash['lng'] = status['results'][0]['geometry']['location']['lng']
+
+          Rails.logger.info(hash)
+
+          return hash
+
+        rescue => e
+          Rails.logger.info("geocode-error")
+          Rails.logger.info(e.message)
+          Rails.logger.info("geocode-error")
         end
       end
 
