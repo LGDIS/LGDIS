@@ -30,24 +30,24 @@ import "custom_fields_trackers"
 import "default_settings"
 
 # # プロジェクト
-# import "projects"
+import "projects"
 
 # # チケットステータス
-# import "issue_statuses"
+import "issue_statuses"
 
 # # ロール
-# import "roles"
+import "roles"
 
 # # グループ
-# import "groups"
+import "groups"
 
 # # ワークフロー(ステータス遷移)
 # # TODO: ここに追加する
 
 # # ワークフロー(フィールドに対する権限)
-# # TODO: ここに追加する
+import "workflow_permissions"
 
 # # デフォルトプロジェクトへのグループ設定
-# import "groups_to_projects"
+#import "groups_to_projects"
 
 puts "finished!"

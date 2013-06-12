@@ -26,6 +26,7 @@ EVACUATIONADVISORY_MAP = YAML.load_file("#{Rails.root}/plugins/lgdis/config/evac
 VERSION     = YAML.load_file("#{Rails.root}/plugins/lgdis/config/version.yml")
 SETTINGS    = YAML.load_file("#{Rails.root}/plugins/lgdis/config/lgdis.yml")
 ZNETTOWN    = YAML.load_file("#{Rails.root}/plugins/lgdis/config/znettown_key.yml")
+INIT_PROJ = YAML.load_file("#{Rails.root}/plugins/lgdis/config/init_proj.yml")
 
 # library, plugin
 require_dependency 'lgdis/acts/acts_as_mode_switchable'

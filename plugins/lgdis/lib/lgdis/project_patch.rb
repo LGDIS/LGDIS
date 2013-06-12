@@ -23,6 +23,7 @@ module Lgdis
         before_create :set_identifer
         alias_method_chain :identifier_frozen?, :always_freeze
         alias_method_chain :initialize, :identifier_customize
+        after_commit :set_roles_and_groups
       end
     end
     
@@ -30,7 +31,27 @@ module Lgdis
     end
     
     module InstanceMethods
+
       
+      # 初期メンバー登録
+      # ==== Args
+      # ==== Return
+      # ==== Raise
+      def set_roles_and_groups
+
+        # ユーザ・グループ設定
+        INIT_PROJ["project_member"].each do |member|
+          if member["principal"] == "group"
+            group = Group.find(member["id"])
+            Member.create!(:principal => group, :project => self, :role_ids => member["role_ids"])
+          elsif member["principal"] == "user"
+            user = User.find(member["id"])
+            Member.create!(:principal => user, :project => self, :role_ids => member["role_ids"])
+          end
+        end
+
+      end
+
       # 識別子のバリデーションをスキップ
       # ==== Args
       # ==== Return

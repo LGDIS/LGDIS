@@ -1,0 +1,13 @@
+project_member:
+ -
+  principal: group
+  id: 5
+  role_ids:
+   - 3
+   - 4
+ -
+  principal: user
+  id: 3
+  role_ids:
+   - 4
+   - 5
