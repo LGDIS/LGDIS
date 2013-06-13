@@ -2,7 +2,7 @@ ja:
   ####
   # 共通
   #
-  target_municipality: ××市
+  target_municipality: 石巻市
   label_search_condition_plural: 検索条件
   label_detail: 詳細
   button_new: 新規登録
@@ -50,8 +50,8 @@ ja:
   lgdis_notice_account_register_done: 仮登録メールを送信しました。メールの内容をご確認ください。
   lgdis_mail_subject_register: 仮登録完了メール
   lgdis_mail_body_register: 本人確認のため、下記URLへにアクセスしアカウントの本登録を完了させて下さい。
-  lgdis_mail_body_done: ××市災害対応管理システムへの仮登録が完了しました。
-  lgdis_mail_body_creater: ××市総務部防災対策課
+  lgdis_mail_body_done: 石巻市災害対応管理システムへの仮登録が完了しました。
+  lgdis_mail_body_creater: 石巻市総務部防災対策課
 
   # カスタムフィールドリスト複数初期値設定
   text_custom_field_default_value_multiple_info: '初期値が複数の場合は、1行に1個ずつ記述してください。'
@@ -80,7 +80,7 @@ ja:
   # 課題管理機能
   #
   label_map: 地図
-  button_xml_view_sampling: ××市関連情報のみ
+  button_xml_view_sampling: 石巻市関連情報のみ
   button_ticket_update: チケットの更新
   button_ticket_delete: チケットの削除
   button_to_deliver: 配信画面へ
@@ -187,6 +187,7 @@ ja:
   text_evacuation_advisory_update_confirmation: '更新してよろしいですか？'
   error_not_exists_evacuation_advisories: 避難勧告･指示情報が存在しません。
   error_not_exists_announcement: 避難勧告等が発令された地区が存在しません。
+  error_not_exists_commons_type_announcement: 警戒情報のみを発令した場合、公共情報コモンズへ配信不可のため、チケット登録はできません。
   error_update_not_entry: '更新ボタンを先に押してください'
 
   # 項目名

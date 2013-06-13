@@ -153,7 +153,11 @@ class EvacuationAdvisoriesController < ApplicationController
       rescue RequiredException
         return
       rescue ParamsException
-        flash[:error] = l(:error_not_exists_announcement)
+        if EvacuationAdvisory.mode_in(@project).where(:current_sort_criteria => "2").exists?
+          flash[:error] = l(:error_not_exists_commons_type_announcement)
+        else
+          flash[:error] = l(:error_not_exists_announcement)
+        end
       rescue ActiveRecord::RecordInvalid => e
         flash[:error] = e.record.errors.full_messages.join("<br>")
       end
