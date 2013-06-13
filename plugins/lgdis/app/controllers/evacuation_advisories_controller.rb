@@ -92,7 +92,8 @@ class EvacuationAdvisoriesController < ApplicationController
     if EvacuationAdvisory.mode_in(@project).limit(1).present?
       # 避難勧告一覧画面で入力情報が更新されてるか確認
       evacuation_advisories_update_status = true
-      @evacuation_advisories = EvacuationAdvisory.mode_in(@project).order("identifier ASC")
+      @search   = EvacuationAdvisory.mode_in(@project).search(params[:search])
+      @evacuation_advisories = @search.paginate(:page => params[:page], :per_page => 30).order("identifier ASC")
       @evacuation_advisories.each do |eva|
         # 区分の確認
         unless params[:evacuation_advisories]["#{eva.id}"][:current_sort_criteria] == eva[:current_sort_criteria]

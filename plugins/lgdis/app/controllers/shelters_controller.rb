@@ -101,7 +101,8 @@ class SheltersController < ApplicationController
     if Shelter.mode_in(@project).limit(1).present?
       # 避難所一覧画面で入力情報が更新されてるか確認
       shelters_update_status = true
-      @shelters = Shelter.mode_in(@project).order("shelter_code ASC")
+      @search   = Shelter.mode_in(@project).search(params[:search])
+      @shelters = @search.paginate(:page => params[:page], :per_page => 30).order("shelter_code ASC")
       @shelters.each do |shelter|
         # 開設状況の確認
         unless params[:shelters]["#{shelter.id}"][:shelter_sort] == shelter[:shelter_sort]
