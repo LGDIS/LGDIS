@@ -92,7 +92,8 @@ class EvacuationAdvisoriesController < ApplicationController
     if EvacuationAdvisory.mode_in(@project).limit(1).present?
       # 避難勧告一覧画面で入力情報が更新されてるか確認
       evacuation_advisories_update_status = true
-      @search   = EvacuationAdvisory.mode_in(@project).search(params[:search])
+      eva_id = params[:evacuation_advisories].keys
+      @search   = EvacuationAdvisory.mode_in(@project).search(:id_in => eva_id)
       @evacuation_advisories = @search.paginate(:page => params[:page], :per_page => 30).order("identifier ASC")
       @evacuation_advisories.each do |eva|
         # 区分の確認
@@ -150,7 +151,6 @@ class EvacuationAdvisoriesController < ApplicationController
         flash[:error] = l(:error_update_not_entry)
       end
       rescue RequiredException
-        ActiveRecord::Rollback
         return
       rescue ParamsException
         flash[:error] = l(:error_not_exists_announcement)

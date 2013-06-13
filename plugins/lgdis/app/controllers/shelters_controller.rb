@@ -101,7 +101,8 @@ class SheltersController < ApplicationController
     if Shelter.mode_in(@project).limit(1).present?
       # 避難所一覧画面で入力情報が更新されてるか確認
       shelters_update_status = true
-      @search   = Shelter.mode_in(@project).search(params[:search])
+      shelter_id = params[:shelters].keys
+      @search   = Shelter.mode_in(@project).search(:id_in => shelter_id)
       @shelters = @search.paginate(:page => params[:page], :per_page => 30).order("shelter_code ASC")
       @shelters.each do |shelter|
         # 開設状況の確認
@@ -268,14 +269,9 @@ class SheltersController < ApplicationController
      Rails.logger.info(e.message)
      Rails.logger.info("geocode-error")
    end
-
-
-
   end
 
   def setShelterGeoCsvArray(shelter_name,geocodeArray)
-
-
     begin
       # fileに書き出し
     csv_dir_path  = DST_LIST["atom"]["output_dir"]
@@ -313,30 +309,24 @@ class SheltersController < ApplicationController
         rows << row_temp
       end
 
-if FileTest.exist?(new_csv_filename) then
-   File::delete(new_csv_filename)
-end
-     Rails.logger.info("7")
+      if FileTest.exist?(new_csv_filename) then
+        File::delete(new_csv_filename)
+      end
+      Rails.logger.info("7")
 
-CSV.open(new_csv_filename, "a",encoding: "SJIS:UTF-8") do |csv|
+      CSV.open(new_csv_filename, "a",encoding: "SJIS:UTF-8") do |csv|
+        rows.each do |row|
+          csv << row
+        end
+      end
 
-  rows.each do |row|
-  csv << row
+      File::delete(disk_fullpath_filename)
+
+      File::rename(new_csv_filename ,disk_fullpath_filename)
+
+    rescue => e
+      Rails.logger.info("setShelterGeoCsvArray" + e.message)
+    end
   end
-end
-
-
-File::delete(disk_fullpath_filename)
-
-
-File::rename(new_csv_filename ,disk_fullpath_filename)
-
-   rescue => e
-     Rails.logger.info("setShelterGeoCsvArray" + e.message)
-   end
-
-  end
-
-
 
 end
