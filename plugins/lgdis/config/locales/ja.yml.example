@@ -416,3 +416,8 @@ ja:
     field_note_other_local_government: その２（被害状況即報） / 備考 / 応急対策の状況 / 他の地方公共団体への応援要請、応援活動の状況
     field_note_self_defence_force: その２（被害状況即報） / 備考 / 応急対策の状況 / 自衛隊の派遣要請、出勤状況
     field_note_volunteer: その２（被害状況即報） / 備考 / 応急対策の状況 / 災害ボランティアの活動状況
+
+  # ウォッチャーグループ
+  label_issue_watcher_groups: "ウォッチャーグループ"
+  permission_add_issue_watcher_groups: "ウォッチャーグループの追加"
+  no_addable_issue_watcher_groups: "追加可能なウォッチャーグループがありません"

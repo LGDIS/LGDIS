@@ -36,6 +36,7 @@ require_dependency 'lgdis/acts/acts_as_customizable_patch'
 # helper
 require_dependency 'lgdis/application_helper_patch'
 require_dependency 'lgdis/custom_fields_helper_patch'
+require_dependency 'lgdis/watchers_helper_patch'
 require_dependency 'lgdis/issues_helper_patch' # issues_controller_patch より先にload する必要あり
 
 # model
@@ -48,6 +49,7 @@ require_dependency 'lgdis/mailer_patch'
 # controller
 require_dependency 'lgdis/welcome_controller_patch'
 require_dependency 'lgdis/account_controller_patch'
+require_dependency 'lgdis/watchers_controller_patch'
 require_dependency 'lgdis/issues_controller_patch'
 require_dependency 'lgdis/controller_hooks'
 

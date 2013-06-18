@@ -77,19 +77,7 @@
     <p id="attachments_form"><label><%= l(:label_attachment_plural) %></label><%= render :partial => 'attachments/form', :locals => {:container => @issue} %></p>
 
     <% if @issue.new_record? && @issue.safe_attribute?('watcher_user_ids') -%>
-      <div style="display: none;"><%# redmine_watcher_groupsプラグインによるウォッチャー選択のためinput部品は必要だが、画面表示は削除 %>
-      <p id="watchers_form"><label><%= l(:label_issue_watchers) %></label>
-      <span id="watchers_inputs">
-        <%= watchers_checkboxes(@issue, @available_watchers) %>
-      </span>
-      <span class="search_for_watchers">
-      <%= link_to l(:label_search_for_watchers),
-                  {:controller => 'watchers', :action => 'new', :project_id => @issue.project},
-                  :remote => true,
-                  :method => 'get' %>
-      </span>
-      </p>
-    </div>
+      <p id="watchers_form"><%= watcher_groups_checkboxes(@project) %></p>
     <% end %>
 
 <% if @issue.safe_attribute? 'custom_field_values' %>

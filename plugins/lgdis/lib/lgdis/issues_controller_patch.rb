@@ -12,6 +12,7 @@ module Lgdis
         before_filter :find_issue_wrapper, :only => [:request_delivery]
         alias_method_chain :authorize, :skip
         before_filter :build_new_issue_geography_from_params, :only => [:create]
+        before_filter :get_watchers_by_group, :only => [:create]
         before_filter :init, :only => [:show, :request_delivery]
         before_filter :get_delivery_histories, :only => [:show, :request_delivery]
         before_filter :get_destination_list, :only => [:show, :request_delivery]
@@ -204,6 +205,18 @@ module Lgdis
         return true if !params[:issue] || !params[:issue][:issue_geographies]
         params[:issue][:issue_geographies].each do |issue_geography|
           @issue.issue_geographies.build(issue_geography)
+        end
+      end
+
+      # watcherをgroup_idsからuser_idsにばらします
+      def get_watchers_by_group
+        if params[:watcher_groups].is_a?(Hash) && request.post?
+          user_ids = []
+          group_ids = params[:watcher_groups][:group_ids].presence || []
+          group_ids.each do |group_id|
+            user_ids.concat(Group.find(group_id).users.map(&:id))
+          end
+          @issue.watcher_user_ids = user_ids.uniq
         end
       end
 
