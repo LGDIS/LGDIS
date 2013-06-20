@@ -94,8 +94,8 @@ module Lgdis
       # 緊急速報メール の定義用トラッカーid(実在しないトラッカー)
       # destination_list.yml commons_xml、tracker_title に紐付くID
       UGENT_MAIL_ID = 0
-      # 緊急速報メールDOCOMO
-      UGENT_MAIL_DOCOMO = 10
+      # チケットの説明使用ID
+      DESCRIPTION_ID = 8 
       # 公共情報コモンズの外部配信先ID配列
       COMMONS_PLACE_IDS = DST_LIST['delivery_place_group_commons'].map{|o| o["id"]}
       # 緊急速報メールの外部配信先ID配列
@@ -169,12 +169,18 @@ module Lgdis
       # ==== Raise
       def register_issue_journal_request(ext_out_ary)
         notes = []
+        d_id = 0
         request_date = self.updated_on.strftime("%Y/%m/%d %H:%M:%S")
         notes << "#{request_date}に、以下の配信要求を行いました。"
         ext_out_ary.each do |delivery_place_id|
           notes << (DST_LIST["delivery_place"][delivery_place_id.to_i]||{})["name"].to_s
+          d_id = delivery_place_id.to_i
         end
-        notes << self.summary
+        if DESCRIPTION_ID == d_id
+          notes << self.description
+        else
+          notes << self.summary
+        end
         self.init_journal(User.current, notes.join("\n"))
         self.save!
       end
@@ -303,7 +309,7 @@ module Lgdis
       # 配信内容文字列
       # ==== Raise
       def create_facebook_msg(delivery_history)
-        summary = self.add_url_and_training(delivery_history.summary, delivery_history.delivery_place_id)
+        summary = self.add_url_and_training(self.description, delivery_history.delivery_place_id)
         return summary
       end
 

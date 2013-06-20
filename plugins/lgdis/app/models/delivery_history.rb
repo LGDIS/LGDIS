@@ -208,7 +208,7 @@ class DeliveryHistory < ActiveRecord::Base
       errors.add(:mail_subject, "を入力して下さい")
     end
 
-    if ([SMTP_AUTH_ID, TWITTER_ID, FACEBOOK_ID, ATOM_ID,
+    if ([SMTP_AUTH_ID, TWITTER_ID, ATOM_ID,
          U_MAIL_DCM_ID, U_MAIL_SB_ID, U_MAIL_AU_ID].include?(self.delivery_place_id)) && self.summary.blank?
       errors.add(:summary, "を入力して下さい")
     end
@@ -266,8 +266,9 @@ class DeliveryHistory < ActiveRecord::Base
       errors.add(:disaster_info_type, "を入力して下さい")
     end
 
-    if ((DST_LIST['general_info_ids'].include?(self.issue.tracker_id)) || (DST_LIST['events_ids'].include?(self.issue.tracker_id))) &&
-        [COMMONS_ID].include?(self.delivery_place_id) &&
+    if ((((DST_LIST['general_info_ids'].include?(self.issue.tracker_id)) || (DST_LIST['events_ids'].include?(self.issue.tracker_id))) &&
+        [COMMONS_ID].include?(self.delivery_place_id)) ||
+        FACEBOOK_ID == self.delivery_place_id) &&
         self.issue.description.blank?
       errors.add(:description, "を入力して下さい")
     end
