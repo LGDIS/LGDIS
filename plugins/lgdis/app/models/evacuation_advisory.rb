@@ -388,8 +388,8 @@ class EvacuationAdvisory < ActiveRecord::Base
     histories = []
     updated_selves = EvacuationAdvisory.mode_in(project).order("identifier ASC").scoped
     # 初期発令時に前回の解除が残っているデータをのsort_criteria等を初期化するためのカウントをとる。
-    eva_count = connection.select_value("select count(*) from evacuation_advisories")
-    issue_count = connection.select_value("select count(*) from evacuation_advisories where issueorlift = '#{ISSUEORLIFT_LIFT}' or issueorlift is null") 
+    eva_count = connection.select_value("select count(*) from evacuation_advisories where deleted_at is null")
+    issue_count = connection.select_value("select count(*) from evacuation_advisories where (issueorlift = '#{ISSUEORLIFT_LIFT}' or issueorlift is null) and deleted_at is null") 
     prev_delivery_time = connection.select_value("select max(d.updated_at) from delivery_histories d, issues i
                                               where d.issue_id = i.id and d.project_id = #{project.id} and i.tracker_id = #{TRACKER_EVACUATION} and d.delivery_place_id = 1 and d.status = 'done'")
     if prev_delivery_time.nil?
