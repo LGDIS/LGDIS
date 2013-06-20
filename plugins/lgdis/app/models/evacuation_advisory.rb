@@ -316,7 +316,7 @@ class EvacuationAdvisory < ActiveRecord::Base
       if e20.issueorlift == ISSUEORLIFT_ISSUE
         node_obj = node_detail.add_element("pcx_ev:Object")
         if issue_middle_area.flatten.blank?
-	      st = EvacuationAdvisory.mode_in(project).select("SUM(households) as households_sum, SUM(head_count) as head_count_sum").where(:issueorlift => e20.issueorlift).where(:sort_criteria=> e20.sort_criteria).where(:area => big_area).first
+	      st = EvacuationAdvisory.mode_in(project).select("SUM(households) as households_sum, SUM(head_count) as head_count_sum").where(:issueorlift => e20.issueorlift).where(:sort_criteria=> e20.sort_criteria).first
 	    else
 	      st = EvacuationAdvisory.mode_in(project).select("SUM(households) as households_sum, SUM(head_count) as head_count_sum").where(:issueorlift => e20.issueorlift).where(:sort_criteria=> e20.sort_criteria).where("area not in (?)", issue_middle_area.flatten).first
 	    end
@@ -388,8 +388,8 @@ class EvacuationAdvisory < ActiveRecord::Base
     histories = []
     updated_selves = EvacuationAdvisory.mode_in(project).order("identifier ASC").scoped
     # 初期発令時に前回の解除が残っているデータをのsort_criteria等を初期化するためのカウントをとる。
-    eva_count = connection.select_value("select count(*) from evacuation_advisories where deleted_at is null")
-    issue_count = connection.select_value("select count(*) from evacuation_advisories where (issueorlift = '#{ISSUEORLIFT_LIFT}' or issueorlift is null) and deleted_at is null") 
+    eva_count = EvacuationAdvisory.mode_in(project).count_by_sql("select count(*) from evacuation_advisories where deleted_at is null")
+    issue_count = EvacuationAdvisory.mode_in(project).count_by_sql("select count(*) from evacuation_advisories where (issueorlift = '#{ISSUEORLIFT_LIFT}' or issueorlift is null) and deleted_at is null")
     prev_delivery_time = connection.select_value("select max(d.updated_at) from delivery_histories d, issues i
                                               where d.issue_id = i.id and d.project_id = #{project.id} and i.tracker_id = #{TRACKER_EVACUATION} and d.delivery_place_id = 1 and d.status = 'done'")
     if prev_delivery_time.nil?
