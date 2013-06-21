@@ -195,7 +195,8 @@ class Batches::ShelterList
   def self.getShelterGeoCsvArray()
 
     # fileに書き出し
-    csv_dir_path  = DST_LIST["atom"]["output_dir"]
+    csv_dir_path = "./tmp"
+    csv_dir_path = csv_dir_path.gsub("./","")
     csv_file_name = "/shelters_geographies.csv"
     disk_fullpath_filename = Rails.root.to_s + "/" + csv_dir_path.to_s + csv_file_name
 

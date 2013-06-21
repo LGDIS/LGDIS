@@ -274,7 +274,7 @@ class SheltersController < ApplicationController
   def setShelterGeoCsvArray(shelter_name,geocodeArray)
     begin
       # fileに書き出し
-    csv_dir_path  = DST_LIST["atom"]["output_dir"]
+    csv_dir_path  = "./tmp"
     csv_dir_path = csv_dir_path.gsub("./","")
     csv_file_name =  "/shelters_geographies.csv"
     csv_tmp_file_name =  "/shelters_geographies_tmp.csv"
