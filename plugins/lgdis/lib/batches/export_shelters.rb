@@ -6,8 +6,8 @@ require 'csv'
 
 class Batches::ExportShelters
 
-  FILE_PREFIX = "_xA9z94_"
-  EXPORT_TARGET = "#{Rails.root}/public/exportdata/"
+  FILE_PREFIX = "ExportShelters_"
+  EXPORT_TARGET = "#{Rails.root}/public/plugin_assets/lgdis/privates/"
 
   def self.execute
     output_file = Pathname(EXPORT_TARGET) + "#{FILE_PREFIX}#{Rails.env}.csv"
