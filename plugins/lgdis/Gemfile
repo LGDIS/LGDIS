@@ -21,7 +21,7 @@ gem 'nokogiri'
 
 # Resque is a Redis-backed Ruby library for creating background jobs,
 # placing those jobs on multiple queues, and processing them later.
-gem 'resque', :require => 'resque/server'
+gem 'resque', '1.23.1', :require => 'resque/server'
 
 # Light weight job scheduling on top of Resque. Adds methods enqueue_at/enqueue_in to schedule jobs in the future.
 # Also supports queueing jobs on a fixed, cron-like schedule.
@@ -75,9 +75,9 @@ gem 'exifr'
 
 # Iconv is a wrapper class for the UNIX 95 iconv() function family,
 # which translates string between various encoding systems.
-platforms :mri_20 do
-  gem "iconv"
-end
+#platforms :mri_20 do
+#  gem "iconv"
+#end
 
 group :development, :test do
   # Rspec-2 meta-gem that depends on the other components.
