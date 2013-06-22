@@ -11,6 +11,7 @@ module ExtOut
     @@output_archive_fields += [
         :app_token,
         :user_id,
+        :page_id,
         :message,
       ]
     # チケット履歴出力項目
@@ -29,6 +30,7 @@ module ExtOut
         # クライアント設定
         client.app_token  = API_KEY['facebook']['app_token']
         client.user_id    = API_KEY['facebook']['user_id']
+        client.page_id    = API_KEY['facebook']['page_id']
         client.message    = content.to_s
 
         # 投稿

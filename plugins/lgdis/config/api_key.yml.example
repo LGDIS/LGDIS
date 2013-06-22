@@ -11,6 +11,7 @@ facebook:
   user_id: ""
   app_id: ""
   app_secret: ""
+  page_id: ""
 
 # OpenAM(SAML) define
 openam:
