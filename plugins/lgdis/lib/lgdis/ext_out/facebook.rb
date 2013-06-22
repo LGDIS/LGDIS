@@ -16,8 +16,6 @@ module Lgdis
       # ==== Raise
       def output
         client = Koala::Facebook::API.new(app_token)
-        page_token = client.get_page_access_token(page_id)
-        page = Koala::Facebook::API.new(page_token)
         page.put_connections(page_id, "feed", :message => message) unless test_flag
       end
 
