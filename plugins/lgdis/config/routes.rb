@@ -32,6 +32,10 @@ RedmineApp::Application.routes.draw do
   resources :deliver_issues do
     get "deliver_issues/index"
   end
+
+  # 最新プロジェクトID取得
+  get "delivery_project/getproject/" => "delivery_project#getproject"
+
   match "/issues/:id/request_delivery" => "issues#request_delivery", :via => :post
   post "deliver_issues/allow_delivery"
 end

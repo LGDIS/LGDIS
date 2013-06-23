@@ -365,7 +365,7 @@ module Lgdis
       def add_url_and_training(contents, delivery_place_id)
         url = ''
         if DEPLOYED_MAIL_PLACE_IDS.include?(delivery_place_id)
-          url = DST_LIST['lgdsf_url'] + Time.now.strftime("%Y%m%d%H%M%S")
+          url = DST_LIST['lgdsf_url']
         end
 
         # 災害訓練モード判定
