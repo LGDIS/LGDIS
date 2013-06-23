@@ -7,11 +7,11 @@ twitter:
 
 # Facebook API Key
 facebook:
-  app_token: ""
-  user_id: ""
+  fb_app_to_fb_page_access_token: ""
+  fb_page_id: ""
   app_id: ""
   app_secret: ""
-  page_id: ""
+  user_id: ""
 
 # OpenAM(SAML) define
 openam:

@@ -4,9 +4,8 @@ module Lgdis
     class Facebook < Lgdis::ExtOut::Base
       # 項目定義
       attr_accessor(
-          :app_token,
-          :user_id,
-          :page_id,
+          :fb_app_to_fb_page_access_token,
+          :fb_page_id,
           :message
         )
 
@@ -15,8 +14,8 @@ module Lgdis
       # ==== Return
       # ==== Raise
       def output
-        client = Koala::Facebook::API.new(app_token)
-        client.put_connections(page_id, "feed", :message => message) unless test_flag
+        client = Koala::Facebook::API.new(fb_app_to_fb_page_access_token)
+        client.put_connections(fb_page_id, "feed", :message => message) unless test_flag
       end
 
     end

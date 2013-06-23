@@ -9,9 +9,8 @@ module ExtOut
     @@output_log_fields += [:message]
     # アーカイブ出力項目
     @@output_archive_fields += [
-        :app_token,
-        :user_id,
-        :page_id,
+        :fb_app_to_fb_page_access_token,
+        :fb_page_id,
         :message,
       ]
     # チケット履歴出力項目
@@ -28,9 +27,8 @@ module ExtOut
     def self.perform(delivery_history_id, content, test_flag=true)
       super(delivery_history_id, content, test_flag) do |delivery_history, delivery_place, client|
         # クライアント設定
-        client.app_token  = API_KEY['facebook']['app_token']
-        client.user_id    = API_KEY['facebook']['user_id']
-        client.page_id    = API_KEY['facebook']['page_id']
+        client.fb_page_access_token  = API_KEY['facebook']['fb_app_to_fb_page_access_token']
+        client.fb_page_id    = API_KEY['facebook']['fb_page_id']
         client.message    = content.to_s
 
         # 投稿
