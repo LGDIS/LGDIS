@@ -27,7 +27,7 @@ module ExtOut
     def self.perform(delivery_history_id, content, test_flag=true)
       super(delivery_history_id, content, test_flag) do |delivery_history, delivery_place, client|
         # クライアント設定
-        client.fb_page_access_token  = API_KEY['facebook']['fb_app_to_fb_page_access_token']
+        client.fb_app_to_page_access_token  = API_KEY['facebook']['fb_app_to_fb_page_access_token']
         client.fb_page_id    = API_KEY['facebook']['fb_page_id']
         client.message    = content.to_s
 
