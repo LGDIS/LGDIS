@@ -132,6 +132,42 @@ class Batches::LinkDisasterPortal
       false
     end
 
+    # 通信試験モードの対象トラッカーのチケット取得
+    issues_reject_project = Issue.where({:tracker_id => tracker_id}).where("project_id in (?)", reject_project_ids).order("updated_on DESC")
+
+    issues_reject_project.delete_if do |issue|
+      dh = issue.delivery_histories.where(:delivery_place_id => ATOM).order("updated_at DESC").find(:all, :conditions => ["opened_at > CURRENT_TIMESTAMP - interval '#{limit_days} days'"]).first
+      next true if dh.blank? # 配信管理が無かった場合、配信対象なし
+
+      unless (dh.status == "done" || dh.status == "reserve") && (time > dh.opened_at && (dh.closed_at.blank? || time < dh.closed_at))
+        next true
+      end
+      false
+    end
+
+    # 通信試験モードの最大件数以内に絞り込み
+    issues_reject_project = issues_reject_project[0..max_num-1]
+
+    # 通信試験モードのチケットごとのループ
+    issues_reject_project.each do | issue |
+      # 配信管理取得
+      dh = issue.delivery_histories.where(:delivery_place_id => ATOM).order("updated_at DESC").find(:all, :conditions => ["opened_at > CURRENT_TIMESTAMP - interval '#{limit_days} days'"]).first
+
+      # 配信管理更新、チケット履歴出力
+      if dh.status == "reserve"
+        begin
+          dh.status = "done"
+          dh.process_date = Time.now
+          dh.respond_user_id = 1
+          dh.save!
+          this_register_issue_journal_rss_deliver(dh,issue)
+        rescue =>e
+          Rails.logger.info(e.message)
+        end
+      end
+
+    end
+
     # 最大件数以内に絞り込み
     issues = issues[0..max_num-1]
     # テンプレートの読み込み

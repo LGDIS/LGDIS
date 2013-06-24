@@ -44,7 +44,7 @@ class Batches::EvacuationAdvisoriesList
     end
 
     # 対象トラッカーのチケット取得
-    issues = Issue.where({:tracker_id => tracker_id}).order("updated_on DESC")
+    issues = Issue.where({:tracker_id => tracker_id}).where("project_id not in (?)", reject_project_ids).order("updated_on DESC")
 
     # 出力対象の条件にあてはまらないチケットを削除
     issues.delete_if do |issue|
@@ -59,6 +59,39 @@ class Batches::EvacuationAdvisoriesList
         next true
       end
       false
+    end
+
+    # 通信試験モードの対象トラッカーのチケット取得
+    issues_reject_project = Issue.where({:tracker_id => tracker_id}).where("project_id in (?)", reject_project_ids).order("updated_on DESC")
+
+    issues_reject_project.delete_if do |issue|
+      dh = issue.delivery_histories.where(:delivery_place_id => ATOM).order("updated_at DESC").find(:all, :conditions => ["opened_at > CURRENT_TIMESTAMP - interval '#{limit_days} days'"]).first
+      next true if dh.blank? # 配信管理が無かった場合、配信対象なし
+
+      unless (dh.status == "done" || dh.status == "reserve") && (time > dh.opened_at && (dh.closed_at.blank? || time < dh.closed_at))
+        next true
+      end
+      false
+    end
+
+    # 通信試験モードの配信管理更新
+    unless issues_reject_project.blank?
+      # 配信管理取得
+      dh = issues_reject_project[0].delivery_histories.where(:delivery_place_id => ATOM).order("updated_at DESC").find(:all, :conditions => ["opened_at > CURRENT_TIMESTAMP - interval '#{limit_days} days'"]).first
+
+      # 配信管理更新、チケット履歴出力
+      if dh.status == "reserve"
+        begin
+          dh.status = "done"
+          dh.process_date = Time.now
+          dh.respond_user_id = 1
+          dh.save!
+          this_register_issue_journal_rss_deliver(dh,issues_reject_project[0])
+        rescue =>e
+          Rails.logger.info(e.message)
+        end
+      end
+
     end
 
     # テンプレートの読み込み
@@ -130,6 +163,22 @@ class Batches::EvacuationAdvisoriesList
       csvArray = output
 
       csvArray.each do |row|
+
+        dh = issues[0].delivery_histories.where(:delivery_place_id => ATOM).order("updated_at DESC").find(:all, :conditions => ["opened_at > CURRENT_TIMESTAMP - interval '#{limit_days} days'"]).first
+
+        # 配信管理更新、チケット履歴出力
+        if dh.status == "reserve"
+          begin
+            dh.status = "done"
+            dh.process_date = Time.now
+            dh.respond_user_id = 1
+            dh.save!
+            this_register_issue_journal_rss_deliver(dh,issues[0])
+          rescue =>e
+            Rails.logger.info(e.message)
+          end
+        end
+
         # XML main entry
         new_entry = REXML::Element.new("entry")
 
@@ -196,6 +245,19 @@ class Batches::EvacuationAdvisoriesList
 
     return reader
 
+  end
+
+  def self.this_register_issue_journal_rss_deliver(delivery_history,issue)
+    notes = []
+    delivery_name = (DST_LIST["delivery_place"][delivery_history.delivery_place_id]||{})["name"].to_s
+    delivery_process_date = delivery_history.process_date.strftime("%Y/%m/%d %H:%M:%S")
+    notes << "#{delivery_process_date}に、 #{delivery_name}配信を開始しました。"
+    notes << delivery_history.summary
+
+    @current_journal ||= Journal.new(:journalized => issue, :user => delivery_history.respond_user, :notes => notes.join("\n"))
+    @current_journal.notify = false
+
+    @current_journal.save!
   end
 
 end
