@@ -20,9 +20,6 @@ class Batches::ShelterList
     auther_name  = DST_LIST["link_disaster_portal_auther_name"]
     auther_email = DST_LIST["link_disaster_portal_auther_email"]
 
-    # 連携対象のトラッカーID
-    tracker_ids = DST_LIST["link_disaster_portal_tracker_ids"]
-
     create_xml(2)
 
   end
@@ -174,9 +171,9 @@ class Batches::ShelterList
         training_header = DST_LIST["training_prj"][issues[0].project_id] ? "【災害訓練】" : ""
 
         new_entry.add_element("title").add_text(training_header + "#{row[0]}")
-
         new_entry.add_element("id").add_text("#{issues[0].id}-#{time.strftime("%Y%m%d%H%M%S")}") # TODO 暫定でチケットID-YYYYMMDDHH24MISS
-
+        new_entry.add_element("published").add_text(dh.opened_at.xmlschema)
+        new_entry.add_element("updated").add_text(dh.opened_at.xmlschema)
         # content 追加開始
         content = ""
 
