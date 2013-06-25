@@ -38,4 +38,5 @@ RedmineApp::Application.routes.draw do
 
   match "/issues/:id/request_delivery" => "issues#request_delivery", :via => :post
   post "deliver_issues/allow_delivery"
+  mount Resque::Server, at: "/resque"
 end
