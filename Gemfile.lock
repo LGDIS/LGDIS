@@ -72,7 +72,6 @@ GEM
     httpi (2.0.2)
       rack
     i18n (0.6.4)
-    iconv (1.0.3)
     journey (1.0.4)
     jpmobile (3.0.7)
     jquery-rails (2.0.3)
@@ -81,6 +80,7 @@ GEM
     json (1.8.0)
     jwt (0.1.8)
       multi_json (>= 1.5)
+    kgio (2.8.0)
     koala (1.6.0)
       addressable (~> 2.2)
       faraday (~> 0.8)
@@ -101,7 +101,6 @@ GEM
     mini_portile (0.5.0)
     mocha (0.12.3)
       metaclass (~> 0.0.1)
-    mono_logger (1.1.0)
     multi_json (1.7.7)
     multipart-post (1.2.0)
     mysql (2.8.1)
@@ -169,6 +168,7 @@ GEM
       rake (>= 0.8.7)
       rdoc (~> 3.4)
       thor (>= 0.14.6, < 2.0)
+    raindrops (0.11.0)
     rake (10.1.0)
     rdoc (3.12.2)
       json (~> 1.4)
@@ -178,7 +178,7 @@ GEM
     resque (1.23.1)
       mono_logger (~> 1.0)
       multi_json (~> 1.0)
-      redis-namespace (~> 1.2)
+      redis-namespace (~> 1.0)
       sinatra (>= 0.9.2)
       vegas (~> 0.1.2)
     resque-scheduler (2.0.1)
@@ -240,6 +240,10 @@ GEM
       multi_json (~> 1.0)
       simple_oauth (~> 0.2)
     tzinfo (0.3.37)
+    unicorn (4.6.3)
+      kgio (~> 2.6)
+      rack
+      raindrops (~> 0.7)
     uuid (2.3.7)
       macaddr (~> 1.0)
     uuidtools (2.1.4)
@@ -265,7 +269,6 @@ DEPENDENCIES
   factory_girl_rails
   fastercsv (~> 1.5.0)
   i18n (~> 0.6.0)
-  iconv
   jpmobile
   jquery-rails (~> 2.0.2)
   jruby-openssl
@@ -289,7 +292,7 @@ DEPENDENCIES
   rack-openid
   rails (= 3.2.11)
   rdoc (>= 2.4.2)
-  resque
+  resque (= 1.23.1)
   resque-scheduler
   rmagick (>= 2.0.0)
   rspec
@@ -301,6 +304,7 @@ DEPENDENCIES
   sqlite3
   test-unit
   twitter
+  unicorn
   uuidtools
   will_paginate
   yard
