@@ -245,20 +245,23 @@ class Batches::ShelterList
     csv_dir_path = csv_dir_path.gsub("./","")
     csv_file_name = "/shelters_geographies.csv"
     disk_fullpath_filename = Rails.root.to_s + "/" + csv_dir_path.to_s + csv_file_name
+    # CSVファイルがなければ、空のハッシュを返す
+    if File.exist?(disk_fullpath_filename)
+      #csv ファイルを読み込む 文字コード変換を行う
+      reader = CSV.open(disk_fullpath_filename, "r" ,encoding: "SJIS:UTF-8")
+      temp = Hash.new
 
-    #csv ファイルを読み込む 文字コード変換を行う
-    reader = CSV.open(disk_fullpath_filename, "r" ,encoding: "SJIS:UTF-8")
-    temp = Hash.new
-
-      reader.each do |row|
-        if !temp.has_key?(row[0])
-          temp[row[0]] = Hash.new
+        reader.each do |row|
+          if !temp.has_key?(row[0])
+            temp[row[0]] = Hash.new
+          end
+          temp[row[0]]["lat"] = row[1]
+          temp[row[0]]["lng"] = row[2]
         end
-        temp[row[0]]["lat"] = row[1]
-        temp[row[0]]["lng"] = row[2]
-      end
 
-    return temp
+      return temp
+    end
+    return temp = Hash.new
 
   end
 
