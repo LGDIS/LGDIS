@@ -213,8 +213,12 @@ class DeliveryHistory < ActiveRecord::Base
       errors.add(:summary, "を入力して下さい")
     end
 
-    if (TWITTER_ID == self.delivery_place_id && self.summary.size >= (141 - DST_LIST['disaster_portal_url'].size))
-      errors.add(:summary, "は#{141 - DST_LIST['disaster_portal_url'].size}文字以上入力できません")
+    if TWITTER_ID == self.delivery_place_id
+      message = ''
+      message = self.issue.add_url_and_training(self.summary, self.delivery_place_id)
+      if message.size >= 141
+        errors.add(:summary, "は#{141 - (message.size - self.summary.size)}文字以上入力できません")
+      end
     end
 
     if (U_MAIL_ID.include?(self.delivery_place_id)) && self.mail_subject.size > 15
@@ -222,8 +226,9 @@ class DeliveryHistory < ActiveRecord::Base
     end
 
     if (U_MAIL_ID.include?(self.delivery_place_id))
-      if self.summary.size + self.summary.count("\n") > 172
-        errors.add(:summary, "は173文字以上入力できません")
+      message = self.issue.add_url_and_training(self.summary, self.delivery_place_id)
+      if message.size + message.count("\n") > 172
+        errors.add(:summary, "は#{173 - (message.size + message.count("\n") - self.summary.size)}文字以上入力できません")
       end
       if self.summary =~ REGEXP_HTTP
         errors.add(:summary, "にURLは指定できません")

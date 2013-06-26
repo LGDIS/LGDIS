@@ -3,6 +3,8 @@ module Lgdis
   class ControllerHooks < Redmine::Hook::ViewListener
 
     AUTO_FLAG = {"1" => true}.freeze
+    TRAINING_MESSAGE = "【災害訓練】" + "\n"
+    PORTAL_URL = DST_LIST['disaster_portal_url'] + "\n"
 
     # controller_issues_new_before_saveホック処理
     # ==== Args
@@ -19,9 +21,16 @@ module Lgdis
         (DST_LIST['auto_destination'][send_target.to_i] || {}).each do |auto|
           if urgent_mail.include?(auto['id'])
             context[:issue][:mail_subject] = context[:issue][:mail_subject].slice(0, 15)
-            context[:issue][:summary] = context[:issue][:summary].slice(0, 172)
+            summary = context[:issue][:summary]
+            slice_count = 172
+            slice_count = slice_count - TRAINING_MESSAGE.size if DST_LIST['training_prj'][(context[:params][:issue][:project_id])[-1].to_i]
+            context[:issue][:summary] = summary.slice(0, slice_count)
           elsif auto['id'].to_s == "7"
-            context[:issue][:summary] = context[:issue][:summary].slice(0,(140 - DST_LIST['disaster_portal_url'].size))
+            summary = context[:issue][:summary]
+            slice_count = 140
+            slice_count = slice_count - TRAINING_MESSAGE.size if DST_LIST['training_prj'][(context[:params][:issue][:project_id])[-1].to_i]
+            slice_count = slice_count - PORTAL_URL.size if PORTAL_URL.size > 1
+            context[:issue][:summary] = summary.slice(0, slice_count)
           end
         end
      end
