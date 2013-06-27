@@ -4,7 +4,7 @@ module Lgdis
 
     AUTO_FLAG = {"1" => true}.freeze
     TRAINING_MESSAGE = "【災害訓練】" + "\n"
-    PORTAL_URL = DST_LIST['disaster_portal_url'] + "\n"
+    PORTAL_URL = "… " + DST_LIST['disaster_portal_url']
 
     # controller_issues_new_before_saveホック処理
     # ==== Args
@@ -24,13 +24,17 @@ module Lgdis
             summary = context[:issue][:summary]
             slice_count = 172
             slice_count = slice_count - TRAINING_MESSAGE.size if DST_LIST['training_prj'][(context[:params][:issue][:project_id])[-1].to_i]
-            context[:issue][:summary] = summary.slice(0, slice_count)
+            if summary.size > slice_count
+              summary = summary.slice(0, slice_count - 1) + "…" 
+            end
+            context[:issue][:summary] = summary
           elsif auto['id'].to_s == "7"
             summary = context[:issue][:summary]
-            slice_count = 140
+            slice_count = 117
             slice_count = slice_count - TRAINING_MESSAGE.size if DST_LIST['training_prj'][(context[:params][:issue][:project_id])[-1].to_i]
-            slice_count = slice_count - PORTAL_URL.size if PORTAL_URL.size > 1
-            context[:issue][:summary] = summary.slice(0, slice_count)
+            slice_count = slice_count - PORTAL_URL.size
+            summary = summary.slice(0, slice_count) + PORTAL_URL
+            context[:issue][:summary] = summary
           end
         end
      end
