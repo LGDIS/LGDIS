@@ -360,7 +360,7 @@ class EvacuationAdvisory < ActiveRecord::Base
     issue.xml_body   = fmtdoc
     # チケットにcsvファイルを添付する
     tf = create_csv(EvacuationAdvisory.mode_in(project).order(:identifier), "避難勧告･指示",
-        [:area,:area_kana,:current_sort_criteria,:issued_at,:lifted_at,:households,:head_count,:issueorlift])
+        [:area,:area_kana,:sort_criteria,:issued_at,:lifted_at,:households,:head_count,:issueorlift])
     issue.save_attachments(["file"=> tf, "description" => "全ての避難勧告･指示CSVファイル ※チケット作成時点"])
     # 一時ファイルの削除
     tf.close(true)
