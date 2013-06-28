@@ -73,7 +73,7 @@ module Lgdis
                 hash = geocode(ad)
 
                 @issue_geography = IssueGeography.new
-                @issue_geography.point = hash['lat'].to_s + "," + hash['lng'].to_s
+                @issue_geography.point = hash['lng'].to_s + "," + hash['lat'].to_s
                 # 手動入力された事象の発生場所を識別するため
                 @issue_geography.remarks = "事象の発生場所"
 
@@ -115,7 +115,7 @@ module Lgdis
                 hash = geocode(ad)
 
                 @issue_geography = IssueGeography.new
-                @issue_geography.point = hash['lat'].to_s + "," + hash['lng'].to_s
+                @issue_geography.point = hash['lng'].to_s + "," + hash['lat'].to_s
                 # 手動入力された事象の発生場所を識別するため
                 @issue_geography.remarks = "事象の発生場所"
 
