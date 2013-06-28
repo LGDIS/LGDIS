@@ -236,11 +236,18 @@ class SheltersController < ApplicationController
   # ==== Return
   # ==== Raise
   def destroy
-    @shelter = Shelter.mode_in(@project).find(params[:id])
-    if @shelter.destroy
-      flash[:notice] = l(:notice_successful_delete)
+    if Shelter.mode_in(@project).where(:shelter_sort => "2").exists?
+      flash[:error] = l(:error_can_not_delete_set_up)
+      redirect_to :action  => :edit
+    else
+      @shelter = Shelter.mode_in(@project).find(params[:id])
+      if @shelter.destroy
+        flash[:notice] = l(:notice_successful_delete)
+        redirect_to :action  => :index
+      else
+        render :action  => :edit
+      end
     end
-    redirect_to :action  => :index
   end
 
   def geocode(address)

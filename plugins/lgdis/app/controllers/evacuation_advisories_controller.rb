@@ -224,11 +224,18 @@ class EvacuationAdvisoriesController < ApplicationController
   # ==== Return
   # ==== Raise
   def destroy
-    @evacuation_advisory = EvacuationAdvisory.mode_in(@project).find(params[:id])
-    if @evacuation_advisory.destroy
-      flash[:notice] = l(:notice_successful_delete)
+    if EvacuationAdvisory.mode_in(@project).where("current_sort_criteria != ?", "1").exists?
+      flash[:error] = l(:error_can_not_delete_announce)
+      redirect_to :action  => :edit
+    else
+      @evacuation_advisory = EvacuationAdvisory.mode_in(@project).find(params[:id])
+      if @evacuation_advisory.destroy
+        flash[:notice] = l(:notice_successful_delete)
+        redirect_to :action  => :index
+      else
+        render :action  => :edit
+      end
     end
-    redirect_to :action  => :index
   end
   
 end

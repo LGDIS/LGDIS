@@ -120,6 +120,7 @@ class Shelter < ActiveRecord::Base
                 :length => {:maximum => 255}
   validates :updated_by,
                 :length => {:maximum => 255}
+  validate  :shelter_sort_check
 
   before_create :number_shelter_code, :if => Proc.new { |shelter| shelter.shelter_code.nil? }
   after_save :execute_release_all_data
@@ -476,5 +477,17 @@ class Shelter < ActiveRecord::Base
   def number_shelter_code
     seq =  connection.select_value("select nextval('shelter_code_seq')")
     self.shelter_code = "04202I#{format("%014d", seq)}"
+  end
+
+  # 避難所区分のvalidate。
+  # ==== Args
+  # ==== Return
+  # ==== Raise
+  def shelter_sort_check
+    if self.shelter_type == "3" || self.shelter_type == "4"
+      errors.add(:shelter_sort, "には常設を指定して下さい。") if shelter_sort != "5"
+    else
+      errors.add(:shelter_sort, "には常設を指定できません。") if shelter_sort == "5"
+    end
   end
 end
