@@ -417,7 +417,7 @@ class Shelter < ActiveRecord::Base
     # 一時ファイルの削除
     tf.close(true)
 
-    issue.description = options[:description]
+    issue.description = l(:summary_shelter) + "\n\n" + options[:description]
     issue.save!
 
     return issue

@@ -364,7 +364,7 @@ class EvacuationAdvisory < ActiveRecord::Base
     issue.save_attachments(["file"=> tf, "description" => "全ての避難勧告･指示CSVファイル ※チケット作成時点"])
     # 一時ファイルの削除
     tf.close(true)
-    issue.description = options[:description]
+    issue.description = l(:summary_evacuation_advisory) + "\n\n" + options[:description]
     issue.save!
     return issue
   end

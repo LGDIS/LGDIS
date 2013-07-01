@@ -188,7 +188,7 @@ ja:
   error_not_exists_evacuation_advisories: 避難勧告･指示情報が存在しません。
   error_not_exists_announcement: 避難勧告等が発令された地区が存在しません。
   error_not_exists_commons_type_announcement: 警戒情報のみを発令した場合、公共情報コモンズへ配信不可のため、チケット登録はできません。
-  error_can_not_delete_announce: 避難勧告等の発令中は、削除できません。
+  error_can_not_delete_announce: 全ての地区の発令区分を－にするまで、削除できません。
   error_update_not_entry: '更新ボタンを先に押してください'
 
   # 項目名
@@ -252,7 +252,7 @@ ja:
   text_shelter_destroy_confirmation: '本当に削除しますか？'
   text_shelter_update_confirmation: '更新してよろしいですか？'
   error_not_exists_shelters: 避難所情報が存在しません。
-  error_can_not_delete_set_up: 避難所開設中は、削除できません。
+  error_can_not_delete_set_up: 全ての避難所を未開設にしない限り、削除できません。
 
   # 項目名
   shelters:

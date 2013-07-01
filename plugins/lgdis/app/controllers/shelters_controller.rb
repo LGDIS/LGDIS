@@ -195,7 +195,8 @@ class SheltersController < ApplicationController
 
 
       flash[:notice] = l(:notice_shelter_successful_create, :id => "##{@shelter.id} #{@shelter.name}")
-      redirect_to :action  => :edit, :id => @shelter.id
+      # redirect_to :action  => :edit, :id => @shelter.id
+      redirect_to :action  => :index
     else
       render :action  => :new
     end
@@ -219,7 +220,7 @@ class SheltersController < ApplicationController
 
       flash[:notice] = l(:notice_successful_update)
       respond_to do |format|
-        format.html { redirect_to :action => :edit }
+        format.html { redirect_to :action => :index }
         format.api { render :xml => @shelter.to_xml }
       end
     else
@@ -236,7 +237,8 @@ class SheltersController < ApplicationController
   # ==== Return
   # ==== Raise
   def destroy
-    if Shelter.mode_in(@project).where(:shelter_sort => "2").exists?
+    forbit_criteria = ["2", "3", "4"]
+    if Shelter.mode_in(@project).where("shelter_sort in (?)", forbit_criteria).exists?
       flash[:error] = l(:error_can_not_delete_set_up)
       redirect_to :action  => :edit
     else
