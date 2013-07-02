@@ -6,7 +6,7 @@ gem "i18n", "~> 0.6.0"
 gem "coderay", "~> 1.0.6"
 gem "fastercsv", "~> 1.5.0", :platforms => [:mri_18, :mingw_18, :jruby]
 gem "builder", "3.0.0"
-gem "unicorn"
+gem "unicorn", "4.6.3"
 
 # Optional gem for LDAP authentication
 group :ldap do
@@ -16,7 +16,6 @@ end
 # Optional gem for OpenID authentication
 group :openid do
   #gem "ruby-openid", "~> 2.1.4", :require => "openid"
-  gem "ruby-openid", :git => "git://github.com/kendagriff/ruby-openid.git", :ref => "79beaa419d4754e787757f2545331509419e222e"
   gem "rack-openid"
 end
 
