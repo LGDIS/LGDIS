@@ -45,7 +45,7 @@
     
     <%= field_for :shelter_sort, :required => true do |key, label| %>
       <%= label_tag{label} %>
-      <%= f.select key, options_for_select(@shelter_const[key.to_s].invert, f.object.send(key)),{:include_blank => true},:disabled => @disabled %>
+      <%= f.select key, options_for_select(@shelter_const[key.to_s].invert, f.object.send(key)),:disabled => @disabled %>
     <% end %>
     
     <%= field_for :opened_at do |key, label| %>
