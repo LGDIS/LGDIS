@@ -1,0 +1,109 @@
+#!/bin/sh
+# unicorn_rails Startup script.
+#
+# chkconfig: -  86 99 
+# description: LGDIS start/stop script.
+# config: /home/ralis/LGDIS/config/unicorn.rb 
+# pidfile /home/rails/LGDIS/tmp/unicorn_lgdis.pid
+#
+
+USER="rails"
+APP_NAME="LGDIS"
+APP_NAMEn=`echo ${APP_NAME}| tr "[:upper:]" "[:lower:]"`
+APP_ROOT="/home/rails/${APP_NAME}"
+CONF="$APP_ROOT/config/unicorn.rb"
+ENV="production"
+CONF="config/unicorn.rb"
+PORT="3003"
+
+PID="$APP_ROOT/tmp/pids/unicorn_${APP_NAMEn}.pid"
+LOCK="$APP_ROOT/tmp/unicorn_${APP_NAMEn}.lock"
+
+PROG="bundle exec"
+UNICORN="unicorn_rails"
+UNICORN_OPTS="-D -E ${ENV} -c ${CONF} -p ${PORT}"
+
+RVMDIR="/usr/local/rvm/environments"
+RUBYSET="ruby-1.9.3-p392@${APP_NAMEn}"
+RVMENV=${RVMDIR}/${RUBYSET}
+
+#
+if [ $UID -eq 0 ]; then
+    abspath=$(cd $(dirname $0); pwd)/$(basename $0)
+    exec su - $USER $abspath "$@"
+    false
+fi
+
+#source function library.
+. /etc/rc.d/init.d/functions
+
+# rvm
+if [[ -s "${RVMENV}" ]]
+then
+  source "${RVMENV}"
+else
+  echo "ERROR: Missing RVM environment file: '${RVMENV}'" >&2
+  exit 1
+fi
+
+cd ${APP_ROOT} || exit 1
+
+sig() {
+  test -s "${PID}" && kill -$1 `cat ${PID}`
+}
+
+start(){
+  cd ${APP_ROOT}
+  echo -n $"Starting ${APP_NAME}: "
+  daemon --pidfile=${PID} ${PROG} ${UNICORN} ${UNICORN_OPTS}
+  [ $? -eq 0 ] && touch ${LOCK}
+  echo
+}
+stop() {
+  cd ${APP_ROOT}
+  echo -n $"Stopping ${APP_NAME}: "
+  killproc -p ${PID}
+  [ $? -eq 0 ] && rm -f ${LOCK}
+  echo
+}
+
+case "$1" in
+
+  start)
+    start
+    ;;
+
+  stop)
+    stop
+    ;;
+
+  restart)
+    stop
+    start
+    ;;
+
+  upgrade)
+    cd ${APP_ROOT}
+    sig USR2 && echo "Upgrade completed." && exit 0
+    echo >&2 "Upgrade failed." && exit 1
+    ;;
+
+  rotate)
+    cd ${APP_ROOT}
+    sig USR1 && echo "Rotate logs completed." && exit 0
+    echo >&2 "Rotate logs failed." && exit 1
+    ;;
+
+  force-stop)
+    cd ${APP_ROOT}
+    sig TERM && echo "Force stop completed." && exit 0
+    echo >&2 "Not running." && exit 1
+    ;;
+
+  *)
+    echo "Usage: ${APP_NAME} {start|stop|restart|upgrade|rotate|force-stop}" >&2
+    exit 1
+    ;;
+
+esac
+

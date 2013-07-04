@@ -1,0 +1,95 @@
+#!/bin/sh
+# resque Startup script.
+#
+# chkconfig: - 86 15
+# description: rake resque  start/stop script.
+#
+
+USER="rails"
+APP_NAME="LGDIS_RESQUE"
+APP_NAMEn=`echo ${APP_NAME}| tr "[:upper:]" "[:lower:]"`
+APP_NAME_OPT="resque(worker)"
+APP_ROOT="/home/rails/`echo ${APP_NAME}| sed -e 's/_.*//g'`"
+ENV="production"
+
+PID="$APP_ROOT/tmp/pids/resque_${APP_NAMEn}.pid"
+LOCK="$APP_ROOT/tmp/resque_${APP_NAMEn}.lock"
+
+PROG="rake"
+RESQUE_ENV="PIDFILE=${PID} QUEUE=extout_commons_request,extout_facebook_request,extout_twitter_request,extout_smtp_request"
+RESQUE_OPTS="environment resque:work RAILS_ENV=${ENV} BACKGROUND=yes"
+
+REDIS_PID="/var/run/redis/redis.pid"
+REDIS_NAME="redis-server"
+RVMDIR="/usr/local/rvm/environments"
+RUBYSET="ruby-1.9.3-p392@lgdis"
+RVMENV=$RVMDIR/$RUBYSET
+
+#
+if [ $UID -eq 0 ]; then
+    abspath=$(cd $(dirname $0); pwd)/$(basename $0)
+    exec su - $USER $abspath "$@"
+    false
+fi
+
+#source function library.
+. /etc/rc.d/init.d/functions
+
+#
+if [[ -s "$RVMENV" ]]
+then
+  source "$RVMENV"
+else
+  echo "ERROR: Missing RVM environment file: '$RVMENV'" >&2
+  exit 1
+fi
+
+cd $APP_ROOT || exit 1
+
+sig() {
+  test -s "$PID" && kill -$1 `cat $PID`
+}
+
+start(){
+
+  cd $APP_ROOT
+  echo -n $"Starting $APP_NAME: "
+  daemon --pidfile=$PID $RESQUE_ENV $PROG $RESQUE_OPTS
+  [ $? -eq 0 ] && touch $LOCK
+  echo
+}
+stop() {
+  cd $APP_ROOT
+  echo -n $"Stopping $APP_NAME: "
+  killproc -p $PID
+  [ $? -eq 0 ] && rm -f $LOCK
+  echo
+}
+
+case "$1" in
+
+  start)
+    start
+    ;;
+
+  stop)
+    stop
+    ;;
+
+  restart)
+    stop
+    start
+    ;;
+
+  force-stop)
+    cd $APP_ROOT
+    sig TERM && echo "Force stop completed." && exit 0
+    echo >&2 "Not running." && exit 1
+    ;;
+
+  *)
+    echo "Usage: $APP_NAME  {start|stop|restart|force-stop}" >&2
+    exit 1
+    ;;
+
+esac
