@@ -16,7 +16,7 @@ PID="$APP_ROOT/tmp/pids/resque_${APP_NAMEn}.pid"
 LOCK="$APP_ROOT/tmp/resque_${APP_NAMEn}.lock"
 
 PROG="rake"
-RESQUE_ENV="PIDFILE=${PID} QUEUE=extout_commons_request,extout_facebook_request,extout_twitter_request,extout_smtp_request"
+RESQUE_ENV="PIDFILE=${PID} QUEUE=extout_commons_request,extout_facebook_request,extout_twitter_request,extout_smtp_request,extout_atom_request"
 RESQUE_OPTS="environment resque:work RAILS_ENV=${ENV} BACKGROUND=yes"
 
 REDIS_PID="/var/run/redis/redis.pid"
