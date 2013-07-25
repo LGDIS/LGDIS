@@ -7,7 +7,7 @@
 rake db:seedコマンドを実行する前に、下記のコマンドを実行する。
 
 	cd LGDIS/plugins/lgdis/db/seeds
-	ruby create_workflow.rb
+	bundle exec ruby create_workflow.rb
 	cd /home/rails/LGDIS
 
 ワークフローの初期登録データを変更する場合は、このCSVファイルの中身を変更する。
@@ -16,7 +16,7 @@ rake db:seedコマンドを実行する前に、下記のコマンドを実行�
 
 下記のコマンドを実行する。
 
-	rake db:seed RAILS_ENV=production
+	bundle exec rake db:seed RAILS_ENV=production
 
 
 # Fusion Tablesの初期設定

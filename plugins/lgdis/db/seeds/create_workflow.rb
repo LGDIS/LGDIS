@@ -10,7 +10,7 @@ p old_status_ids
 
 role_ids = Array.new
 CSV.foreach('roles.csv', :headers => true) do |row|
-  role_ids << row[0]
+  role_ids << row[0] unless row[5].include?("edit_issues")
 end
 
 p "--------- role ids ---------"
