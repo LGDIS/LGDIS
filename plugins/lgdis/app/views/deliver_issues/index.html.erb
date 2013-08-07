@@ -18,12 +18,21 @@
       <th style="text-align: left">情報のタイトル :</th>
       <th style="text-align: left"><%= @delivery_history.mail_subject %></th>
     </tr>
+  <% if DST_LIST['delivery_place_group_deployed_mail'].map{|o| o["id"]}.include?(@delivery_history.delivery_place_id) || @delivery_history.delivery_place_id == 8 %>
+    <tr>
+      <th style="text-align: left">説明 :</th>
+      <th style="text-align: left">
+        <%= text_area_tag '', @issue.description, {:readonly=>true,:size => "100x30"} %>
+      </th>
+    </tr>
+  <% else %>
     <tr>
       <th style="text-align: left">情報の見出し要約文 :</th>
       <th style="text-align: left">
         <%= text_area_tag '', @delivery_history.summary, {:readonly=>true,:size => "100x30"} %>
       </th>
     </tr>
+  <% end %>
     <tr>
       <th style="text-align: left">情報の更新種別 :</th>
       <th style="text-align: left"><%= @issue_const["type_update"][@delivery_history.type_update] %></th>

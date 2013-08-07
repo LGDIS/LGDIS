@@ -184,7 +184,7 @@ delivery_place_group_deployed_mail: &delivery_place_group_deployed_mail
   - *smtp_1
   - *smtp_2
   - *smtp_3
-
+  - *smtp_auth
 # RSS情報
 delivery_place_rss: &delivery_place_rss
   - *atom
@@ -211,6 +211,8 @@ auto_destination:
     [*smtp_2, *twitter, *facebook]
   3:  # ３号配備
     [*smtp_3, *twitter, *facebook]
+  4:  # twitter, facebook
+    [*twitter, *facebook]
 
 # 自動配信除外設定
 # JMAとJ-Alertから送信されてくる同じXMLの二重配信さけるための措置
@@ -1316,7 +1318,7 @@ commons_connection:
   #sha centos_ssh: commons_endpoint: https://localhost:443/commons/subscriber/soap/testservice.example.com/
   username: user1@example.com
   password: password
-  wsdl: /home/rals/LGDIS/plugins/lgdis/lib/lgdis/ext_out/wsdl/MQService.wsdl
+  wsdl: /home/rails/LGDIS/plugins/lgdis/lib/lgdis/ext_out/wsdl/MQService.wsdl
   namespace: http://soap.publiccommons.ne.jp/
   ssl_ca_cert: /opt/fix/SOAPdev/etc/pki/CA/cacert.pem
 

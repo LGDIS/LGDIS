@@ -95,7 +95,7 @@ module Lgdis
       # destination_list.yml commons_xml、tracker_title に紐付くID
       UGENT_MAIL_ID = 0
       # チケットの説明使用ID
-      DESCRIPTION_ID = 8 
+      DESCRIPTION_ID = [2, 3, 4, 5, 6, 8] 
       # 公共情報コモンズの外部配信先ID配列
       COMMONS_PLACE_IDS = DST_LIST['delivery_place_group_commons'].map{|o| o["id"]}
       # 緊急速報メールの外部配信先ID配列
@@ -176,7 +176,7 @@ module Lgdis
           notes << (DST_LIST["delivery_place"][delivery_place_id.to_i]||{})["name"].to_s
           d_id = delivery_place_id.to_i
         end
-        if DESCRIPTION_ID == d_id
+        if DESCRIPTION_ID.include?(d_id)
           notes << self.description
         else
           notes << self.summary
@@ -260,7 +260,11 @@ module Lgdis
         delivery_name = (DST_LIST["delivery_place"][delivery_history.delivery_place_id]||{})["name"].to_s
         delivery_process_date = delivery_history.process_date.strftime("%Y/%m/%d %H:%M:%S")
         notes << "#{delivery_process_date}に、 #{delivery_name}配信要求を却下しました。"
-        notes << delivery_history.summary
+        if DESCRIPTION_ID.include?(delivery_history.delivery_place_id)
+          notes << self.description
+        else
+          notes << delivery_history.summary
+        end
         self.init_journal(delivery_history.respond_user, notes.join("\n"))
         self.save!
       end
@@ -323,7 +327,7 @@ module Lgdis
         summary = Hash.new
         # TODO:件名、本文が未決
         delivery_place_id = delivery_history.delivery_place_id
-        str = self.add_url_and_training(delivery_history.summary, delivery_place_id)
+        str = self.add_url_and_training(self.description, delivery_place_id)
 
         raise "送信先アドレス設定がありません" unless to = DST_LIST['delivery_place'][delivery_place_id]['to']
         summary.store('mailing_list_name', to)

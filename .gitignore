@@ -35,6 +35,7 @@
 /plugins/lgdis/config/api_key.yml
 /plugins/lgdis/config/evacuation_advisory.yml
 /plugins/lgdis/config/znettown_key.yml
+/plugins/lgdis/db/seeds/workflow_permissions.csv
 *.rbc
 
 /.bundle
