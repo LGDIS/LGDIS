@@ -377,7 +377,7 @@ module Lgdis
         add_message = TRAINING_MESSAGE + "\n" if DST_LIST['training_prj'][self.project_id]
         add_message = add_message + contents.to_s
         unless UGENT_MAIL_PLACE_IDS.include?(delivery_place_id)
-          add_message = "\n" + add_message + url.to_s if (url.to_s).size > 0
+          add_message = add_message + "\n" + url.to_s if (url.to_s).size > 0
         end 
         return add_message
       end
