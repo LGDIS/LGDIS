@@ -366,6 +366,16 @@ class EvacuationAdvisory < ActiveRecord::Base
     tf.close(true)
     issue.description = l(:summary_evacuation_advisory) + "\n\n" + options[:description]
     issue.save!
+
+    unless EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_ISSUE).exists?    
+      eva_clear = EvacuationAdvisory.mode_in(project).where(:issueorlift => ISSUEORLIFT_LIFT)
+      eva_clear.each do |eva|
+        eva.sort_criteria = nil
+        eva.issueorlift = nil
+        eva.save!
+      end
+    end
+
     return issue
   end
 
@@ -388,8 +398,8 @@ class EvacuationAdvisory < ActiveRecord::Base
     histories = []
     updated_selves = EvacuationAdvisory.mode_in(project).order("identifier ASC").scoped
     # 初期発令時に前回の解除が残っているデータをのsort_criteria等を初期化するためのカウントをとる。
-    ec = EvacuationAdvisory.mode_in(project).select("COUNT(*) as eva_count").where(:deleted_at => nil).first
-    ic = EvacuationAdvisory.mode_in(project).select("COUNT(*) as issue_count").where("issueorlift = '#{ISSUEORLIFT_LIFT}' or issueorlift is null").where(:deleted_at => nil).first
+    #ec = EvacuationAdvisory.mode_in(project).select("COUNT(*) as eva_count").where(:deleted_at => nil).first
+    #ic = EvacuationAdvisory.mode_in(project).select("COUNT(*) as issue_count").where("issueorlift = '#{ISSUEORLIFT_LIFT}' or issueorlift is null").where(:deleted_at => nil).first
     prev_delivery_time = connection.select_value("select max(d.updated_at) from delivery_histories d, issues i
                                               where d.issue_id = i.id and d.project_id = #{project.id} and i.tracker_id = #{TRACKER_EVACUATION} and d.delivery_place_id = 1 and d.status = 'done'")
     if prev_delivery_time.nil?
@@ -400,7 +410,8 @@ class EvacuationAdvisory < ActiveRecord::Base
     delivery_time = Time.now  - (EVACUATIONADVISORY_MAP["lift_term"].to_i * 3600)
     updated_selves.each do |eva|
       # 解除を発令してから数時間、発令解除区分の更新を回避する
-      if eva.current_sort_criteria == SORT_ISSUE_NONE && eva.issueorlift == ISSUEORLIFT_LIFT && delivery_time < prev_delivery_time && ec.eva_count != ic.issue_count
+      #if eva.current_sort_criteria == SORT_ISSUE_NONE && eva.issueorlift == ISSUEORLIFT_LIFT && delivery_time < prev_delivery_time && ec.eva_count != ic.issue_count
+      if eva.current_sort_criteria == SORT_ISSUE_NONE && eva.issueorlift == ISSUEORLIFT_LIFT && delivery_time < prev_delivery_time
         histories << eva.get_sort_criteria_changes
       else
 	    # 公共コモンズ用の発令区分と発令解除区分を決定
