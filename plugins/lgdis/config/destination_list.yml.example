@@ -30,12 +30,12 @@ to: # 配送先メールアドレス、メーリングリスト
   - &to_2   to2@localhost.localdomain # 自治体職員向けメール（１号配備）
   - &to_3   to3@localhost.localdomain # 自治体職員向けメール（２号配備）
   - &to_4   to4@localhost.localdomain # 自治体職員向けメール（３号配備）
-  - &to_5   to5@localhost.localdomain # まちcomi向けメール
+  - &to_5   to5@localhost.localdomain # 住民向けメール
 
 from: # 送信元メールアドレス、メーリングリスト
   - &from_err frome@localhost.localdomain # Resqueジョブエラー通知
   - &from_1   from1@localhost.localdomain # 自治体職員向けメール
-  - &from_2   from2@localhost.localdomain # まちcomi向けメール
+  - &from_2   from2@localhost.localdomain # 住民向けメール
 
 smtp_server: # SMTPサーバー
   - &smtp_server_err  # Resqueジョブエラー通知
@@ -48,7 +48,7 @@ smtp_server: # SMTPサーバー
     port:     25
     domain:   localdomain
     charset:  utf-8
-  - &smtp_server_2 # まちcomi向けメール
+  - &smtp_server_2 # 住民向けメール
     mta_fqdn:   localhost.localdomain
     port:       25
     domain:     localdomain
@@ -98,7 +98,7 @@ delivery_place:
     smtp_server:        *smtp_server_1
   &id 6: &smtp_auth
     id: *id
-    name: メーリングリスト
+    name: 住民向けメール
     create_msg_method:  *create_msg_method_2
     delivery_job_class: *delivery_job_class_2
     to:                 *to_5

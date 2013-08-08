@@ -85,4 +85,6 @@ ActiveRecord::Base.connection.execute(%{INSERT INTO trackers (position, id, name
 ActiveRecord::Base.connection.execute(%{INSERT INTO trackers (position, id, name, is_in_chlog, is_in_roadmap, fields_bits) VALUES (71, 65, '【広報-生活情報】ボランティア活動をしたい方への情報', false, true, 0)})
 ActiveRecord::Base.connection.execute(%{INSERT INTO trackers (position, id, name, is_in_chlog, is_in_roadmap, fields_bits) VALUES (72, 53, '【広報-生活情報】その他の被災者支援に関する情報', false, true, 0)})
 
+ActiveRecord::Base.connection.execute(%{INSERT INTO trackers (position, id, name, is_in_chlog, is_in_roadmap, fields_bits) VALUES (73, 79, '【システム】公共情報コモンズ発信（緊急速報メール配信結果）', false, true, 0)})
+
 ActiveRecord::Base.connection.execute(%{UPDATE trackers set fields_bits = 206})

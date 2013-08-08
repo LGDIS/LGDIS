@@ -31,4 +31,4 @@ Setting.default_projects_modules = ["issue_tracking", "shelters", "delivery_hist
 
 # 設定/メール通知
 # 送信元メールアドレス：
-Setting.mail_from = 'saitai@example.com'
+Setting.mail_from = 'no-reply@example.com'

@@ -40,6 +40,7 @@ import "roles"
 
 # # グループ
 import "groups"
+import "groups_to_projects"
 
 # # ワークフロー(ステータス遷移)
 # # TODO: ここに追加する

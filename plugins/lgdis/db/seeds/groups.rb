@@ -2,7 +2,7 @@
 
 # 全件削除
 ActiveRecord::Base.connection.execute(%{DELETE FROM users WHERE id > 2})
-#ActiveRecord::Base.connection.execute(%{SELECT setval('groups_id_seq', 2, FALSE)})
+ActiveRecord::Base.connection.execute(%{SELECT setval('users_id_seq', 3, FALSE)})
 
 # 登録
 CSV.foreach("#{Rails.root}/plugins/lgdis/db/seeds/groups.csv", :headers => true) do |row|
