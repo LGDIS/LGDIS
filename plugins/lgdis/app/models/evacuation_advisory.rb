@@ -105,7 +105,7 @@ class EvacuationAdvisory < ActiveRecord::Base
   TRACKER_EVACUATION = 1
 
   validates :issued_at, :presence => true, :if => "self.issueorlift == '#{ISSUEORLIFT_ISSUE}'"
-  validates :lifted_at, :presence => true, :if => "self.issueorlift == '#{ISSUEORLIFT_LIFT}'"
+  validates :lifted_at, :presence => true, :if => Proc.new {|evacuation_advisory| evacuation_advisory.issueorlift == ISSUEORLIFT_LIFT && evacuation_advisory.current_sort_criteria == SORT_ISSUE_NONE}
 
   # 属性のローカライズ名取得
   # validateエラー時のメッセージに使用されます。

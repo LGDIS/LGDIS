@@ -61,9 +61,11 @@ class Shelter < ActiveRecord::Base
   validates :shelter_sort, :presence => true,
                 :inclusion => {:in => CONST[:shelter_sort.to_s].keys, :allow_blank => true}
   validates :opened_at,
-                :custom_format => {:type => :datetime}
+                :custom_format => {:type => :datetime},
+                :presence => true, :if => Proc.new { |shelter| shelter.shelter_sort == "2"}
   validates :closed_at,
-                :custom_format => {:type => :datetime}
+                :custom_format => {:type => :datetime},
+                :presence => true, :if => Proc.new { |shelter| shelter.shelter_sort == "3"}
   validates :capacity,
                 :numericality => POSITIVE_INTEGER
   validates :status,
