@@ -9,6 +9,9 @@
     </span>
   </h2>
 
+  <p><%= l(:document_id) + ": " + (@edition_management.present? ? @edition_management.uuid.to_s : "") %></p>
+  <p><%= l(:document_revision) + ": " + (@edition_management.present? ? @edition_management.edition_num.to_s : "") %></p>
+
   <div class="box tabular">
     <div id="all_attributes">
       <%= f.hidden_field :created_by, :value => User.current.login %>

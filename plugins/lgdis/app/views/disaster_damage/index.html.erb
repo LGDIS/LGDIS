@@ -13,6 +13,19 @@
       <% end %>
     </span>
   </h2>
+  <p>災害対策本部設置状況<span style="position: absolute; left: 40em">被害状況</span></p>
+  <p>
+    <%= l(:document_id) + ": " + (@disaster_headquarter_management.present? ? @disaster_headquarter_management.uuid.to_s : "") %>
+    <span  style="position: absolute; left: 40em">
+      <%=  l(:document_id) + ": " + (@damage_information_management.present? ? @damage_information_management.uuid.to_s : "") %>
+    </span>
+  </p>
+  <p>
+    <%= l(:document_revision) + ": " + (@disaster_headquarter_management.present? ? @disaster_headquarter_management.edition_num.to_s : "") %>
+    <span  style="position: absolute; left: 40em">
+      <%=  l(:document_revision) + ": " + (@damage_information_management.present? ? @damage_information_management.edition_num.to_s : "") %>
+    </span>
+  </p>
   <div class="box tabular">
     <div id="all_attributes" class="fdma_form_4">
       <%= error_messages_for 'disaster_damage' %>

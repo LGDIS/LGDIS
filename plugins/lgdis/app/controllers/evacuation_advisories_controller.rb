@@ -13,6 +13,7 @@ class EvacuationAdvisoriesController < ApplicationController
   # ==== Return
   # ==== Raise
   def init
+    @edition_management = EditionManagement.find_by_project_id_and_tracker_id_and_delivery_place_id(@project.id, 1, 1)
     @evacuation_advisory_const = Constant::hash_for_table(EvacuationAdvisory.table_name)
     @areas = Area.all
     # TODO:発令・解除地区名称（中域）の持ち方,内容について検討
@@ -149,6 +150,7 @@ class EvacuationAdvisoriesController < ApplicationController
         end
       else
         flash[:error] = l(:error_update_not_entry)
+        return
       end
       rescue RequiredException
         return

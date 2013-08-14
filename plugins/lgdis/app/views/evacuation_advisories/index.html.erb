@@ -1,7 +1,8 @@
 <% html_title l(:label_evacuation_advisory_plural) -%>
 
 <h2><%= l(:label_evacuation_advisory_plural) %></h2>
-
+<p><%= l(:document_id) + ": " + (@edition_management.present? ? @edition_management.uuid.to_s : "") %></p>
+<p><%= l(:document_revision) + ": " + (@edition_management.present? ? @edition_management.edition_num.to_s : "") %></p>
 <%= error_messages_for_evacuation_advisories(@evacuation_advisories, @evacuation_advisories_for_ticket) %>
 
 <%= form_for @search, :url => project_evacuation_advisories_search_path, :html => {:method => :post} do |f| %>

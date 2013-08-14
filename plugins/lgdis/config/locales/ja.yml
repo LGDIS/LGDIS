@@ -10,6 +10,8 @@ ja:
   button_ticket_confirm: チケットを登録してよろしいですか？
   text_select_tracker: 登録するチケットのトラッカーを選んでください
   button_search: 検索
+  document_id: ドキュメントID
+  document_revision: 版番号
 
   activerecord:
     errors:

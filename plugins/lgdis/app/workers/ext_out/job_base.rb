@@ -54,7 +54,21 @@ module ExtOut
         yield(delivery_history, delivery_place, client)
 
         # 文書改版管理処理
-        register_edition(content, delivery_history) if DST_LIST['commons_delivery_ids'].include?(delivery_history.delivery_place_id)
+        if DST_LIST['commons_delivery_ids'].include?(delivery_history.delivery_place_id)
+          register_edition(content, delivery_history)
+          if delivery_history.type_update == "3"
+            case delivery_history.issue.tracker_id
+            when 1
+              evacuation_advisory_clear(delivery_history)
+            when 2
+              shelter_clear(delivery_history)
+            when 16
+              disaster_headquarter_clear(delivery_history)
+            when 18
+              damage_information_clear(delivery_history)
+            end
+          end
+        end
 
         success = true
         return
@@ -148,7 +162,7 @@ module ExtOut
       issue = delivery_history.issue
       project_id = issue.project_id
       tracker_id = issue.tracker_id
-      type_update = issue.type_update
+      type_update = delivery_history.type_update
       # 新規配信時、緊急速報メール、イベント・お知らせのトラッカーID の場合
       # 版番号管理レコードも新規作成される
       # それ以外のコモンズ配信時の版番号管理レコードは、
@@ -209,6 +223,120 @@ module ExtOut
       return outputs.join("\n")
     end
 
+    # 避難勧告指示情報、公共情報コモンズ取消配信時ステータスクリア処理
+    # ==== Args
+    # _delivery_history_ :: DeliveryHistoryオブジェクト
+    def self.evacuation_advisory_clear(delivery_history)
+      project = delivery_history.project
+      eva_clear = EvacuationAdvisory.mode_in(project)
+      eva_clear.each do |eva|
+        eva.sort_criteria = nil
+        eva.issueorlift = nil
+        eva.issued_at = nil
+        eva.lifted_at = nil
+        eva.previous_sort_criteria = nil
+        eva.current_sort_criteria = "1"
+        eva.save!
+      end
+    end
+
+    # 避難所情報、公共情報コモンズ取消配信時ステータスクリア処理
+    # ==== Args
+    # _delivery_history_ :: DeliveryHistoryオブジェクト
+    def self.shelter_clear(delivery_history)
+      project = delivery_history.project
+      shelter_clear = Shelter.mode_in(project)
+      shelter_clear.each do |shelter|
+        shelter.shelter_sort = "1" if shelter.shelter_type == "1" || shelter.shelter_type == "2"
+        shelter.opened_at = nil
+        shelter.closed_at = nil
+        shelter.status = nil
+        shelter.head_count = 0
+        shelter.head_count_voluntary = 0
+        shelter.households = 0
+        shelter.households_voluntary = 0
+        shelter.save!
+      end
+    end
+
+    # 災害対策本部設置状況、公共情報コモンズ取消配信時ステータスクリア処理
+    # ==== Args
+    # _delivery_history_ :: DeliveryHistoryオブジェクト
+    def self.disaster_headquarter_clear(delivery_history)
+      project = delivery_history.project
+      headquarter_clear = DisasterDamage.mode_in(project).first_or_initialize
+      headquarter_clear.municipal_antidisaster_headquarter_of = nil
+      headquarter_clear.municipal_antidisaster_headquarter_type = nil
+      headquarter_clear.municipal_antidisaster_headquarter_status = nil
+      headquarter_clear.municipal_antidisaster_headquarter_status_at = nil
+      headquarter_clear.save!
+    end
+
+    # 被害情報、公共情報コモンズ取消配信時ステータスクリア処理
+    # ==== Args
+    # _delivery_history_ :: DeliveryHistoryオブジェクト
+    def self.damage_information_clear(delivery_history)
+      project = delivery_history.project
+      damage_info = DisasterDamage.mode_in(project).first_or_initialize
+      damage_info.dead_count = nil
+      damage_info.missing_count = nil
+      damage_info.seriously_injured_count = nil
+      damage_info.slightly_injured_count = nil
+      damage_info.complete_collapse_houses_count = nil
+      damage_info.complete_collapse_households_count = nil
+      damage_info.complete_collapse_people_count = nil
+      damage_info.half_collapse_houses_count = nil
+      damage_info.half_collapse_households_count = nil
+      damage_info.half_collapse_people_count = nil
+      damage_info.partial_damage_houses_count = nil
+      damage_info.partial_damage_households_count = nil
+      damage_info.partial_damage_people_count = nil
+      damage_info.inundation_above_floor_level_houses_count = nil
+      damage_info.inundation_above_floor_level_households_count = nil
+      damage_info.inundation_above_floor_level_people_count = nil
+      damage_info.inundation_under_floor_level_houses_count = nil
+      damage_info.inundation_under_floor_level_households_count = nil
+      damage_info.inundation_under_floor_level_people_count = nil
+      damage_info.damaged_public_building_count = nil
+      damage_info.damaged_other_building_count = nil
+      damage_info.buried_or_washed_out_rice_field_ha = nil
+      damage_info.under_water_rice_field_ha = nil
+      damage_info.buried_or_washed_out_upland_field_ha = nil
+      damage_info.under_water_upland_field_ha = nil
+      damage_info.damaged_educational_facilities_count = nil
+      damage_info.damaged_hospitals_count = nil
+      damage_info.damaged_roads_count = nil
+      damage_info.damaged_bridges_count = nil
+      damage_info.damaged_rivers_count = nil
+      damage_info.damaged_harbors_count = nil
+      damage_info.damaged_sand_control_count = nil
+      damage_info.damaged_cleaning_facilities_count = nil
+      damage_info.landslides_count = nil
+      damage_info.closed_lines_count = nil
+      damage_info.damaged_ships_count = nil
+      damage_info.water_failure_houses_count = nil
+      damage_info.dead_telephone_lines_count = nil
+      damage_info.blackout_houses_count = nil
+      damage_info.gas_supply_stopped_houses_count = nil
+      damage_info.damaged_concrete_block_walls_count = nil
+      damage_info.sufferer_houses_count = nil
+      damage_info.sufferer_people_count = nil
+      damage_info.fire_occurred_buildings_count = nil
+      damage_info.fire_occurred_dangerous_substances_count = nil
+      damage_info.fire_occurred_others_count = nil
+      damage_info.public_educational_buildings_losses_amount = nil
+      damage_info.agriculture_forestry_and_fisheries_buildings_losses_amount = nil
+      damage_info.public_civil_buildings_losses_amount = nil
+      damage_info.other_public_buildings_losses_amount = nil
+      damage_info.damaged_public_buildings_municipalities_count = nil
+      damage_info.agriculture_losses_amount = nil
+      damage_info.forestry_losses_amount = nil
+      damage_info.livestock_losses_amount = nil
+      damage_info.fisheries_losses_amount = nil
+      damage_info.commerce_and_industry_losses_amount = nil
+      damage_info.other_losses_amount = nil
+      damage_info.save!
+    end
   end
 end
 
