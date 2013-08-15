@@ -53,7 +53,7 @@ ja:
   lgdis_mail_subject_register: 仮登録完了メール
   lgdis_mail_body_register: 本人確認のため、下記URLへにアクセスしアカウントの本登録を完了させて下さい。
   lgdis_mail_body_done: 石巻市災害対応管理システムへの仮登録が完了しました。
-  lgdis_mail_body_creater: 石巻市総務部防災対策課
+  lgdis_mail_body_creater: 石巻市総務部危機対策課
 
   # カスタムフィールドリスト複数初期値設定
   text_custom_field_default_value_multiple_info: '初期値が複数の場合は、1行に1個ずつ記述してください。'
