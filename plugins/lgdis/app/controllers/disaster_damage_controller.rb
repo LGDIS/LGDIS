@@ -11,8 +11,8 @@ class DisasterDamageController < ApplicationController
   # ==== Return
   # ==== Raise
   def init
-    @disaster_headquarter_management = EditionManagement.find_by_project_id_and_tracker_id_and_delivery_place_id(@project.id, 16, 1)
-    @damage_information_management = EditionManagement.find_by_project_id_and_tracker_id_and_delivery_place_id(@project.id, 18, 1)
+    @disaster_headquarter_management = EditionManagement.find(:first, :conditions => ["project_id = ? and tracker_id = ? and delivery_place_id = ? and status != ?", @project.id, 16, 1, 3])  
+    @damage_information__management = EditionManagement.find(:first, :conditions => ["project_id = ? and tracker_id = ? and delivery_place_id = ? and status != ?", @project.id, 18, 1, 3])  
     @disaster_damage_const = Constant::hash_for_table(DisasterDamage.table_name)
   end
 

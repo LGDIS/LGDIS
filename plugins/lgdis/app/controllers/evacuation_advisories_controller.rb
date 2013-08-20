@@ -13,7 +13,8 @@ class EvacuationAdvisoriesController < ApplicationController
   # ==== Return
   # ==== Raise
   def init
-    @edition_management = EditionManagement.find_by_project_id_and_tracker_id_and_delivery_place_id(@project.id, 1, 1)
+    # @edition_management = EditionManagement.find_by_project_id_and_tracker_id_and_delivery_place_id(@project.id, 1, 1)
+    @edition_management = EditionManagement.find(:first, :conditions => ["project_id = ? and tracker_id = ? and delivery_place_id = ? and status != ?", @project.id, 1, 1, 3])
     @evacuation_advisory_const = Constant::hash_for_table(EvacuationAdvisory.table_name)
     @areas = Area.all
     # TODO:発令・解除地区名称（中域）の持ち方,内容について検討

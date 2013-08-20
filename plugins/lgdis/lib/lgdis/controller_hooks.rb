@@ -5,6 +5,7 @@ module Lgdis
     AUTO_FLAG = {"1" => true}.freeze
     TRAINING_MESSAGE = "【災害訓練】" + "\n"
     PORTAL_URL = "… " + DST_LIST['disaster_portal_url']
+    SHORT_URL_SIZE = 23
 
     # controller_issues_new_before_saveホック処理
     # ==== Args
@@ -14,27 +15,32 @@ module Lgdis
     def controller_issues_new_before_save(context={})
       # 自動配信時のみ、141文字(Twitter のMAXついーとから
       # 災害ポータルのURL 文字数を引いた文字数を登録する
-      
+      issue = context[:issue]
       if AUTO_FLAG[context[:params][:issue][:auto_send]]
         send_target = context[:params][:issue][:send_target]
+        project_id = context[:params][:issue][:project_id].to_s[-1, 1]
         urgent_mail = DST_LIST['delivery_place_group_urgent_mail'].map{|o| o["id"]}
         (DST_LIST['auto_destination'][send_target.to_i] || {}).each do |auto|
           if urgent_mail.include?(auto['id'])
             context[:issue][:mail_subject] = context[:issue][:mail_subject].slice(0, 15)
-            summary = context[:issue][:summary]
-            slice_count = 172
-            slice_count = slice_count - TRAINING_MESSAGE.size if DST_LIST['training_prj'][(context[:params][:issue][:project_id])[-1].to_i]
+            slice_count = 171
+            summary = issue.add_url_and_training(issue.summary, auto['id'], issue.mail_subject, issue.published_at, project_id.to_i)
             if summary.size > slice_count
-              summary = summary.slice(0, slice_count - 1) + "…" 
+              slice_count = slice_count - (summary.size + summary.count("\n") - issue.summary.size)
+              issue.summary = issue.summary.slice(0, slice_count) + "…" 
             end
-            context[:issue][:summary] = summary
+            break
           elsif auto['id'].to_s == "7"
-            summary = context[:issue][:summary]
-            slice_count = 117
-            slice_count = slice_count - TRAINING_MESSAGE.size if DST_LIST['training_prj'][(context[:params][:issue][:project_id])[-1].to_i]
-            slice_count = slice_count - PORTAL_URL.size
-            summary = summary.slice(0, slice_count) + PORTAL_URL
-            context[:issue][:summary] = summary
+            # slice_count = 115
+            slice_count = 110
+            summary = issue.add_url_and_training(issue.summary, auto['id'], issue.mail_subject, issue.published_at, project_id.to_i) 
+            if summary.size > slice_count
+              slice_count = slice_count - (summary.size - issue.summary.size)
+              issue.summary = issue.summary.slice(0, slice_count) + PORTAL_URL
+            else
+              issue.summary = issue.summary + PORTAL_URL
+            end
+            break
           end
         end
      end

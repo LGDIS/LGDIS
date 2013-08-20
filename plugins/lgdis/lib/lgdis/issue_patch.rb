@@ -96,6 +96,8 @@ module Lgdis
       UGENT_MAIL_ID = 0
       # チケットの説明使用ID
       DESCRIPTION_ID = [2, 3, 4, 5, 6, 8] 
+      # 公共情報コモンズ状態遷移型情報定義トラッカーID
+      COMMONS_TRANSITION_IDS = [1, 2, 16, 18]
       # 公共情報コモンズの外部配信先ID配列
       COMMONS_PLACE_IDS = DST_LIST['delivery_place_group_commons'].map{|o| o["id"]}
       # 緊急速報メールの外部配信先ID配列
@@ -302,7 +304,7 @@ module Lgdis
       # 配信内容文字列
       # ==== Raise
       def create_twitter_msg(delivery_history)
-        summary = self.add_url_and_training(delivery_history.summary, delivery_history.delivery_place_id)
+        summary = self.add_url_and_training(delivery_history.summary, delivery_history.delivery_place_id, delivery_history.mail_subject, delivery_history.published_at, self.project_id)
         return summary
       end
 
@@ -313,7 +315,7 @@ module Lgdis
       # 配信内容文字列
       # ==== Raise
       def create_facebook_msg(delivery_history)
-        summary = self.add_url_and_training(self.description, delivery_history.delivery_place_id)
+        summary = self.add_url_and_training(self.description, delivery_history.delivery_place_id, delivery_history.mail_subject, delivery_history.published_at, self.project_id)
         return summary
       end
 
@@ -327,7 +329,7 @@ module Lgdis
         summary = Hash.new
         # TODO:件名、本文が未決
         delivery_place_id = delivery_history.delivery_place_id
-        str = self.add_url_and_training(self.description, delivery_place_id)
+        str = self.add_url_and_training(self.description, delivery_place_id, delivery_history.mail_subject, delivery_history.published_at, self.project_id)
 
         raise "送信先アドレス設定がありません" unless to = DST_LIST['delivery_place'][delivery_place_id]['to']
         summary.store('mailing_list_name', to)
@@ -363,20 +365,33 @@ module Lgdis
       # ==== Args
       # _contents_ :: コンテンツ文字列
       # _delivery_place_id_ :: 外部配信先ID
+      # _mail_subject_ :: 情報のタイトル
+      # _published_at_ :: 情報の発表日時
+      # _project_id_ :: プロジェクトID
       # ==== Return
       # 引数のコンテンツ文字列に災害訓練、URLを追加した文字列
       # ==== Raise
-      def add_url_and_training(contents, delivery_place_id)
-        url = ''
-        if DEPLOYED_MAIL_PLACE_IDS.include?(delivery_place_id)
-          url = DST_LIST['lgdsf_url']
-        end
-
+      def add_url_and_training(contents, delivery_place_id, mail_subject, published_at, project_id)
         # 災害訓練モード判定
         add_message = ''
-        add_message = TRAINING_MESSAGE + "\n" if DST_LIST['training_prj'][self.project_id]
+        add_message = TRAINING_MESSAGE + "\n" if DST_LIST['training_prj'][project_id]
+        add_message = add_message + mail_subject
+        if DESCRIPTION_ID.include?(delivery_place_id)
+          add_message = add_message + "\n"
+        else
+          add_message = add_message + " "
+        end
+        if published_at.present?
+          add_message = add_message + published_at.strftime("%Y/%m/%d %H:%M:%S")
+          if DESCRIPTION_ID.include?(delivery_place_id)
+            add_message = add_message + "\n"
+          else
+            add_message = add_message + " "
+          end
+        end
         add_message = add_message + contents.to_s
-        unless UGENT_MAIL_PLACE_IDS.include?(delivery_place_id)
+        if DEPLOYED_MAIL_PLACE_IDS.include?(delivery_place_id)
+          url = DST_LIST['lgdsf_url']
           add_message = add_message + "\n" + url.to_s if (url.to_s).size > 0
         end 
         return add_message
@@ -673,11 +688,8 @@ module Lgdis
       # _doc_ :: REXML::Document 文字列
       # ==== Raise
       def create_commons_area_mail_body(delivery_history)
-        if DST_LIST['training_prj'][self.project_id]
-          summary = TRAINING_MESSAGE + "\n" + delivery_history.summary
-        else
-          summary = delivery_history.summary
-        end
+        summary = self.add_url_and_training(delivery_history.summary, delivery_history.delivery_place_id,
+                                            delivery_history.mail_subject, delivery_history.published_at, self.project_id)
         doc =  REXML::Document.new
         doc.add_element("pcx_um:UrgentMail") # root
         doc.elements["//pcx_um:UrgentMail"].add_element("pcx_um:Information")
@@ -725,8 +737,7 @@ module Lgdis
         # 新規配信許可時、更新種別が新規、緊急速報メールか、お知らせ・イベントのトラッカーで
         # 画面より情報の更新種別「取消」を選択した場合、画面の入力値を設定
         # それ以外は更新ステータス
-        status      = edition_mng.blank? || edition_mng.status == CANCEL_STATUS || status_flag || self.type_update.to_i == CANCEL_STATUS ? \
-                      self.type_update.to_i : UPDATE_STATUS
+        status      = COMMONS_TRANSITION_IDS.include?(self.tracker_id) && delivery_place_id == 1 && edition_mng.present? && edition_mng.status != CANCEL_STATUS && self.type_update == NEW_STATUS.to_s ? UPDATE_STATUS : self.type_update.to_i
 
         # 新規配信許可時、更新種別が新規、緊急速報メールか、お知らせ・イベントのトラッカーの場合、版番号を1に設定
         edition_num = edition_mng.blank? || edition_mng.status == CANCEL_STATUS || status_flag ? \
@@ -754,13 +765,12 @@ module Lgdis
       def find_edition_mng(delivery_place_id)
         condition_str = ''
         condition_ary = []
-        if DST_LIST['general_info_ids'].include?(self.tracker_id) ||
-           DST_LIST['events_ids'].include?(self.tracker_id)
-          condition_str = 'issue_id = ?'
-          condition_ary.push self.id
-        else
+        if COMMONS_TRANSITION_IDS.include?(self.tracker_id) && delivery_place_id == 1
           condition_str = 'project_id = ? and tracker_id = ?'
           condition_ary.push self.project_id, self.tracker_id
+        else
+          condition_str = 'issue_id = ?'
+          condition_ary.push self.id
         end
 
         if UGENT_MAIL_PLACE_IDS.include?(delivery_place_id)

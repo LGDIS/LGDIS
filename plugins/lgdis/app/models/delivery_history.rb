@@ -214,9 +214,17 @@ class DeliveryHistory < ActiveRecord::Base
 
     if TWITTER_ID == self.delivery_place_id
       message = ''
-      message = self.issue.add_url_and_training(self.summary, self.delivery_place_id)
-      if message.size >= 141
-        errors.add(:summary, "は#{141 - (message.size - self.summary.size)}文字以上入力できません")
+      message = self.issue.add_url_and_training(self.summary, self.delivery_place_id, self.mail_subject, self.published_at, self.issue.project_id)
+      http_index = message.index(REGEXP_HTTP)
+      if http_index.present?
+        message = message.slice(0, http_index - 1)
+        if message.size >= 118
+          errors.add(:summary, "は#{118 - (message.size - self.summary.size)}文字以上入力できません")
+        end
+      else
+        if message.size >= 141
+          errors.add(:summary, "は#{141 - (message.size - self.summary.size)}文字以上入力できません")
+        end
       end
     end
 
@@ -225,7 +233,7 @@ class DeliveryHistory < ActiveRecord::Base
     end
 
     if (U_MAIL_ID.include?(self.delivery_place_id))
-      message = self.issue.add_url_and_training(self.summary, self.delivery_place_id)
+      message = self.issue.add_url_and_training(self.summary, self.delivery_place_id, self.mail_subject, self.published_at, self.issue.project_id)
       if message.size + message.count("\n") > 172
         errors.add(:summary, "は#{173 - (message.size + message.count("\n") - self.summary.size)}文字以上入力できません")
       end
