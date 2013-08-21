@@ -217,12 +217,16 @@ class Batches::LinkDisasterPortal
 
       begin
         tmp_label_value = eval(label_value["value"])
-      rescue
+        if tmp_label_value.present?
+          tmp_label_value = tmp_label_value.gsub(/\r\n|\r|\n/, "&lt;br /&gt;")
+        end
+      rescue => ex
+        Rails.logger.info(ex.message)
         tmp_label_value = ""
       end
 
       #xml では &nbsp; は認識されないので文字コードを直接入力（＆#x00A0;）
-      content += '&lt;p&gt;' + label_value["label"] + ':' + tmp_label_value + '&lt;/p&gt;&lt;br&#x00A0;/&gt;'
+      content += '&lt;p&gt;' + label_value["label"] + ':' + tmp_label_value + '&lt;/p&gt;&lt;br /&gt;'
 
     end
 
