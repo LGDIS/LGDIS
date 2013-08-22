@@ -205,11 +205,11 @@ auto_destination:
   0:  # ０号配備
     [*smtp_0, *twitter, *facebook]
   1:  # １号配備
-    [*smtp_1, *twitter, *facebook]
+    [*smtp_0, *smtp_1, *twitter, *facebook]
   2:  # ２号配備
-    [*smtp_2, *twitter, *facebook]
+    [*smtp_0, *smtp_1, *smtp_2, *twitter, *facebook]
   3:  # ３号配備
-    [*smtp_3, *twitter, *facebook]
+    [*smtp_0, *smtp_1, *smtp_2, *smtp_3, *twitter, *facebook]
   4:  # twitter, facebook
     [*twitter, *facebook]
 
