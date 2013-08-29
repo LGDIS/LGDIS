@@ -115,7 +115,7 @@ class Batches::EvacuationAdvisoriesList
       #ソート処理 ここから
       csvArray = csvArray.sort{|p,q|p[2]<=>q[2]}
 
-      sort_key1 = ["警戒区域" , "避難指示" , "避難勧告" , "避難準備情報" ,  "警戒情報" ]
+      sort_key1 = ["警戒区域" , "避難指示" , "避難勧告" , "避難準備" ,  "警戒情報" ]
 
       tmpdata = Hash.new
       csvArray.each do |row|
