@@ -25,7 +25,7 @@ delivery_job_class:
   - &delivery_job_class_5 "ExtOut::AtomRequestJob"
 
 to: # 配送先メールアドレス、メーリングリスト
-  - &to_err apl@localhost.localdomain # Resqueジョブエラー通知
+  - &to_err postmaster@localhost.localdomain # Resqueジョブエラー通知
   - &to_1   to1@localhost.localdomain # 自治体職員向けメール（０号配備）
   - &to_2   to2@localhost.localdomain # 自治体職員向けメール（１号配備）
   - &to_3   to3@localhost.localdomain # 自治体職員向けメール（２号配備）
@@ -1330,8 +1330,9 @@ atom:
   # ※文字列中の「${trackerid}」は該当のトラッカーIDに、「${date}」は作成年月日時分秒(YYYYMMDDHHMMSS)に置換されます
   output_filename: "tracker_${trackerid}.rss"
 
-# 災害情報ポータルURL
-disaster_portal_url: "下記リンクより、災害情報を確認して下さい。\n http://www.jice.or.jp/sinsai/sinsai_result.php"
+# 要約文設定用本文掲載URL，ハッシュタグ
+disaster_portal_url: "http://www.jice.or.jp/sinsai/sinsai_result.php"
+hashtag: "# ××市"
 
 # *号配備メールに添付するLGDSF URL 設定
 lgdsf_url: "下記リンクより、位置情報、参集場所の報告を行ってください。\n http://XXX.XXX.XXX.XXX/staffs/send/"

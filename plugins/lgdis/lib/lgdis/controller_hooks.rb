@@ -5,7 +5,7 @@ module Lgdis
     AUTO_FLAG = {"1" => true}.freeze
     TRAINING_MESSAGE = "【災害訓練】" + "\n"
     PORTAL_URL = "… " + DST_LIST['disaster_portal_url']
-    SHORT_URL_SIZE = 23
+    HASH_TAG = " " + DST_LIST['hashtag']
 
     # controller_issues_new_before_saveホック処理
     # ==== Args
@@ -20,25 +20,27 @@ module Lgdis
         send_target = context[:params][:issue][:send_target]
         project_id = context[:params][:issue][:project_id].to_s[-1, 1]
         urgent_mail = DST_LIST['delivery_place_group_urgent_mail'].map{|o| o["id"]}
+        issue.opened_at = Time.now
         (DST_LIST['auto_destination'][send_target.to_i] || {}).each do |auto|
           if urgent_mail.include?(auto['id'])
             context[:issue][:mail_subject] = context[:issue][:mail_subject].slice(0, 15)
             slice_count = 171
-            summary = issue.add_url_and_training(issue.summary, auto['id'], issue.mail_subject, issue.published_at, project_id.to_i)
+            summary = issue.add_url_and_training(issue.summary, auto['id'], project_id.to_i)
             if summary.size > slice_count
               slice_count = slice_count - (summary.size + summary.count("\n") - issue.summary.size)
               issue.summary = issue.summary.slice(0, slice_count) + "…" 
             end
             break
           elsif auto['id'].to_s == "7"
-            # slice_count = 115
-            slice_count = 110
-            summary = issue.add_url_and_training(issue.summary, auto['id'], issue.mail_subject, issue.published_at, project_id.to_i) 
+            # httpsの場合、URLを除いたtwitterへの登録文字数は117文字だが、3点リーダと空白を除いた115文字を起点とする。
+            slice_count = 115
+            slice_count = slice_count - HASH_TAG.size
+            summary = issue.add_url_and_training(issue.summary, auto['id'], project_id.to_i) 
             if summary.size > slice_count
               slice_count = slice_count - (summary.size - issue.summary.size)
-              issue.summary = issue.summary.slice(0, slice_count) + PORTAL_URL
+              issue.summary = issue.summary.slice(0, slice_count) + PORTAL_URL + HASH_TAG
             else
-              issue.summary = issue.summary + PORTAL_URL
+              issue.summary = issue.summary + PORTAL_URL + HASH_TAG
             end
             break
           end

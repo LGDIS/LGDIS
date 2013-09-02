@@ -22,6 +22,7 @@ class Batches::EvacuationAdvisoriesList
 
     # 避難勧告・指示のトラッカーID: 1
     create_xml(1)
+    Rails.logger.info(" #{Time.now.to_s} ===== #{self.name} END ===== ")
 
   end
 
@@ -251,7 +252,7 @@ class Batches::EvacuationAdvisoriesList
     delivery_name = (DST_LIST["delivery_place"][delivery_history.delivery_place_id]||{})["name"].to_s
     delivery_process_date = delivery_history.process_date.strftime("%Y/%m/%d %H:%M:%S")
     notes << "#{delivery_process_date}に、 #{delivery_name}配信を開始しました。"
-    notes << delivery_history.summary
+    notes << issue.add_url_and_training(delivery_history.summary, ATOM, issue.project_id)
 
     @current_journal ||= Journal.new(:journalized => issue, :user => delivery_history.respond_user, :notes => notes.join("\n"))
     @current_journal.notify = false

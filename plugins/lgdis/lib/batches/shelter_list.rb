@@ -21,6 +21,7 @@ class Batches::ShelterList
     auther_email = DST_LIST["link_disaster_portal_auther_email"]
 
     create_xml(2)
+    Rails.logger.info(" #{Time.now.to_s} ===== #{self.name} END ===== ")
 
   end
 
@@ -187,7 +188,7 @@ class Batches::ShelterList
         # 13 あり 最大収容人数
         # 15 あり 収容人数
 
-        row_order = [0,8,2,4,10,11,12,13,15,16,17,18]
+        row_order = [0,8,2,4,10,11,12,13,15,17,18]
         row_order.each do |order|
           #xml では &nbsp; は認識されないので文字コードを直接入力（＆#x00A0;）
           content += '&lt;p&gt;' + header[order] + ':' + row[order] + '&lt;/p&gt;&lt;br&#x00A0;/&gt;'
@@ -270,7 +271,7 @@ class Batches::ShelterList
     delivery_name = (DST_LIST["delivery_place"][delivery_history.delivery_place_id]||{})["name"].to_s
     delivery_process_date = delivery_history.process_date.strftime("%Y/%m/%d %H:%M:%S")
     notes << "#{delivery_process_date}に、 #{delivery_name}配信を開始しました。"
-    notes << delivery_history.summary
+    notes << issue.add_url_and_training(delivery_history.summary, ATOM, issue.project_id)
 
     @current_journal ||= Journal.new(:journalized => issue, :user => delivery_history.respond_user, :notes => notes.join("\n"))
     @current_journal.notify = false

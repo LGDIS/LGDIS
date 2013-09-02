@@ -27,6 +27,7 @@ class Batches::LinkDisasterPortal
     tracker_ids.each do | tracker_id |
        create_xml(tracker_id)
     end
+    Rails.logger.info(" #{Time.now.to_s} ===== #{self.name} END ===== ")
 
   end
 
@@ -218,6 +219,11 @@ class Batches::LinkDisasterPortal
       begin
         tmp_label_value = eval(label_value["value"])
         if tmp_label_value.present?
+          if label_value["value"] == "issue.description"
+            tmp_label_value = issue.add_url_and_training(tmp_label_value, ATOM, issue.project_id)
+          elsif label_value["value"] == "issue.summary"
+            tmp_label_value = issue.add_url_and_training(tmp_label_value, 0, issue.project_id)
+          end
           tmp_label_value = tmp_label_value.gsub(/\r\n|\r|\n/, "&lt;br /&gt;")
         end
       rescue => ex
@@ -226,7 +232,8 @@ class Batches::LinkDisasterPortal
       end
 
       #xml では &nbsp; は認識されないので文字コードを直接入力（＆#x00A0;）
-      content += '&lt;p&gt;' + label_value["label"] + ':' + tmp_label_value + '&lt;/p&gt;&lt;br /&gt;'
+      tmp_label_value = label_value["label"] + ':' + tmp_label_value if label_value["label"].present?
+      content += '&lt;p&gt;' + tmp_label_value + '&lt;/p&gt;&lt;br /&gt;'
 
     end
 
@@ -267,7 +274,7 @@ class Batches::LinkDisasterPortal
     delivery_name = (DST_LIST["delivery_place"][delivery_history.delivery_place_id]||{})["name"].to_s
     delivery_process_date = delivery_history.process_date.strftime("%Y/%m/%d %H:%M:%S")
     notes << "#{delivery_process_date}に、 #{delivery_name}配信を開始しました。"
-    notes << delivery_history.summary
+    notes << issue.add_url_and_training(issue.description, ATOM, issue.project_id)
 
     @current_journal ||= Journal.new(:journalized => issue, :user => delivery_history.respond_user, :notes => notes.join("\n"))
     @current_journal.notify = false

@@ -214,7 +214,7 @@ class DeliveryHistory < ActiveRecord::Base
 
     if TWITTER_ID == self.delivery_place_id
       message = ''
-      message = self.issue.add_url_and_training(self.summary, self.delivery_place_id, self.mail_subject, self.published_at, self.issue.project_id)
+      message = self.issue.add_url_and_training(self.summary, self.delivery_place_id, self.issue.project_id)
       http_index = message.index(REGEXP_HTTP)
       if http_index.present?
         message = message.slice(0, http_index - 1)
@@ -233,7 +233,7 @@ class DeliveryHistory < ActiveRecord::Base
     end
 
     if (U_MAIL_ID.include?(self.delivery_place_id))
-      message = self.issue.add_url_and_training(self.summary, self.delivery_place_id, self.mail_subject, self.published_at, self.issue.project_id)
+      message = self.issue.add_url_and_training(self.summary, self.delivery_place_id, self.issue.project_id)
       if message.size + message.count("\n") > 172
         errors.add(:summary, "は#{173 - (message.size + message.count("\n") - self.summary.size)}文字以上入力できません")
       end
@@ -267,7 +267,7 @@ class DeliveryHistory < ActiveRecord::Base
       errors.add(:description_cancel, "を入力して下さい")
     end
 
-    if (COMMONS_ALL_ID.include?(self.delivery_place_id)) && self.published_at.blank?
+    if self.published_at.blank?
       errors.add(:published_at, "を入力して下さい")
     end
 
@@ -288,8 +288,11 @@ class DeliveryHistory < ActiveRecord::Base
     end
 
     # 公開開始日時未設定の場合に、現在時刻を設定。
-    if ([SMTP_0_ID, SMTP_1_ID, SMTP_2_ID, SMTP_3_ID, SMTP_AUTH_ID, TWITTER_ID, FACEBOOK_ID, ATOM_ID].include?(self.delivery_place_id)) && self.opened_at.blank?
-		self.opened_at = Time.now
+    #if ([SMTP_0_ID, SMTP_1_ID, SMTP_2_ID, SMTP_3_ID, SMTP_AUTH_ID, TWITTER_ID, FACEBOOK_ID, ATOM_ID].include?(self.delivery_place_id)) && self.opened_at.blank?
+    #	self.opened_at = Time.now
+    #end
+    if self.opened_at.blank?
+      errors.add(:opened_at, "を入力して下さい")
     end
   end
 end

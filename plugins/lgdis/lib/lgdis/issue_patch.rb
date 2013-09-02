@@ -95,7 +95,7 @@ module Lgdis
       # destination_list.yml commons_xml、tracker_title に紐付くID
       UGENT_MAIL_ID = 0
       # チケットの説明使用ID
-      DESCRIPTION_ID = [2, 3, 4, 5, 6, 8] 
+      DESCRIPTION_ID = [2, 3, 4, 5, 6, 8, 9] 
       # 公共情報コモンズ状態遷移型情報定義トラッカーID
       COMMONS_TRANSITION_IDS = [1, 2, 16, 18]
       # 公共情報コモンズの外部配信先ID配列
@@ -171,17 +171,19 @@ module Lgdis
       # ==== Raise
       def register_issue_journal_request(ext_out_ary)
         notes = []
+        message = ""
         d_id = 0
         request_date = self.updated_on.strftime("%Y/%m/%d %H:%M:%S")
         notes << "#{request_date}に、以下の配信要求を行いました。"
         ext_out_ary.each do |delivery_place_id|
           notes << (DST_LIST["delivery_place"][delivery_place_id.to_i]||{})["name"].to_s
           d_id = delivery_place_id.to_i
-        end
-        if DESCRIPTION_ID.include?(d_id)
-          notes << self.description
-        else
-          notes << self.summary
+          if DESCRIPTION_ID.include?(d_id)
+            message = self.add_url_and_training(self.description, d_id, self.project_id)
+          else
+            message = self.add_url_and_training(self.summary, d_id, self.project_id)
+          end
+          notes << message
         end
         self.init_journal(User.current, notes.join("\n"))
         self.save!
@@ -259,14 +261,16 @@ module Lgdis
       # ==== Raise
       def register_issue_journal_reject(delivery_history)
         notes = []
+        message = ""
         delivery_name = (DST_LIST["delivery_place"][delivery_history.delivery_place_id]||{})["name"].to_s
         delivery_process_date = delivery_history.process_date.strftime("%Y/%m/%d %H:%M:%S")
         notes << "#{delivery_process_date}に、 #{delivery_name}配信要求を却下しました。"
         if DESCRIPTION_ID.include?(delivery_history.delivery_place_id)
-          notes << self.description
+          message = self.add_url_and_training(self.description, delivery_history.delivery_place_id, self.project_id)         
         else
-          notes << delivery_history.summary
+          message = self.add_url_and_training(delivery_history.summary, delivery_history.delivery_place_id, self.project_id)
         end
+        notes << message
         self.init_journal(delivery_history.respond_user, notes.join("\n"))
         self.save!
       end
@@ -304,7 +308,7 @@ module Lgdis
       # 配信内容文字列
       # ==== Raise
       def create_twitter_msg(delivery_history)
-        summary = self.add_url_and_training(delivery_history.summary, delivery_history.delivery_place_id, delivery_history.mail_subject, delivery_history.published_at, self.project_id)
+        summary = self.add_url_and_training(delivery_history.summary, delivery_history.delivery_place_id, self.project_id)
         return summary
       end
 
@@ -315,7 +319,7 @@ module Lgdis
       # 配信内容文字列
       # ==== Raise
       def create_facebook_msg(delivery_history)
-        summary = self.add_url_and_training(self.description, delivery_history.delivery_place_id, delivery_history.mail_subject, delivery_history.published_at, self.project_id)
+        summary = self.add_url_and_training(self.description, delivery_history.delivery_place_id, self.project_id)
         return summary
       end
 
@@ -329,7 +333,7 @@ module Lgdis
         summary = Hash.new
         # TODO:件名、本文が未決
         delivery_place_id = delivery_history.delivery_place_id
-        str = self.add_url_and_training(self.description, delivery_place_id, delivery_history.mail_subject, delivery_history.published_at, self.project_id)
+        str = self.add_url_and_training(self.description, delivery_place_id, self.project_id)
 
         raise "送信先アドレス設定がありません" unless to = DST_LIST['delivery_place'][delivery_place_id]['to']
         summary.store('mailing_list_name', to)
@@ -371,24 +375,10 @@ module Lgdis
       # ==== Return
       # 引数のコンテンツ文字列に災害訓練、URLを追加した文字列
       # ==== Raise
-      def add_url_and_training(contents, delivery_place_id, mail_subject, published_at, project_id)
+      def add_url_and_training(contents, delivery_place_id, project_id)
         # 災害訓練モード判定
-        add_message = ''
+        add_message = ""
         add_message = TRAINING_MESSAGE + "\n" if DST_LIST['training_prj'][project_id]
-        add_message = add_message + mail_subject
-        if DESCRIPTION_ID.include?(delivery_place_id)
-          add_message = add_message + "\n"
-        else
-          add_message = add_message + " "
-        end
-        if published_at.present?
-          add_message = add_message + published_at.strftime("%Y/%m/%d %H:%M:%S")
-          if DESCRIPTION_ID.include?(delivery_place_id)
-            add_message = add_message + "\n"
-          else
-            add_message = add_message + " "
-          end
-        end
         add_message = add_message + contents.to_s
         if DEPLOYED_MAIL_PLACE_IDS.include?(delivery_place_id)
           url = DST_LIST['lgdsf_url']
@@ -484,7 +474,8 @@ module Lgdis
           doc.elements["//commons:targetArea"].add_element("commons:jisX0402").add_text(area_code)
         end
 
-        doc.elements["//edxlde:contentDescription"].add_text(delivery_history.summary)
+        commons_summary = add_url_and_training(delivery_history.summary, delivery_place_id, self.project_id)
+        doc.elements["//edxlde:contentDescription"].add_text(commons_summary)
         if UGENT_MAIL_PLACE_IDS.include? delivery_place_id # 緊急速報メールの場合のみ
           doc.elements["//edxlde:contentDescription"].next_sibling = REXML::Element.new("edxlde:consumerRole")
           doc.elements["//edxlde:consumerRole"].add_element("edxlde:valueListUrn").add_text('publicCommons:media:urgentmail:carrier')
@@ -532,7 +523,7 @@ module Lgdis
         doc.elements["//pcx_ib:Head/commons:documentRevision"].add_text("#{edition_num}")
         doc.elements["//pcx_ib:Head/commons:previousDocumentRevision"].add_text("#{edition_num - 1}")
         doc.elements["//pcx_ib:Head/commons:documentID"].add_text(edition_fields_map['uuid'])
-        doc.elements["//pcx_ib:Text"].add_text(delivery_history.summary)
+        doc.elements["//pcx_ib:Text"].add_text(commons_summary)
         doc.elements["//pcx_ib:Areas/pcx_ib:Area/commons:areaName"].add_text(DST_LIST['commons_xml_field']['area_name'])
 
         # Body 部
@@ -630,6 +621,7 @@ module Lgdis
       # ==== Raise
       def create_commons_event_body
         title  = DST_LIST['tracker_title'][self.tracker_id]
+        commons_description = self.add_url_and_training(self.description, 1, self.project_id)
         doc =  REXML::Document.new
         doc.add_element("pcx_gi:GeneralInformation") # root
 
@@ -639,7 +631,7 @@ module Lgdis
         doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:Category").add_text("#{DST_LIST["tracker_grouping"][self.tracker_id][0]}")
         doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:SubCategory").add_text("#{DST_LIST["tracker_grouping"][self.tracker_id][1]}")
         doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:Title").add_text(I18n.t('target_municipality') + ' ' + self.project.name + ' ' + title)
-        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:Description").add_text("#{self.description}")
+        doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:Description").add_text(commons_description)
         doc.elements["//pcx_gi:GeneralInformation"].add_element("pcx_gi:URL").add_text(
             "#{self.name_in_custom_field_value(DST_LIST['custom_field_delivery']['related_url'])}"
             ) if self.name_in_custom_field_value(DST_LIST['custom_field_delivery']['related_url']).present?
@@ -688,8 +680,7 @@ module Lgdis
       # _doc_ :: REXML::Document 文字列
       # ==== Raise
       def create_commons_area_mail_body(delivery_history)
-        summary = self.add_url_and_training(delivery_history.summary, delivery_history.delivery_place_id,
-                                            delivery_history.mail_subject, delivery_history.published_at, self.project_id)
+        summary = self.add_url_and_training(delivery_history.summary, delivery_history.delivery_place_id, self.project_id)
         doc =  REXML::Document.new
         doc.add_element("pcx_um:UrgentMail") # root
         doc.elements["//pcx_um:UrgentMail"].add_element("pcx_um:Information")
