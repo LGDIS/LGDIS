@@ -52,8 +52,6 @@ smtp_server: # SMTPサーバー
     mta_fqdn:   localhost
     port:       25
     domain:     localdomain
-    user_name:  apl
-    password:   JBC03142
     charset:    utf-8
 
 # 外部配信先設定値

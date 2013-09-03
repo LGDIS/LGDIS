@@ -294,5 +294,9 @@ class DeliveryHistory < ActiveRecord::Base
     if self.opened_at.blank?
       errors.add(:opened_at, "を入力して下さい")
     end
+
+    if self.closed_at.present? && (self.closed_at < self.opened_at)
+      errors.add(:closed_at, "には、情報の公開開始日時より後の日付を設定して下さい")
+    end
   end
 end
