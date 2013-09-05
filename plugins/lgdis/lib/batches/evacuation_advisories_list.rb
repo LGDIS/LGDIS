@@ -9,7 +9,10 @@ require 'cgi'
 include ApplicationHelper
 
 ATOM = 9 # RSS配信(Atom)のdelivery_place_id
+TRAINING_MESSAGE = "【災害訓練】"
+
 class Batches::EvacuationAdvisoriesList
+
   def self.execute
 
     Rails.logger.info(" #{Time.now.to_s} ===== #{self.name} START ===== ")
@@ -181,7 +184,7 @@ class Batches::EvacuationAdvisoriesList
         # XML main entry
         new_entry = REXML::Element.new("entry")
 
-        training_header = DST_LIST["training_prj"][issues[0].project_id] ? "【災害訓練】" : ""
+        training_header = DST_LIST["training_prj"][issues[0].project_id] ? TRAINING_MESSAGE : ""
 
         new_entry.add_element("title").add_text(training_header + "#{row[0]}")
         new_entry.add_element("id").add_text("#{issues[0].id}-#{time.strftime("%Y%m%d%H%M%S")}") # TODO 暫定でチケットID-YYYYMMDDHH24MISS
@@ -190,21 +193,24 @@ class Batches::EvacuationAdvisoriesList
         #content 追加開始
         content = ""
 
-        # 0 あり　避難所名
-        #8 あり　避難所種別
-        #2 あり　地区名
-        #4 あり　TEL
-        #10 あり　開設状況
-        #11 あり　開設日時
-        #12 あり　閉鎖日時
-        #13 あり　最大収容人数
-        #15 あり　収容人数
+        #0 あり　対象地区
+        #2 あり　発令区分
+        #3 あり  発令日時
+        #4 あり　解除日時
+        #5 あり　対象世帯人数
+        #6 あり　対象人数
+        #7 あり　発令・解除区分
 
-        row_order = [0,2,3,4,5,6,7]
+        row_order = [0,2,3,4,5,6]
         row_order.each do |order|
           #xml では &nbsp; は認識されないので文字コードを直接入力（＆#x00A0;）
-          content += '&lt;p&gt;' + header[order] + ':' + row[order] + '&lt;/p&gt;&lt;br&#x00A0;/&gt;'
+          work_content = row[order]
+          # 発令区分は、発令・解除の区分も加える。
+          work_content = work_content + " " + row[7] if order == 2
+          content += '&lt;p&gt;' + header[order] + ':' + work_content + '&lt;/p&gt;&lt;br&#x00A0;/&gt;'
         end
+
+        content = TRAINING_MESSAGE + "&lt;br /&gt;" + content if DST_LIST["training_prj"][issues[0].project_id]
 
         ele_content = new_entry.add_element("content")
         ele_content.add_attribute("type","html")

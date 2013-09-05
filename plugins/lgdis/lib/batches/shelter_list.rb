@@ -9,7 +9,10 @@ require 'cgi'
 include ApplicationHelper
 
 ATOM = 9 # RSS配信(Atom)のdelivery_place_id
+TRAINING_MESSAGE = "【災害訓練】"
+
 class Batches::ShelterList
+
   def self.execute
 
     Rails.logger.info(" #{Time.now.to_s} ===== #{self.name} START ===== ")
@@ -169,7 +172,7 @@ class Batches::ShelterList
         new_entry = REXML::Element.new("entry")
 
         # 避難所名
-        training_header = DST_LIST["training_prj"][issues[0].project_id] ? "【災害訓練】" : ""
+        training_header = DST_LIST["training_prj"][issues[0].project_id] ? TRAINING_MESSAGE : ""
 
         new_entry.add_element("title").add_text(training_header + "#{row[0]}")
         new_entry.add_element("id").add_text("#{issues[0].id}-#{time.strftime("%Y%m%d%H%M%S")}") # TODO 暫定でチケットID-YYYYMMDDHH24MISS
@@ -194,6 +197,7 @@ class Batches::ShelterList
           content += '&lt;p&gt;' + header[order] + ':' + row[order] + '&lt;/p&gt;&lt;br&#x00A0;/&gt;'
         end
 
+        content = TRAINING_MESSAGE + "&lt;br /&gt;" + content if DST_LIST["training_prj"][issues[0].project_id]
         ele_content = new_entry.add_element("content")
         ele_content.add_attribute("type","html")
         ele_content.add_text(content)

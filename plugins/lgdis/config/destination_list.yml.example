@@ -279,14 +279,22 @@ destination:
       *delivery_place_group_all
     21: # 【広報-交通】道路渋滞に関する情報
       *delivery_place_group_all
+    22: # 道路交通事故に関する情報
+      *delivery_place_group_deployed_mail
+    23: # 路上故障車に関する情報
+      *delivery_place_group_deployed_mail
+    24: # 路上障害物に関する情報
+      *delivery_place_group_deployed_mail
     25: # 【道路-交通】道路工事に関する情報
       *delivery_place_group_all
+    26: # 道路火災に関する情報
+      *delivery_place_group_deployed_mail
     27: # 【道路-交通】道路路面状況に関する情報
       *delivery_place_group_all
     28: # 被災者からの要望（生活全般）
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     29: # 被災者からの要望（物資・資材）
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     33: # 【被害報告】非住家建物
       *delivery_place_group_report
     34: # 【被害報告】高等学校
@@ -316,7 +324,7 @@ destination:
     46: # 【広報-ライフライン】通信網に関する情報
       *delivery_place_group_all
     48: # その他の災害関連情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     50: # 【広報-ライフライン】電気に関する情報
       *delivery_place_group_all
     51: # 【広報-ライフライン】臨時災害放送に関する情報
@@ -352,15 +360,15 @@ destination:
     66: # 【広報-生活情報】営業店舗に関する情報
       *delivery_place_group_all
     67: # 火災・救急・救助の要請
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     68: # 海上に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     69: # 河川に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     70: # 広域圏災害に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     71: # 被災者からの要望（食料）
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     72: # 【広報-交通】バスの運行に関する情報
       *delivery_place_group_all
     73: # 【広報-交通】航空路の運行に関する情報
@@ -415,21 +423,21 @@ destination:
     21: # 【広報-交通】道路渋滞に関する情報
       *delivery_place_group_all
     22: # 道路交通事故に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     23: # 路上故障車に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     24: # 路上障害物に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     25: # 【道路-交通】道路工事に関する情報
       *delivery_place_group_all
     26: # 道路火災に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     27: # 【道路-交通】道路路面状況に関する情報
       *delivery_place_group_all
     28: # 被災者からの要望（生活全般）
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     29: # 被災者からの要望（物資・資材）
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     33: # 【被害報告】非住家建物
       *delivery_place_group_report
     34: # 【被害報告】高等学校
@@ -459,7 +467,7 @@ destination:
     46: # 【広報-ライフライン】通信網に関する情報
       *delivery_place_group_all
     48: # その他の災害関連情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     50: # 【広報-ライフライン】電気に関する情報
       *delivery_place_group_all
     51: # 【広報-ライフライン】臨時災害放送に関する情報
@@ -495,15 +503,15 @@ destination:
     66: # 【広報-生活情報】営業店舗に関する情報
       *delivery_place_group_all
     67: # 火災・救急・救助の要請
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     68: # 海上に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     69: # 河川に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     70: # 広域圏災害に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     71: # 被災者からの要望（食料）
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     72: # 【広報-交通】バスの運行に関する情報
       *delivery_place_group_all
     73: # 【広報-交通】航空路の運行に関する情報
@@ -560,21 +568,21 @@ destination:
     21: # 【広報-交通】道路渋滞に関する情報
       *delivery_place_group_all
     22: # 道路交通事故に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     23: # 路上故障車に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     24: # 路上障害物に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     25: # 【道路-交通】道路工事に関する情報
       *delivery_place_group_all
     26: # 道路火災に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     27: # 【道路-交通】道路路面状況に関する情報
       *delivery_place_group_all
     28: # 被災者からの要望（生活全般）
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     29: # 被災者からの要望（物資・資材）
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     33: # 【被害報告】非住家建物
       *delivery_place_group_report
     34: # 【被害報告】高等学校
@@ -604,7 +612,7 @@ destination:
     46: # 【広報-ライフライン】通信網に関する情報
       *delivery_place_group_all
     48: # その他の災害関連情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     50: # 【広報-ライフライン】電気に関する情報
       *delivery_place_group_all
     51: # 【広報-ライフライン】臨時災害放送に関する情報
@@ -640,15 +648,15 @@ destination:
     66: # 【広報-生活情報】営業店舗に関する情報
       *delivery_place_group_all
     67: # 火災・救急・救助の要請
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     68: # 海上に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     69: # 河川に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     70: # 広域圏災害に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     71: # 被災者からの要望（食料）
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     72: # 【広報-交通】バスの運行に関する情報
       *delivery_place_group_all
     73: # 【広報-交通】航空路の運行に関する情報
@@ -705,21 +713,21 @@ destination:
     21: # 【広報-交通】道路渋滞に関する情報
       *delivery_place_group_all
     22: # 道路交通事故に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     23: # 路上故障車に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     24: # 路上障害物に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     25: # 【道路-交通】道路工事に関する情報
       *delivery_place_group_all
     26: # 道路火災に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     27: # 【道路-交通】道路路面状況に関する情報
       *delivery_place_group_all
     28: # 被災者からの要望（生活全般）
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     29: # 被災者からの要望（物資・資材）
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     33: # 【被害報告】非住家建物
       *delivery_place_group_report
     34: # 【被害報告】高等学校
@@ -749,7 +757,7 @@ destination:
     46: # 【広報-ライフライン】通信網に関する情報
       *delivery_place_group_all
     48: # その他の災害関連情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     50: # 【広報-ライフライン】電気に関する情報
       *delivery_place_group_all
     51: # 【広報-ライフライン】臨時災害放送に関する情報
@@ -785,15 +793,15 @@ destination:
     66: # 【広報-生活情報】営業店舗に関する情報
       *delivery_place_group_all
     67: # 火災・救急・救助の要請
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     68: # 海上に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     69: # 河川に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     70: # 広域圏災害に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     71: # 被災者からの要望（食料）
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     72: # 【広報-交通】バスの運行に関する情報
       *delivery_place_group_all
     73: # 【広報-交通】航空路の運行に関する情報
@@ -850,21 +858,21 @@ destination:
     21: # 【広報-交通】道路渋滞に関する情報
       *delivery_place_group_all
     22: # 道路交通事故に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     23: # 路上故障車に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     24: # 路上障害物に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     25: # 【道路-交通】道路工事に関する情報
       *delivery_place_group_all
     26: # 道路火災に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     27: # 【道路-交通】道路路面状況に関する情報
       *delivery_place_group_all
     28: # 被災者からの要望（生活全般）
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     29: # 被災者からの要望（物資・資材）
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     33: # 【被害報告】非住家建物
       *delivery_place_group_report
     34: # 【被害報告】高等学校
@@ -894,7 +902,7 @@ destination:
     46: # 【広報-ライフライン】通信網に関する情報
       *delivery_place_group_all
     48: # その他の災害関連情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     50: # 【広報-ライフライン】電気に関する情報
       *delivery_place_group_all
     51: # 【広報-ライフライン】臨時災害放送に関する情報
@@ -930,15 +938,15 @@ destination:
     66: # 【広報-生活情報】営業店舗に関する情報
       *delivery_place_group_all
     67: # 火災・救急・救助の要請
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     68: # 海上に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     69: # 河川に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     70: # 広域圏災害に関する情報
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     71: # 被災者からの要望（食料）
-      *delivery_place_group_report
+      *delivery_place_group_deployed_mail
     72: # 【広報-交通】バスの運行に関する情報
       *delivery_place_group_all
     73: # 【広報-交通】航空路の運行に関する情報
