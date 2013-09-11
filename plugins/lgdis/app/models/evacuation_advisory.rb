@@ -103,6 +103,7 @@ class EvacuationAdvisory < ActiveRecord::Base
   ISSUEORLIFT_LIFT  = "0" # 解除
   # 避難勧告指示トラッカーID
   TRACKER_EVACUATION = 1
+  SUBJECT_TITLE = "避難勧告・指示情報"
 
   validates :issued_at, :presence => true, :if => "self.issueorlift == '#{ISSUEORLIFT_ISSUE}'"
   validates :lifted_at, :presence => true, :if => Proc.new {|evacuation_advisory| evacuation_advisory.issueorlift == ISSUEORLIFT_LIFT && evacuation_advisory.current_sort_criteria == SORT_ISSUE_NONE}
@@ -205,7 +206,7 @@ class EvacuationAdvisory < ActiveRecord::Base
     issue = Issue.new
     issue.tracker_id = 30
     issue.project_id = project.id
-    issue.subject    = "避難勧告･指示 #{Time.now.strftime("%Y/%m/%d %H:%M:%S")}"
+    issue.subject    = SUBJECT_TITLE + " #{Time.now.strftime("%Y/%m/%d %H:%M:%S")}"
     issue.author_id  = User.current.id
     issue.xml_body   = doc.to_s
     issue.save!
@@ -353,15 +354,16 @@ class EvacuationAdvisory < ActiveRecord::Base
     issue = Issue.new
     issue.tracker_id = TRACKER_EVACUATION
     issue.project_id = project.id
-    issue.subject    = "避難勧告･指示 #{Time.now.strftime("%Y/%m/%d %H:%M:%S")}"
+    issue.subject    = SUBJECT_TITLE + " #{Time.now.strftime("%Y/%m/%d %H:%M:%S")}"
+    issue.mail_subject = SUBJECT_TITLE
     issue.author_id  = User.current.id
     fmtdoc = "\n" + doc.to_s.gsub(/></,">\n<").gsub("<pcx_ev:De","\n\n<pcx_ev:De")
       fmtdoc = fmtdoc.gsub("<commons:areaName>","\n<commons:areaName>")
     issue.xml_body   = fmtdoc
     # チケットにcsvファイルを添付する
-    tf = create_csv(EvacuationAdvisory.mode_in(project).order(:identifier), "避難勧告･指示",
+    tf = create_csv(EvacuationAdvisory.mode_in(project).order(:identifier), SUBJECT_TITLE,
         [:area,:area_kana,:sort_criteria,:issued_at,:lifted_at,:households,:head_count,:issueorlift])
-    issue.save_attachments(["file"=> tf, "description" => "全ての避難勧告･指示CSVファイル ※チケット作成時点"])
+    issue.save_attachments(["file"=> tf, "description" => "全ての" + SUBJECT_TITLE + "CSVファイル ※チケット作成時点"])
     # 一時ファイルの削除
     tf.close(true)
     issue.description = l(:summary_evacuation_advisory) + "\n\n" + options[:description]

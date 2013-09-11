@@ -199,8 +199,8 @@ ja:
     field_disaster_code: 災害コード
     field_sort_criteria: 発令区分
     field_issueorlift: 発令・解除区分
-    field_area: 発令・解除地区名称
-    field_area_kana: 発令・解除地区名称かな
+    field_area: 対象地域
+    field_area_kana: 対象地域（かな）
     field_district: 発令・解除地区名称（大域）
     field_section: 発令・解除地区名称（中域）
     field_households: 対象世帯数
@@ -227,7 +227,7 @@ ja:
     field_evacuation_steps_by_authorities: 住民の避難に関して関係機関が講ずべき措置の概要
 
     field_remarks: 備考
-    field_disaster_overview: 災害概要
+    field_disaster_overview: 災害の概要
     field_current_sort_criteria: 発令区分
 
     field_issued_at: 発令日時

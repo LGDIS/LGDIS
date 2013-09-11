@@ -348,7 +348,8 @@ class DisasterDamage < ActiveRecord::Base
     issue = Issue.new
     issue.tracker_id = 17
     issue.project_id = project.id
-    issue.subject    = "災害概況即報 #{Time.now.strftime("%Y/%m/%d %H:%M:%S")}"
+    issue.subject    = "被害要約（概況） #{Time.now.strftime("%Y/%m/%d %H:%M:%S")}"
+    issue.mail_subject    = "被害要約（概況）"
     issue.author_id  = User.current.id
     issue.xml_body   = doc.to_s
     issue.save!
@@ -769,7 +770,8 @@ class DisasterDamage < ActiveRecord::Base
     issue = Issue.new
     issue.tracker_id = 18
     issue.project_id = project.id
-    issue.subject    = "被害情報 #{Time.now.strftime("%Y/%m/%d %H:%M:%S")}"
+    issue.subject    = "被害要約（状況） #{Time.now.strftime("%Y/%m/%d %H:%M:%S")}"
+    issue.mail_subject    = "被害要約（状況）"
     issue.author_id  = User.current.id
     issue.xml_body   = doc.to_s
     issue.save!
@@ -817,6 +819,7 @@ class DisasterDamage < ActiveRecord::Base
     issue.tracker_id = 16
     issue.project_id = project.id
     issue.subject    = "災害対策本部設置状況 #{Time.now.strftime("%Y/%m/%d %H:%M:%S")}"
+    issue.mail_subject    = "災害対策本部設置状況"
     issue.author_id  = User.current.id
     issue.xml_body   = doc.to_s
     issue.save!

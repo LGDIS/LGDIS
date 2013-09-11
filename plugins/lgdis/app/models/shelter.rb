@@ -30,6 +30,8 @@ class Shelter < ActiveRecord::Base
 
   # コンスタント存在チェック用
   CONST = Constant::hash_for_table(self.table_name).freeze
+  # チケットタイトル
+  SUBJECT_TITLE = "避難所開設・閉鎖情報"
 
   acts_as_paranoid
   validates_as_paranoid
@@ -256,7 +258,7 @@ class Shelter < ActiveRecord::Base
     issue = Issue.new
     issue.tracker_id = 31
     issue.project_id = project.id
-    issue.subject    = "避難所情報 #{Time.now.strftime("%Y/%m/%d %H:%M:%S")}"
+    issue.subject    = SUBJECT_TITLE + " #{Time.now.strftime("%Y/%m/%d %H:%M:%S")}"
     issue.author_id  = User.current.id
     issue.xml_body   = doc.to_s
     issue.save!
@@ -401,13 +403,14 @@ class Shelter < ActiveRecord::Base
     issue = Issue.new
     issue.tracker_id = 2
     issue.project_id = project.id
-    issue.subject    = "避難所情報 #{Time.now.strftime("%Y/%m/%d %H:%M:%S")}"
+    issue.subject    = SUBJECT_TITLE + " #{Time.now.strftime("%Y/%m/%d %H:%M:%S")}"
+    issue.mail_subject = SUBJECT_TITLE
     issue.author_id  = User.current.id
     issue.xml_body   = doc.to_s
     # チケットにcsvファイルを添付する
 #    tf = create_csv(@shelters, "避難所情報", [:name,:name_kana,:area,:address,:phone,:fax,:e_mail,:person_responsible,
 #      :shelter_type,:shelter_type_detail,:shelter_sort,:opened_at,:closed_at,:capacity,:status,:head_count]) do |key, value|
-    tf = create_csv(@shelters, "避難所情報", [:name,:name_kana,:area,:address,:phone,:fax,:e_mail,:person_responsible,
+    tf = create_csv(@shelters, SUBJECT_TITLE, [:name,:name_kana,:area,:address,:phone,:fax,:e_mail,:person_responsible,
       :shelter_type,:shelter_type_detail,:shelter_sort,:opened_at,:closed_at,:capacity,:status,:head_count,:updated_by,:updated_at,:manager_name]) do |key, value|
       if key == "area"
         Area.all.select{|v| v.area_code == value}.first.try(:name)
@@ -415,7 +418,7 @@ class Shelter < ActiveRecord::Base
         value
       end
     end
-    issue.save_attachments(["file"=> tf, "description" => "全ての避難所情報CSVファイル ※チケット作成時点"])
+    issue.save_attachments(["file"=> tf, "description" => "全ての" + SUBJECT_TITLE + "CSVファイル ※チケット作成時点"])
     # 一時ファイルの削除
     tf.close(true)
 

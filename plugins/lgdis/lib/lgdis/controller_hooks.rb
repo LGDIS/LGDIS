@@ -91,7 +91,7 @@ module Lgdis
       # プロジェクト識別子は、自動採番
       new_project.save!
       # 作成したプロジェクトにチケットをコピー
-      issue.copy(project: new_project).save!
+      # issue.copy(project: new_project).save!
     end
 
     # プロジェクト名を生成

@@ -30,6 +30,7 @@ class DeliveryHistory < ActiveRecord::Base
   U_MAIL_DCM_ID = 10
   U_MAIL_SB_ID  = 11
   U_MAIL_AU_ID  = 12
+  DESCRIPTION_ID = [2, 3, 4, 5, 6, 8, 9]
   SMTP_ID = DST_LIST['delivery_place_group_deployed_mail'].map{|o| o["id"]}
   U_MAIL_ID = DST_LIST['delivery_place_group_urgent_mail'].map{|o| o["id"]}
   COMMONS_ALL_ID = DST_LIST['delivery_place_group_commons'].map{|o| o["id"]}
@@ -80,7 +81,7 @@ class DeliveryHistory < ActiveRecord::Base
         :request_user_id   => User.current.id,
         :status            => 'request',
         :process_date      => Time.now,
-        :mail_subject      => issue[:mail_subject],
+        :mail_subject      => (DESCRIPTION_ID.include?(e.to_i) ? issue[:subject] : issue[:mail_subject]),
         :summary           => issue[:summary],
         :type_update       => issue[:type_update],
         :description_cancel=> issue[:description_cancel],
