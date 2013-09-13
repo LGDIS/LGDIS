@@ -11,7 +11,7 @@
       var zmap_loupe  = '<%= ZNETTOWN["loupemode"] %>';
       var zmap_submap = '<%= ZNETTOWN["submapmode"] %>';
     <% end %>
-    <%= javascript_include_tag "http://lab.zapi.znet-town.net/znettown/api/loadapi.php?mobile=0&enc=utf8&cnt=1" %>
+    <%= javascript_include_tag ZNETTOWN["uri_host"] + "/znettown/api/loadapi.php?mobile=0&enc=utf8&cnt=1" %>
     <%= javascript_include_tag "zmap", :plugin => "lgdis" %>
   <% end %>
   <%= javascript_tag do %>
