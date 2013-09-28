@@ -210,8 +210,8 @@ class Batches::LinkDisasterPortal
       new_entry.add_element("title").add_text(training_header + "#{dh.mail_subject}")
 
       new_entry.add_element("id").add_text("#{issue.id}-#{time.strftime("%Y%m%d%H%M%S")}") # TODO 暫定でチケットID-YYYYMMDDHH24MISS
-      new_entry.add_element("published").add_text(dh.opened_at.xmlschema)
-      new_entry.add_element("updated").add_text(dh.opened_at.xmlschema)
+      new_entry.add_element("published").add_text(dh.published_at.xmlschema)
+      new_entry.add_element("updated").add_text(dh.published_at.xmlschema)
 
       content = ""
       DST_LIST["link_disaster_portal_tracker_group"][tracker_id].each do | label_value |
