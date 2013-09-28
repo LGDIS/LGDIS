@@ -1338,7 +1338,7 @@ atom:
 
 # 要約文設定用本文掲載URL，ハッシュタグ
 disaster_portal_url: "http://www.jice.or.jp/sinsai/sinsai_result.php"
-hashtag: "# ××市"
+hashtag: "#××市"
 
 # *号配備メールに添付するLGDSF URL 設定
 lgdsf_url: "下記リンクより、位置情報、参集場所の報告を行ってください。\n http://XXX.XXX.XXX.XXX/staffs/send/"
@@ -1363,7 +1363,6 @@ custom_field_list:
 # 災害情報ポータル連携バッチ処理
 # 対象外プロジェクトID
 link_disaster_portal_reject_project_ids:
-#  - 2
   - 3
 
 # 災害情報ポータル連携バッチ処理
@@ -1762,22 +1761,13 @@ link_disaster_portal_tracker_ids:
 link_disaster_portal_group:
   group_01: &grp01
     -
-      label: "情報の見出し要約文"
-      value: "issue.summary"
-    -
       label: "説明"
       value: "issue.description"
   group_02: &grp02
     -
-      label: "情報の見出し要約文"
-      value: "issue.summary"
-    -
       label: "説明"
       value: "issue.description"
   group_09: &grp09
-    -
-      label: "情報の見出し要約文"
-      value: "issue.summary"
     -
       label: "説明"
       value: "issue.description"
