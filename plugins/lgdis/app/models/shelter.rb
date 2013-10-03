@@ -309,7 +309,8 @@ class Shelter < ActiveRecord::Base
     node_informations = node_shelter.add_element("pcx_sh:Informations")
 
     # 避難所を取得しXMLを生成する
-    @shelters = Shelter.mode_in(project).order(:shelter_code)
+    # 地区，開設状況（常設，開設，未開設，閉鎖，不明）の順に出力する（ポータル用）。
+    @shelters = Shelter.mode_in(project).order("area, CASE shelter_sort WHEN '4' THEN 0 WHEN '3' THEN 1 ELSE TO_NUMBER(shelter_sort, '99') + 2 END DESC, shelter_code")
     @shelters.each do |shelter|
       node_information = node_informations.add_element("pcx_sh:Information")
 
@@ -395,8 +396,6 @@ class Shelter < ActiveRecord::Base
 
       # 避難所状況確認日時
       node_information.add_element("pcx_sh:CheckedDateTime").add_text("#{shelter.checked_at.xmlschema}") if shelter.checked_at.present?
-
-
 
     end
 

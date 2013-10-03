@@ -27,6 +27,8 @@ module Lgdis
 
     module InstanceMethods
 
+      SYSTEM_TRACKER_ID = [1, 2, 16, 18]
+
       # 外部配信要求処理(手動配信)
       # 外部配信要求受付け処理を行います
       # ==== Args
@@ -236,6 +238,16 @@ module Lgdis
             else
               @destination_list = list
             end
+          end
+          # 新規登録画面で【システム】トラッカーのチケットを登録した場合、公共コモンズとRSSの配信先を除外する。
+          if SYSTEM_TRACKER_ID.include?(@issue.tracker_id) && @issue.xml_body.blank? && @destination_list.present?
+            removelist = []
+            @destination_list.each do |map|
+              unless (map["id"] == 1 || map["id"] == 9)
+                removelist.push map 
+              end
+            end
+            @destination_list = removelist
           end
         rescue => e
           # TODO

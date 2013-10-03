@@ -42,59 +42,35 @@ class Batches::EvacuationAdvisoriesList
     reject_project_ids =DST_LIST["link_disaster_portal_reject_project_ids"] # 対象外プロジェクトID
 
     if DST_LIST["link_disaster_portal_tracker_group"][tracker_id].blank? # 出力項目定義が取得できない場合はスキップ
+      Rails.logger.info("#{Time.now.to_s} 設定ファイル(destinationlist.yml)に、ATOM出力項目が定義されていません")
       return
     end
 
-    # 対象トラッカーのチケット取得
-    issues = Issue.where({:tracker_id => tracker_id}).where("project_id not in (?)", reject_project_ids).order("updated_on DESC")
+    # 配信除外プロジェクトのチケット取得
+    issues_reject_project = Issue.where({:tracker_id => tracker_id}).where("project_id in (?)", reject_project_ids).where("id IN (SELECT issue_id FROM delivery_histories WHERE delivery_place_id = #{ATOM} AND (status = 'done' OR status = 'reserve') AND opened_at <= CURRENT_TIMESTAMP AND ((closed_at IS NOT NULL AND closed_at >= CURRENT_TIMESTAMP) OR (closed_at IS NULL AND opened_at + interval '#{limit_days} days' >= CURRENT_TIMESTAMP)))").order("CASE WHEN closed_at IS NULL THEN opened_at + interval '#{limit_days} days' ELSE closed_at END DESC, opened_at DESC")
 
-    # 出力対象の条件にあてはまらないチケットを削除
-    issues.delete_if do |issue|
-
-      # 配信管理を取得 配信先がATOM、公開開始日時が現在日時より過去XX日以内(XXは設定ファイルに記述)の中で最新のもの
-      dh = issue.delivery_histories.where(:delivery_place_id => ATOM).order("updated_at DESC").find(:all, :conditions => ["opened_at > CURRENT_TIMESTAMP - interval '#{limit_days} days'"]).first
-      next true if dh.blank? # 配信管理が無かった場合、配信対象なし
-
-      # 以下の条件以外の場合は配信しない
-      # 配信ステータスが完了または予定、かつ公開開始に至っていて、かつ公開終了日時が空白または公開終了日時に至っていない
-      unless (dh.status == "done" || dh.status == "reserve") && (time > dh.opened_at && (dh.closed_at.blank? || time < dh.closed_at))
-        next true
-      end
-      false
-    end
-
-    # 通信試験モードの対象トラッカーのチケット取得
-    issues_reject_project = Issue.where({:tracker_id => tracker_id}).where("project_id in (?)", reject_project_ids).order("updated_on DESC")
-
-    issues_reject_project.delete_if do |issue|
-      dh = issue.delivery_histories.where(:delivery_place_id => ATOM).order("updated_at DESC").find(:all, :conditions => ["opened_at > CURRENT_TIMESTAMP - interval '#{limit_days} days'"]).first
-      next true if dh.blank? # 配信管理が無かった場合、配信対象なし
-
-      unless (dh.status == "done" || dh.status == "reserve") && (time > dh.opened_at && (dh.closed_at.blank? || time < dh.closed_at))
-        next true
-      end
-      false
-    end
-
-    # 通信試験モードの配信管理更新
-    unless issues_reject_project.blank?
+    # 通信モードの配信管理更新
+    issues_reject_project.each do | issue |
       # 配信管理取得
-      dh = issues_reject_project[0].delivery_histories.where(:delivery_place_id => ATOM).order("updated_at DESC").find(:all, :conditions => ["opened_at > CURRENT_TIMESTAMP - interval '#{limit_days} days'"]).first
-
+      dh = issue.delivery_histories.where(:delivery_place_id => ATOM).where(["status = ? OR status = ?", "done", "reserve"]).where("opened_at <= CURRENT_TIMESTAMP").where("(closed_at IS NOT NULL AND closed_at >= CURRENT_TIMESTAMP) OR (closed_at IS NULL AND opened_at + interval '#{limit_days} days' >= CURRENT_TIMESTAMP)").order("CASE WHEN closed_at IS NULL THEN opened_at + interval '#{limit_days} days' ELSE closed_at END DESC, opened_at DESC").first
       # 配信管理更新、チケット履歴出力
       if dh.status == "reserve"
         begin
           dh.status = "done"
           dh.process_date = Time.now
-          dh.respond_user_id = 1
-          dh.save!
-          this_register_issue_journal_rss_deliver(dh,issues_reject_project[0])
-        rescue =>e
+          dh.respond_user_id = 1 if dh.respond_user_id.blank?
+          this_register_issue_journal_rss_deliver(dh, issue)
+        rescue => e
           Rails.logger.info(e.message)
         end
       end
-
     end
+    
+    # 対象トラッカーのチケット取得
+    # 配信ステータスが配信予定又は配信完了、かつ、公開開始日時が現在時刻を過ぎていること、
+    # かつ、公開終了日時が設定されている場合は、公開終了日時が現在時刻を過ぎていないこと。公開終了日時が設定されていない場合は、公開開始日時に設定ファイルの配信完了期間（日）を足した日付が現在日付を過ぎていないこと。
+    # 避難勧告指示は、原則として避難勧告指示タブでその内容を修正し、配信後にチケットの項目を修正することはないため、最後に更新したデータを取得する。
+    issues = Issue.where({:tracker_id => tracker_id}).where("project_id not in (?)", reject_project_ids).where("id IN (SELECT issue_id FROM delivery_histories WHERE delivery_place_id = #{ATOM} AND (status = 'done' OR status = 'reserve') AND opened_at <= CURRENT_TIMESTAMP AND ((closed_at IS NOT NULL AND closed_at >= CURRENT_TIMESTAMP) OR (closed_at IS NULL AND opened_at + interval '#{limit_days} days' >= CURRENT_TIMESTAMP)))").order("updated_on DESC").first
 
     # テンプレートの読み込み
     file = File.new("#{Rails.root}/plugins/lgdis/files/xml/atom_with_georss.xml")
@@ -112,7 +88,28 @@ class Batches::EvacuationAdvisoriesList
     feed.elements["id"].text = "#{tracker_id}-#{time.strftime("%Y%m%d%H%M%S")}" # TODO 暫定でトラッカーID-YYYYMMDDHH24MISS
 
     unless issues.blank?
-      csvArray = getAttachedCsvArray(issues[0])
+      csvArray = getAttachedCsvArray(issues)
+
+      # 配信管理取得
+      dh = issues.delivery_histories.where(:delivery_place_id => ATOM).where(["status = ? OR status = ?", "done", "reserve"]).where("opened_at <= CURRENT_TIMESTAMP").where("(closed_at IS NOT NULL AND closed_at >= CURRENT_TIMESTAMP) OR (closed_at IS NULL AND opened_at + interval '#{limit_days} days' >= CURRENT_TIMESTAMP)").order("CASE WHEN closed_at IS NULL THEN opened_at + interval '#{limit_days} days' ELSE closed_at END DESC, opened_at DESC").first
+      # 配信管理更新、チケット履歴出力
+      if dh.status == "reserve"
+        begin
+          if csvArray.nil?
+            dh.status = "failed"
+          else
+            dh.status = "done"
+          end
+          dh.process_date = Time.now
+          dh.respond_user_id = 1 if dh.respond_user_id.blank?
+          dh.save!
+          this_register_issue_journal_rss_deliver(dh, issues)
+        rescue => e
+          Rails.logger.info(e.message)
+        end
+      end
+
+      return if csvArray.nil?
 
       header = csvArray.take(1)[0]
 
@@ -165,31 +162,15 @@ class Batches::EvacuationAdvisoriesList
       csvArray = output
 
       csvArray.each do |row|
-
-        dh = issues[0].delivery_histories.where(:delivery_place_id => ATOM).order("updated_at DESC").find(:all, :conditions => ["opened_at > CURRENT_TIMESTAMP - interval '#{limit_days} days'"]).first
-
-        # 配信管理更新、チケット履歴出力
-        if dh.status == "reserve"
-          begin
-            dh.status = "done"
-            dh.process_date = Time.now
-            dh.respond_user_id = 1
-            dh.save!
-            this_register_issue_journal_rss_deliver(dh,issues[0])
-          rescue =>e
-            Rails.logger.info(e.message)
-          end
-        end
-
         # XML main entry
         new_entry = REXML::Element.new("entry")
 
-        training_header = DST_LIST["training_prj"][issues[0].project_id] ? TRAINING_MESSAGE : ""
+        training_header = DST_LIST["training_prj"][issues.project_id] ? TRAINING_MESSAGE : ""
 
         new_entry.add_element("title").add_text(training_header + "#{row[0]}")
-        new_entry.add_element("id").add_text("#{issues[0].id}-#{time.strftime("%Y%m%d%H%M%S")}") # TODO 暫定でチケットID-YYYYMMDDHH24MISS
-        new_entry.add_element("published").add_text(dh.opened_at.xmlschema)
-        new_entry.add_element("updated").add_text(dh.opened_at.xmlschema)
+        new_entry.add_element("id").add_text("#{issues.id}-#{time.strftime("%Y%m%d%H%M%S")}") # TODO 暫定でチケットID-YYYYMMDDHH24MISS
+        new_entry.add_element("published").add_text(dh.published_at.xmlschema)
+        new_entry.add_element("updated").add_text(dh.published_at.xmlschema)
         #content 追加開始
         content = ""
 
@@ -210,7 +191,7 @@ class Batches::EvacuationAdvisoriesList
           content += '&lt;p&gt;' + header[order] + ':' + work_content + '&lt;/p&gt;&lt;br&#x00A0;/&gt;'
         end
 
-        content = TRAINING_MESSAGE + "&lt;br /&gt;" + content if DST_LIST["training_prj"][issues[0].project_id]
+        content = TRAINING_MESSAGE + "&lt;br /&gt;" + content if DST_LIST["training_prj"][issues.project_id]
 
         ele_content = new_entry.add_element("content")
         ele_content.add_attribute("type","html")
@@ -253,11 +234,15 @@ class Batches::EvacuationAdvisoriesList
 
   end
 
-  def self.this_register_issue_journal_rss_deliver(delivery_history,issue)
+  def self.this_register_issue_journal_rss_deliver(delivery_history, issue)
     notes = []
     delivery_name = (DST_LIST["delivery_place"][delivery_history.delivery_place_id]||{})["name"].to_s
     delivery_process_date = delivery_history.process_date.strftime("%Y/%m/%d %H:%M:%S")
-    notes << "#{delivery_process_date}に、 #{delivery_name}配信を開始しました。"
+    if delivery_history.status == "done"
+      notes << "#{delivery_process_date}に、 #{delivery_name}配信を開始しました。"
+    else
+      notes << "#{delivery_name}配信に失敗しました。避難勧告指示タブからチケット登録がなされていないか、チケットに添付されたCSVファイルが削除されています。"
+    end
     notes << issue.add_url_and_training(delivery_history.summary, ATOM, issue.project_id)
 
     @current_journal ||= Journal.new(:journalized => issue, :user => delivery_history.respond_user, :notes => notes.join("\n"))

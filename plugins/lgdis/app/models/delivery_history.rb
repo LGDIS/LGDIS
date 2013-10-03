@@ -44,6 +44,9 @@ class DeliveryHistory < ActiveRecord::Base
   REGEXP_HTTP = /http(s)?:\/\//
   REGEXP_MAIL = /[a-zA-Z0-9_\.\-]+@[A-Za-z0-9_\.\-]+\.[A-Za-z0-9_\.\-]+/
 
+  # 公開期間
+  PUBLIC_TERM = DST_LIST['link_disaster_portal_limit_days'].to_i
+
   # 属性のローカライズ名取得
   # validateエラー時のメッセージに使用されます。
   # "field_" + 属性名 でローカライズします。
@@ -294,10 +297,15 @@ class DeliveryHistory < ActiveRecord::Base
     #end
     if self.opened_at.blank?
       errors.add(:opened_at, "を入力して下さい")
-    end
-
-    if self.closed_at.present? && (self.closed_at < self.opened_at)
-      errors.add(:closed_at, "には、情報の公開開始日時より後の日付を設定して下さい")
+    else
+      if self.closed_at.present? 
+        errors.add(:closed_at, "に情報の公開開始日時より後の日付を設定して下さい。") if self.closed_at < self.opened_at
+        errors.add(:closed_at, "に現在日付よりも後の日付を設定して下さい。公開期間を過ぎた設定になっています。") if self.closed_at < Time.now
+      else
+        if ATOM_ID == self.delivery_place_id
+          errors.add(:closed_at, "に現在日付よりも後の日付を設定して下さい。情報の公開終了日時が設定されていないため、公開期間（公開開始日時から#{PUBLIC_TERM}日間）を過ぎた設定になっています。") if self.opened_at < Time.now - (PUBLIC_TERM * 86400)
+        end
+      end
     end
   end
 end
