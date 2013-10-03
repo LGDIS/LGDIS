@@ -161,6 +161,8 @@ class Batches::EvacuationAdvisoriesList
       #ソート処理 ここまで
       csvArray = output
 
+      counter = 0
+
       csvArray.each do |row|
         # XML main entry
         new_entry = REXML::Element.new("entry")
@@ -168,7 +170,7 @@ class Batches::EvacuationAdvisoriesList
         training_header = DST_LIST["training_prj"][issues.project_id] ? TRAINING_MESSAGE : ""
 
         new_entry.add_element("title").add_text(training_header + "#{row[0]}")
-        new_entry.add_element("id").add_text("#{issues.id}-#{time.strftime("%Y%m%d%H%M%S")}") # TODO 暫定でチケットID-YYYYMMDDHH24MISS
+        new_entry.add_element("id").add_text("#{issues.id}-#{time.strftime("%Y%m%d%H%M%S")}-#{format('%04d', counter)}") # TODO 暫定でチケットID-YYYYMMDDHH24MISS
         new_entry.add_element("published").add_text(dh.published_at.xmlschema)
         new_entry.add_element("updated").add_text(dh.published_at.xmlschema)
         #content 追加開始
@@ -200,7 +202,7 @@ class Batches::EvacuationAdvisoriesList
         #避難勧告ではgercode は出力しない
         feed.add_text(new_entry)
 
-        #entry の追加終了
+        counter = counter + 1
       end
     end
     # fileに書き出し
