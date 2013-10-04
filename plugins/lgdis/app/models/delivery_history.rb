@@ -284,9 +284,7 @@ class DeliveryHistory < ActiveRecord::Base
 
     if ((((DST_LIST['general_info_ids'].include?(self.issue.tracker_id)) || (DST_LIST['events_ids'].include?(self.issue.tracker_id))) &&
         [COMMONS_ID].include?(self.delivery_place_id)) ||
-        FACEBOOK_ID == self.delivery_place_id ||
-        SMTP_AUTH_ID == self.delivery_place_id ||
-        SMTP_ID.include?(self.delivery_place_id)) &&
+        DESCRIPTION_ID.include?(self.delivery_place_id)) &&
         self.issue.description.blank?
       errors.add(:description, "を入力して下さい")
     end
