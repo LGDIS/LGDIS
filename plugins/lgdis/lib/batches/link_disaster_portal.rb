@@ -119,7 +119,7 @@ class Batches::LinkDisasterPortal
     issues_reject_project = Issue.where({:tracker_id => tracker_id}).where("project_id in (?)", reject_project_ids).where("id IN (SELECT issue_id FROM delivery_histories WHERE delivery_place_id = #{ATOM} AND (status = 'done' OR status = 'reserve') AND opened_at <= CURRENT_TIMESTAMP AND ((closed_at IS NOT NULL AND closed_at >= CURRENT_TIMESTAMP) OR (closed_at IS NULL AND opened_at + interval '#{limit_days} days' >= CURRENT_TIMESTAMP)))").order("CASE WHEN closed_at IS NULL THEN opened_at + interval '#{limit_days} days' ELSE closed_at END DESC, opened_at DESC")
 
     # 配信除外プロジェクトの最大件数以内に絞り込み
-    issues_reject_project = issues_reject_project[0..max_num-1]
+    issues_reject_project = issues_reject_project[0..max_num-1] if max_num > 0
 
     # 配信除外プロジェクトのチケットごとのループ
     issues_reject_project.each do | issue |
@@ -146,7 +146,7 @@ class Batches::LinkDisasterPortal
     issues = Issue.where({:tracker_id => tracker_id}).where("project_id not in (?)", reject_project_ids).where("id IN (SELECT issue_id FROM delivery_histories WHERE delivery_place_id = #{ATOM} AND (status = 'done' OR status = 'reserve') AND opened_at <= CURRENT_TIMESTAMP AND ((closed_at IS NOT NULL AND closed_at >= CURRENT_TIMESTAMP) OR (closed_at IS NULL AND opened_at + interval '#{limit_days} days' >= CURRENT_TIMESTAMP)))").order("CASE WHEN closed_at IS NULL THEN opened_at + interval '#{limit_days} days' ELSE closed_at END DESC, opened_at DESC")
 
     # 最大件数以内に絞り込み
-    issues = issues[0..max_num-1]
+    issues = issues[0..max_num-1] if max_num > 0
     # テンプレートの読み込み
     file = File.new("#{Rails.root}/plugins/lgdis/files/xml/atom_with_georss.xml")
     # Xmlドキュメントの生成
