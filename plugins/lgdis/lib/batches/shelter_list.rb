@@ -151,7 +151,8 @@ class Batches::ShelterList
         row_order = [0,8,2,4,10,11,12,13,15,17,18]
         row_order.each do |order|
           #xml では &nbsp; は認識されないので文字コードを直接入力（＆#x00A0;）
-          content += '&lt;p&gt;' + header[order] + ':' + row[order] + '&lt;/p&gt;&lt;br&#x00A0;/&gt;'
+          content += "&lt;br /&gt;&lt;br /&gt;" unless content.blank?
+          content += header[order] + ':' + row[order]
         end
 
         content = TRAINING_MESSAGE + "&lt;br /&gt;" + content if DST_LIST["training_prj"][issues.project_id]

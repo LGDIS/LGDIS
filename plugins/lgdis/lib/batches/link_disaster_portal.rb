@@ -207,10 +207,11 @@ class Batches::LinkDisasterPortal
           tmp_label_value = ""
         end
 
-        #xml では &nbsp; は認識されないので文字コードを直接入力（＆#x00A0;）
+        #xml では & bsp; は認識されないので文字コードを直接入力（＆#x00A0;）
         tmp_label_value = label_value["label"] + ':' + tmp_label_value if label_value["label"].present?
-        content += '&lt;p&gt;' + tmp_label_value + '&lt;/p&gt;&lt;br /&gt;'
-
+        
+        content += "&lt;br /&gt;&lt;br /&gt;" unless content.blank?
+        content += tmp_label_value
       end
 
       ele_content = new_entry.add_element("content")

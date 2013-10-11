@@ -186,11 +186,11 @@ class Batches::EvacuationAdvisoriesList
 
         row_order = [0,2,3,4,5,6]
         row_order.each do |order|
-          #xml では &nbsp; は認識されないので文字コードを直接入力（＆#x00A0;）
           work_content = row[order]
           # 発令区分は、発令・解除の区分も加える。
           work_content = work_content + " " + row[7] if order == 2
-          content += '&lt;p&gt;' + header[order] + ':' + work_content + '&lt;/p&gt;&lt;br&#x00A0;/&gt;'
+          content += "&lt;br /&gt;&lt;br /&gt;" unless content.blank?
+          content += header[order] + ':' + work_content
         end
 
         content = TRAINING_MESSAGE + "&lt;br /&gt;" + content if DST_LIST["training_prj"][issues.project_id]
