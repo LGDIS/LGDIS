@@ -226,17 +226,20 @@ module Lgdis
           end
 
           # 複数のロールを保持していることを考慮
-          @destination_list = nil
+          @destination_list = []
           role_ids.each do |role_id|
-            list = DST_LIST['destination'][role_id][@issue.tracker_id]
-            unless @destination_list.blank?
-              list.each do |map|
-                if @destination_list.index(map).blank?
-                  @destination_list.push map
+            list = nil
+            list = DST_LIST['destination'][role_id][@issue.tracker_id] if DST_LIST['destination'].has_key?(role_id) && DST_LIST['destination'][role_id].has_key?(@issue.tracker_id)
+            unless list.blank?
+              if @destination_list.present?
+                list.each do |map|
+                  if @destination_list.index(map).blank?
+                    @destination_list.push map
+                  end
                 end
+              else
+                @destination_list = list
               end
-            else
-              @destination_list = list
             end
           end
           # 新規登録画面で【システム】トラッカーのチケットを登録した場合、公共コモンズとRSSの配信先を除外する。
@@ -252,6 +255,7 @@ module Lgdis
         rescue => e
           # TODO
           # error 処理
+          Rails.logger.info(e)
           p $!
         end
       end
