@@ -33,17 +33,23 @@ class DeliverIssuesController < ApplicationController
 
     return if delivery_history.blank? || issue.blank?
 
-    begin
-      case issue.deliver(delivery_history, status_to)
-        when 'reject'
-          flash[:notice] = l(:notice_delivery_request_reject)
-        when 'failed'
-          flash[:error] = l(:notice_delivery_failed)
-        else
-          flash[:notice] = l(:notice_delivery_successful)
-        end
-    rescue Lgdis::IssuePatch::InstanceMethods::InvalidStatusTo => e
-      flash[:error] = l(:notice_delivery_status, :kind => l("delivery_status." + e.message))
+    if delivery_history.closed_at.present? && delivery_history.closed_at < Time.now && status_to == 'reserve'
+      flash[:error] = "公開期間を過ぎています（公開終了日時：#{delivery_history.closed_at}）"
+    elsif delivery_history.delivery_place_id == DeliveryHistory::ATOM_ID && delivery_history.closed_at.blank? && delivery_history.opened_at < Time.now - (DeliveryHistory::PUBLIC_TERM * 86400) 
+      flash[:error] = "公開期間（公開開始日時から#{DeliveryHistory::PUBLIC_TERM}日間）を過ぎています"
+    else
+      begin
+        case issue.deliver(delivery_history, status_to)
+          when 'reject'
+            flash[:notice] = l(:notice_delivery_request_reject)
+          when 'failed'
+            flash[:error] = l(:notice_delivery_failed)
+          else
+            flash[:notice] = l(:notice_delivery_successful)
+          end
+      rescue Lgdis::IssuePatch::InstanceMethods::InvalidStatusTo => e
+        flash[:error] = l(:notice_delivery_status, :kind => l("delivery_status." + e.message))
+      end
     end
 
     respond_to do |format|
