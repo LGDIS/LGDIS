@@ -3,13 +3,14 @@
 # rails runner Batches::LinkDisasterPortal.execute
 # ==== options
 # 実行環境の指定 :: -e production
-
 require 'cgi'
 
 include ApplicationHelper
 
-ATOM = 9 # RSS配信(Atom)のdelivery_place_id
 class Batches::LinkDisasterPortal
+
+  ATOM = DeliveryHistory::ATOM_ID # RSS配信(Atom)のdelivery_place_id
+
   def self.execute
 
     Rails.logger.info(" #{Time.now.to_s} ===== #{self.name} START ===== ")

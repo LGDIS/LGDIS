@@ -8,10 +8,10 @@ require 'cgi'
 
 include ApplicationHelper
 
-ATOM = 9 # RSS配信(Atom)のdelivery_place_id
-TRAINING_MESSAGE = "【災害訓練】"
-
 class Batches::EvacuationAdvisoriesList
+
+  ATOM = DeliveryHistory::ATOM_ID # RSS配信(Atom)のdelivery_place_id
+  TRAINING_MESSAGE = "【災害訓練】"
 
   def self.execute
 

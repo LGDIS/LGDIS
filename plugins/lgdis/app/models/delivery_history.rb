@@ -28,8 +28,8 @@ class DeliveryHistory < ActiveRecord::Base
   FACEBOOK_ID   =  8
   ATOM_ID       =  9
   U_MAIL_DCM_ID = 10
-  U_MAIL_SB_ID  = 11
-  U_MAIL_AU_ID  = 12
+  U_MAIL_AU_ID  = 11
+  U_MAIL_SB_ID  = 12
   DESCRIPTION_ID = [2, 3, 4, 5, 6, 8, 9]
   SMTP_ID = DST_LIST['delivery_place_group_deployed_mail'].map{|o| o["id"]}
   U_MAIL_ID = DST_LIST['delivery_place_group_urgent_mail'].map{|o| o["id"]}
