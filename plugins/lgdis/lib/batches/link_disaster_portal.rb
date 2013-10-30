@@ -186,7 +186,7 @@ class Batches::LinkDisasterPortal
       training_header = DST_LIST["training_prj"][issue.project_id] ? "【災害訓練】" : ""
       new_entry.add_element("title").add_text(training_header + "#{dh.mail_subject}")
 
-      new_entry.add_element("id").add_text("#{issue.id}-#{time.strftime("%Y%m%d%H%M%S")}") # TODO 暫定でチケットID-YYYYMMDDHH24MISS
+      new_entry.add_element("id").add_text("#{issue.id}-#{dh.id}-#{dh.published_at.strftime("%Y%m%d%H%M%S")}") # TODO 暫定でチケットID-YYYYMMDDHH24MISS
       new_entry.add_element("published").add_text(dh.published_at.xmlschema)
       new_entry.add_element("updated").add_text(dh.published_at.xmlschema)
 
