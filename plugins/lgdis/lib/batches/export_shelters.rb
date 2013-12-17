@@ -16,7 +16,7 @@ class Batches::ExportShelters
       Dir::mkdir(EXPORT_TARGET) unless File.exist?(EXPORT_TARGET)
       Shelter.transaction do
         CSV.open(output_file, "w", csv_option) do |csv_writer|
-          Shelter.scoped.order(:id).all.each do |row| # 動作種別を問わず全件出力する
+          Shelter.scoped.order("area, name").all.each do |row| # 動作種別を問わず全件出力する
             csv_writer << ActiveSupport::JSON.decode(row.to_json)["shelter"]
           end
         end

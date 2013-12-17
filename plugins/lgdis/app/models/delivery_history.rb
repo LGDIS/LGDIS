@@ -238,8 +238,8 @@ class DeliveryHistory < ActiveRecord::Base
 
     if (U_MAIL_ID.include?(self.delivery_place_id))
       message = self.issue.add_url_and_training(self.summary, self.delivery_place_id, self.issue.project_id)
-      if message.size + message.count("\n") > 172
-        errors.add(:summary, "は#{173 - (message.size + message.count("\n") - self.summary.size)}文字以上入力できません")
+      if message.size + message.count("\n") > 200
+        errors.add(:summary, "は#{201 - (message.size + message.count("\n") - self.summary.size)}文字以上入力できません")
       end
       if self.summary =~ REGEXP_HTTP
         errors.add(:summary, "にURLは指定できません")
@@ -260,14 +260,15 @@ class DeliveryHistory < ActiveRecord::Base
     if (COMMONS_ALL_ID.include?(self.delivery_place_id)) &&
        edition_mng.blank? && self.issue.type_update != NEW_STATUS
       errors.add(:type_update, "の「新規」を選択して下さい")
+    elsif U_MAIL_ID.include?(self.delivery_place_id) && self.issue.type_update != NEW_STATUS
+      errors.add(:type_update, "の「新規」を選択して下さい")
     end
 
     if (COMMONS_ALL_ID.include?(self.delivery_place_id)) && self.delivered_area.blank?
       errors.add(:delivered_area, "を選択して下さい")
     end
 
-    if (COMMONS_ALL_ID.include?(self.delivery_place_id)) &&
-        self.type_update == "3" && self.description_cancel.blank?
+    if COMMONS_ID == self.delivery_place_id && self.type_update == "3" && self.description_cancel.blank?
       errors.add(:description_cancel, "を入力して下さい")
     end
 
@@ -283,7 +284,7 @@ class DeliveryHistory < ActiveRecord::Base
     end
 
     if ((((DST_LIST['general_info_ids'].include?(self.issue.tracker_id)) || (DST_LIST['events_ids'].include?(self.issue.tracker_id))) &&
-        [COMMONS_ID].include?(self.delivery_place_id)) ||
+        COMMONS_ID == self.delivery_place_id) ||
         DESCRIPTION_ID.include?(self.delivery_place_id)) &&
         self.issue.description.blank?
       errors.add(:description, "を入力して下さい")
