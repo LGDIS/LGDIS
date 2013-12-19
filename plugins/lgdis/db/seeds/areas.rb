@@ -7,7 +7,7 @@ Area.create(:area_code => '03', :name => '石巻／門脇地区', :remarks => ''
 Area.create(:area_code => '04', :name => '石巻／釜大街道地区', :remarks => '', :polygon => '{}')
 Area.create(:area_code => '05', :name => '石巻／住吉地区', :remarks => '', :polygon => '{}')
 Area.create(:area_code => '06', :name => '石巻／山下地区', :remarks => '', :polygon => '{}')
-Area.create(:area_code => '07', :name => '石巻／虻田地区', :remarks => '', :polygon => '{}')
+Area.create(:area_code => '07', :name => '石巻／蛇田地区', :remarks => '', :polygon => '{}')
 Area.create(:area_code => '08', :name => '石巻／湊地区', :remarks => '', :polygon => '{}')
 Area.create(:area_code => '09', :name => '石巻／渡波地区', :remarks => '', :polygon => '{}')
 Area.create(:area_code => '10', :name => '石巻／稲井地区', :remarks => '', :polygon => '{}')

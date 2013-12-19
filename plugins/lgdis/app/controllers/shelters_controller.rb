@@ -13,7 +13,7 @@ class SheltersController < ApplicationController
   def init
     @edition_management = EditionManagement.find(:first, :conditions => ["project_id = ? and tracker_id = ? and delivery_place_id = ? and status != ?", @project.id, 2, 1, 3])
     @shelter_const = Constant::hash_for_table(Shelter.table_name)
-    @areas = Area.all
+    @areas = Area.find(:all, :order => "area_code")
   end
 
   # 避難所一覧検索画面
