@@ -35,7 +35,7 @@ class DeliverIssuesController < ApplicationController
 
     if delivery_history.closed_at.present? && delivery_history.closed_at < Time.now && status_to == 'reserve'
       flash[:error] = "公開期間を過ぎています（公開終了日時：#{delivery_history.closed_at}）"
-    elsif delivery_history.delivery_place_id == DeliveryHistory::ATOM_ID && delivery_history.closed_at.blank? && delivery_history.opened_at < Time.now - (DeliveryHistory::PUBLIC_TERM * 86400) 
+    elsif delivery_history.delivery_place_id == DeliveryHistory::ATOM_ID && delivery_history.closed_at.blank? && delivery_history.opened_at < Time.now - (DeliveryHistory::PUBLIC_TERM * 86400) && status_to == 'reserve' 
       flash[:error] = "公開期間（公開開始日時から#{DeliveryHistory::PUBLIC_TERM}日間）を過ぎています"
     else
       begin
